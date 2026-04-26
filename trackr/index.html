@@ -620,10 +620,7 @@
     const eventNameInput = document.getElementById("eventNameInput");
     const eventNotesInput = document.getElementById("eventNotesInput");
 
-    const eventTimeInput = document.createElement("input");
-    eventTimeInput.type = "time";
-    eventTimeInput.id = "eventTimeInput";
-    eventDateInput.insertAdjacentElement("afterend", eventTimeInput);
+    const eventTimeInput = document.getElementById("eventTimeInput");
 
     const eventsBoard = document.getElementById("eventsBoard");
     const eventEmptyState = document.getElementById("eventEmptyState");
@@ -712,6 +709,17 @@
       }
     });
 
+    async function getCurrentUserId() {
+      const { data: { session }, error } = await db.auth.getSession();
+
+      if (error || !session) {
+        alert("You must be logged in.");
+        throw new Error("No active session");
+      }
+
+      return session.user.id;
+    }
+
     taskForm.addEventListener("submit", async event => {
       event.preventDefault();
 
@@ -723,6 +731,7 @@
 
       if (!name || importance < 1 || importance > 10 || quantity < 1) return;
 
+      const userId = await getCurrentUserId();
       const { data, error } = await db
         .from("tasks")
         .insert({
@@ -732,7 +741,8 @@
           original_quantity: quantity,
           tag,
           recurring,
-          last_reset_date: todayKey()
+          last_reset_date: todayKey(),
+          user_id: userId
         })
         .select()
         .single();
@@ -761,13 +771,15 @@
 
       if (!eventDate || !name) return;
 
+      const userId = await getCurrentUserId();
       const { data, error } = await db
         .from("events")
         .insert({
           name,
           event_date: eventDate,
           time,
-          notes
+          notes,
+          user_id: userId
         })
         .select()
         .single();
@@ -798,6 +810,7 @@
 
       if (!day || !time || !name) return;
 
+      const userId = await getCurrentUserId();
       const { data, error } = await db
         .from("routine_blocks")
         .insert({
@@ -805,7 +818,8 @@
           time,
           name,
           notes,
-          completed: false
+          completed: false,
+          user_id: userId
         })
         .select()
         .single();
@@ -826,6 +840,17 @@
       routineNameInput.focus();
     });
 
+    function initApp() {
+      eventDateInput.valueAsDate = new Date();
+      updateTopBar();
+      setInterval(updateTopBar, 1000);
+      renderDayCircles();
+      renderRoutine();
+      renderEvents();
+      updateTaskEmptyState();
+      loadFromSupabase();
+    }
+
     function bindToggle(panel, button, focusTarget) {
       button.addEventListener("click", () => {
         panel.classList.toggle("open");
@@ -833,6 +858,51 @@
           setTimeout(() => focusTarget.focus(), 0);
         }
       });
+    }
+
+    function showLogin() {
+      document.body.innerHTML = `
+        <div style="
+          min-height:100vh;
+          display:grid;
+          place-items:center;
+          padding:24px;
+        ">
+          <div style="
+            width:min(360px, 100%);
+            display:grid;
+            gap:12px;
+            padding:24px;
+            border-radius:24px;
+            background:rgba(255,255,255,0.78);
+            box-shadow:0 24px 80px rgba(31,41,55,0.12);
+          ">
+            <h1 style="margin:0;">MihirOS</h1>
+            <input id="email" type="email" placeholder="Email" />
+            <input id="password" type="password" placeholder="Password" />
+            <button id="loginBtn" class="add-button">Login</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("loginBtn").addEventListener("click", login);
+    }
+
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const { error } = await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      location.reload();
     }
 
     async function loadFromSupabase() {
@@ -1482,6 +1552,9 @@
     }
 
     async function pasteCopiedObject() {
+
+      const userId = await getCurrentUserId();
+
       if (!copiedObject) return;
 
       if (copiedObject.type === "task") {
@@ -1495,7 +1568,8 @@
             original_quantity: task.originalQuantity,
             tag: task.tag || null,
             recurring: task.recurring,
-            last_reset_date: todayKey()
+            last_reset_date: todayKey(),
+            user_id: userId
           })
           .select()
           .single();
@@ -1516,7 +1590,8 @@
             name: event.name,
             event_date: event.date,
             time: event.time || null,
-            notes: event.notes || ""
+            notes: event.notes || "",
+            user_id: userId
           })
           .select()
           .single();
@@ -1539,7 +1614,8 @@
             day: block.day,
             name: block.name,
             notes: block.notes || "",
-            completed: false
+            completed: false,
+            user_id: userId
           })
           .select()
           .single();
@@ -1719,14 +1795,15 @@ function openContextMenu(event, actions) {
   activeContextMenu = menu;
 }
 
-    eventDateInput.valueAsDate = new Date();
-    updateTopBar();
-    setInterval(updateTopBar, 1000);
-    renderDayCircles();
-    renderRoutine();
-    renderEvents();
-    updateTaskEmptyState();
-    loadFromSupabase();
+    (async () => {
+      const { data: { session } } = await db.auth.getSession();
+
+      if (!session) {
+        showLogin();
+      } else {
+        initApp();
+      }
+    })();
   </script>
 </body>
 </html>
