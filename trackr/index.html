@@ -1036,8 +1036,7 @@
     }
 
     function taskHtml(task) {
-      return `
-      ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ""}  
+      return ` 
       ${task.recurring ? `<div class="recurring-dot" title="Daily recurring"></div>` : ""}
         <div class="task-content">
           <div class="task-name" style="font-size: ${0.95 + task.importance * 0.055}rem">${escapeHtml(task.name)}</div>
