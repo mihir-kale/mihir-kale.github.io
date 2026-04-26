@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MihirOS</title>
+  <style>
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.68);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.75);
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: rgba(31, 41, 55, 0.78);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 30%),
+        linear-gradient(135deg, #f6f0ff, #eef8ff 45%, #fff8ec);
+      color: #1f2937;
+      overflow-x: hidden;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      transition: grid-template-columns 0.25s ease;
+    }
+
+    .app.routine-open {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .side {
+      position: relative;
+      min-height: 100vh;
+      padding: 118px 22px 56px;
+      overflow: visible;
+    }
+
+    .routine-side {
+      display: none;
+      border-right: 1px solid rgba(255, 255, 255, 0.65);
+    }
+
+    .app.routine-open .routine-side {
+      display: block;
+    }
+
+    .task-side {
+      border-right: 1px solid rgba(255, 255, 255, 0.65);
+    }
+
+    .panel {
+      position: absolute;
+      top: 56px;
+      left: 18px;
+      z-index: 50;
+    }
+
+    .toggle-form {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: none;
+      border-radius: 999px;
+      padding: 0;
+      background: #22c55e;
+      color: white;
+      font-size: 1.7rem;
+      line-height: 1;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(34, 197, 94, 0.35);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .toggle-form:hover {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 16px 32px rgba(34, 197, 94, 0.42);
+    }
+
+    .panel.open .toggle-form {
+      transform: rotate(45deg);
+      background: #16a34a;
+    }
+
+    .routine-layout-toggle {
+      position: fixed;
+      top: 56px;
+      right: 18px;
+      z-index: 100;
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 999px;
+      background: #6366f1;
+      color: white;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.3);
+    }
+
+    form {
+      display: none;
+      width: min(520px, calc(33vw - 36px));
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 14px;
+      margin-top: 12px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 24px 80px rgba(31, 41, 55, 0.12);
+    }
+
+    .app:not(.routine-open) form {
+      width: min(650px, calc(50vw - 36px));
+    }
+
+    .panel.open form {
+      display: grid;
+    }
+
+    input, textarea, select, .add-button {
+      border: none;
+      border-radius: 16px;
+      padding: 13px 15px;
+      font: inherit;
+    }
+
+    input, textarea, select {
+      background: rgba(255, 255, 255, 0.9);
+      outline: 1px solid rgba(156, 163, 175, 0.25);
+    }
+
+    textarea {
+      resize: none;
+      min-height: 84px;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: 2px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .inline-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 2px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: rgba(31, 41, 55, 0.82);
+    }
+
+    .inline-toggle input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .add-button {
+      cursor: pointer;
+      background: #111827;
+      color: white;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(17, 24, 39, 0.18);
+    }
+
+    .workspace {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 18px;
+    }
+
+    .task.selected, .routine-block.selected {
+      outline: 3px solid rgba(99, 102, 241, 0.45);
+      outline-offset: 3px;
+    }
+
+    .task {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      color: rgba(17, 24, 39, 0.88);
+      text-align: center;
+      user-select: none;
+      cursor: pointer;
+      overflow: visible;
+      box-shadow: 0 18px 48px rgba(31, 41, 55, 0.14);
+      transition: transform 0.16s ease, opacity 0.25s ease, scale 0.25s ease;
+      animation: pop 0.24s ease;
+    }
+
+    .task:hover, .event-card:hover, .routine-block:hover {
+      transform: translateY(-3px);
+    }
+
+    .task::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.65), transparent 45%);
+      pointer-events: none;
+    }
+
+    .task.square {
+      border-radius: 28px;
+    }
+
+    .task.balloon {
+      border-radius: 52% 48% 50% 50% / 46% 46% 56% 56%;
+    }
+
+    .task.balloon::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 18px;
+      height: 18px;
+      background: inherit;
+      border-radius: 4px;
+      box-shadow: 8px 8px 18px rgba(31, 41, 55, 0.08);
+    }
+
+    .task-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .task-name {
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      word-break: break-word;
+    }
+
+    .task-meta {
+      margin-top: 8px;
+      font-size: 0.86rem;
+      opacity: 0.72;
+      font-weight: 900;
+    }
+
+    .task-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.44);
+      font-size: 0.72rem;
+      font-weight: 900;
+      opacity: 0.85;
+    }
+
+    .recurring-dot {
+      position: absolute;
+      top: 11px;
+      right: 11px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, 0.55);
+      z-index: 2;
+    }
+
+    .events-board {
+      display: grid;
+      gap: 22px;
+      max-width: 620px;
+    }
+
+    .event-section {
+      display: grid;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(75, 85, 99, 0.72);
+      font-weight: 900;
+    }
+
+    .event-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .event-card.selected {
+      outline: 3px solid rgba(99, 102, 241, 0.45);
+      outline-offset: 3px;
+    }
+
+    .event-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      min-height: 76px;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 16px 44px rgba(31, 41, 55, 0.09);
+      transition: transform 0.16s ease;
+      animation: pop 0.24s ease;
+    }
+
+    .event-date-chip {
+      min-width: 72px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(17, 24, 39, 0.07);
+      text-align: center;
+      font-weight: 900;
+      font-size: 0.8rem;
+    }
+
+    .event-days-away {
+      margin-top: 3px;
+      font-size: 0.68rem;
+      font-weight: 900;
+      color: rgba(75, 85, 99, 0.7);
+    }
+
+    .event-name, .routine-block-name {
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .event-notes, .routine-block-notes {
+      margin-top: 4px;
+      font-size: 0.84rem;
+      line-height: 1.35;
+      color: rgba(75, 85, 99, 0.82);
+    }
+
+    .day-row {
+      display: flex;
+      gap: 9px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .day-circle {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, 0.1);
+      color: rgba(31, 41, 55, 0.8);
+      font-size: 0.75rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .day-circle:hover {
+      transform: translateY(-2px);
+    }
+
+    .day-circle.active {
+      background: #111827;
+      color: white;
+    }
+
+    .routine-display {
+      display: grid;
+      gap: 12px;
+      max-width: 620px;
+    }
+
+    .routine-block {
+      position: relative;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 16px 44px rgba(31, 41, 55, 0.09);
+      transition: transform 0.16s ease, background 0.2s ease;
+      animation: pop 0.24s ease;
+    }
+
+    .routine-block.completed {
+      background: linear-gradient(135deg, #bbf7d0, #86efac);
+    }
+
+    .routine-check {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: rgba(17,24,39,0.1);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .routine-block.completed .routine-check {
+      background: #16a34a;
+      color: white;
+    }
+
+    .empty {
+      min-height: 60vh;
+      display: grid;
+      place-items: center;
+      color: rgba(156, 163, 175, 0.42);
+      font-size: 4rem;
+      font-weight: 900;
+      user-select: none;
+    }
+
+    .vanish {
+      opacity: 0;
+      scale: 0.85;
+    }
+
+    .context-menu {
+      position: fixed;
+      z-index: 999;
+      display: grid;
+      gap: 6px;
+      padding: 8px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 50px rgba(31, 41, 55, 0.22);
+    }
+
+    .context-menu button {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: rgba(17, 24, 39, 0.08);
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 900;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .context-menu button:hover {
+      background: rgba(17, 24, 39, 0.14);
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .app, .app.routine-open {
+        grid-template-columns: 1fr;
+      }
+
+      .routine-side {
+        display: none;
+      }
+
+      .app.routine-open .routine-side {
+        display: block;
+      }
+
+      .task-side {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+      }
+
+      form, .app:not(.routine-open) form {
+        width: calc(100vw - 36px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="topBar" class="top-bar"></div>
+  <button id="routineLayoutToggle" class="routine-layout-toggle" type="button" aria-label="Toggle routine view">◐</button>
+
+  <main id="app" class="app">
+    <section class="side routine-side">
+      <section id="routinePanel" class="panel">
+        <button id="routineToggle" class="toggle-form" type="button" aria-label="Add routine block">+</button>
+        <!-- Replace the routine form with this version -->
+        <form id="routineForm">
+          <select id="routineDayInput" required>
+            <option value="Sun">Sunday</option>
+            <option value="Mon">Monday</option>
+            <option value="Tue">Tuesday</option>
+            <option value="Wed">Wednesday</option>
+            <option value="Thu">Thursday</option>
+            <option value="Fri">Friday</option>
+            <option value="Sat">Saturday</option>
+          </select>
+          <input id="routineTimeInput" type="time" required />
+          <input id="routineNameInput" type="text" placeholder="Routine block name" required />
+          <textarea id="routineNotesInput" maxlength="250" placeholder="Notes, max 250 characters"></textarea>
+          <button type="submit" class="add-button">Add Block</button>
+        </form>
+      </section>
+
+      <div id="dayRow" class="day-row"></div>
+      <div id="routineDisplay" class="routine-display"></div>
+      <div id="routineEmptyState" class="empty">+</div>
+    </section>
+
+    <section class="side task-side">
+      <section id="taskPanel" class="panel">
+        <button id="taskToggle" class="toggle-form" type="button" aria-label="Add new task">+</button>
+        <form id="taskForm">
+          <input id="taskNameInput" type="text" placeholder="Task name" required />
+          <input id="taskImportanceInput" type="number" placeholder="Importance 1-10" min="1" max="10" required />
+          <input id="taskQuantityInput" type="number" placeholder="Quantity, default 1" min="1" />
+          <input id="taskTagInput" type="text" placeholder="Tag" />
+          <label class="inline-toggle">
+            <input id="taskRecurringInput" type="checkbox" />
+            Daily recurring
+          </label>
+          <button type="submit" class="add-button">Add Task</button>
+        </form>
+      </section>
+
+      <div id="taskStage" class="workspace"></div>
+      <div id="taskEmptyState" class="empty">+</div>
+    </section>
+
+    <section class="side event-side">
+      <section id="eventPanel" class="panel">
+        <button id="eventToggle" class="toggle-form" type="button" aria-label="Add new event">+</button>
+        <form id="eventForm">
+          <input id="eventDateInput" type="date" required />
+          <input id="eventTimeInput" type="time" />
+          <input id="eventNameInput" type="text" placeholder="Event name" required />
+          <textarea id="eventNotesInput" maxlength="100" placeholder="Notes, max 100 characters"></textarea>
+          <button type="submit" class="add-button">Add Event</button>
+        </form>
+      </section>
+
+      <div id="eventsBoard" class="events-board"></div>
+      <div id="eventEmptyState" class="empty">+</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://yyypjqedpbaxvawoaplr.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5eXBqcWVkcGJheHZhd29hcGxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzcxMTMsImV4cCI6MjA5MjcxMzExM30.x1eMB7-wyo-Wz1lAaYZZc-8Dx96p7Fu0e38Lmve02Tc";
+
+
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const todayKey = () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+    const topBar = document.getElementById("topBar");
+    const app = document.getElementById("app");
+    const routineLayoutToggle = document.getElementById("routineLayoutToggle");
+
+    const taskPanel = document.getElementById("taskPanel");
+    const eventPanel = document.getElementById("eventPanel");
+    const routinePanel = document.getElementById("routinePanel");
+
+    const taskToggle = document.getElementById("taskToggle");
+    const eventToggle = document.getElementById("eventToggle");
+    const routineToggle = document.getElementById("routineToggle");
+
+    const taskForm = document.getElementById("taskForm");
+    const taskStage = document.getElementById("taskStage");
+    const taskEmptyState = document.getElementById("taskEmptyState");
+    const taskNameInput = document.getElementById("taskNameInput");
+    const taskImportanceInput = document.getElementById("taskImportanceInput");
+    const taskQuantityInput = document.getElementById("taskQuantityInput");
+    const taskTagInput = document.getElementById("taskTagInput");
+    const taskRecurringInput = document.getElementById("taskRecurringInput");
+
+    const eventForm = document.getElementById("eventForm");
+    const eventDateInput = document.getElementById("eventDateInput");
+    const eventNameInput = document.getElementById("eventNameInput");
+    const eventNotesInput = document.getElementById("eventNotesInput");
+
+    const eventTimeInput = document.createElement("input");
+    eventTimeInput.type = "time";
+    eventTimeInput.id = "eventTimeInput";
+    eventDateInput.insertAdjacentElement("afterend", eventTimeInput);
+
+    const eventsBoard = document.getElementById("eventsBoard");
+    const eventEmptyState = document.getElementById("eventEmptyState");
+
+    const routineForm = document.getElementById("routineForm");
+    const routineDayInput = document.getElementById("routineDayInput");
+    const routineNameInput = document.getElementById("routineNameInput");
+    const routineNotesInput = document.getElementById("routineNotesInput");
+    const dayRow = document.getElementById("dayRow");
+    const routineDisplay = document.getElementById("routineDisplay");
+    const routineEmptyState = document.getElementById("routineEmptyState");
+    // Add this with your routine DOM constants
+    const routineTimeInput = document.getElementById("routineTimeInput");
+
+    const colors = [
+      "linear-gradient(135deg, #fbcfe8, #fef3c7)",
+      "linear-gradient(135deg, #bfdbfe, #ddd6fe)",
+      "linear-gradient(135deg, #bbf7d0, #bae6fd)",
+      "linear-gradient(135deg, #fed7aa, #fecdd3)",
+      "linear-gradient(135deg, #ddd6fe, #c7d2fe)",
+      "linear-gradient(135deg, #a7f3d0, #fde68a)",
+      "linear-gradient(135deg, #fecaca, #e9d5ff)",
+      "linear-gradient(135deg, #ccfbf1, #d9f99d)"
+    ];
+
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dayLabels = {
+      Sun: "Sunday",
+      Mon: "Monday",
+      Tue: "Tuesday",
+      Wed: "Wednesday",
+      Thu: "Thursday",
+      Fri: "Friday",
+      Sat: "Saturday"
+    };
+
+    let activeContextMenu = null;
+    let tasks = [];
+    let events = [];
+    let routineBlocks = [];
+
+    let selectedObject = null;
+    let copiedObject = null;
+
+    let selectedEventId = null;
+    let copiedEvent = null;
+    let selectedDay = "Sun";
+    let tagColors = {};
+    let nextColorIndex = 0;
+
+    bindToggle(taskPanel, taskToggle, taskNameInput);
+    bindToggle(eventPanel, eventToggle, eventDateInput);
+    bindToggle(routinePanel, routineToggle, routineNameInput);
+
+    routineLayoutToggle.addEventListener("click", () => {
+      app.classList.toggle("routine-open");
+      renderRoutine();
+    });
+    document.addEventListener("click", closeContextMenu);
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeContextMenu();
+    });
+
+    document.addEventListener("keydown", async event => {
+      const isMacShortcut = event.metaKey && !event.ctrlKey;
+      const isCopy = isMacShortcut && event.key.toLowerCase() === "c";
+      const isPaste = isMacShortcut && event.key.toLowerCase() === "v";
+
+      if (!isCopy && !isPaste) return;
+
+      const activeTag = document.activeElement?.tagName?.toLowerCase();
+      const isTyping = activeTag === "input" || activeTag === "textarea" || activeTag === "select";
+      if (isTyping) return;
+
+      if (isCopy) {
+        if (!selectedObject) return;
+        event.preventDefault();
+        copiedObject = getSelectedObjectPayload();
+      }
+
+      if (isPaste) {
+        if (!copiedObject) return;
+        event.preventDefault();
+        await pasteCopiedObject();
+      }
+    });
+
+    taskForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const name = taskNameInput.value.trim();
+      const importance = Number(taskImportanceInput.value);
+      const quantity = taskQuantityInput.value === "" ? 1 : Number(taskQuantityInput.value);
+      const tag = taskTagInput.value.trim() || null;
+      const recurring = taskRecurringInput.checked;
+
+      if (!name || importance < 1 || importance > 10 || quantity < 1) return;
+
+      const { data, error } = await db
+        .from("tasks")
+        .insert({
+          name,
+          importance,
+          quantity,
+          original_quantity: quantity,
+          tag,
+          recurring,
+          last_reset_date: todayKey()
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Task insert failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      const task = normalizeTask(data);
+      tasks.push(task);
+      renderAllTasks();
+
+      taskForm.reset();
+      taskNameInput.focus();
+    });
+
+    eventForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const eventDate = eventDateInput.value;
+      const time = eventTimeInput.value || null;
+      const name = eventNameInput.value.trim();
+      const notes = eventNotesInput.value.trim().slice(0, 100);
+
+      if (!eventDate || !name) return;
+
+      const { data, error } = await db
+        .from("events")
+        .insert({
+          name,
+          event_date: eventDate,
+          time,
+          notes
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Event insert failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      events.push(normalizeEvent(data));
+      events.sort((a, b) => a.date.localeCompare(b.date));
+      renderEvents();
+
+      eventForm.reset();
+      eventDateInput.valueAsDate = new Date();
+      eventDateInput.focus();
+    });
+
+    // Replace your routineForm submit listener with this
+    routineForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const day = routineDayInput.value;
+      const time = routineTimeInput.value;
+      const name = routineNameInput.value.trim();
+      const notes = routineNotesInput.value.trim().slice(0, 250);
+
+      if (!day || !time || !name) return;
+
+      const { data, error } = await db
+        .from("routine_blocks")
+        .insert({
+          day,
+          time,
+          name,
+          notes,
+          completed: false
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Routine insert failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      routineBlocks.push(normalizeRoutineBlock(data));
+      selectedDay = day;
+      renderDayCircles();
+      renderRoutine();
+
+      routineForm.reset();
+      routineDayInput.value = selectedDay;
+      routineNameInput.focus();
+    });
+
+    function bindToggle(panel, button, focusTarget) {
+      button.addEventListener("click", () => {
+        panel.classList.toggle("open");
+        if (panel.classList.contains("open") && focusTarget) {
+          setTimeout(() => focusTarget.focus(), 0);
+        }
+      });
+    }
+
+    async function loadFromSupabase() {
+      const [tasksResult, eventsResult, routineResult] = await Promise.all([
+        db.from("tasks").select("*").order("created_at", { ascending: true }),
+        db.from("events").select("*").order("event_date", { ascending: true }),
+        // Replace the routine_blocks load query inside loadFromSupabase with this
+        db.from("routine_blocks")
+          .select("*")
+          .order("day", { ascending: true })
+          .order("time", { ascending: true })
+          .order("created_at", { ascending: true })
+      ]);
+
+      if (tasksResult.error) console.error("Task load failed:", tasksResult.error);
+      if (eventsResult.error) console.error("Event load failed:", eventsResult.error);
+      if (routineResult.error) console.error("Routine load failed:", routineResult.error);
+
+      const resetTasks = await resetRecurringTasksIfNeeded(tasksResult.data || []);
+      tasks = resetTasks.map(normalizeTask);
+      events = (eventsResult.data || []).map(normalizeEvent);
+      selectedEventId = null;
+      copiedEvent = null;
+      routineBlocks = (routineResult.data || []).map(normalizeRoutineBlock);
+
+      renderAllTasks();
+      renderEvents();
+      renderDayCircles();
+      renderRoutine();
+    }
+
+    // Replace normalizeTask with this
+    function normalizeTask(row) {
+      const tag = row.tag || "";
+
+      return {
+        id: row.id,
+        name: row.name,
+        importance: row.importance,
+        quantity: row.quantity,
+        originalQuantity: row.original_quantity,
+        tag,
+        recurring: row.recurring,
+        lastResetDate: row.last_reset_date,
+        color: getColorForTag(tag || row.name)
+      };
+    }
+
+    function normalizeEvent(row) {
+      return {
+        id: row.id,
+        name: row.name,
+        date: row.event_date,
+        time: row.time || "",
+        notes: row.notes || ""
+      };
+    }
+
+    // Replace normalizeRoutineBlock with this
+    function normalizeRoutineBlock(row) {
+      return {
+        id: row.id,
+        day: row.day,
+        time: row.time || "",
+        name: row.name,
+        notes: row.notes || "",
+        completed: row.completed || false
+      };
+    }
+
+    // Replace getColorForTag with this safer version
+    function getColorForTag(tag) {
+      const normalizedTag = String(tag || "default").toLowerCase();
+
+      if (!tagColors[normalizedTag]) {
+        tagColors[normalizedTag] = colors[nextColorIndex % colors.length];
+        nextColorIndex += 1;
+      }
+
+      return tagColors[normalizedTag];
+    }
+
+    function renderAllTasks() {
+      taskStage.innerHTML = "";
+      tasks.filter(task => task.quantity > 0).forEach(renderTask);
+      updateTaskEmptyState();
+    }
+
+    function renderTask(task) {
+      const size = 88 + task.importance * 17;
+      const shapeClass = task.quantity === 1 ? "balloon" : "square";
+      const el = document.createElement("div");
+
+      el.className = `task ${shapeClass}`;
+      el.dataset.id = task.id;
+      el.style.width = task.quantity === 1 ? `${size}px` : `${size * 1.18}px`;
+      el.style.height = `${size}px`;
+      el.style.background = task.color;
+
+      el.innerHTML = taskHtml(task);
+      if (selectedObject?.type === "task" && selectedObject.id === task.id) {
+        el.classList.add("selected");
+      }
+
+      el.addEventListener("click", event => {
+        selectedObject = { type: "task", id: task.id };
+        if (event.shiftKey) return;
+        decrementTask(task.id);
+      });
+
+      el.addEventListener("contextmenu", event => {
+        event.preventDefault();
+        selectedObject = { type: "task", id: task.id };
+        openTaskContextMenu(event, task.id);
+      });
+      taskStage.appendChild(el);
+    }
+
+    function taskHtml(task) {
+      return `
+        ${task.recurring ? `<div class="recurring-dot" title="Daily recurring"></div>` : ""}
+        <div class="task-content">
+          <div class="task-name" style="font-size: ${0.95 + task.importance * 0.055}rem">${escapeHtml(task.name)}</div>
+          ${task.quantity > 1 ? `<div class="task-meta quantity">${task.quantity}</div>` : ""}
+          ${task.tag ? `<div class="task-tag">${escapeHtml(task.tag)}</div>` : ""}
+        </div>
+      `;
+    }
+
+    function openTaskContextMenu(contextEvent, id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      openContextMenu(contextEvent, [
+        {
+          label: "Edit",
+          onClick: () => startEditTask(id)
+        },
+        {
+          label: "Delete",
+          onClick: () => deleteTask(id)
+        }
+      ]);
+    }
+    async function editTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      const name = prompt("Task name", task.name)?.trim();
+      if (!name) return;
+
+      const importance = Number(prompt("Importance 1-10", task.importance));
+      if (importance < 1 || importance > 10) return alert("Importance must be 1-10.");
+
+      const quantity = Number(prompt("Quantity", task.quantity));
+      if (quantity < 0) return alert("Quantity cannot be negative.");
+
+      const originalQuantity = Number(prompt("Preset/original quantity", task.originalQuantity || quantity || 1));
+      if (originalQuantity < 1) return alert("Preset quantity must be at least 1.");
+
+      const tag = prompt("Tag", task.tag || "")?.trim() || null;
+      const recurring = confirm("Should this task recur daily? OK = yes, Cancel = no.");
+
+      const { error } = await db
+        .from("tasks")
+        .update({
+          name,
+          importance,
+          quantity,
+          original_quantity: originalQuantity,
+          tag,
+          recurring
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error("Task edit failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      Object.assign(task, {
+        name,
+        importance,
+        quantity,
+        originalQuantity,
+        tag,
+        recurring,
+        color: getColorForTag(tag)
+      });
+      renderAllTasks();
+    }
+
+    async function deleteTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      const confirmed = confirm(`Delete task: ${task.name}?`);
+      if (!confirmed) return;
+
+      const { error } = await db.from("tasks").delete().eq("id", id);
+      if (error) {
+        console.error("Task delete failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      tasks = tasks.filter(t => t.id !== id);
+      renderAllTasks();
+    }
+
+    async function decrementTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      const nextQuantity = task.quantity - 1;
+
+      if (nextQuantity <= 0) {
+        if (task.recurring) {
+          const { error } = await db
+            .from("tasks")
+            .update({ quantity: 0 })
+            .eq("id", id);
+
+          if (error) {
+            console.error("Recurring task completion failed:", error);
+            alert(error.message);
+            return;
+          }
+
+          task.quantity = 0;
+          renderAllTasks();
+          return;
+        }
+
+        const { error } = await db.from("tasks").delete().eq("id", id);
+        if (error) {
+          console.error("Task delete failed:", error);
+          alert(error.message);
+          return;
+        }
+
+        const el = document.querySelector(`[data-id="${id}"]`);
+        if (el) {
+          el.classList.add("vanish");
+          setTimeout(() => {
+            tasks = tasks.filter(t => t.id !== id);
+            renderAllTasks();
+          }, 220);
+        } else {
+          tasks = tasks.filter(t => t.id !== id);
+          renderAllTasks();
+        }
+
+        return;
+      }
+
+      const { error } = await db
+        .from("tasks")
+        .update({ quantity: nextQuantity })
+        .eq("id", id);
+
+      if (error) {
+        console.error("Task update failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      task.quantity = nextQuantity;
+      renderAllTasks();
+    }
+
+    async function resetRecurringTasksIfNeeded(rows) {
+      const today = todayKey();
+      const updatedRows = [...rows];
+      const tasksToReset = updatedRows.filter(task => {
+        return task.recurring && task.last_reset_date !== today;
+      });
+
+      if (tasksToReset.length === 0) return updatedRows;
+
+      await Promise.all(tasksToReset.map(async task => {
+        const resetQuantity = task.original_quantity || 1;
+        const { error } = await db
+          .from("tasks")
+          .update({
+            quantity: resetQuantity,
+            last_reset_date: today
+          })
+          .eq("id", task.id);
+
+        if (error) {
+          console.error("Daily reset failed:", error);
+          return;
+        }
+
+        task.quantity = resetQuantity;
+        task.last_reset_date = today;
+      }));
+
+      return updatedRows;
+    }
+
+    function renderEvents() {
+      eventsBoard.innerHTML = "";
+
+      const groups = {
+        today: [],
+        thisWeek: [],
+        allOther: []
+      };
+
+      events.forEach(event => {
+        const daysUntil = getDaysUntil(event.date);
+        if (daysUntil === 0) groups.today.push(event);
+        else if (daysUntil > 0 && daysUntil <= 7) groups.thisWeek.push(event);
+        else groups.allOther.push(event);
+      });
+
+      if (groups.today.length) eventsBoard.appendChild(createEventSection("Today", groups.today, "today"));
+      if (groups.thisWeek.length) eventsBoard.appendChild(createEventSection("This Week", groups.thisWeek, "thisWeek"));
+      if (groups.allOther.length) eventsBoard.appendChild(createEventSection("All Other", groups.allOther, "allOther"));
+
+      eventEmptyState.style.display = events.length === 0 ? "grid" : "none";
+    }
+
+    function createEventSection(title, eventList, groupType) {
+      const section = document.createElement("section");
+      section.className = "event-section";
+
+      const heading = document.createElement("h2");
+      heading.className = "section-title";
+      heading.textContent = title;
+
+      const stack = document.createElement("div");
+      stack.className = "event-stack";
+
+      eventList.forEach(event => stack.appendChild(createEventCard(event, groupType)));
+
+      section.appendChild(heading);
+      section.appendChild(stack);
+      return section;
+    }
+
+    function createEventCard(event, groupType) {
+      const card = document.createElement("div");
+      card.className = "event-card";
+
+      const showTime = event.time && (groupType === "today" || groupType === "thisWeek");
+
+      card.innerHTML = `
+        ${getEventDateHtml(event.date, groupType)}
+        <div>
+          <div class="event-name">
+            ${showTime ? `${formatTime(event.time)} - ` : ""}${escapeHtml(event.name)}
+          </div>
+          ${event.notes ? `<div class="event-notes">${escapeHtml(event.notes)}</div>` : ""}
+        </div>
+      `;
+
+      card.dataset.eventId = event.id;
+
+      if (event.id === selectedEventId) {
+        card.classList.add("selected");
+      }
+
+      card.addEventListener("click", () => {
+        selectedObject = { type: "event", id: event.id };
+        selectedEventId = event.id;
+        renderEvents();
+        renderAllTasks();
+        renderRoutine();
+      });
+
+      card.addEventListener("contextmenu", contextEvent => {
+        contextEvent.preventDefault();
+        selectedObject = { type: "event", id: event.id };
+        selectedEventId = event.id;
+        renderEvents();
+        openEventContextMenu(contextEvent, event.id);
+      });
+
+      return card;
+    }
+
+    function openEventContextMenu(contextEvent, id) {
+      const event = events.find(item => item.id === id);
+      if (!event) return;
+
+      openContextMenu(contextEvent, [
+        {
+          label: "Edit",
+          onClick: () => startEditEvent(id)
+        },
+        {
+          label: "Delete",
+          onClick: () => deleteEvent(id)
+        }
+      ]);
+    }
+
+    async function editEvent(id) {
+      const event = events.find(item => item.id === id);
+      if (!event) return;
+
+      const name = prompt("Event name", event.name)?.trim();
+      if (!name) return;
+
+      const date = prompt("Date, YYYY-MM-DD", event.date)?.trim();
+      if (!date) return;
+
+      const notes = (prompt("Notes, max 100 characters", event.notes || "") || "").trim().slice(0, 100);
+
+      const { error } = await db
+        .from("events")
+        .update({
+          name,
+          event_date: date,
+          time,
+          notes
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error("Event edit failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      const time = prompt("Time, HH:MM optional", event.time || "")?.trim() || null;
+
+      Object.assign(event, { name, date, time: time || "", notes });
+      events.sort((a, b) => a.date.localeCompare(b.date));
+      renderEvents();
+    }
+
+    async function deleteEvent(id) {
+      const event = events.find(item => item.id === id);
+      if (!event) return;
+
+      const confirmed = confirm(`Delete event: ${event.name}?`);
+      if (!confirmed) return;
+
+      const { error } = await db.from("events").delete().eq("id", id);
+      if (error) {
+        console.error("Event delete failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      events = events.filter(item => item.id !== id);
+      renderEvents();
+    }
+
+    function getEventDateHtml(dateString, groupType) {
+      if (groupType === "today") return "<div></div>";
+
+      const date = parseLocalDate(dateString);
+      const daysUntil = getDaysUntil(dateString);
+
+      if (groupType === "thisWeek") {
+        return `
+          <div class="event-date-chip">
+            <div>${date.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()}</div>
+            <div class="event-days-away">${daysUntil} day${daysUntil === 1 ? "" : "s"}</div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="event-date-chip">
+          <div>${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</div>
+          <div class="event-days-away">${date.getFullYear()}</div>
+        </div>
+      `;
+    }
+
+    function renderDayCircles() {
+      dayRow.innerHTML = "";
+      days.forEach(day => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `day-circle ${day === selectedDay ? "active" : ""}`;
+        button.textContent = day;
+        button.title = dayLabels[day];
+        button.addEventListener("click", () => {
+          selectedDay = day;
+          routineDayInput.value = day;
+          renderDayCircles();
+          renderRoutine();
+        });
+        dayRow.appendChild(button);
+      });
+    }
+
+    function renderRoutine() {
+      routineDisplay.innerHTML = "";
+      const visibleBlocks = routineBlocks
+        .filter(block => block.day === selectedDay)
+        .sort((a, b) => (a.time || "").localeCompare(b.time || ""));
+
+      visibleBlocks.forEach(block => {
+        const el = document.createElement("div");
+        el.className = "routine-block" + (block.completed ? " completed" : "");
+
+        el.innerHTML = `
+          <div class="routine-check">✓</div>
+          <div class="routine-line">
+            ${block.time ? `${formatTime(block.time)} - ` : ""}${escapeHtml(block.name)}
+          </div>
+          ${block.notes ? `<div class="routine-block-notes">${escapeHtml(block.notes)}</div>` : ""}
+        `;
+
+        if (selectedObject?.type === "routine" && selectedObject.id === block.id) {
+          el.classList.add("selected");
+        }
+
+        el.addEventListener("click", () => {
+          selectedObject = { type: "routine", id: block.id };
+        });
+
+        el.querySelector(".routine-check").onclick = async e => {
+          e.stopPropagation();
+          selectedObject = { type: "routine", id: block.id };
+          await toggleRoutineComplete(block.id);
+        };
+
+        el.addEventListener("contextmenu", contextEvent => {
+          contextEvent.preventDefault();
+          selectedObject = { type: "routine", id: block.id };
+          openRoutineContextMenu(contextEvent, block.id);
+        });
+
+        routineDisplay.appendChild(el);
+      });
+
+      routineEmptyState.style.display = visibleBlocks.length === 0 ? "grid" : "none";
+    }
+
+    function openRoutineContextMenu(contextEvent, id) {
+      const block = routineBlocks.find(item => item.id === id);
+      if (!block) return;
+
+      openContextMenu(contextEvent, [
+        {
+          label: "Edit",
+          onClick: () => startEditRoutineBlock(id)
+        },
+        {
+          label: "Delete",
+          onClick: () => deleteRoutineBlock(id)
+        }
+      ]);
+    }
+
+    async function editRoutineBlock(id) {
+      const block = routineBlocks.find(item => item.id === id);
+      if (!block) return;
+
+      const day = prompt("Day: Sun, Mon, Tue, Wed, Thu, Fri, Sat", block.day)?.trim();
+      if (!days.includes(day)) return alert("Use Sun, Mon, Tue, Wed, Thu, Fri, or Sat.");
+
+      const name = prompt("Routine block name", block.name)?.trim();
+      if (!name) return;
+
+      const notes = (prompt("Notes, max 250 characters", block.notes || "") || "").trim().slice(0, 250);
+
+      const { error } = await db
+        .from("routine_blocks")
+        .update({
+          day,
+          name,
+          notes
+        })
+        .eq("id", id);
+
+      if (error) {
+        console.error("Routine edit failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      Object.assign(block, { day, name, notes });
+      selectedDay = day;
+      renderDayCircles();
+      renderRoutine();
+    }
+
+    async function deleteRoutineBlock(id) {
+      const block = routineBlocks.find(item => item.id === id);
+      if (!block) return;
+
+      const confirmed = confirm(`Delete routine block: ${block.name}?`);
+      if (!confirmed) return;
+
+      const { error } = await db.from("routine_blocks").delete().eq("id", id);
+      if (error) {
+        console.error("Routine block delete failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      routineBlocks = routineBlocks.filter(item => item.id !== id);
+      renderRoutine();
+    }
+
+    async function toggleRoutineComplete(id) {
+      const block = routineBlocks.find(item => item.id === id);
+      if (!block) return;
+
+      const nextCompleted = !block.completed;
+
+      const { error } = await db
+        .from("routine_blocks")
+        .update({ completed: nextCompleted })
+        .eq("id", id);
+
+      if (error) {
+        console.error("Routine update failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      block.completed = nextCompleted;
+      renderRoutine();
+    }
+
+    function getSelectedObjectPayload() {
+      if (!selectedObject) return null;
+
+      if (selectedObject.type === "task") {
+        const task = tasks.find(item => item.id === selectedObject.id);
+        return task ? { type: "task", data: { ...task } } : null;
+      }
+
+      if (selectedObject.type === "event") {
+        const event = events.find(item => item.id === selectedObject.id);
+        return event ? { type: "event", data: { ...event } } : null;
+      }
+
+      if (selectedObject.type === "routine") {
+        const block = routineBlocks.find(item => item.id === selectedObject.id);
+        return block ? { type: "routine", data: { ...block } } : null;
+      }
+
+      return null;
+    }
+
+    async function pasteCopiedObject() {
+      if (!copiedObject) return;
+
+      if (copiedObject.type === "task") {
+        const task = copiedObject.data;
+        const { data, error } = await db
+          .from("tasks")
+          .insert({
+            name: task.name,
+            importance: task.importance,
+            quantity: task.quantity,
+            original_quantity: task.originalQuantity,
+            tag: task.tag || null,
+            recurring: task.recurring,
+            last_reset_date: todayKey()
+          })
+          .select()
+          .single();
+
+        if (error) return alert(error.message);
+
+        const newTask = normalizeTask(data);
+        tasks.push(newTask);
+        selectedObject = { type: "task", id: newTask.id };
+        renderAllTasks();
+      }
+
+      if (copiedObject.type === "event") {
+        const event = copiedObject.data;
+        const { data, error } = await db
+          .from("events")
+          .insert({
+            name: event.name,
+            event_date: event.date,
+            time: event.time || null,
+            notes: event.notes || ""
+          })
+          .select()
+          .single();
+
+        if (error) return alert(error.message);
+
+        const newEvent = normalizeEvent(data);
+        events.push(newEvent);
+        events.sort((a, b) => a.date.localeCompare(b.date));
+        selectedObject = { type: "event", id: newEvent.id };
+        selectedEventId = newEvent.id;
+        renderEvents();
+      }
+
+      if (copiedObject.type === "routine") {
+        const block = copiedObject.data;
+        const { data, error } = await db
+          .from("routine_blocks")
+          .insert({
+            day: block.day,
+            name: block.name,
+            notes: block.notes || "",
+            completed: false
+          })
+          .select()
+          .single();
+
+        if (error) return alert(error.message);
+
+        const newBlock = normalizeRoutineBlock(data);
+        routineBlocks.push(newBlock);
+        selectedObject = { type: "routine", id: newBlock.id };
+        selectedDay = newBlock.day;
+        renderDayCircles();
+        renderRoutine();
+      }
+    }
+
+    function getDaysUntil(dateString) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const eventDate = parseLocalDate(dateString);
+      eventDate.setHours(0, 0, 0, 0);
+
+      return Math.round((eventDate - today) / 86400000);
+    }
+
+    function formatTime(timeString) {
+      if (!timeString) return "";
+
+      const [hour, minute] = timeString.split(":").map(Number);
+      const date = new Date();
+      date.setHours(hour, minute);
+
+      return date.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    function parseLocalDate(dateString) {
+      const [year, month, day] = dateString.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    function updateTaskEmptyState() {
+      const visibleTasks = tasks.filter(task => task.quantity > 0);
+      taskEmptyState.style.display = visibleTasks.length === 0 ? "grid" : "none";
+    }
+
+    function updateTopBar() {
+      const now = new Date();
+      topBar.textContent = now.toLocaleString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    async function startEditTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      taskNameInput.value = task.name;
+      taskImportanceInput.value = task.importance;
+      taskQuantityInput.value = task.quantity;
+      taskTagInput.value = task.tag || "";
+      taskRecurringInput.checked = Boolean(task.recurring);
+
+      taskPanel.classList.add("open");
+      taskNameInput.focus();
+
+      const { error } = await db.from("tasks").delete().eq("id", id);
+
+      if (error) {
+        console.error("Task edit-delete failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      tasks = tasks.filter(t => t.id !== id);
+      renderAllTasks();
+    }
+
+    async function startEditEvent(id) {
+      const event = events.find(item => item.id === id);
+      if (!event) return;
+
+      eventDateInput.value = event.date;
+      eventTimeInput.value = event.time || "";
+      eventNameInput.value = event.name;
+      eventNotesInput.value = event.notes || "";
+
+      eventPanel.classList.add("open");
+      eventNameInput.focus();
+
+      const { error } = await db.from("events").delete().eq("id", id);
+
+      if (error) {
+        console.error("Event edit-delete failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      events = events.filter(item => item.id !== id);
+      renderEvents();
+    }
+
+    async function startEditRoutineBlock(id) {
+      const block = routineBlocks.find(item => item.id === id);
+      if (!block) return;
+
+      routineDayInput.value = block.day;
+      routineTimeInput.value = block.time || "";
+      routineNameInput.value = block.name;
+      routineNotesInput.value = block.notes || "";
+
+      routinePanel.classList.add("open");
+      routineNameInput.focus();
+
+      const { error } = await db.from("routine_blocks").delete().eq("id", id);
+
+      if (error) {
+        console.error("Routine edit-delete failed:", error);
+        alert(error.message);
+        return;
+      }
+
+      routineBlocks = routineBlocks.filter(item => item.id !== id);
+      selectedDay = block.day;
+      renderDayCircles();
+      renderRoutine();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+function closeContextMenu() {
+  if (activeContextMenu) {
+    activeContextMenu.remove();
+    activeContextMenu = null;
+  }
+}
+
+function openContextMenu(event, actions) {
+  closeContextMenu();
+
+  const menu = document.createElement("div");
+  menu.className = "context-menu";
+  menu.style.left = `${event.clientX}px`;
+  menu.style.top = `${event.clientY}px`;
+
+  actions.forEach(action => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = action.label;
+
+    button.addEventListener("click", clickEvent => {
+      clickEvent.preventDefault();
+      clickEvent.stopPropagation();
+
+      closeContextMenu();
+      action.onClick();
+    });
+
+    menu.appendChild(button);
+  });
+
+  document.body.appendChild(menu);
+  activeContextMenu = menu;
+}
+
+    eventDateInput.valueAsDate = new Date();
+    updateTopBar();
+    setInterval(updateTopBar, 1000);
+    renderDayCircles();
+    renderRoutine();
+    renderEvents();
+    updateTaskEmptyState();
+    loadFromSupabase();
+  </script>
+</body>
+</html>
