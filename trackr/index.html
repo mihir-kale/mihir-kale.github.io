@@ -289,6 +289,16 @@
       z-index: 2;
     }
 
+    .task-notes {
+      margin-top: 8px;
+      font-size: 0.68rem;
+      line-height: 1.25;
+      opacity: 0.68;
+      font-weight: 700;
+      max-width: 95%;
+      word-break: break-word;
+    }
+
     .events-board {
       display: grid;
       gap: 22px;
@@ -727,6 +737,7 @@
       const importance = Number(taskImportanceInput.value);
       const quantity = taskQuantityInput.value === "" ? 1 : Number(taskQuantityInput.value);
       const tag = taskTagInput.value.trim() || null;
+      const notes = "";
       const recurring = taskRecurringInput.checked;
 
       if (!name || importance < 1 || importance > 10 || quantity < 1) return;
@@ -742,7 +753,8 @@
           tag,
           recurring,
           last_reset_date: todayKey(),
-          user_id: userId
+          user_id: userId,
+          notes
         })
         .select()
         .single();
@@ -936,6 +948,7 @@
 
     // Replace normalizeTask with this
     function normalizeTask(row) {
+      
       const tag = row.tag || "";
 
       return {
@@ -945,6 +958,7 @@
         quantity: row.quantity,
         originalQuantity: row.original_quantity,
         tag,
+        notes: row.notes || "",
         recurring: row.recurring,
         lastResetDate: row.last_reset_date,
         color: getColorForTag(tag || row.name)
@@ -1023,11 +1037,13 @@
 
     function taskHtml(task) {
       return `
-        ${task.recurring ? `<div class="recurring-dot" title="Daily recurring"></div>` : ""}
+      ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ""}  
+      ${task.recurring ? `<div class="recurring-dot" title="Daily recurring"></div>` : ""}
         <div class="task-content">
           <div class="task-name" style="font-size: ${0.95 + task.importance * 0.055}rem">${escapeHtml(task.name)}</div>
           ${task.quantity > 1 ? `<div class="task-meta quantity">${task.quantity}</div>` : ""}
           ${task.tag ? `<div class="task-tag">${escapeHtml(task.tag)}</div>` : ""}
+          ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ""}
         </div>
       `;
     }
