@@ -1,406 +1,437 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Journal</title>
+  <title>Private Thought Journal</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root {
+      --bg: #f7f3ee;
+      --card: #fffaf4;
+      --text: #26211d;
+      --muted: #8b7d70;
+      --accent: #9b6b43;
+      --border: #e5d8ca;
+      --danger: #9c3b3b;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
       background:
-        radial-gradient(circle at top left, #fff6e8 0, transparent 34%),
-        #f7f4ef;
-      color: #241f1a;
+        radial-gradient(circle at top left, #fff7e8, transparent 35%),
+        linear-gradient(135deg, #f7f3ee, #efe6dc);
+      color: var(--text);
+      padding: 32px 16px;
     }
 
-    .page {
-      max-width: 1100px;
+    .app {
+      max-width: 760px;
       margin: 0 auto;
-      padding: 48px 24px;
     }
 
     header {
+      text-align: center;
       margin-bottom: 28px;
     }
 
     h1 {
-      font-size: 46px;
-      letter-spacing: -1.8px;
-      margin: 0 0 8px;
+      margin: 0;
+      font-size: 2.5rem;
+      font-weight: 500;
+      letter-spacing: -0.04em;
     }
 
     .subtitle {
-      color: #7c7166;
-      font-size: 16px;
-      margin: 0;
+      margin-top: 8px;
+      color: var(--muted);
     }
 
-    .composer {
-      background: #fffaf3;
-      border: 1px solid #e6ded2;
-      border-radius: 28px;
+    .card,
+    .entry {
+      background: rgba(255, 250, 244, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(77, 55, 35, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .card {
       padding: 22px;
-      box-shadow: 0 14px 40px rgba(40, 30, 20, 0.08);
-      margin: 28px 0;
+      margin-bottom: 28px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      outline: none;
+      background: #fffaf4;
+      color: var(--text);
+      font: inherit;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
     }
 
     textarea {
-      width: 100%;
       min-height: 180px;
       resize: vertical;
+      line-height: 1.7;
       border: none;
-      outline: none;
       background: transparent;
-      font: inherit;
-      font-size: 17px;
-      line-height: 1.6;
-      color: #241f1a;
+      padding: 0;
     }
 
-    textarea::placeholder {
-      color: #aaa196;
+    textarea::placeholder,
+    input::placeholder {
+      color: #b3a597;
     }
 
-    .composerBottom {
+    .actions {
       display: flex;
-      gap: 12px;
-      align-items: center;
       justify-content: space-between;
-      margin-top: 16px;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
       flex-wrap: wrap;
-    }
-
-    input {
-      flex: 1;
-      min-width: 220px;
-      padding: 13px 15px;
-      border-radius: 999px;
-      border: 1px solid #ddd6cc;
-      background: #fffdf8;
-      font-size: 14px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #b9aa95;
     }
 
     button {
       border: none;
       border-radius: 999px;
-      padding: 13px 20px;
-      background: #241f1a;
-      color: #fffaf3;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 11px 18px;
+      background: var(--accent);
+      color: white;
       cursor: pointer;
+      font: inherit;
       transition: transform 0.15s ease, opacity 0.15s ease;
     }
 
     button:hover {
       transform: translateY(-1px);
+      opacity: 0.9;
     }
 
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      transform: none;
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    button.danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid #e3baba;
     }
 
     .status {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #8a8174;
-      min-height: 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
-    .controls {
+    .hidden {
+      display: none;
+    }
+
+    .entries-title {
+      margin: 10px 0 16px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .entry {
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .entry-header {
+      width: 100%;
+      background: transparent;
+      color: var(--text);
+      border: none;
+      border-radius: 0;
+      padding: 18px 20px;
       display: flex;
-      gap: 12px;
-      margin: 30px 0 22px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      text-align: left;
     }
 
-    .grid {
-      column-count: 3;
-      column-gap: 18px;
+    .entry-header:hover {
+      transform: none;
+      opacity: 1;
+      background: rgba(155, 107, 67, 0.06);
     }
 
-    .card {
-      break-inside: avoid;
-      background: #fffaf3;
-      border: 1px solid #e6ded2;
-      border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 8px 24px rgba(40, 30, 20, 0.06);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    .entry-date {
+      font-size: 1rem;
     }
 
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(40, 30, 20, 0.1);
+    .entry-arrow {
+      color: var(--muted);
     }
 
-    .body {
+    .entry-body {
+      display: none;
+      padding: 0 20px 20px;
+      color: #3b332d;
+      line-height: 1.75;
       white-space: pre-wrap;
-      line-height: 1.58;
-      font-size: 15.5px;
-      margin-bottom: 16px;
     }
 
-    .meta {
-      font-size: 12px;
-      color: #938878;
-      margin-bottom: 12px;
-    }
-
-    .tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .tag {
-      font-size: 11px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: #eee4d6;
-      color: #6b5e4e;
+    .entry.open .entry-body {
+      display: block;
     }
 
     .empty {
-      margin-top: 50px;
-      color: #8a8174;
-      font-size: 15px;
-    }
-
-    @media (max-width: 900px) {
-      .grid {
-        column-count: 2;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .page {
-        padding: 32px 18px;
-      }
-
-      h1 {
-        font-size: 36px;
-      }
-
-      .grid {
-        column-count: 1;
-      }
-
-      .composerBottom {
-        display: block;
-      }
-
-      input,
-      button {
-        width: 100%;
-        margin-top: 10px;
-      }
+      color: var(--muted);
+      text-align: center;
+      padding: 28px;
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
+  <div class="app">
     <header>
-      <h1>Journal</h1>
-      <p class="subtitle">Write, save, search, and revisit your thoughts.</p>
+      <h1>Thought Journal</h1>
+      <div class="subtitle">A private place to write things down.</div>
     </header>
 
-    <section class="composer">
-      <textarea id="entryInput" placeholder="Write something here..."></textarea>
+    <section id="authCard" class="card">
+      <input id="emailInput" type="email" placeholder="Email" />
+      <input id="passwordInput" type="password" placeholder="Password" />
 
-      <div class="composerBottom">
-        <input id="tagInput" type="text" placeholder="Optional tags, comma separated" />
-        <button id="saveButton">Save entry</button>
+      <div class="actions">
+        <div>
+          <button id="loginBtn">Log in</button>
+          <button id="signupBtn" class="secondary">Sign up</button>
+        </div>
+        <span id="authStatus" class="status"></span>
       </div>
-
-      <div id="status" class="status"></div>
     </section>
 
-    <div class="controls">
-      <input id="searchInput" type="text" placeholder="Search thoughts..." />
-    </div>
+    <section id="journalApp" class="hidden">
+      <section class="card">
+        <textarea id="entryText" placeholder="What are you thinking about?"></textarea>
 
-    <section id="journalGrid" class="grid"></section>
-    <p id="emptyState" class="empty" style="display: none;">No thoughts found.</p>
-  </main>
+        <div class="actions">
+          <span id="saveStatus" class="status">Private journal ready.</span>
+          <div>
+            <button id="refreshBtn" class="secondary">Refresh</button>
+            <button id="logoutBtn" class="danger">Log out</button>
+            <button id="saveBtn">Save Entry</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="entries-title">Older Notes</div>
+      <section id="entries"></section>
+    </section>
+  </div>
 
   <script>
     const SUPABASE_URL = "https://yyypjqedpbaxvawoaplr.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5eXBqcWVkcGJheHZhd29hcGxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzcxMTMsImV4cCI6MjA5MjcxMzExM30.x1eMB7-wyo-Wz1lAaYZZc-8Dx96p7Fu0e38Lmve02Tc";
 
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const authCard = document.getElementById("authCard");
+    const journalApp = document.getElementById("journalApp");
 
-    const grid = document.getElementById("journalGrid");
-    const searchInput = document.getElementById("searchInput");
-    const entryInput = document.getElementById("entryInput");
-    const tagInput = document.getElementById("tagInput");
-    const saveButton = document.getElementById("saveButton");
-    const emptyState = document.getElementById("emptyState");
-    const status = document.getElementById("status");
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    let journalItems = [];
+    const entryText = document.getElementById("entryText");
+    const entriesEl = document.getElementById("entries");
+    const saveBtn = document.getElementById("saveBtn");
+    const refreshBtn = document.getElementById("refreshBtn");
 
-    async function loadJournal() {
-      status.textContent = "Loading entries...";
+    const authStatus = document.getElementById("authStatus");
+    const saveStatus = document.getElementById("saveStatus");
 
-      const { data, error } = await supabase
-        .from("journal")
-        .select("id, body, created_at, tags")
-        .order("created_at", { ascending: false });
+    let currentUser = null;
 
-      if (error) {
-        console.error("Error loading journal:", error);
-        status.textContent = "Could not load journal.";
+    function formatDate(dateString) {
+      return new Date(dateString).toLocaleString(undefined, {
+        weekday: "short",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    async function checkSession() {
+      const { data, error } = await supabaseClient.auth.getUser();
+
+      if (error || !data.user) {
+        currentUser = null;
+        authCard.classList.remove("hidden");
+        journalApp.classList.add("hidden");
         return;
       }
 
-      journalItems = data || [];
-      renderJournal(journalItems);
-      status.textContent = "";
+      currentUser = data.user;
+      authCard.classList.add("hidden");
+      journalApp.classList.remove("hidden");
+      loadEntries();
+    }
+
+    async function signUp() {
+      authStatus.textContent = "Creating account...";
+
+      const { error } = await supabaseClient.auth.signUp({
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      });
+
+      if (error) {
+        authStatus.textContent = error.message;
+        return;
+      }
+
+      authStatus.textContent = "Account created. Check your email if confirmation is enabled.";
+      await checkSession();
+    }
+
+    async function logIn() {
+      authStatus.textContent = "Logging in...";
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      });
+
+      if (error) {
+        authStatus.textContent = error.message;
+        return;
+      }
+
+      authStatus.textContent = "";
+      await checkSession();
+    }
+
+    async function logOut() {
+      await supabaseClient.auth.signOut();
+      currentUser = null;
+      entryText.value = "";
+      entriesEl.innerHTML = "";
+      authCard.classList.remove("hidden");
+      journalApp.classList.add("hidden");
     }
 
     async function saveEntry() {
-      const body = entryInput.value.trim();
+      const body = entryText.value.trim();
 
       if (!body) {
-        status.textContent = "Write something first.";
+        saveStatus.textContent = "Write something first.";
         return;
       }
 
-      const tags = tagInput.value
-        .split(",")
-        .map(tag => tag.trim())
-        .filter(Boolean);
+      if (!currentUser) {
+        saveStatus.textContent = "You need to be logged in.";
+        return;
+      }
 
-      saveButton.disabled = true;
-      saveButton.textContent = "Saving...";
-      status.textContent = "";
+      saveBtn.disabled = true;
+      saveStatus.textContent = "Saving...";
 
-      const { data, error } = await supabase
-        .from("journal")
-        .insert([
-          {
-            body,
-            tags
-          }
-        ])
-        .select("id, body, created_at, tags")
-        .single();
+      const { error } = await supabaseClient
+        .from("journal_entries")
+        .insert({
+          body,
+          user_id: currentUser.id
+        });
+
+      saveBtn.disabled = false;
 
       if (error) {
-        console.error("Error saving entry:", error);
-        status.textContent = "Could not save entry.";
-        saveButton.disabled = false;
-        saveButton.textContent = "Save entry";
+        saveStatus.textContent = error.message;
         return;
       }
 
-      journalItems = [data, ...journalItems];
-
-      entryInput.value = "";
-      tagInput.value = "";
-      searchInput.value = "";
-
-      renderJournal(journalItems);
-
-      saveButton.disabled = false;
-      saveButton.textContent = "Save entry";
-      status.textContent = "Saved.";
+      entryText.value = "";
+      saveStatus.textContent = "Saved.";
+      await loadEntries();
     }
 
-    function renderJournal(items) {
-      grid.innerHTML = "";
+    async function loadEntries() {
+      entriesEl.innerHTML = `<div class="empty">Loading notes...</div>`;
 
-      if (!items.length) {
-        emptyState.style.display = "block";
+      const { data, error } = await supabaseClient
+        .from("journal_entries")
+        .select("id, body, created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        entriesEl.innerHTML = `<div class="empty">${error.message}</div>`;
         return;
       }
 
-      emptyState.style.display = "none";
-
-      items.forEach(item => {
-        const card = document.createElement("article");
-        card.className = "card";
-
-        const date = item.created_at
-          ? new Date(item.created_at).toLocaleString([], {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              hour: "numeric",
-              minute: "2-digit"
-            })
-          : "";
-
-        const tags = Array.isArray(item.tags) ? item.tags : [];
-
-        card.innerHTML = `
-          <div class="meta">${date}</div>
-          <div class="body">${escapeHtml(item.body || "")}</div>
-          ${
-            tags.length
-              ? `<div class="tags">
-                  ${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
-                </div>`
-              : ""
-          }
-        `;
-
-        grid.appendChild(card);
-      });
-    }
-
-    saveButton.addEventListener("click", saveEntry);
-
-    entryInput.addEventListener("keydown", event => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        saveEntry();
+      if (!data || data.length === 0) {
+        entriesEl.innerHTML = `<div class="empty">No entries yet.</div>`;
+        return;
       }
-    });
 
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase().trim();
+      entriesEl.innerHTML = "";
 
-      const filtered = journalItems.filter(item => {
-        const bodyMatch = (item.body || "").toLowerCase().includes(query);
-        const tagMatch = Array.isArray(item.tags)
-          ? item.tags.some(tag => tag.toLowerCase().includes(query))
-          : false;
+      data.forEach(entry => {
+        const article = document.createElement("article");
+        article.className = "entry";
 
-        return bodyMatch || tagMatch;
+        const header = document.createElement("button");
+        header.className = "entry-header";
+
+        const date = document.createElement("span");
+        date.className = "entry-date";
+        date.textContent = formatDate(entry.created_at);
+
+        const arrow = document.createElement("span");
+        arrow.className = "entry-arrow";
+        arrow.textContent = "Open";
+
+        const body = document.createElement("div");
+        body.className = "entry-body";
+        body.textContent = entry.body;
+
+        header.appendChild(date);
+        header.appendChild(arrow);
+
+        header.addEventListener("click", () => {
+          article.classList.toggle("open");
+          arrow.textContent = article.classList.contains("open") ? "Close" : "Open";
+        });
+
+        article.appendChild(header);
+        article.appendChild(body);
+        entriesEl.appendChild(article);
       });
-
-      renderJournal(filtered);
-    });
-
-    function escapeHtml(text) {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
     }
 
-    loadJournal();
+    loginBtn.addEventListener("click", logIn);
+    signupBtn.addEventListener("click", signUp);
+    logoutBtn.addEventListener("click", logOut);
+    saveBtn.addEventListener("click", saveEntry);
+    refreshBtn.addEventListener("click", loadEntries);
+
+    checkSession();
   </script>
 </body>
 </html>
