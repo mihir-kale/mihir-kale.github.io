@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -15,8 +15,10 @@
     body {
       margin: 0;
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f7f4ef;
-      color: #222;
+      background:
+        radial-gradient(circle at top left, #fff6e8 0, transparent 34%),
+        #f7f4ef;
+      color: #241f1a;
     }
 
     .page {
@@ -26,42 +28,105 @@
     }
 
     header {
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
     h1 {
-      font-size: 44px;
-      letter-spacing: -1.5px;
-      margin: 0 0 10px;
-      font-weight: 700;
+      font-size: 46px;
+      letter-spacing: -1.8px;
+      margin: 0 0 8px;
     }
 
     .subtitle {
-      color: #777;
+      color: #7c7166;
       font-size: 16px;
       margin: 0;
     }
 
-    .controls {
+    .composer {
+      background: #fffaf3;
+      border: 1px solid #e6ded2;
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 14px 40px rgba(40, 30, 20, 0.08);
+      margin: 28px 0;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      resize: vertical;
+      border: none;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 17px;
+      line-height: 1.6;
+      color: #241f1a;
+    }
+
+    textarea::placeholder {
+      color: #aaa196;
+    }
+
+    .composerBottom {
       display: flex;
       gap: 12px;
-      margin: 28px 0;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
       flex-wrap: wrap;
     }
 
     input {
       flex: 1;
-      min-width: 240px;
-      padding: 14px 16px;
+      min-width: 220px;
+      padding: 13px 15px;
       border-radius: 999px;
       border: 1px solid #ddd6cc;
-      background: #fffaf3;
-      font-size: 15px;
+      background: #fffdf8;
+      font-size: 14px;
       outline: none;
     }
 
     input:focus {
       border-color: #b9aa95;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 20px;
+      background: #241f1a;
+      color: #fffaf3;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #8a8174;
+      min-height: 18px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin: 30px 0 22px;
+      flex-wrap: wrap;
     }
 
     .grid {
@@ -87,7 +152,7 @@
 
     .body {
       white-space: pre-wrap;
-      line-height: 1.55;
+      line-height: 1.58;
       font-size: 15.5px;
       margin-bottom: 16px;
     }
@@ -113,7 +178,7 @@
     }
 
     .empty {
-      margin-top: 60px;
+      margin-top: 50px;
       color: #8a8174;
       font-size: 15px;
     }
@@ -136,6 +201,16 @@
       .grid {
         column-count: 1;
       }
+
+      .composerBottom {
+        display: block;
+      }
+
+      input,
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
@@ -144,12 +219,23 @@
   <main class="page">
     <header>
       <h1>Journal</h1>
-      <p class="subtitle">A quiet place for thoughts, notes, links, and fragments.</p>
-
-      <div class="controls">
-        <input id="searchInput" type="text" placeholder="Search thoughts..." />
-      </div>
+      <p class="subtitle">Write, save, search, and revisit your thoughts.</p>
     </header>
+
+    <section class="composer">
+      <textarea id="entryInput" placeholder="Write something here..."></textarea>
+
+      <div class="composerBottom">
+        <input id="tagInput" type="text" placeholder="Optional tags, comma separated" />
+        <button id="saveButton">Save entry</button>
+      </div>
+
+      <div id="status" class="status"></div>
+    </section>
+
+    <div class="controls">
+      <input id="searchInput" type="text" placeholder="Search thoughts..." />
+    </div>
 
     <section id="journalGrid" class="grid"></section>
     <p id="emptyState" class="empty" style="display: none;">No thoughts found.</p>
@@ -159,15 +245,22 @@
     const SUPABASE_URL = "https://yyypjqedpbaxvawoaplr.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5eXBqcWVkcGJheHZhd29hcGxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzcxMTMsImV4cCI6MjA5MjcxMzExM30.x1eMB7-wyo-Wz1lAaYZZc-8Dx96p7Fu0e38Lmve02Tc";
 
+
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const grid = document.getElementById("journalGrid");
     const searchInput = document.getElementById("searchInput");
+    const entryInput = document.getElementById("entryInput");
+    const tagInput = document.getElementById("tagInput");
+    const saveButton = document.getElementById("saveButton");
     const emptyState = document.getElementById("emptyState");
+    const status = document.getElementById("status");
 
     let journalItems = [];
 
     async function loadJournal() {
+      status.textContent = "Loading entries...";
+
       const { data, error } = await supabase
         .from("journal")
         .select("id, body, created_at, tags")
@@ -175,13 +268,62 @@
 
       if (error) {
         console.error("Error loading journal:", error);
-        emptyState.textContent = "Could not load journal.";
-        emptyState.style.display = "block";
+        status.textContent = "Could not load journal.";
         return;
       }
 
       journalItems = data || [];
       renderJournal(journalItems);
+      status.textContent = "";
+    }
+
+    async function saveEntry() {
+      const body = entryInput.value.trim();
+
+      if (!body) {
+        status.textContent = "Write something first.";
+        return;
+      }
+
+      const tags = tagInput.value
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(Boolean);
+
+      saveButton.disabled = true;
+      saveButton.textContent = "Saving...";
+      status.textContent = "";
+
+      const { data, error } = await supabase
+        .from("journal")
+        .insert([
+          {
+            body,
+            tags
+          }
+        ])
+        .select("id, body, created_at, tags")
+        .single();
+
+      if (error) {
+        console.error("Error saving entry:", error);
+        status.textContent = "Could not save entry.";
+        saveButton.disabled = false;
+        saveButton.textContent = "Save entry";
+        return;
+      }
+
+      journalItems = [data, ...journalItems];
+
+      entryInput.value = "";
+      tagInput.value = "";
+      searchInput.value = "";
+
+      renderJournal(journalItems);
+
+      saveButton.disabled = false;
+      saveButton.textContent = "Save entry";
+      status.textContent = "Saved.";
     }
 
     function renderJournal(items) {
@@ -226,6 +368,14 @@
       });
     }
 
+    saveButton.addEventListener("click", saveEntry);
+
+    entryInput.addEventListener("keydown", event => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        saveEntry();
+      }
+    });
+
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.toLowerCase().trim();
 
@@ -242,7 +392,7 @@
     });
 
     function escapeHtml(text) {
-      return text
+      return String(text)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
