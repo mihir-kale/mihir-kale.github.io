@@ -1,19 +1,12 @@
 import { google } from "googleapis";
 
 export default async function handler(req, res) {
-  // 🔐 CORS (allow your GitHub Pages frontend)
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://mihirkale.github.io"
-  );
+  res.setHeader("Access-Control-Allow-Origin", "https://mihirkale.github.io");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+  if (req.method === "OPTIONS") return res.status(200).end();
 
   try {
-    // 🔑 OAuth setup
     const auth = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET
@@ -23,12 +16,8 @@ export default async function handler(req, res) {
       refresh_token: process.env.GOOGLE_REFRESH_TOKEN
     });
 
-    const calendar = google.calendar({
-      version: "v3",
-      auth
-    });
+    const calendar = google.calendar({ version: "v3", auth });
 
-    // 📅 Time window (now → 7 days)
     const now = new Date();
     const weekFromNow = new Date();
     weekFromNow.setDate(now.getDate() + 7);
@@ -41,7 +30,6 @@ export default async function handler(req, res) {
       orderBy: "startTime"
     });
 
-    // 🧼 Clean response for frontend
     const events = (response.data.items || []).map(event => ({
       id: event.id,
       title: event.summary || "Untitled",
@@ -53,11 +41,7 @@ export default async function handler(req, res) {
 
     res.status(200).json(events);
   } catch (error) {
-    console.error("GCAL ERROR:", error);
-
-    res.status(500).json({
-      error: "Failed to fetch calendar events",
-      details: error.message
-    });
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch calendar events" });
   }
 }
