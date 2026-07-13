@@ -4,8 +4,73 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Planning Tree</title>
-    <script type="module" crossorigin src="/assets/index-CY4Ktyp3.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-kTQDwIqS.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://yyypjqedpbaxvawoaplr.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5eXBqcWVkcGJheHZhd29hcGxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzcxMTMsImV4cCI6MjA5MjcxMzExM30.x1eMB7-wyo-Wz1lAaYZZc-8Dx96p7Fu0e38Lmve02Tc";
+      const _db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const _PPT_KEY = "ppt-tree-state";
+
+      window.syncToSupabase = async function(state) {
+        try {
+          const nodes = state.nodes.map(n => ({
+            id: n.id,
+            parent_id: n.parentId,
+            path: n.path,
+            title: n.title,
+            description: n.description || "",
+            status: n.status || "ready",
+            priority: n.priority || "medium",
+            order_index: n.orderIndex || 0,
+            estimate_minutes: n.estimateMinutes,
+            due_date: n.dueDate,
+            hidden_today: n.hiddenToday || false,
+            recurring: n.recurring || false,
+            created_at: n.createdAt,
+            updated_at: n.updatedAt
+          }));
+          if (nodes.length === 0) {
+            await _db.from("nodes").delete().neq("id", "__none__");
+          } else {
+            await _db.from("nodes").upsert(nodes, { onConflict: "id" });
+            const ids = nodes.map(n => n.id);
+            await _db.from("nodes").delete().not("id", "in", `(${ids.join(",")})`);
+          }
+        } catch (e) {
+          console.error("Sync to Supabase failed:", e);
+        }
+      };
+
+      window.loadFromSupabase = async function() {
+        try {
+          const { data, error } = await _db.from("nodes").select("*");
+          if (error || !data || data.length === 0) return null;
+          return {
+            nodes: data.map(n => ({
+              id: n.id,
+              parentId: n.parent_id,
+              path: n.path,
+              title: n.title,
+              description: n.description,
+              status: n.status,
+              priority: n.priority,
+              orderIndex: n.order_index,
+              estimateMinutes: n.estimate_minutes,
+              dueDate: n.due_date,
+              hiddenToday: n.hidden_today,
+              recurring: n.recurring,
+              createdAt: n.created_at,
+              updatedAt: n.updated_at
+            }))
+          };
+        } catch (e) {
+          console.error("Load from Supabase failed:", e);
+          return null;
+        }
+      };
+    </script>
+    <script type="module" crossorigin src="/assets/index-CY4Ktyp3.js"></script>
   </head>
   <body>
     <div id="root"></div>
