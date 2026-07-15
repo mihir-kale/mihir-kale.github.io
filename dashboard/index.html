@@ -301,13 +301,106 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Auth */
+    #authGate { display: none; }
+    #loginForm {
+      display: none;
+      max-width: 320px;
+      margin: 120px auto;
+    }
+    #loginForm h2 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 24px;
+      text-align: left;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .login-field {
+      margin-bottom: 12px;
+    }
+    .login-field input {
+      width: 100%;
+      padding: 10px 12px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .login-field input:focus {
+      border-color: #0a84ff;
+    }
+    .login-field input::placeholder {
+      color: #555;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 10px;
+      background: #0a84ff;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: opacity .2s;
+    }
+    .login-btn:hover { opacity: .85; }
+    .login-error {
+      color: #ff453a;
+      font-size: 12px;
+      margin-top: 8px;
+      display: none;
+    }
+    .logout-btn {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #555;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .logout-btn:hover {
+      color: #fff;
+      border-color: #fff;
+    }
   </style>
 </head>
 <body>
 
-  <div class="date-header" id="dateHeader"></div>
+  <div id="loginForm">
+    <h2>Dashboard</h2>
+    <form id="authForm">
+      <div class="login-field">
+        <input type="email" id="authEmail" placeholder="Email" required />
+      </div>
+      <div class="login-field">
+        <input type="password" id="authPass" placeholder="Password" required />
+      </div>
+      <button type="submit" class="login-btn">Sign in</button>
+      <div class="login-error" id="authError"></div>
+    </form>
+  </div>
 
-  <div class="columns">
+  <div id="authGate">
+    <button class="logout-btn" id="logoutBtn">Sign out</button>
+    <div class="date-header" id="dateHeader"></div>
+
+    <div class="columns">
     <section class="widget">
       <h2>Calendar</h2>
       <div id="calendarContainer" class="loading">Loading...</div>
@@ -329,6 +422,7 @@
         <div id="stravaContainer" class="loading">Loading...</div>
       </section>
     </div>
+  </div>
   </div>
 
   <script>
@@ -627,11 +721,50 @@
       }
     }
 
-    renderDate();
-    loadTasks();
-    loadStrava();
-    loadCalendar();
-    loadWorkout();
+    function showDashboard() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("authGate").style.display = "block";
+      renderDate();
+      loadTasks();
+      loadStrava();
+      loadCalendar();
+      loadWorkout();
+    }
+
+    function showLogin() {
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("authGate").style.display = "none";
+    }
+
+    document.getElementById("authForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("authEmail").value;
+      const pass = document.getElementById("authPass").value;
+      const errEl = document.getElementById("authError");
+      errEl.style.display = "none";
+
+      const { error } = await db.auth.signInWithPassword({ email, password: pass });
+      if (error) {
+        errEl.textContent = error.message;
+        errEl.style.display = "block";
+      } else {
+        showDashboard();
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await db.auth.signOut();
+      showLogin();
+    });
+
+    (async () => {
+      const { data: { session } } = await db.auth.getSession();
+      if (session) {
+        showDashboard();
+      } else {
+        showLogin();
+      }
+    })();
   </script>
 </body>
 </html>
