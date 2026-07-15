@@ -114,6 +114,20 @@
     }
 
     /* Tasks */
+    .task-parent {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #0a84ff;
+      margin-bottom: 6px;
+      margin-top: 12px;
+    }
+
+    .task-parent:first-child {
+      margin-top: 0;
+    }
+
     .task-list { list-style: none; }
 
     .task-item {
@@ -514,28 +528,37 @@
       return dateStr < today;
     }
 
-    function renderTasks(tasks) {
+    function renderTasks(grouped) {
       const el = document.getElementById("tasksContainer");
+      const totalTasks = Object.values(grouped).reduce((s, arr) => s + arr.length, 0);
 
-      if (!tasks.length) {
+      if (!totalTasks) {
         el.innerHTML = '<div class="empty-state">All clear</div>';
         return;
       }
 
-      el.innerHTML = '<ul class="task-list">' + tasks.map(t => {
-        const dueClass = isOverdue(t.due_date) ? "overdue" : "";
-        const dueText = t.due_date ? formatDate(t.due_date) : "";
-        const priorityClass = t.priority === "high" ? "high-priority" : "";
-        return `<li class="task-item ${priorityClass}" data-id="${t.id}">
-          <div class="task-check">
-            <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
-              <polyline points="2 6 5 9 10 3"/>
-            </svg>
-          </div>
-          <span class="task-title">${t.title}</span>
-          ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
-        </li>`;
-      }).join("") + "</ul>";
+      let html = "";
+      for (const [parent, tasks] of Object.entries(grouped)) {
+        if (parent) {
+          html += `<div class="task-parent">${parent}</div>`;
+        }
+        html += '<ul class="task-list">' + tasks.map(t => {
+          const dueClass = isOverdue(t.due_date) ? "overdue" : "";
+          const dueText = t.due_date ? formatDate(t.due_date) : "";
+          const priorityClass = t.priority === "high" ? "high-priority" : "";
+          return `<li class="task-item ${priorityClass}" data-id="${t.id}">
+            <div class="task-check">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
+                <polyline points="2 6 5 9 10 3"/>
+              </svg>
+            </div>
+            <span class="task-title">${t.title}</span>
+            ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
+          </li>`;
+        }).join("") + "</ul>";
+      }
+
+      el.innerHTML = html;
 
       el.querySelectorAll(".task-item").forEach(item => {
         item.addEventListener("click", () => completeTask(item.dataset.id, item));
@@ -563,13 +586,26 @@
         if (error) throw error;
         const all = data || [];
 
-        const parentIds = new Set(all.filter(n => n.parent_id).map(n => n.parent_id));
+        const byId = {};
+        all.forEach(n => byId[n.id] = n);
+
+        const childCount = {};
+        all.forEach(n => {
+          if (n.parent_id) childCount[n.parent_id] = (childCount[n.parent_id] || 0) + 1;
+        });
 
         const pending = all
-          .filter(n => n.status !== "done" && !parentIds.has(n.id))
+          .filter(n => n.status !== "done" && !childCount[n.id])
           .sort((a, b) => (a.due_date || "").localeCompare(b.due_date || ""));
 
-        renderTasks(pending);
+        const grouped = {};
+        pending.forEach(n => {
+          const parent = n.parent_id && byId[n.parent_id] ? byId[n.parent_id].title : null;
+          if (!grouped[parent || ""]) grouped[parent || ""] = [];
+          grouped[parent || ""].push(n);
+        });
+
+        renderTasks(grouped);
       } catch (e) {
         console.error("Failed to load tasks:", e);
         document.getElementById("tasksContainer").innerHTML =
