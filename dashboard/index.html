@@ -252,6 +252,42 @@
       color: #fff;
     }
 
+    /* Workout */
+    .workout-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ccc;
+      margin-bottom: 4px;
+    }
+
+    .workout-date {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    .workout-exercise {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 5px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .workout-exercise:last-child { border-bottom: none; }
+
+    .workout-exercise-name {
+      font-size: 13px;
+      color: #888;
+      flex: 1;
+    }
+
+    .workout-exercise-detail {
+      font-size: 12px;
+      color: #555;
+      white-space: nowrap;
+    }
+
     @media (max-width: 900px) {
       .columns {
         grid-template-columns: 1fr;
@@ -272,6 +308,11 @@
     <section class="widget">
       <h2>Tasks</h2>
       <div id="tasksContainer" class="loading">Loading...</div>
+    </section>
+
+    <section class="widget">
+      <h2>Next Workout</h2>
+      <div id="workoutContainer" class="loading">Loading...</div>
     </section>
 
     <section class="widget">
@@ -521,10 +562,65 @@
       }
     }
 
+    async function loadWorkout() {
+      const el = document.getElementById("workoutContainer");
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const { data: workouts, error } = await db.from("planned_workouts")
+          .select("id, title, workout_date, workout_type")
+          .gte("workout_date", today)
+          .order("workout_date", { ascending: true })
+          .limit(1);
+
+        if (error) throw error;
+        if (!workouts || !workouts.length) {
+          el.innerHTML = '<div class="empty-state">No workouts planned</div>';
+          return;
+        }
+
+        const w = workouts[0];
+        const { data: exercises } = await db.from("planned_exercises")
+          .select("name, sets, reps, duration_min, target_weight_kg, target_pace_min_km")
+          .eq("workout_id", w.id)
+          .order("order_index", { ascending: true });
+
+        const d = new Date(w.workout_date + "T12:00:00");
+        const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const dateStr = `${dayNames[d.getDay()]}, ${d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+
+        const exList = (exercises || []).map(ex => {
+          let detail = "";
+          if (w.workout_type === "cardio" || w.workout_type === "run") {
+            detail = ex.duration_min && ex.target_pace_min_km
+              ? `${ex.duration_min} min @ ${ex.target_pace_min_km} /km`
+              : ex.duration_min ? `${ex.duration_min} min` : "";
+          } else {
+            const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : "";
+            const weight = ex.target_weight_kg ? ` @ ${ex.target_weight_kg}kg` : "";
+            detail = setsReps + weight;
+          }
+          return `<div class="workout-exercise">
+            <span class="workout-exercise-name">${ex.name}</span>
+            <span class="workout-exercise-detail">${detail}</span>
+          </div>`;
+        }).join("");
+
+        el.innerHTML = `
+          <div class="workout-title">${w.title}</div>
+          <div class="workout-date">${dateStr}</div>
+          ${exList || '<div class="empty-state">No exercises added</div>'}
+        `;
+      } catch (e) {
+        console.error("Failed to load workout:", e);
+        el.innerHTML = '<div class="empty-state">Failed to load</div>';
+      }
+    }
+
     renderDate();
     loadTasks();
     loadStrava();
     loadCalendar();
+    loadWorkout();
   </script>
 </body>
 </html>
