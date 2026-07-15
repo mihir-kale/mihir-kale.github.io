@@ -37,6 +37,12 @@
       align-items: start;
     }
 
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
     .widget {
       background: #111;
       border: 1px solid #222;
@@ -310,15 +316,17 @@
       <div id="tasksContainer" class="loading">Loading...</div>
     </section>
 
-    <section class="widget">
-      <h2>Next Workout</h2>
-      <div id="workoutContainer" class="loading">Loading...</div>
-    </section>
+    <div class="right-col">
+      <section class="widget">
+        <h2>Next Workout</h2>
+        <div id="workoutContainer" class="loading">Loading...</div>
+      </section>
 
-    <section class="widget">
-      <h2>Strava</h2>
-      <div id="stravaContainer" class="loading">Loading...</div>
-    </section>
+      <section class="widget">
+        <h2>Strava</h2>
+        <div id="stravaContainer" class="loading">Loading...</div>
+      </section>
+    </div>
   </div>
 
   <script>
