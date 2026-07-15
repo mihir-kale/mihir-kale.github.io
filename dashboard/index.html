@@ -17,9 +17,25 @@
       background: #000;
       color: #fff;
       padding: 24px;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       -webkit-font-smoothing: antialiased;
+    }
+
+    .date-header {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      align-items: start;
     }
 
     .widget {
@@ -27,23 +43,22 @@
       border: 1px solid #222;
       border-radius: 12px;
       padding: 20px;
-      margin-bottom: 20px;
     }
 
     .widget h2 {
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #666;
+      letter-spacing: 1.5px;
+      color: #444;
       margin-bottom: 16px;
     }
 
     /* Calendar */
     .calendar-frame {
       width: 100%;
-      height: 500px;
-      border: 1px solid #222;
+      height: 600px;
+      border: none;
       border-radius: 8px;
     }
 
@@ -56,104 +71,136 @@
       gap: 12px;
       padding: 10px 0;
       border-bottom: 1px solid #1a1a1a;
+      cursor: pointer;
+      transition: opacity .2s;
     }
+
+    .task-item:hover { opacity: .7; }
 
     .task-item:last-child { border-bottom: none; }
 
-    .task-title { flex: 1; font-size: 14px; font-weight: 400; }
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #444;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+
+    .task-item:hover .task-check {
+      border-color: #fff;
+    }
+
+    .task-check svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .task-item:hover .task-check svg {
+      opacity: .5;
+    }
+
+    .task-title { flex: 1; font-size: 14px; font-weight: 400; color: #ccc; }
 
     .task-due {
-      font-size: 12px;
-      color: #555;
+      font-size: 11px;
+      color: #444;
       white-space: nowrap;
     }
 
-    .task-due.overdue { color: #ff3b30; font-weight: 500; }
-
-    .badge {
-      font-size: 10px;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-
-    .badge.high { background: #2a1515; color: #ff453a; }
-    .badge.medium { background: #2a2015; color: #ff9f0a; }
-    .badge.low { background: #152a1a; color: #30d158; }
-
-    .status-badge {
-      font-size: 10px;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 4px;
-      text-transform: capitalize;
-    }
-
-    .status-badge.ready { background: #0a1a2a; color: #0a84ff; }
-    .status-badge.in-progress { background: #2a2015; color: #ff9f0a; }
+    .task-due.overdue { color: #ff453a; }
 
     .empty-state {
       text-align: center;
-      padding: 40px;
-      color: #444;
-      font-size: 14px;
+      padding: 40px 20px;
+      color: #333;
+      font-size: 13px;
     }
 
     .loading {
       text-align: center;
-      padding: 40px;
-      color: #444;
-      font-size: 14px;
+      padding: 40px 20px;
+      color: #333;
+      font-size: 13px;
     }
 
     /* Strava placeholder */
     .strava-placeholder {
       text-align: center;
-      padding: 60px 20px;
-      color: #444;
+      padding: 80px 20px;
+      color: #333;
     }
 
     .strava-placeholder .icon {
-      font-size: 48px;
+      font-size: 40px;
       margin-bottom: 12px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
       .calendar-frame { height: 400px; }
     }
   </style>
 </head>
 <body>
 
-  <section class="widget">
-    <h2>Week Ahead</h2>
-    <iframe
-      class="calendar-frame"
-      src="https://calendar.google.com/calendar/embed?src=mihir.p.kale%40gmail.com&src=cq36eb65v48haqgbjgno7grd5q8gpq1f@import.calendar.google.com&ctz=America/New_York"
-      frameborder="0"
-      scrolling="yes"
-    ></iframe>
-  </section>
+  <div class="date-header" id="dateHeader"></div>
 
-  <section class="widget">
-    <h2>Today's Tasks</h2>
-    <div id="tasksContainer" class="loading">Loading tasks...</div>
-  </section>
+  <div class="columns">
+    <section class="widget">
+      <h2>Calendar</h2>
+      <iframe
+        class="calendar-frame"
+        src="https://calendar.google.com/calendar/embed?src=mihir.p.kale%40gmail.com&src=cq36eb65v48haqgbjgno7grd5q8gpq1f@import.calendar.google.com&ctz=America/New_York"
+        frameborder="0"
+        scrolling="yes"
+      ></iframe>
+    </section>
 
-  <section class="widget">
-    <h2>Strava</h2>
-    <div class="strava-placeholder">
-      <div class="icon">🏃</div>
-      <p>Strava integration coming soon</p>
-    </div>
-  </section>
+    <section class="widget">
+      <h2>Tasks</h2>
+      <div id="tasksContainer" class="loading">Loading...</div>
+    </section>
+
+    <section class="widget">
+      <h2>Strava</h2>
+      <div class="strava-placeholder">
+        <div class="icon">🏃</div>
+        <p>Coming soon</p>
+      </div>
+    </section>
+  </div>
 
   <script>
     const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function renderDate() {
+      const now = new Date();
+      const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+      const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+      const day = now.getDate();
+      const suffix = (d) => {
+        if (d > 3 && d < 21) return "TH";
+        switch (d % 10) {
+          case 1: return "ST";
+          case 2: return "ND";
+          case 3: return "RD";
+          default: return "TH";
+        }
+      };
+      document.getElementById("dateHeader").textContent =
+        `${days[now.getDay()]}, ${day}${suffix(day)} ${months[now.getMonth()]}`;
+    }
 
     function formatDate(dateStr) {
       if (!dateStr) return "";
@@ -171,26 +218,46 @@
       const el = document.getElementById("tasksContainer");
 
       if (!tasks.length) {
-        el.innerHTML = '<div class="empty-state">No pending tasks. Nice work!</div>';
+        el.innerHTML = '<div class="empty-state">All clear</div>';
         return;
       }
 
       el.innerHTML = '<ul class="task-list">' + tasks.map(t => {
         const dueClass = isOverdue(t.due_date) ? "overdue" : "";
         const dueText = t.due_date ? formatDate(t.due_date) : "";
-        return `<li class="task-item">
-          <span class="badge ${t.priority}">${t.priority}</span>
+        return `<li class="task-item" data-id="${t.id}">
+          <div class="task-check">
+            <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
+              <polyline points="2 6 5 9 10 3"/>
+            </svg>
+          </div>
           <span class="task-title">${t.title}</span>
-          <span class="status-badge ${t.status}">${t.status}</span>
           ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
         </li>`;
       }).join("") + "</ul>";
+
+      el.querySelectorAll(".task-item").forEach(item => {
+        item.addEventListener("click", () => completeTask(item.dataset.id, item));
+      });
+    }
+
+    async function completeTask(id, item) {
+      item.style.opacity = "0.4";
+      item.style.pointerEvents = "none";
+      try {
+        await db.from("nodes").update({ status: "done" }).eq("id", id);
+        setTimeout(() => item.remove(), 300);
+      } catch (e) {
+        console.error("Failed to complete task:", e);
+        item.style.opacity = "1";
+        item.style.pointerEvents = "auto";
+      }
     }
 
     async function loadTasks() {
       try {
         const { data, error } = await db.from("nodes")
-          .select("id, title, status, priority, due_date")
+          .select("id, title, due_date")
           .neq("status", "done")
           .order("due_date", { ascending: true });
 
@@ -199,10 +266,11 @@
       } catch (e) {
         console.error("Failed to load tasks:", e);
         document.getElementById("tasksContainer").innerHTML =
-          '<div class="empty-state">Failed to load tasks</div>';
+          '<div class="empty-state">Failed to load</div>';
       }
     }
 
+    renderDate();
     loadTasks();
   </script>
 </body>
