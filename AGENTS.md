@@ -7,6 +7,7 @@ Personal Planning Tree — a hierarchical task planner deployed as a GitHub Page
 ## Structure
 
 - `tracker/` — The planning tree app, served at `mihir-kale.github.io/tracker/`
+- `dashboard/` — Personal dashboard with calendar, tasks, and Strava widgets, served at `mihir-kale.github.io/dashboard/`
 - Root (`index.html`, etc.) — Public website profile (WIP)
 
 ## Stack
@@ -21,6 +22,7 @@ Personal Planning Tree — a hierarchical task planner deployed as a GitHub Page
 - `tracker/index.html` — App shell, Supabase config, sync/load functions
 - `tracker/assets/index-CY4Ktyp3.js` — Compiled app bundle (do not edit directly)
 - `tracker/assets/index-kTQDwIqS.css` — Compiled styles
+- `dashboard/index.html` — Personal dashboard (calendar, tasks, Strava placeholder)
 
 ## Supabase
 
