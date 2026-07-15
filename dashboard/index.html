@@ -392,6 +392,24 @@
       color: #fff;
       border-color: #fff;
     }
+
+    /* Nutrition widget */
+    .nutrition-widget { padding: 0; }
+    .nutrition-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 16px 18px 0; }
+    .nutrition-header h2 { margin: 0; }
+    .chevron { font-size: 14px; transition: transform 0.2s; color: var(--text); }
+    .nutrition-widget.collapsed .chevron { transform: rotate(-90deg); }
+    .nutrition-body { overflow: hidden; max-height: 400px; transition: max-height 0.3s ease; padding: 0 18px 16px; }
+    .nutrition-widget.collapsed .nutrition-body { max-height: 0; padding: 0 18px; }
+    .nutrition-inputs { display: flex; gap: 8px; margin-top: 12px; }
+    .nutrition-inputs input { flex: 1; padding: 8px; border: 1px solid #333; border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; }
+    .nutrition-inputs input::placeholder { color: #666; }
+    .nutrition-inputs input:focus { outline: none; border-color: #444; }
+    .nutrition-entry { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #2a2a2a; font-size: 13px; }
+    .nutrition-entry:first-child { border-top: 1px solid #2a2a2a; margin-top: 6px; }
+    .nutrition-entry .food-name { font-weight: 500; }
+    .nutrition-entry .macros { color: var(--text-muted); }
+    .nutrition-empty { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -429,6 +447,20 @@
       <section class="widget">
         <h2>Next Workout</h2>
         <div id="workoutContainer" class="loading">Loading...</div>
+      </section>
+
+      <section class="widget nutrition-widget">
+        <div class="nutrition-header" id="nutritionToggle">
+          <h2>Nutrition</h2>
+          <span class="chevron" id="nutritionChevron">&#9662;</span>
+        </div>
+        <div class="nutrition-body" id="nutritionBody">
+          <div class="nutrition-inputs">
+            <input type="text" id="nutritionFood" placeholder="Food" />
+            <input type="text" id="nutritionCal" placeholder="cal / pro" />
+          </div>
+          <div id="nutritionList"></div>
+        </div>
       </section>
 
       <section class="widget">
@@ -765,6 +797,70 @@
       loadStrava();
       loadCalendar();
       loadWorkout();
+      loadNutrition();
+    }
+
+    /* ── Nutrition ────────────────────────────────── */
+    const nutritionToggle = document.getElementById("nutritionToggle");
+    const nutritionWidget = nutritionToggle.closest(".nutrition-widget");
+    nutritionToggle.addEventListener("click", () => {
+      nutritionWidget.classList.toggle("collapsed");
+    });
+
+    document.getElementById("nutritionCal").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addNutrition();
+    });
+    document.getElementById("nutritionFood").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("nutritionCal").focus();
+    });
+
+    async function loadNutrition() {
+      const el = document.getElementById("nutritionList");
+      const today = new Date().toISOString().slice(0, 10);
+      try {
+        const { data, error } = await supabase
+          .from("nutrition")
+          .select("food_name, calories, protein")
+          .eq("logged_date", today)
+          .order("created_at", { ascending: true });
+        if (error) throw error;
+        if (!data.length) {
+          el.innerHTML = '<div class="nutrition-empty">No entries today</div>';
+          return;
+        }
+        el.innerHTML = data.map(n => {
+          const macros = n.protein != null ? `${n.calories} cal / ${n.protein}g pro` : `${n.calories} cal`;
+          return `<div class="nutrition-entry"><span class="food-name">${n.food_name}</span><span class="macros">${macros}</span></div>`;
+        }).join("");
+      } catch (e) {
+        console.error("Failed to load nutrition:", e);
+        el.innerHTML = '<div class="nutrition-empty">Failed to load</div>';
+      }
+    }
+
+    async function addNutrition() {
+      const foodEl = document.getElementById("nutritionFood");
+      const calEl  = document.getElementById("nutritionCal");
+      const food   = foodEl.value.trim();
+      const raw    = calEl.value.trim();
+      if (!food || !raw) return;
+      const parts = raw.split("/").map(s => s.trim());
+      const calories = parseInt(parts[0], 10);
+      const protein  = parts.length > 1 ? parseInt(parts[1], 10) : null;
+      if (isNaN(calories)) return;
+      const id = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2,"0")).join("");
+      const today = new Date().toISOString().slice(0, 10);
+      try {
+        const { error } = await supabase.from("nutrition").insert({
+          id, food_name: food, calories, protein, logged_date: today
+        });
+        if (error) throw error;
+        foodEl.value = "";
+        calEl.value  = "";
+        loadNutrition();
+      } catch (e) {
+        console.error("Failed to add nutrition:", e);
+      }
     }
 
     function showLogin() {
