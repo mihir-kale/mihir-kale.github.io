@@ -1,0 +1,41 @@
+{
+  "last_updated": "2026-07-15T22:54:28.664305+00:00",
+  "events": [
+    {
+      "title": "Deadline for Award Nominations",
+      "start": "2026-04-11T03:59:00+00:00",
+      "end": null,
+      "allDay": false,
+      "location": "",
+      "calendar": "Google",
+      "color": "#0a84ff"
+    },
+    {
+      "title": "Video Interview w/ JLF: Mihir Kale",
+      "start": "2026-07-15T09:30:00+00:00",
+      "end": "2026-07-15T10:15:00+00:00",
+      "allDay": false,
+      "location": "ZOOM",
+      "calendar": "Outlook",
+      "color": "#ff9f0a"
+    },
+    {
+      "title": "Bain Undergrad: Case Interview Workshop",
+      "start": "2026-07-15T15:00:00+00:00",
+      "end": "2026-07-15T16:00:00+00:00",
+      "allDay": false,
+      "location": "",
+      "calendar": "Outlook",
+      "color": "#ff9f0a"
+    },
+    {
+      "title": "Coffee Chat w/ Greg Duckworth",
+      "start": "2026-07-17T11:00:00+00:00",
+      "end": "2026-07-17T11:30:00+00:00",
+      "allDay": false,
+      "location": "",
+      "calendar": "Outlook",
+      "color": "#ff9f0a"
+    }
+  ]
+}
