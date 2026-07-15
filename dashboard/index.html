@@ -131,16 +131,83 @@
       font-size: 13px;
     }
 
-    /* Strava placeholder */
-    .strava-placeholder {
-      text-align: center;
-      padding: 80px 20px;
-      color: #333;
+    /* Strava */
+    .strava-section { margin-bottom: 20px; }
+    .strava-section:last-child { margin-bottom: 0; }
+
+    .strava-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      margin-bottom: 10px;
     }
 
-    .strava-placeholder .icon {
-      font-size: 40px;
-      margin-bottom: 12px;
+    .stat-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .stat-unit {
+      font-size: 11px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .last-run {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .last-run-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ccc;
+      margin-bottom: 6px;
+    }
+
+    .last-run-meta {
+      font-size: 12px;
+      color: #555;
+      display: flex;
+      gap: 12px;
+    }
+
+    .pr-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .pr-item:last-child { border-bottom: none; }
+
+    .pr-name {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .pr-weight {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
     }
 
     @media (max-width: 900px) {
@@ -173,10 +240,7 @@
 
     <section class="widget">
       <h2>Strava</h2>
-      <div class="strava-placeholder">
-        <div class="icon">🏃</div>
-        <p>Coming soon</p>
-      </div>
+      <div id="stravaContainer" class="loading">Loading...</div>
     </section>
   </div>
 
@@ -277,8 +341,99 @@
       }
     }
 
+    function getWeekBounds() {
+      const now = new Date();
+      const day = now.getDay();
+      const start = new Date(now);
+      start.setDate(now.getDate() - day);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      end.setHours(23, 59, 59, 999);
+      return { start, end };
+    }
+
+    function renderStrava(data) {
+      const el = document.getElementById("stravaContainer");
+      const { cardio, summary } = data;
+
+      const { start, end } = getWeekBounds();
+      const weekActivities = cardio.filter(a => {
+        const d = new Date(a.date + "T00:00:00");
+        return d >= start && d <= end;
+      });
+      const weekDist = weekActivities.reduce((s, a) => s + a.distance_km, 0).toFixed(1);
+      const weekTime = (weekActivities.reduce((s, a) => s + a.moving_time_min, 0) / 60).toFixed(1);
+      const weekCount = weekActivities.length;
+
+      const lastRun = cardio[cardio.length - 1];
+      const lastPace = lastRun.avg_speed_kmh
+        ? (60 / lastRun.avg_speed_kmh).toFixed(1)
+        : "—";
+
+      const prs = Object.values(summary.pr_lifts)
+        .sort((a, b) => b.weight_kg - a.weight_kg)
+        .slice(0, 4);
+
+      el.innerHTML = `
+        <div class="strava-section">
+          <div class="strava-label">This Week</div>
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-value">${weekCount}</div>
+              <div class="stat-unit">runs</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">${weekDist}</div>
+              <div class="stat-unit">km</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">${weekTime}</div>
+              <div class="stat-unit">hrs</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="strava-section">
+          <div class="strava-label">Last Run</div>
+          <div class="last-run">
+            <div class="last-run-name">${lastRun.name}</div>
+            <div class="last-run-meta">
+              <span>${lastRun.distance_km} km</span>
+              <span>${lastRun.moving_time_min} min</span>
+              <span>${lastPace} /km</span>
+              <span>${lastRun.date}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="strava-section">
+          <div class="strava-label">Top PRs</div>
+          ${prs.map(p => `
+            <div class="pr-item">
+              <span class="pr-name">${p.name}</span>
+              <span class="pr-weight">${p.weight_kg} kg</span>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    async function loadStrava() {
+      try {
+        const resp = await fetch("data/fitness-data.json");
+        if (!resp.ok) throw new Error("No data");
+        const data = await resp.json();
+        renderStrava(data);
+      } catch (e) {
+        document.getElementById("stravaContainer").innerHTML =
+          '<div class="empty-state">No data yet</div>';
+      }
+    }
+
     renderDate();
     loadTasks();
+    loadStrava();
   </script>
 </body>
 </html>

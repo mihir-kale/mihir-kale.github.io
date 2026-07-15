@@ -1,0 +1,2658 @@
+{
+  "last_updated": "2026-06-30T03:23:05.171183+00:00",
+  "summary": {
+    "monthly_cardio": {
+      "2024-08": {
+        "runs": 1,
+        "distance_km": 1.62,
+        "time_min": 8.2,
+        "elevation": 17.4
+      },
+      "2024-09": {
+        "runs": 4,
+        "distance_km": 11.190000000000001,
+        "time_min": 69.8,
+        "elevation": 154.2
+      },
+      "2024-10": {
+        "runs": 1,
+        "distance_km": 1.62,
+        "time_min": 9.2,
+        "elevation": 37.2
+      },
+      "2024-12": {
+        "runs": 2,
+        "distance_km": 7.24,
+        "time_min": 40.7,
+        "elevation": 52.2
+      },
+      "2025-02": {
+        "runs": 2,
+        "distance_km": 9.01,
+        "time_min": 56.7,
+        "elevation": 185.8
+      },
+      "2025-03": {
+        "runs": 4,
+        "distance_km": 19.4,
+        "time_min": 126.89999999999999,
+        "elevation": 243.9
+      },
+      "2025-05": {
+        "runs": 1,
+        "distance_km": 3.22,
+        "time_min": 16.8,
+        "elevation": 28.2
+      },
+      "2025-06": {
+        "runs": 3,
+        "distance_km": 9.6,
+        "time_min": 49.400000000000006,
+        "elevation": 45.2
+      },
+      "2025-08": {
+        "runs": 2,
+        "distance_km": 7.279999999999999,
+        "time_min": 42.8,
+        "elevation": 83.6
+      },
+      "2025-09": {
+        "runs": 10,
+        "distance_km": 42.54999999999999,
+        "time_min": 255.2,
+        "elevation": 286.40000000000003
+      },
+      "2025-10": {
+        "runs": 19,
+        "distance_km": 79.50000000000001,
+        "time_min": 447.50000000000006,
+        "elevation": 1259.8
+      },
+      "2025-11": {
+        "runs": 8,
+        "distance_km": 26.099999999999994,
+        "time_min": 140.90000000000003,
+        "elevation": 324.2
+      },
+      "2025-12": {
+        "runs": 2,
+        "distance_km": 5.02,
+        "time_min": 27.1,
+        "elevation": 29.4
+      },
+      "2026-03": {
+        "runs": 1,
+        "distance_km": 2.0,
+        "time_min": 15.9,
+        "elevation": 0
+      },
+      "2026-04": {
+        "runs": 2,
+        "distance_km": 13.27,
+        "time_min": 71.0,
+        "elevation": 46.4
+      },
+      "2026-05": {
+        "runs": 9,
+        "distance_km": 40.459999999999994,
+        "time_min": 247.6,
+        "elevation": 158.2
+      },
+      "2026-06": {
+        "runs": 7,
+        "distance_km": 53.330000000000005,
+        "time_min": 297.79999999999995,
+        "elevation": 275.5
+      }
+    },
+    "monthly_lifting": {
+      "2026-03": {
+        "sessions": 1,
+        "total_volume_kg": 3140.6
+      },
+      "2026-04": {
+        "sessions": 12,
+        "total_volume_kg": 30419.1
+      },
+      "2026-05": {
+        "sessions": 11,
+        "total_volume_kg": 19407.100000000006
+      },
+      "2026-06": {
+        "sessions": 9,
+        "total_volume_kg": 13001.1
+      }
+    },
+    "pr_lifts": {
+      "bench press (dumbbell)": {
+        "name": "Bench Press (Dumbbell)",
+        "weight_kg": 40.8,
+        "sets": 3,
+        "reps": 5,
+        "date": "2026-06-09"
+      },
+      "bent over row (dumbbell)": {
+        "name": "Bent Over Row (Dumbbell)",
+        "weight_kg": 36.3,
+        "sets": 3,
+        "reps": 5,
+        "date": "2026-06-05"
+      },
+      "lateral raise (dumbbell)": {
+        "name": "Lateral Raise (Dumbbell)",
+        "weight_kg": 7.9,
+        "sets": 2,
+        "reps": 6,
+        "date": "2026-03-31"
+      },
+      "cable crunch": {
+        "name": "Cable Crunch",
+        "weight_kg": 34.9,
+        "sets": 3,
+        "reps": 8,
+        "date": "2026-06-09"
+      },
+      "side bend (dumbbell)": {
+        "name": "Side Bend (Dumbbell)",
+        "weight_kg": 14.7,
+        "sets": 4,
+        "reps": 8,
+        "date": "2026-03-31"
+      },
+      "lunge (dumbbell)": {
+        "name": "Lunge (Dumbbell)",
+        "weight_kg": 22.7,
+        "sets": 5,
+        "reps": 10,
+        "date": "2026-04-20"
+      },
+      "squat shoulder press": {
+        "name": "Squat Shoulder Press",
+        "weight_kg": 18.1,
+        "sets": 4,
+        "reps": 10,
+        "date": "2026-03-31"
+      },
+      "decline crunch (weighted)": {
+        "name": "Decline Crunch (Weighted)",
+        "weight_kg": 15.9,
+        "sets": 2,
+        "reps": 8,
+        "date": "2026-04-02"
+      },
+      "front squat": {
+        "name": "Front Squat",
+        "weight_kg": 27.2,
+        "sets": 2,
+        "reps": 8,
+        "date": "2026-04-02"
+      },
+      "lat pulldown (cable)": {
+        "name": "Lat Pulldown (Cable)",
+        "weight_kg": 44.9,
+        "sets": 2,
+        "reps": 6,
+        "date": "2026-04-02"
+      },
+      "hammer curl (dumbbell)": {
+        "name": "Hammer Curl (Dumbbell)",
+        "weight_kg": 10.2,
+        "sets": 2,
+        "reps": 9,
+        "date": "2026-05-07"
+      },
+      "chest press (machine)": {
+        "name": "Chest Press (Machine)",
+        "weight_kg": 36.3,
+        "sets": 2,
+        "reps": 10,
+        "date": "2026-04-28"
+      },
+      "russian twist (weighted)": {
+        "name": "Russian Twist (Weighted)",
+        "weight_kg": 13.6,
+        "sets": 4,
+        "reps": 20,
+        "date": "2026-04-02"
+      },
+      "kettlebell swing": {
+        "name": "Kettlebell Swing",
+        "weight_kg": 15.9,
+        "sets": 4,
+        "reps": 10,
+        "date": "2026-04-02"
+      },
+      "incline chest fly (dumbbell)": {
+        "name": "Incline Chest Fly (Dumbbell)",
+        "weight_kg": 7.9,
+        "sets": 4,
+        "reps": 7,
+        "date": "2026-04-02"
+      },
+      "squat (dumbbell)": {
+        "name": "Squat (Dumbbell)",
+        "weight_kg": 31.8,
+        "sets": 2,
+        "reps": 7,
+        "date": "2026-04-06"
+      },
+      "triceps extension (dumbbell)": {
+        "name": "Triceps Extension (Dumbbell)",
+        "weight_kg": 18.1,
+        "sets": 2,
+        "reps": 6,
+        "date": "2026-05-25"
+      },
+      "plank pull through": {
+        "name": "Plank Pull Through",
+        "weight_kg": 11.3,
+        "sets": 4,
+        "reps": 20,
+        "date": "2026-04-06"
+      },
+      "kettlebell halo": {
+        "name": "Kettlebell Halo",
+        "weight_kg": 13.6,
+        "sets": 5,
+        "reps": 15,
+        "date": "2026-04-28"
+      },
+      "\"deload next week\"": {
+        "name": "\"deload next week\"",
+        "weight_kg": 31.8,
+        "sets": 2,
+        "reps": 5,
+        "date": "2026-04-07"
+      },
+      "incline bench press (dumbbell)": {
+        "name": "Incline Bench Press (Dumbbell)",
+        "weight_kg": 36.3,
+        "sets": 3,
+        "reps": 6,
+        "date": "2026-06-08"
+      },
+      "skullcrusher (dumbbell)": {
+        "name": "Skullcrusher (Dumbbell)",
+        "weight_kg": 7.9,
+        "sets": 2,
+        "reps": 6,
+        "date": "2026-04-17"
+      },
+      "kb deadbug": {
+        "name": "KB Deadbug",
+        "weight_kg": 13.6,
+        "sets": 5,
+        "reps": 10,
+        "date": "2026-04-28"
+      },
+      "uppercuts": {
+        "name": "Uppercuts",
+        "weight_kg": 13.6,
+        "sets": 5,
+        "reps": 10,
+        "date": "2026-04-20"
+      },
+      "bicep curl (dumbbell)": {
+        "name": "Bicep Curl (Dumbbell)",
+        "weight_kg": 9.1,
+        "sets": 2,
+        "reps": 5,
+        "date": "2026-05-04"
+      },
+      "goblet squat": {
+        "name": "Goblet Squat",
+        "weight_kg": 13.6,
+        "sets": 5,
+        "reps": 8,
+        "date": "2026-04-21"
+      },
+      "overhead press (dumbbell)": {
+        "name": "Overhead Press (Dumbbell)",
+        "weight_kg": 27.2,
+        "sets": 2,
+        "reps": 5,
+        "date": "2026-05-08"
+      },
+      "seated shoulder press (machine)": {
+        "name": "Seated Shoulder Press (Machine)",
+        "weight_kg": 40.8,
+        "sets": 3,
+        "reps": 10,
+        "date": "2026-06-22"
+      }
+    },
+    "total_cardio_activities": 78,
+    "total_strength_sessions": 33,
+    "total_distance_km": 332.4,
+    "total_time_hours": 32.1
+  },
+  "cardio": [
+    {
+      "id": 12264278962,
+      "date": "2024-08-28",
+      "type": "Run",
+      "name": "Morning Run",
+      "distance_km": 1.62,
+      "moving_time_min": 8.2,
+      "elevation_gain": 17.4,
+      "avg_hr": 189.0,
+      "max_hr": 197.0,
+      "avg_speed_kmh": 11.9,
+      "description": ""
+    },
+    {
+      "id": 12333603597,
+      "date": "2024-09-05",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 1.63,
+      "moving_time_min": 9.7,
+      "elevation_gain": 26.6,
+      "avg_hr": 161.3,
+      "max_hr": 183.0,
+      "avg_speed_kmh": 10.13,
+      "description": ""
+    },
+    {
+      "id": 12387479020,
+      "date": "2024-09-11",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 4.04,
+      "moving_time_min": 22.9,
+      "elevation_gain": 78.6,
+      "avg_hr": 184.8,
+      "max_hr": 197.0,
+      "avg_speed_kmh": 10.59,
+      "description": ""
+    },
+    {
+      "id": 12492780235,
+      "date": "2024-09-12",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 0.61,
+      "moving_time_min": 3.7,
+      "elevation_gain": 14.0,
+      "avg_hr": 151.7,
+      "max_hr": 171.0,
+      "avg_speed_kmh": 10.04,
+      "description": ""
+    },
+    {
+      "id": 12480723849,
+      "date": "2024-09-22",
+      "type": "Run",
+      "name": "LFIT Assignment",
+      "distance_km": 4.91,
+      "moving_time_min": 33.5,
+      "elevation_gain": 35.0,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 8.81,
+      "description": ""
+    },
+    {
+      "id": 12663286228,
+      "date": "2024-10-15",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 1.62,
+      "moving_time_min": 9.2,
+      "elevation_gain": 37.2,
+      "avg_hr": 157.2,
+      "max_hr": 184.0,
+      "avg_speed_kmh": 10.54,
+      "description": ""
+    },
+    {
+      "id": 13145204233,
+      "date": "2024-12-18",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 4.02,
+      "moving_time_min": 22.9,
+      "elevation_gain": 33.7,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 10.53,
+      "description": ""
+    },
+    {
+      "id": 13184436948,
+      "date": "2024-12-24",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 3.22,
+      "moving_time_min": 17.8,
+      "elevation_gain": 18.5,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 10.85,
+      "description": ""
+    },
+    {
+      "id": 13594872744,
+      "date": "2025-02-10",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 4.85,
+      "moving_time_min": 29.4,
+      "elevation_gain": 93.8,
+      "avg_hr": 172.9,
+      "max_hr": 188.0,
+      "avg_speed_kmh": 9.89,
+      "description": ""
+    },
+    {
+      "id": 13773669308,
+      "date": "2025-02-27",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 4.16,
+      "moving_time_min": 27.3,
+      "elevation_gain": 92.0,
+      "avg_hr": 157.4,
+      "max_hr": 188.0,
+      "avg_speed_kmh": 9.16,
+      "description": ""
+    },
+    {
+      "id": 13773556152,
+      "date": "2025-03-02",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 3.24,
+      "moving_time_min": 20.9,
+      "elevation_gain": 33.2,
+      "avg_hr": 160.5,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 9.32,
+      "description": ""
+    },
+    {
+      "id": 13949821195,
+      "date": "2025-03-21",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 6.45,
+      "moving_time_min": 47.3,
+      "elevation_gain": 37.4,
+      "avg_hr": 153.5,
+      "max_hr": 178.0,
+      "avg_speed_kmh": 8.18,
+      "description": ""
+    },
+    {
+      "id": 13969781644,
+      "date": "2025-03-23",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 6.45,
+      "moving_time_min": 40.4,
+      "elevation_gain": 132.4,
+      "avg_hr": 164.9,
+      "max_hr": 182.0,
+      "avg_speed_kmh": 9.59,
+      "description": ""
+    },
+    {
+      "id": 14812601661,
+      "date": "2025-03-27",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 3.26,
+      "moving_time_min": 18.3,
+      "elevation_gain": 40.9,
+      "avg_hr": 163.7,
+      "max_hr": 180.0,
+      "avg_speed_kmh": 10.69,
+      "description": ""
+    },
+    {
+      "id": 14646395953,
+      "date": "2025-05-30",
+      "type": "Run",
+      "name": "Sunset sprints",
+      "distance_km": 3.22,
+      "moving_time_min": 16.8,
+      "elevation_gain": 28.2,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 11.51,
+      "description": ""
+    },
+    {
+      "id": 14812601650,
+      "date": "2025-06-15",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 2.32,
+      "moving_time_min": 10.9,
+      "elevation_gain": 3.4,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 12.75,
+      "description": ""
+    },
+    {
+      "id": 14855739475,
+      "date": "2025-06-19",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 3.26,
+      "moving_time_min": 17.7,
+      "elevation_gain": 23.3,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 11.05,
+      "description": ""
+    },
+    {
+      "id": 14875250551,
+      "date": "2025-06-21",
+      "type": "Run",
+      "name": "mango run",
+      "distance_km": 4.02,
+      "moving_time_min": 20.8,
+      "elevation_gain": 18.5,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 11.59,
+      "description": ""
+    },
+    {
+      "id": 15563276841,
+      "date": "2025-08-23",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 3.23,
+      "moving_time_min": 19.2,
+      "elevation_gain": 36.2,
+      "avg_hr": 176.0,
+      "max_hr": 192.0,
+      "avg_speed_kmh": 10.09,
+      "description": ""
+    },
+    {
+      "id": 15597810458,
+      "date": "2025-08-26",
+      "type": "Run",
+      "name": "Gimghoul more like GYMGHOUL",
+      "distance_km": 4.05,
+      "moving_time_min": 23.6,
+      "elevation_gain": 47.4,
+      "avg_hr": 176.1,
+      "max_hr": 192.0,
+      "avg_speed_kmh": 10.27,
+      "description": ""
+    },
+    {
+      "id": 15673369219,
+      "date": "2025-09-01",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 2.51,
+      "moving_time_min": 14.8,
+      "elevation_gain": 21.7,
+      "avg_hr": 167.6,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 10.16,
+      "description": ""
+    },
+    {
+      "id": 15674258828,
+      "date": "2025-09-02",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 5.01,
+      "moving_time_min": 28.4,
+      "elevation_gain": 30.0,
+      "avg_hr": 170.2,
+      "max_hr": 185.0,
+      "avg_speed_kmh": 10.58,
+      "description": ""
+    },
+    {
+      "id": 15711154167,
+      "date": "2025-09-05",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.01,
+      "moving_time_min": 30.9,
+      "elevation_gain": 0,
+      "avg_hr": 152.2,
+      "max_hr": 187.0,
+      "avg_speed_kmh": 9.75,
+      "description": ""
+    },
+    {
+      "id": 15723162462,
+      "date": "2025-09-06",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.01,
+      "moving_time_min": 29.0,
+      "elevation_gain": 0,
+      "avg_hr": 176.4,
+      "max_hr": 185.0,
+      "avg_speed_kmh": 10.37,
+      "description": ""
+    },
+    {
+      "id": 15723416155,
+      "date": "2025-09-06",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 2.46,
+      "moving_time_min": 15.5,
+      "elevation_gain": 0,
+      "avg_hr": 170.2,
+      "max_hr": 180.0,
+      "avg_speed_kmh": 9.54,
+      "description": ""
+    },
+    {
+      "id": 15732588028,
+      "date": "2025-09-07",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 5.01,
+      "moving_time_min": 29.5,
+      "elevation_gain": 54.6,
+      "avg_hr": 169.7,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 10.19,
+      "description": ""
+    },
+    {
+      "id": 15744801231,
+      "date": "2025-09-08",
+      "type": "Run",
+      "name": "hilly half-day",
+      "distance_km": 2.51,
+      "moving_time_min": 14.6,
+      "elevation_gain": 48.9,
+      "avg_hr": 158.7,
+      "max_hr": 176.0,
+      "avg_speed_kmh": 10.29,
+      "description": ""
+    },
+    {
+      "id": 15792175599,
+      "date": "2025-09-12",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 7.51,
+      "moving_time_min": 46.9,
+      "elevation_gain": 72.2,
+      "avg_hr": 165.3,
+      "max_hr": 183.0,
+      "avg_speed_kmh": 9.61,
+      "description": ""
+    },
+    {
+      "id": 15867314722,
+      "date": "2025-09-19",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 2.51,
+      "moving_time_min": 16.9,
+      "elevation_gain": 0,
+      "avg_hr": 173.7,
+      "max_hr": 185.0,
+      "avg_speed_kmh": 8.92,
+      "description": ""
+    },
+    {
+      "id": 15991693932,
+      "date": "2025-09-30",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 5.01,
+      "moving_time_min": 28.7,
+      "elevation_gain": 59.0,
+      "avg_hr": 174.1,
+      "max_hr": 189.0,
+      "avg_speed_kmh": 10.47,
+      "description": ""
+    },
+    {
+      "id": 15999311036,
+      "date": "2025-10-01",
+      "type": "Run",
+      "name": "fasted cardio except that isn\u2019t real so regular cardio",
+      "distance_km": 2.52,
+      "moving_time_min": 15.3,
+      "elevation_gain": 47.7,
+      "avg_hr": 168.0,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 9.84,
+      "description": ""
+    },
+    {
+      "id": 16014911679,
+      "date": "2025-10-02",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.02,
+      "moving_time_min": 28.1,
+      "elevation_gain": 99.3,
+      "avg_hr": 173.3,
+      "max_hr": 189.0,
+      "avg_speed_kmh": 10.72,
+      "description": ""
+    },
+    {
+      "id": 16024996576,
+      "date": "2025-10-03",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.02,
+      "moving_time_min": 29.4,
+      "elevation_gain": 79.8,
+      "avg_hr": 170.3,
+      "max_hr": 188.0,
+      "avg_speed_kmh": 10.24,
+      "description": ""
+    },
+    {
+      "id": 16035391905,
+      "date": "2025-10-04",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.01,
+      "moving_time_min": 29.7,
+      "elevation_gain": 103.5,
+      "avg_hr": 170.5,
+      "max_hr": 187.0,
+      "avg_speed_kmh": 10.13,
+      "description": ""
+    },
+    {
+      "id": 16047984875,
+      "date": "2025-10-05",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 2.51,
+      "moving_time_min": 13.7,
+      "elevation_gain": 0,
+      "avg_hr": 157.9,
+      "max_hr": 173.0,
+      "avg_speed_kmh": 10.99,
+      "description": ""
+    },
+    {
+      "id": 16048027215,
+      "date": "2025-10-05",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 1.51,
+      "moving_time_min": 9.3,
+      "elevation_gain": 15.5,
+      "avg_hr": 161.0,
+      "max_hr": 171.0,
+      "avg_speed_kmh": 9.76,
+      "description": ""
+    },
+    {
+      "id": 16069149623,
+      "date": "2025-10-07",
+      "type": "Run",
+      "name": "(ran) through",
+      "distance_km": 10.01,
+      "moving_time_min": 58.6,
+      "elevation_gain": 133.8,
+      "avg_hr": 167.1,
+      "max_hr": 183.0,
+      "avg_speed_kmh": 10.25,
+      "description": ""
+    },
+    {
+      "id": 16086944811,
+      "date": "2025-10-09",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 2.76,
+      "moving_time_min": 15.4,
+      "elevation_gain": 45.3,
+      "avg_hr": 161.8,
+      "max_hr": 177.0,
+      "avg_speed_kmh": 10.76,
+      "description": ""
+    },
+    {
+      "id": 16100887822,
+      "date": "2025-10-10",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.01,
+      "moving_time_min": 28.3,
+      "elevation_gain": 84.2,
+      "avg_hr": 167.7,
+      "max_hr": 187.0,
+      "avg_speed_kmh": 10.64,
+      "description": ""
+    },
+    {
+      "id": 16141642597,
+      "date": "2025-10-14",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 5.01,
+      "moving_time_min": 28.6,
+      "elevation_gain": 62.9,
+      "avg_hr": 169.7,
+      "max_hr": 183.0,
+      "avg_speed_kmh": 10.53,
+      "description": ""
+    },
+    {
+      "id": 16150361503,
+      "date": "2025-10-15",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 2.52,
+      "moving_time_min": 13.8,
+      "elevation_gain": 29.2,
+      "avg_hr": 162.8,
+      "max_hr": 177.0,
+      "avg_speed_kmh": 10.92,
+      "description": ""
+    },
+    {
+      "id": 16170243038,
+      "date": "2025-10-17",
+      "type": "Run",
+      "name": "Morning Run",
+      "distance_km": 5.01,
+      "moving_time_min": 28.0,
+      "elevation_gain": 107.5,
+      "avg_hr": 163.2,
+      "max_hr": 177.0,
+      "avg_speed_kmh": 10.71,
+      "description": ""
+    },
+    {
+      "id": 16185302965,
+      "date": "2025-10-18",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.01,
+      "moving_time_min": 27.2,
+      "elevation_gain": 105.4,
+      "avg_hr": 166.0,
+      "max_hr": 181.0,
+      "avg_speed_kmh": 11.03,
+      "description": ""
+    },
+    {
+      "id": 16194420939,
+      "date": "2025-10-19",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 5.01,
+      "moving_time_min": 27.2,
+      "elevation_gain": 73.5,
+      "avg_hr": 158.6,
+      "max_hr": 178.0,
+      "avg_speed_kmh": 11.03,
+      "description": ""
+    },
+    {
+      "id": 16202153264,
+      "date": "2025-10-20",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 2.51,
+      "moving_time_min": 14.0,
+      "elevation_gain": 15.1,
+      "avg_hr": 167.2,
+      "max_hr": 177.0,
+      "avg_speed_kmh": 10.74,
+      "description": ""
+    },
+    {
+      "id": 16216233593,
+      "date": "2025-10-21",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 5.01,
+      "moving_time_min": 25.6,
+      "elevation_gain": 82.2,
+      "avg_hr": 171.8,
+      "max_hr": 181.0,
+      "avg_speed_kmh": 11.76,
+      "description": ""
+    },
+    {
+      "id": 16223739198,
+      "date": "2025-10-22",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 2.53,
+      "moving_time_min": 13.7,
+      "elevation_gain": 46.0,
+      "avg_hr": 166.0,
+      "max_hr": 178.0,
+      "avg_speed_kmh": 11.07,
+      "description": ""
+    },
+    {
+      "id": 16237832874,
+      "date": "2025-10-23",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 5.01,
+      "moving_time_min": 28.3,
+      "elevation_gain": 84.6,
+      "avg_hr": 165.3,
+      "max_hr": 180.0,
+      "avg_speed_kmh": 10.63,
+      "description": ""
+    },
+    {
+      "id": 16242317599,
+      "date": "2025-10-24",
+      "type": "Run",
+      "name": "Morning Run",
+      "distance_km": 2.51,
+      "moving_time_min": 13.3,
+      "elevation_gain": 44.3,
+      "avg_hr": 163.4,
+      "max_hr": 178.0,
+      "avg_speed_kmh": 11.37,
+      "description": ""
+    },
+    {
+      "id": 16348070078,
+      "date": "2025-11-03",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 2.52,
+      "moving_time_min": 13.9,
+      "elevation_gain": 49.3,
+      "avg_hr": 157.1,
+      "max_hr": 180.0,
+      "avg_speed_kmh": 10.86,
+      "description": ""
+    },
+    {
+      "id": 16354422559,
+      "date": "2025-11-04",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 3.01,
+      "moving_time_min": 15.2,
+      "elevation_gain": 52.3,
+      "avg_hr": 169.3,
+      "max_hr": 187.0,
+      "avg_speed_kmh": 11.86,
+      "description": ""
+    },
+    {
+      "id": 16509080561,
+      "date": "2025-11-19",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 2.51,
+      "moving_time_min": 13.3,
+      "elevation_gain": 39.2,
+      "avg_hr": 170.9,
+      "max_hr": 188.0,
+      "avg_speed_kmh": 11.28,
+      "description": ""
+    },
+    {
+      "id": 16509247641,
+      "date": "2025-11-19",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 2.52,
+      "moving_time_min": 14.2,
+      "elevation_gain": 29.7,
+      "avg_hr": 176.0,
+      "max_hr": 184.0,
+      "avg_speed_kmh": 10.65,
+      "description": ""
+    },
+    {
+      "id": 16519189425,
+      "date": "2025-11-20",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 3.02,
+      "moving_time_min": 16.2,
+      "elevation_gain": 57.2,
+      "avg_hr": 167.9,
+      "max_hr": 183.0,
+      "avg_speed_kmh": 11.17,
+      "description": ""
+    },
+    {
+      "id": 16556969208,
+      "date": "2025-11-24",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 2.51,
+      "moving_time_min": 13.4,
+      "elevation_gain": 24.3,
+      "avg_hr": 167.0,
+      "max_hr": 188.0,
+      "avg_speed_kmh": 11.23,
+      "description": ""
+    },
+    {
+      "id": 16568047593,
+      "date": "2025-11-25",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.0,
+      "moving_time_min": 27.7,
+      "elevation_gain": 35.0,
+      "avg_hr": 169.6,
+      "max_hr": 179.0,
+      "avg_speed_kmh": 10.83,
+      "description": ""
+    },
+    {
+      "id": 16584922188,
+      "date": "2025-11-27",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 5.01,
+      "moving_time_min": 27.0,
+      "elevation_gain": 37.2,
+      "avg_hr": 166.9,
+      "max_hr": 185.0,
+      "avg_speed_kmh": 11.15,
+      "description": ""
+    },
+    {
+      "id": 16622815482,
+      "date": "2025-12-01",
+      "type": "Run",
+      "name": "Afternoon Run",
+      "distance_km": 2.51,
+      "moving_time_min": 13.8,
+      "elevation_gain": 13.5,
+      "avg_hr": 163.7,
+      "max_hr": 178.0,
+      "avg_speed_kmh": 10.95,
+      "description": ""
+    },
+    {
+      "id": 16660528652,
+      "date": "2025-12-03",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 2.51,
+      "moving_time_min": 13.3,
+      "elevation_gain": 15.9,
+      "avg_hr": 163.8,
+      "max_hr": 175.0,
+      "avg_speed_kmh": 11.31,
+      "description": ""
+    },
+    {
+      "id": 17931703546,
+      "date": "2026-03-31",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 2.0,
+      "moving_time_min": 15.9,
+      "elevation_gain": 0,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 7.56,
+      "description": ""
+    },
+    {
+      "id": 18268121068,
+      "date": "2026-04-26",
+      "type": "Run",
+      "name": "Morning Run",
+      "distance_km": 8.26,
+      "moving_time_min": 44.3,
+      "elevation_gain": 0,
+      "avg_hr": 174.9,
+      "max_hr": 189.0,
+      "avg_speed_kmh": 11.18,
+      "description": ""
+    },
+    {
+      "id": 18313525783,
+      "date": "2026-04-29",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.01,
+      "moving_time_min": 26.7,
+      "elevation_gain": 46.4,
+      "avg_hr": 164.1,
+      "max_hr": 178.0,
+      "avg_speed_kmh": 11.26,
+      "description": ""
+    },
+    {
+      "id": 18362279614,
+      "date": "2026-05-03",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 5.01,
+      "moving_time_min": 26.3,
+      "elevation_gain": 49.0,
+      "avg_hr": 170.6,
+      "max_hr": 182.0,
+      "avg_speed_kmh": 11.42,
+      "description": ""
+    },
+    {
+      "id": 18365710415,
+      "date": "2026-05-03",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 3.02,
+      "moving_time_min": 15.5,
+      "elevation_gain": 33.0,
+      "avg_hr": 161.7,
+      "max_hr": 178.0,
+      "avg_speed_kmh": 11.69,
+      "description": ""
+    },
+    {
+      "id": 18418155813,
+      "date": "2026-05-05",
+      "type": "Walk",
+      "name": "Morning Walk",
+      "distance_km": 3.0,
+      "moving_time_min": 30.0,
+      "elevation_gain": 0,
+      "avg_hr": 150.9,
+      "max_hr": 172.0,
+      "avg_speed_kmh": 6.0,
+      "description": ""
+    },
+    {
+      "id": 18418155812,
+      "date": "2026-05-06",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 4.43,
+      "moving_time_min": 26.0,
+      "elevation_gain": 0,
+      "avg_hr": 165.0,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 10.22,
+      "description": ""
+    },
+    {
+      "id": 18429155452,
+      "date": "2026-05-07",
+      "type": "Walk",
+      "name": "Evening Walk",
+      "distance_km": 2.94,
+      "moving_time_min": 32.0,
+      "elevation_gain": 0,
+      "avg_hr": 100.9,
+      "max_hr": 112.0,
+      "avg_speed_kmh": 5.51,
+      "description": ""
+    },
+    {
+      "id": 18602124122,
+      "date": "2026-05-15",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.01,
+      "moving_time_min": 26.6,
+      "elevation_gain": 25.8,
+      "avg_hr": 167.2,
+      "max_hr": 180.0,
+      "avg_speed_kmh": 11.28,
+      "description": ""
+    },
+    {
+      "id": 18653785672,
+      "date": "2026-05-24",
+      "type": "Run",
+      "name": "Lunch Run",
+      "distance_km": 8.01,
+      "moving_time_min": 44.4,
+      "elevation_gain": 50.4,
+      "avg_hr": 176.0,
+      "max_hr": 185.0,
+      "avg_speed_kmh": 10.82,
+      "description": ""
+    },
+    {
+      "id": 18672909453,
+      "date": "2026-05-26",
+      "type": "Run",
+      "name": "Night Run",
+      "distance_km": 1.04,
+      "moving_time_min": 6.2,
+      "elevation_gain": 0,
+      "avg_hr": 156.3,
+      "max_hr": 175.0,
+      "avg_speed_kmh": 10.0,
+      "description": ""
+    },
+    {
+      "id": 18722266643,
+      "date": "2026-05-30",
+      "type": "Run",
+      "name": "Run Ballantyne 8k",
+      "distance_km": 8.0,
+      "moving_time_min": 40.6,
+      "elevation_gain": 0,
+      "avg_hr": null,
+      "max_hr": null,
+      "avg_speed_kmh": 11.82,
+      "description": ""
+    },
+    {
+      "id": 18862787432,
+      "date": "2026-06-10",
+      "type": "Run",
+      "name": "Morning Run",
+      "distance_km": 4.86,
+      "moving_time_min": 25.8,
+      "elevation_gain": 38.0,
+      "avg_hr": 164.9,
+      "max_hr": 182.0,
+      "avg_speed_kmh": 11.32,
+      "description": ""
+    },
+    {
+      "id": 18904283790,
+      "date": "2026-06-13",
+      "type": "Run",
+      "name": "Morning Run",
+      "distance_km": 4.01,
+      "moving_time_min": 22.7,
+      "elevation_gain": 42.4,
+      "avg_hr": 164.8,
+      "max_hr": 183.0,
+      "avg_speed_kmh": 10.61,
+      "description": ""
+    },
+    {
+      "id": 18904283689,
+      "date": "2026-06-13",
+      "type": "Run",
+      "name": "Morning Run",
+      "distance_km": 4.01,
+      "moving_time_min": 22.7,
+      "elevation_gain": 55.6,
+      "avg_hr": 171.1,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 10.61,
+      "description": ""
+    },
+    {
+      "id": 18964384066,
+      "date": "2026-06-17",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 5.0,
+      "moving_time_min": 28.2,
+      "elevation_gain": 4.8,
+      "avg_hr": 175.8,
+      "max_hr": 189.0,
+      "avg_speed_kmh": 10.63,
+      "description": ""
+    },
+    {
+      "id": 19003289938,
+      "date": "2026-06-20",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 11.28,
+      "moving_time_min": 62.8,
+      "elevation_gain": 17.7,
+      "avg_hr": 171.5,
+      "max_hr": 179.0,
+      "avg_speed_kmh": 10.78,
+      "description": ""
+    },
+    {
+      "id": 19056071886,
+      "date": "2026-06-24",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 8.07,
+      "moving_time_min": 42.1,
+      "elevation_gain": 43.7,
+      "avg_hr": 177.9,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 11.51,
+      "description": ""
+    },
+    {
+      "id": 19079997417,
+      "date": "2026-06-26",
+      "type": "Run",
+      "name": "Evening Run",
+      "distance_km": 16.1,
+      "moving_time_min": 93.5,
+      "elevation_gain": 73.3,
+      "avg_hr": 170.6,
+      "max_hr": 186.0,
+      "avg_speed_kmh": 10.33,
+      "description": ""
+    }
+  ],
+  "workouts": [
+    {
+      "date": "2026-03-31",
+      "name": "day 2",
+      "strava_id": 17923834843,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 29.5
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 29.5
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 7
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 29.9
+        },
+        {
+          "name": "Side Bend (Dumbbell)",
+          "sets": 4,
+          "reps": 8,
+          "weight_kg": 14.7
+        },
+        {
+          "name": "Lunge (Dumbbell)",
+          "sets": 4,
+          "reps": 10,
+          "weight_kg": 18.1
+        },
+        {
+          "name": "Squat Shoulder Press",
+          "sets": 4,
+          "reps": 10,
+          "weight_kg": 18.1
+        },
+        {
+          "name": "Bench Dip",
+          "sets": 5,
+          "reps": 10
+        },
+        {
+          "name": "Push Up",
+          "sets": 5,
+          "reps": 6
+        }
+      ]
+    },
+    {
+      "date": "2026-04-02",
+      "name": "day 3",
+      "strava_id": 17952087222,
+      "exercises": [
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Front Squat",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 27.2
+        },
+        {
+          "name": "Chin Up",
+          "sets": 2,
+          "reps": 6
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 44.9
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 4,
+          "reps": 10,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Russian Twist (Weighted)",
+          "sets": 4,
+          "reps": 20,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "Kettlebell Swing",
+          "sets": 4,
+          "reps": 10,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Incline Chest Fly (Dumbbell)",
+          "sets": 4,
+          "reps": 7,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Inverted Row",
+          "sets": 5,
+          "reps": 10
+        },
+        {
+          "name": "Push Up",
+          "sets": 5,
+          "reps": 8
+        }
+      ]
+    },
+    {
+      "date": "2026-04-06",
+      "name": "day 1",
+      "strava_id": 17999843249,
+      "exercises": [
+        {
+          "name": "Squat (Dumbbell)",
+          "sets": 2,
+          "reps": 7,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Pull Up (Weighted)",
+          "sets": 2,
+          "reps": 6
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Triceps Extension (Dumbbell)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 14.7
+        },
+        {
+          "name": "Plank Pull Through",
+          "sets": 4,
+          "reps": 20,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Kettlebell Halo",
+          "sets": 4,
+          "reps": 15,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Russian Twist (Weighted)",
+          "sets": 4,
+          "reps": 20,
+          "weight_kg": 13.6
+        }
+      ]
+    },
+    {
+      "date": "2026-04-07",
+      "name": "day 2",
+      "strava_id": 18012950860,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "\"deload next week\"",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 29.9
+        }
+      ]
+    },
+    {
+      "date": "2026-04-17",
+      "name": "4/17 chest + triceps",
+      "strava_id": 18143782220,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 7,
+          "weight_kg": 34.0
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Triceps Extension (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 14.7
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 29.9
+        },
+        {
+          "name": "Skullcrusher (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 7.9
+        }
+      ]
+    },
+    {
+      "date": "2026-04-17",
+      "name": "4/17 - hiit a",
+      "strava_id": 18144272144,
+      "exercises": [
+        {
+          "name": "Kettlebell Halo",
+          "sets": 5,
+          "reps": 15,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Russian Twist (Weighted)",
+          "sets": 5,
+          "reps": 20,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Kettlebell Swing",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "KB Deadbug",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Push Up",
+          "sets": 5,
+          "reps": 8
+        }
+      ]
+    },
+    {
+      "date": "2026-04-20",
+      "name": "4/20 - chest + triceps",
+      "strava_id": 18187792841,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 34.0
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Triceps Extension (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 29.9
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 27.2
+        }
+      ]
+    },
+    {
+      "date": "2026-04-20",
+      "name": "Afternoon workout \ud83d\udcaa",
+      "strava_id": 18189818409,
+      "exercises": [
+        {
+          "name": "Lunge (Dumbbell)",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 22.7
+        },
+        {
+          "name": "Uppercuts",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "Squat Shoulder Press",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 18.1
+        }
+      ]
+    },
+    {
+      "date": "2026-04-21",
+      "name": "back + biceps",
+      "strava_id": 18206213388,
+      "exercises": [
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Bicep Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 44.9
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 31.8
+        }
+      ]
+    },
+    {
+      "date": "2026-04-21",
+      "name": "Late night workout \ud83c\udf19",
+      "strava_id": 18206405467,
+      "exercises": [
+        {
+          "name": "Goblet Squat",
+          "sets": 5,
+          "reps": 8,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "Kettlebell Halo",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Russian Twist (Weighted)",
+          "sets": 5,
+          "reps": 20,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Chin Up",
+          "sets": 2,
+          "reps": 5
+        },
+        {
+          "name": "Push Up",
+          "sets": 5,
+          "reps": 8
+        }
+      ]
+    },
+    {
+      "date": "2026-04-23",
+      "name": "4/23 - chest + shoulders",
+      "strava_id": 18228238723,
+      "exercises": [
+        {
+          "name": "Overhead Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 24.9
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 29.5
+        },
+        {
+          "name": "Ab Wheel",
+          "sets": 2,
+          "reps": 6
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 34.0
+        }
+      ]
+    },
+    {
+      "date": "2026-04-28",
+      "name": "chest + triceps",
+      "strava_id": 18294030965,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 7,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Triceps Extension (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 29.9
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 36.3
+        }
+      ]
+    },
+    {
+      "date": "2026-04-28",
+      "name": "4/17 - hiit a",
+      "strava_id": 18294623353,
+      "exercises": [
+        {
+          "name": "Kettlebell Halo",
+          "sets": 5,
+          "reps": 15,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "Russian Twist (Weighted)",
+          "sets": 5,
+          "reps": 15,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "Kettlebell Swing",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "KB Deadbug",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "Push Up",
+          "sets": 5,
+          "reps": 9
+        }
+      ]
+    },
+    {
+      "date": "2026-05-01",
+      "name": "back + biceps",
+      "strava_id": 18331071011,
+      "exercises": [
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Bicep Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 44.9
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 31.8
+        }
+      ]
+    },
+    {
+      "date": "2026-05-01",
+      "name": "Morning workout \u2600\ufe0f",
+      "strava_id": 18331565334,
+      "exercises": [
+        {
+          "name": "Lunge (Dumbbell)",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 22.7
+        },
+        {
+          "name": "Kettlebell Halo",
+          "sets": 5,
+          "reps": 15,
+          "weight_kg": 11.3
+        },
+        {
+          "name": "Kettlebell Swing",
+          "sets": 5,
+          "reps": 10,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Push Up",
+          "sets": 4,
+          "reps": 10
+        },
+        {
+          "name": "Crunch",
+          "sets": 4,
+          "reps": 10
+        }
+      ]
+    },
+    {
+      "date": "2026-05-04",
+      "name": "back + biceps",
+      "strava_id": 18372819094,
+      "exercises": [
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Bicep Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 44.9
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 31.8
+        }
+      ]
+    },
+    {
+      "date": "2026-05-05",
+      "name": "chest + triceps",
+      "strava_id": 18384120890,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 7,
+          "weight_kg": 34.0
+        },
+        {
+          "name": "Triceps Extension (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 32.2
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 36.3
+        }
+      ]
+    },
+    {
+      "date": "2026-05-07",
+      "name": "coverage",
+      "strava_id": 18411577740,
+      "exercises": [
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 9,
+          "weight_kg": 10.2
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Knee Raise Parallel Bars",
+          "sets": 2,
+          "reps": 10
+        },
+        {
+          "name": "Bicep Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 36.3
+        }
+      ]
+    },
+    {
+      "date": "2026-05-08",
+      "name": "chest + shoulders",
+      "strava_id": 18430708814,
+      "exercises": [
+        {
+          "name": "Overhead Press (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 27.2
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 35.2
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Kettlebell Halo",
+          "sets": 2,
+          "reps": 15,
+          "weight_kg": 13.6
+        }
+      ]
+    },
+    {
+      "date": "2026-05-21",
+      "name": "chest + triceps",
+      "strava_id": 18602111474,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 7,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 34.0
+        },
+        {
+          "name": "Triceps Extension (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 17.0
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 1,
+          "reps": 6
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 32.2
+        },
+        {
+          "name": "Chest Press (Machine)",
+          "sets": 2,
+          "reps": 10,
+          "weight_kg": 36.3
+        }
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "name": "chest + shoulders",
+      "strava_id": 18612057673,
+      "exercises": [
+        {
+          "name": "Overhead Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 27.2
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 2,
+          "reps": 7,
+          "weight_kg": 6.8
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Kettlebell Halo",
+          "sets": 2,
+          "reps": 15,
+          "weight_kg": 13.6
+        }
+      ]
+    },
+    {
+      "date": "2026-05-25",
+      "name": "chest + triceps",
+      "strava_id": 18650112077,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Triceps Extension (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 18.1
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 30.4
+        },
+        {
+          "name": "Push Up",
+          "sets": 1,
+          "reps": 20
+        }
+      ]
+    },
+    {
+      "date": "2026-05-27",
+      "name": "back + biceps",
+      "strava_id": 18673647071,
+      "exercises": [
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hammer Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 10.2
+        },
+        {
+          "name": "Bicep Curl (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 9.1
+        },
+        {
+          "name": "Lat Pulldown (Cable)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 44.9
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 2,
+          "reps": 5,
+          "weight_kg": 31.8
+        }
+      ]
+    },
+    {
+      "date": "2026-05-29",
+      "name": "chest + shoulders",
+      "strava_id": 18706106363,
+      "exercises": [
+        {
+          "name": "Overhead Press (Dumbbell)",
+          "sets": 2,
+          "reps": 8,
+          "weight_kg": 27.2
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 2,
+          "reps": 7,
+          "weight_kg": 6.8
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 2,
+          "reps": 6,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Kettlebell Halo",
+          "sets": 2,
+          "reps": 15,
+          "weight_kg": 13.6
+        }
+      ]
+    },
+    {
+      "date": "2026-06-01",
+      "name": "Strength A",
+      "strava_id": 18749648526,
+      "exercises": [
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 31.8
+        },
+        {
+          "name": "Pull Up",
+          "sets": 3,
+          "reps": 5
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 3,
+          "reps": 10,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 3,
+          "reps": 10,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 3,
+          "reps": 9
+        },
+        {
+          "name": "Push Up",
+          "sets": 1,
+          "reps": 20
+        }
+      ]
+    },
+    {
+      "date": "2026-06-05",
+      "name": "Strength B",
+      "strava_id": 18799263390,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 3,
+          "reps": 6,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 3,
+          "reps": 5,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Overhead Press (Dumbbell)",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 27.2
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 30.4
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 1,
+          "reps": 10
+        }
+      ]
+    },
+    {
+      "date": "2026-06-08",
+      "name": "Strength A",
+      "strava_id": 18844696456,
+      "exercises": [
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 3,
+          "reps": 6,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Pull Up",
+          "sets": 3,
+          "reps": 5
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 3,
+          "reps": 10,
+          "weight_kg": 15.9
+        },
+        {
+          "name": "Hanging Leg Raise",
+          "sets": 2,
+          "reps": 7
+        },
+        {
+          "name": "Push Up",
+          "sets": 1,
+          "reps": 25
+        }
+      ]
+    },
+    {
+      "date": "2026-06-09",
+      "name": "Strength B",
+      "strava_id": 18858730589,
+      "exercises": [
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 3,
+          "reps": 5,
+          "weight_kg": 40.8
+        },
+        {
+          "name": "Bent Over Row (Dumbbell)",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Overhead Press (Dumbbell)",
+          "sets": 3,
+          "reps": 6,
+          "weight_kg": 27.2
+        },
+        {
+          "name": "Cable Crunch",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 34.9
+        },
+        {
+          "name": "Chest Dip",
+          "sets": 1,
+          "reps": 6
+        }
+      ]
+    },
+    {
+      "date": "2026-06-11",
+      "name": "Strength C",
+      "strava_id": 18885335275,
+      "exercises": [
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 34.0
+        },
+        {
+          "name": "Pull Up",
+          "sets": 3,
+          "reps": 6
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 3,
+          "reps": 10,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Hanging Knee Raise",
+          "sets": 1,
+          "reps": 8
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 3,
+          "reps": 15
+        },
+        {
+          "name": "Push Up",
+          "sets": 1,
+          "reps": 23
+        }
+      ]
+    },
+    {
+      "date": "2026-06-15",
+      "name": "Strength A",
+      "strava_id": 18936767563,
+      "exercises": [
+        {
+          "name": "Incline Bench Press (Dumbbell)",
+          "sets": 3,
+          "reps": 8,
+          "weight_kg": 36.3
+        },
+        {
+          "name": "Pull Up",
+          "sets": 3,
+          "reps": 7
+        },
+        {
+          "name": "Lateral Raise (Dumbbell)",
+          "sets": 3,
+          "reps": 10,
+          "weight_kg": 7.9
+        },
+        {
+          "name": "Decline Crunch (Weighted)",
+          "sets": 3,
+          "reps": 14
+        },
+        {
+          "name": "Push Up",
+          "sets": 1,
+          "reps": 30
+        }
+      ]
+    },
+    {
+      "date": "2026-06-22",
+      "name": "Morning workout \u2600\ufe0f",
+      "strava_id": 19020746647,
+      "exercises": [
+        {
+          "name": "Pull Up",
+          "sets": 2,
+          "reps": 8
+        },
+        {
+          "name": "Kettlebell Halo",
+          "sets": 4,
+          "reps": 15,
+          "weight_kg": 13.6
+        },
+        {
+          "name": "Leg Raise Parallel Bars",
+          "sets": 4,
+          "reps": 8
+        },
+        {
+          "name": "Seated Shoulder Press (Machine)",
+          "sets": 3,
+          "reps": 10,
+          "weight_kg": 40.8
+        },
+        {
+          "name": "Push Up",
+          "sets": 2,
+          "reps": 17
+        }
+      ]
+    },
+    {
+      "date": "2026-06-25",
+      "name": "Morning workout \u2600\ufe0f",
+      "strava_id": 19061086159,
+      "exercises": [
+        {
+          "name": "Pull Up",
+          "sets": 4,
+          "reps": 7
+        },
+        {
+          "name": "Push Up",
+          "sets": 4,
+          "reps": 15
+        },
+        {
+          "name": "Crunch",
+          "sets": 4,
+          "reps": 10
+        },
+        {
+          "name": "Lunge",
+          "sets": 4,
+          "reps": 15
+        },
+        {
+          "name": "Plank",
+          "sets": 1,
+          "reps": 0
+        }
+      ]
+    },
+    {
+      "date": "2026-06-29",
+      "name": "Afternoon workout \ud83d\udcaa",
+      "strava_id": 19115175852,
+      "exercises": [
+        {
+          "name": "Pull Up",
+          "sets": 3,
+          "reps": 7
+        },
+        {
+          "name": "Push Up",
+          "sets": 3,
+          "reps": 16
+        },
+        {
+          "name": "Bench Press (Dumbbell)",
+          "sets": 3,
+          "reps": 5,
+          "weight_kg": 40.8
+        }
+      ]
+    }
+  ]
+}
