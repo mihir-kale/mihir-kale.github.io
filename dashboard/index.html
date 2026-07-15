@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header { margin-bottom: 32px; }
+    header h1 { font-size: 28px; font-weight: 700; }
+    header p { color: #86868b; font-size: 13px; margin-top: 4px; }
+
+    .widget {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+
+    .widget h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    /* Calendar */
+    .calendars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .calendar-frame {
+      width: 100%;
+      height: 500px;
+      border: 1px solid #d2d2d7;
+      border-radius: 8px;
+    }
+
+    .calendar-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 8px;
+    }
+
+    .calendar-placeholder {
+      height: 500px;
+      border: 2px dashed #d2d2d7;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #86868b;
+      font-size: 14px;
+    }
+
+    /* Tasks */
+    .task-list { list-style: none; }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f2;
+    }
+
+    .task-item:last-child { border-bottom: none; }
+
+    .task-title { flex: 1; font-size: 14px; }
+
+    .task-due {
+      font-size: 12px;
+      color: #86868b;
+      white-space: nowrap;
+    }
+
+    .task-due.overdue { color: #ff3b30; font-weight: 600; }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+
+    .badge.high { background: #ffe5e5; color: #ff3b30; }
+    .badge.medium { background: #fff3e0; color: #ff9500; }
+    .badge.low { background: #e8f5e9; color: #34c759; }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: capitalize;
+    }
+
+    .status-badge.ready { background: #e3f2fd; color: #007aff; }
+    .status-badge.in-progress { background: #fff3e0; color: #ff9500; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #86868b;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #86868b;
+      font-size: 14px;
+    }
+
+    /* Strava placeholder */
+    .strava-placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: #86868b;
+    }
+
+    .strava-placeholder .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .calendars { grid-template-columns: 1fr; }
+      .calendar-frame, .calendar-placeholder { height: 400px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dashboard</h1>
+    <p id="lastUpdated"></p>
+  </header>
+
+  <section class="widget">
+    <h2>Week Ahead</h2>
+    <div class="calendars">
+      <div>
+        <div class="calendar-label">Google Calendar</div>
+        <iframe
+          class="calendar-frame"
+          src="https://calendar.google.com/calendar/embed?src=mihir.p.kale%40gmail.com&ctz=America/New_York"
+          frameborder="0"
+          scrolling="yes"
+        ></iframe>
+      </div>
+      <div>
+        <div class="calendar-label">Outlook Calendar</div>
+        <iframe
+          class="calendar-frame"
+          src="https://outlook.office365.com/owa/calendar/9c4adb5e06504c1fa6d0a8fef38f7bd7@unc.edu/769212afd989474696c0f8fc4b21689b1725670238033636484/calendar.html"
+          frameborder="0"
+          scrolling="yes"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class="widget">
+    <h2>Today's Tasks</h2>
+    <div id="tasksContainer" class="loading">Loading tasks...</div>
+  </section>
+
+  <section class="widget">
+    <h2>Strava</h2>
+    <div class="strava-placeholder">
+      <div class="icon">🏃</div>
+      <p>Strava integration coming soon</p>
+    </div>
+  </section>
+
+  <script>
+    const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T00:00:00");
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
+
+    function isOverdue(dateStr) {
+      if (!dateStr) return false;
+      const today = new Date().toISOString().slice(0, 10);
+      return dateStr < today;
+    }
+
+    function renderTasks(tasks) {
+      const el = document.getElementById("tasksContainer");
+
+      if (!tasks.length) {
+        el.innerHTML = '<div class="empty-state">No pending tasks. Nice work!</div>';
+        return;
+      }
+
+      el.innerHTML = '<ul class="task-list">' + tasks.map(t => {
+        const dueClass = isOverdue(t.due_date) ? "overdue" : "";
+        const dueText = t.due_date ? formatDate(t.due_date) : "";
+        return `<li class="task-item">
+          <span class="badge ${t.priority}">${t.priority}</span>
+          <span class="task-title">${t.title}</span>
+          <span class="status-badge ${t.status}">${t.status}</span>
+          ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
+        </li>`;
+      }).join("") + "</ul>";
+    }
+
+    async function loadTasks() {
+      try {
+        const { data, error } = await db.from("nodes")
+          .select("id, title, status, priority, due_date")
+          .neq("status", "done")
+          .order("due_date", { ascending: true });
+
+        if (error) throw error;
+        renderTasks(data || []);
+      } catch (e) {
+        console.error("Failed to load tasks:", e);
+        document.getElementById("tasksContainer").innerHTML =
+          '<div class="empty-state">Failed to load tasks</div>';
+      }
+    }
+
+    document.getElementById("lastUpdated").textContent =
+      "Last refreshed: " + new Date().toLocaleString();
+
+    loadTasks();
+  </script>
+</body>
+</html>
