@@ -92,6 +92,8 @@ def main():
                 continue
             if end and end < window_start:
                 continue
+            if not end and start < window_start:
+                continue
 
             summary = ev.get("summary", "Untitled")
             location = ev.get("location", "")
