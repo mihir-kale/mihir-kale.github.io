@@ -90,6 +90,10 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .cal-event-time.today {
+      color: #0a84ff;
+    }
+
     .cal-event-title {
       font-size: 13px;
       color: #ccc;
@@ -308,9 +312,10 @@
         const items = evts.map(ev => {
           const startTime = new Date(ev.start);
           const timeStr = ev.allDay ? "All day" : startTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
+          const timeClass = isToday ? "cal-event-time today" : "cal-event-time";
           const loc = ev.location ? `<div class="cal-event-loc">${ev.location}</div>` : "";
           return `<div class="cal-event">
-            <span class="cal-event-time">${timeStr}</span>
+            <span class="${timeClass}">${timeStr}</span>
             <span class="cal-event-title">${ev.title}</span>
           </div>${loc ? `<div style="padding-left:68px">${loc}</div>` : ""}`;
         }).join("");
