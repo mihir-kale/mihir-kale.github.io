@@ -1,4 +1,4 @@
-name: Update Fitness Data
+name: Update Data
 
 on:
   schedule:
@@ -28,11 +28,14 @@ jobs:
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
         run: python scripts/fetch_strava.py
 
+      - name: Fetch and process calendar data
+        run: python scripts/fetch_calendar.py
+
       - name: Commit updated data
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add dashboard/data/fitness-data.json
+          git add dashboard/data/fitness-data.json dashboard/data/calendar-events.json
           git diff --quiet && git diff --staged --quiet || \
-            git commit -m "Update fitness data [skip ci]"
+            git commit -m "Update data [skip ci]"
           git push

@@ -55,12 +55,60 @@
     }
 
     /* Calendar */
-    .calendar-frame {
-      width: 100%;
-      height: 600px;
-      border: none;
-      border-radius: 8px;
-      filter: invert(0.88) hue-rotate(180deg) brightness(1.15);
+    .calendar-list { list-style: none; max-height: 560px; overflow-y: auto; }
+
+    .cal-day {
+      margin-bottom: 16px;
+    }
+
+    .cal-day:last-child { margin-bottom: 0; }
+
+    .cal-day-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .cal-day-label.today { color: #0a84ff; }
+
+    .cal-event {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+    }
+
+    .cal-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .cal-event-info { flex: 1; }
+
+    .cal-event-title {
+      font-size: 13px;
+      color: #ccc;
+      font-weight: 400;
+    }
+
+    .cal-event-time {
+      font-size: 11px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .cal-event-loc {
+      font-size: 10px;
+      color: #444;
+      margin-top: 2px;
     }
 
     /* Tasks */
@@ -214,7 +262,6 @@
       .columns {
         grid-template-columns: 1fr;
       }
-      .calendar-frame { height: 400px; }
     }
   </style>
 </head>
@@ -225,12 +272,7 @@
   <div class="columns">
     <section class="widget">
       <h2>Calendar</h2>
-      <iframe
-        class="calendar-frame"
-        src="https://calendar.google.com/calendar/embed?src=mihir.p.kale%40gmail.com&src=cq36eb65v48haqgbjgno7grd5q8gpq1f@import.calendar.google.com&ctz=America/New_York&view=a"
-        frameborder="0"
-        scrolling="yes"
-      ></iframe>
+      <div id="calendarContainer" class="loading">Loading...</div>
     </section>
 
     <section class="widget">
@@ -248,6 +290,63 @@
     const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function renderCalendar(events) {
+      const el = document.getElementById("calendarContainer");
+      const today = new Date().toISOString().slice(0, 10);
+
+      if (!events.length) {
+        el.innerHTML = '<div class="empty-state">No upcoming events</div>';
+        return;
+      }
+
+      const grouped = {};
+      events.forEach(ev => {
+        const date = ev.start.slice(0, 10);
+        if (!grouped[date]) grouped[date] = [];
+        grouped[date].push(ev);
+      });
+
+      const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+      el.innerHTML = '<ul class="calendar-list">' + Object.entries(grouped).map(([date, evts]) => {
+        const d = new Date(date + "T12:00:00");
+        const isToday = date === today;
+        const label = `${dayNames[d.getDay()]}, ${d.getDate()} ${monthNames[d.getMonth()]}`;
+
+        const items = evts.map(ev => {
+          const startTime = new Date(ev.start);
+          const timeStr = ev.allDay ? "All day" : startTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+          const loc = ev.location ? `<div class="cal-event-loc">${ev.location}</div>` : "";
+          return `<div class="cal-event">
+            <div class="cal-dot" style="background:${ev.color}"></div>
+            <div class="cal-event-info">
+              <div class="cal-event-title">${ev.title}</div>
+              <div class="cal-event-time">${timeStr}</div>
+              ${loc}
+            </div>
+          </div>`;
+        }).join("");
+
+        return `<li class="cal-day">
+          <div class="cal-day-label${isToday ? " today" : ""}">${label}${isToday ? " — TODAY" : ""}</div>
+          ${items}
+        </li>`;
+      }).join("") + "</ul>";
+    }
+
+    async function loadCalendar() {
+      try {
+        const resp = await fetch("data/calendar-events.json");
+        if (!resp.ok) throw new Error("No data");
+        const data = await resp.json();
+        renderCalendar(data.events || []);
+      } catch (e) {
+        document.getElementById("calendarContainer").innerHTML =
+          '<div class="empty-state">No data yet</div>';
+      }
+    }
 
     function renderDate() {
       const now = new Date();
@@ -434,6 +533,7 @@
     renderDate();
     loadTasks();
     loadStrava();
+    loadCalendar();
   </script>
 </body>
 </html>
