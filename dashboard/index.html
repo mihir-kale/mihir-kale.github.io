@@ -35,37 +35,11 @@
     }
 
     /* Calendar */
-    .calendars {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
     .calendar-frame {
       width: 100%;
       height: 500px;
       border: 1px solid #d2d2d7;
       border-radius: 8px;
-    }
-
-    .calendar-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #86868b;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 8px;
-    }
-
-    .calendar-placeholder {
-      height: 500px;
-      border: 2px dashed #d2d2d7;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #86868b;
-      font-size: 14px;
     }
 
     /* Tasks */
@@ -142,8 +116,7 @@
     }
 
     @media (max-width: 768px) {
-      .calendars { grid-template-columns: 1fr; }
-      .calendar-frame, .calendar-placeholder { height: 400px; }
+      .calendar-frame { height: 400px; }
     }
   </style>
 </head>
@@ -155,26 +128,12 @@
 
   <section class="widget">
     <h2>Week Ahead</h2>
-    <div class="calendars">
-      <div>
-        <div class="calendar-label">Google Calendar</div>
-        <iframe
-          class="calendar-frame"
-          src="https://calendar.google.com/calendar/embed?src=mihir.p.kale%40gmail.com&ctz=America/New_York"
-          frameborder="0"
-          scrolling="yes"
-        ></iframe>
-      </div>
-      <div>
-        <div class="calendar-label">Outlook Calendar</div>
-        <iframe
-          class="calendar-frame"
-          src="https://outlook.office365.com/owa/calendar/9c4adb5e06504c1fa6d0a8fef38f7bd7@unc.edu/769212afd989474696c0f8fc4b21689b1725670238033636484/calendar.html"
-          frameborder="0"
-          scrolling="yes"
-        ></iframe>
-      </div>
-    </div>
+    <iframe
+      class="calendar-frame"
+      src="https://calendar.google.com/calendar/embed?src=mihir.p.kale%40gmail.com&ctz=America/New_York"
+      frameborder="0"
+      scrolling="yes"
+    ></iframe>
   </section>
 
   <section class="widget">
