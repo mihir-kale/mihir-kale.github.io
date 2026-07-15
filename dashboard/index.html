@@ -257,12 +257,18 @@
     async function loadTasks() {
       try {
         const { data, error } = await db.from("nodes")
-          .select("id, title, due_date")
-          .neq("status", "done")
-          .order("due_date", { ascending: true });
+          .select("id, parent_id, title, status, due_date");
 
         if (error) throw error;
-        renderTasks(data || []);
+        const all = data || [];
+
+        const parentIds = new Set(all.filter(n => n.parent_id).map(n => n.parent_id));
+
+        const pending = all
+          .filter(n => n.status !== "done" && !parentIds.has(n.id))
+          .sort((a, b) => (a.due_date || "").localeCompare(b.due_date || ""));
+
+        renderTasks(pending);
       } catch (e) {
         console.error("Failed to load tasks:", e);
         document.getElementById("tasksContainer").innerHTML =
