@@ -395,8 +395,9 @@
 
     /* Nutrition widget */
     .nutrition-widget { padding: 0; }
-    .nutrition-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 16px 18px 0; }
+    .nutrition-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 0; }
     .nutrition-header h2 { margin: 0; }
+    .nutrition-total { font-size: 13px; color: #0a84ff; font-weight: 500; }
     .chevron { font-size: 14px; transition: transform 0.2s; color: var(--text); }
     .nutrition-widget.collapsed .chevron { transform: rotate(-90deg); }
     .nutrition-body { overflow: hidden; max-height: 400px; transition: max-height 0.3s ease; padding: 0 18px 16px; }
@@ -452,6 +453,7 @@
       <section class="widget nutrition-widget">
         <div class="nutrition-header" id="nutritionToggle">
           <h2>Nutrition</h2>
+          <span class="nutrition-total" id="nutritionTotal"></span>
           <span class="chevron" id="nutritionChevron">&#9662;</span>
         </div>
         <div class="nutrition-body" id="nutritionBody">
@@ -459,7 +461,6 @@
             <input type="text" id="nutritionFood" placeholder="Food" />
             <input type="text" id="nutritionCal" placeholder="cal / pro" />
           </div>
-          <div id="nutritionList"></div>
         </div>
       </section>
 
@@ -815,26 +816,23 @@
     });
 
     async function loadNutrition() {
-      const el = document.getElementById("nutritionList");
+      const el = document.getElementById("nutritionTotal");
       const today = new Date().toISOString().slice(0, 10);
       try {
         const { data, error } = await db
           .from("nutrition")
-          .select("food_name, calories, protein")
-          .eq("logged_date", today)
-          .order("created_at", { ascending: true });
+          .select("calories, protein")
+          .eq("logged_date", today);
         if (error) throw error;
         if (!data.length) {
-          el.innerHTML = "";
+          el.textContent = "";
           return;
         }
-        el.innerHTML = data.map(n => {
-          const macros = n.protein != null ? `${n.calories} cal / ${n.protein}g pro` : `${n.calories} cal`;
-          return `<div class="nutrition-entry"><span class="food-name">${n.food_name}</span><span class="macros">${macros}</span></div>`;
-        }).join("");
+        const totalCal = data.reduce((s, n) => s + (n.calories || 0), 0);
+        const totalPro = data.reduce((s, n) => s + (n.protein || 0), 0);
+        el.textContent = totalPro > 0 ? `${totalCal} cal / ${totalPro}g pro` : `${totalCal} cal`;
       } catch (e) {
         console.error("Failed to load nutrition:", e);
-        el.innerHTML = "";
       }
     }
 
