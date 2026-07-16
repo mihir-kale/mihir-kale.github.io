@@ -660,66 +660,41 @@
 
     function renderStrava(data) {
       const el = document.getElementById("stravaContainer");
-      const { cardio, summary } = data;
+      const { cardio, workouts } = data;
 
       const { start, end } = getWeekBounds();
-      const weekActivities = cardio.filter(a => {
+      const weekCardio = cardio.filter(a => {
         const d = new Date(a.date + "T00:00:00");
         return d >= start && d <= end;
       });
-      const weekDist = weekActivities.reduce((s, a) => s + a.distance_km, 0).toFixed(1);
-      const weekTime = (weekActivities.reduce((s, a) => s + a.moving_time_min, 0) / 60).toFixed(1);
-      const weekCount = weekActivities.length;
+      const totalKm = weekCardio.reduce((s, a) => s + a.distance_km, 0).toFixed(1);
 
-      const lastRun = cardio[cardio.length - 1];
-      const lastPace = lastRun.avg_speed_kmh
-        ? (60 / lastRun.avg_speed_kmh).toFixed(1)
-        : "—";
-
-      const prs = Object.values(summary.pr_lifts)
-        .sort((a, b) => b.weight_kg - a.weight_kg)
-        .slice(0, 4);
+      const weekWorkouts = (workouts || []).filter(w => {
+        const d = new Date(w.date + "T00:00:00");
+        return d >= start && d <= end;
+      });
+      const totalSets = weekWorkouts.reduce((s, w) =>
+        s + (w.exercises || []).reduce((ss, ex) => ss + (ex.sets || 0), 0), 0);
+      const totalVolume = weekWorkouts.reduce((s, w) =>
+        s + (w.exercises || []).reduce((ss, ex) => ss + (ex.sets || 0) * (ex.reps || 0) * (ex.weight_kg || 0), 0), 0);
 
       el.innerHTML = `
         <div class="strava-section">
           <div class="strava-label">This Week</div>
           <div class="stat-row">
             <div class="stat-box">
-              <div class="stat-value">${weekCount}</div>
-              <div class="stat-unit">runs</div>
+              <div class="stat-value">${totalKm}</div>
+              <div class="stat-unit">km run</div>
             </div>
             <div class="stat-box">
-              <div class="stat-value">${weekDist}</div>
-              <div class="stat-unit">km</div>
+              <div class="stat-value">${(totalVolume / 1000).toFixed(1)}</div>
+              <div class="stat-unit">vol (t)</div>
             </div>
             <div class="stat-box">
-              <div class="stat-value">${weekTime}</div>
-              <div class="stat-unit">hrs</div>
+              <div class="stat-value">${totalSets}</div>
+              <div class="stat-unit">sets</div>
             </div>
           </div>
-        </div>
-
-        <div class="strava-section">
-          <div class="strava-label">Last Run</div>
-          <div class="last-run">
-            <div class="last-run-name">${lastRun.name}</div>
-            <div class="last-run-meta">
-              <span>${lastRun.distance_km} km</span>
-              <span>${lastRun.moving_time_min} min</span>
-              <span>${lastPace} /km</span>
-              <span>${lastRun.date}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="strava-section">
-          <div class="strava-label">Top PRs</div>
-          ${prs.map(p => `
-            <div class="pr-item">
-              <span class="pr-name">${p.name}</span>
-              <span class="pr-weight">${p.weight_kg} kg</span>
-            </div>
-          `).join("")}
         </div>
       `;
     }
