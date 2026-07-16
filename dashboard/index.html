@@ -27,7 +27,6 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       color: #fff;
-      margin-bottom: 24px;
     }
 
     .columns {
@@ -423,7 +422,8 @@
     .listen-track-artist { font-size: 11px; color: #666; margin-top: 2px; }
 
     /* Top bar & Focus button */
-    .top-bar { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 8px; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header-actions { display: flex; gap: 8px; }
     .focus-btn, .logout-btn {
       background: none;
       border: 1px solid #333;
@@ -503,11 +503,13 @@
   </div>
 
   <div id="authGate">
-    <div class="top-bar">
-      <button class="focus-btn" id="focusBtn">Focus</button>
-      <button class="logout-btn" id="logoutBtn">Sign out</button>
+    <div class="header-row">
+      <div class="date-header" id="dateHeader"></div>
+      <div class="header-actions">
+        <button class="focus-btn" id="focusBtn">Focus</button>
+        <button class="logout-btn" id="logoutBtn">Sign out</button>
+      </div>
     </div>
-    <div class="date-header" id="dateHeader"></div>
 
     <div class="columns">
     <div class="left-col">
