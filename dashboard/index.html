@@ -37,7 +37,7 @@
       align-items: start;
     }
 
-    .right-col {
+    .left-col, .right-col {
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -411,6 +411,19 @@
     .nutrition-entry .food-name { font-weight: 500; }
     .nutrition-entry .macros { color: var(--text-muted); }
     .nutrition-empty { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
+
+    /* Read widget */
+    .read-widget { padding: 0; }
+    .read-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 0; }
+    .read-header h2 { margin: 0; }
+    .read-body { overflow: hidden; max-height: 400px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
+    .read-widget.collapsed .read-body { max-height: 0; padding: 0 18px 14px; }
+    .read-widget.collapsed .chevron { transform: rotate(-90deg); }
+    .read-item { padding: 8px 0; border-bottom: 1px solid #1a1a1a; }
+    .read-item:last-child { border-bottom: none; }
+    .read-item a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 400; transition: color 0.2s; }
+    .read-item a:hover { color: #0a84ff; }
+    .read-item .read-source { font-size: 11px; color: #666; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -434,10 +447,22 @@
     <div class="date-header" id="dateHeader"></div>
 
     <div class="columns">
-    <section class="widget">
-      <h2>Calendar</h2>
-      <div id="calendarContainer" class="loading">Loading...</div>
-    </section>
+    <div class="left-col">
+      <section class="widget">
+        <h2>Calendar</h2>
+        <div id="calendarContainer" class="loading">Loading...</div>
+      </section>
+
+      <section class="widget read-widget">
+        <div class="read-header" id="readToggle">
+          <h2>Read</h2>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="read-body" id="readBody">
+          <div id="readList"></div>
+        </div>
+      </section>
+    </div>
 
     <section class="widget">
       <h2>Tasks</h2>
@@ -773,6 +798,7 @@
       loadCalendar();
       loadWorkout();
       loadNutrition();
+      loadRead();
     }
 
     /* ── Nutrition ────────────────────────────────── */
@@ -832,6 +858,36 @@
         loadNutrition();
       } catch (e) {
         console.error("Failed to add nutrition:", e);
+      }
+    }
+
+    /* ── Read widget ──────────────────────────────── */
+    const readToggle = document.getElementById("readToggle");
+    const readWidget = readToggle.closest(".read-widget");
+    readToggle.addEventListener("click", () => {
+      readWidget.classList.toggle("collapsed");
+    });
+
+    async function loadRead() {
+      const el = document.getElementById("readList");
+      try {
+        const resp = await fetch("data/read-feeds.json?v=" + Date.now());
+        if (!resp.ok) throw new Error("No data");
+        const data = await resp.json();
+        if (!data.articles || !data.articles.length) {
+          el.innerHTML = "";
+          return;
+        }
+        el.innerHTML = data.articles.map(a => {
+          const proxyUrl = "https://removepaywall.com/" + a.url;
+          return `<div class="read-item">
+            <a href="${proxyUrl}" target="_blank" rel="noopener">${a.title}</a>
+            <div class="read-source">${a.source}</div>
+          </div>`;
+        }).join("");
+      } catch (e) {
+        console.error("Failed to load read feeds:", e);
+        el.innerHTML = "";
       }
     }
 
