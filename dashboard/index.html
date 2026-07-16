@@ -479,7 +479,7 @@
 
     function renderCalendar(events) {
       const el = document.getElementById("calendarContainer");
-      const today = new Date().toISOString().slice(0, 10);
+      const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 
       if (!events.length) {
         el.innerHTML = '<div class="empty-state">No upcoming events</div>';
