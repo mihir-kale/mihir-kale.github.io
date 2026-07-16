@@ -424,6 +424,21 @@
     .read-item a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 400; transition: color 0.2s; }
     .read-item a:hover { color: #0a84ff; }
     .read-item .read-source { font-size: 11px; color: #666; margin-top: 2px; }
+
+    /* Listen widget */
+    .listen-widget { padding: 0; }
+    .listen-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 0; }
+    .listen-header h2 { margin: 0; }
+    .listen-status { font-size: 13px; color: #0a84ff; font-weight: 500; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    .listen-body { overflow: hidden; max-height: 200px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
+    .listen-widget.collapsed .listen-body { max-height: 0; padding: 0 18px 0; }
+    .listen-widget.collapsed .chevron { transform: rotate(-90deg); }
+    .listen-connect { font-size: 13px; color: var(--text-muted); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
+    .listen-connect:hover { color: #fff; }
+    .listen-track { padding: 8px 0; border-bottom: 1px solid #1a1a1a; }
+    .listen-track:last-child { border-bottom: none; }
+    .listen-track-name { font-size: 14px; font-weight: 400; color: #fff; }
+    .listen-track-artist { font-size: 11px; color: #666; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -460,6 +475,18 @@
         </div>
         <div class="read-body" id="readBody">
           <div id="readList"></div>
+        </div>
+      </section>
+
+      <section class="widget listen-widget">
+        <div class="listen-header" id="listenToggle">
+          <h2>Listen</h2>
+          <span class="listen-status" id="listenStatus"></span>
+          <span class="chevron">&#9662;</span>
+        </div>
+        <div class="listen-body" id="listenBody">
+          <div id="listenConnect"></div>
+          <div id="listenTopTracks"></div>
         </div>
       </section>
     </div>
@@ -501,6 +528,20 @@
     const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Handle Spotify OAuth callback
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (code) {
+        try {
+          await spotifyExchangeCode(code);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (e) {
+          console.error("Spotify auth failed:", e);
+        }
+      }
+    })();
 
     function renderCalendar(events) {
       const el = document.getElementById("calendarContainer");
@@ -799,6 +840,9 @@
       loadWorkout();
       loadNutrition();
       loadRead();
+      loadCurrentlyPlaying();
+      loadTopTracks();
+      setInterval(loadCurrentlyPlaying, 30000);
     }
 
     /* ── Nutrition ────────────────────────────────── */
@@ -887,6 +931,182 @@
         }).join("");
       } catch (e) {
         console.error("Failed to load read feeds:", e);
+        el.innerHTML = "";
+      }
+    }
+
+    /* ── Listen widget (Spotify) ─────────────────── */
+    const SPOTIFY_CLIENT_ID = "3671d178bb3a45fa83badb1087ccf849";
+    const SPOTIFY_REDIRECT_URI = "https://mihir-kale.github.io/dashboard/";
+    const SPOTIFY_SCOPES = "user-read-currently-playing user-top-read";
+    const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
+    const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
+
+    const listenToggle = document.getElementById("listenToggle");
+    const listenWidget = listenToggle.closest(".listen-widget");
+    listenToggle.addEventListener("click", () => {
+      listenWidget.classList.toggle("collapsed");
+    });
+
+    function generateRandomString(length) {
+      const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const values = crypto.getRandomValues(new Uint8Array(length));
+      return values.reduce((acc, x) => acc + possible[x % possible.length], "");
+    }
+
+    async function sha256(plain) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(plain);
+      return window.crypto.subtle.digest("SHA-256", data);
+    }
+
+    function base64encode(input) {
+      return btoa(String.fromCharCode(...new Uint8Array(input)))
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
+    }
+
+    async function spotifyLogin() {
+      const codeVerifier = generateRandomString(64);
+      localStorage.setItem("spotify_code_verifier", codeVerifier);
+      const codeChallenge = base64encode(await sha256(codeVerifier));
+
+      const params = new URLSearchParams({
+        client_id: SPOTIFY_CLIENT_ID,
+        response_type: "code",
+        redirect_uri: SPOTIFY_REDIRECT_URI,
+        scope: SPOTIFY_SCOPES,
+        code_challenge_method: "S256",
+        code_challenge: codeChallenge,
+      });
+
+      window.location.href = SPOTIFY_AUTH_URL + "?" + params.toString();
+    }
+
+    async function spotifyExchangeCode(code) {
+      const codeVerifier = localStorage.getItem("spotify_code_verifier");
+      const body = new URLSearchParams({
+        grant_type: "authorization_code",
+        code,
+        redirect_uri: SPOTIFY_REDIRECT_URI,
+        client_id: SPOTIFY_CLIENT_ID,
+        code_verifier: codeVerifier,
+      });
+
+      const resp = await fetch(SPOTIFY_TOKEN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      });
+
+      if (!resp.ok) throw new Error("Token exchange failed");
+      const data = await resp.json();
+      localStorage.setItem("spotify_access_token", data.access_token);
+      localStorage.setItem("spotify_refresh_token", data.refresh_token);
+      localStorage.setItem("spotify_token_expires", Date.now() + data.expires_in * 1000);
+      return data;
+    }
+
+    async function spotifyRefreshToken() {
+      const refreshToken = localStorage.getItem("spotify_refresh_token");
+      if (!refreshToken) return null;
+
+      const body = new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+        client_id: SPOTIFY_CLIENT_ID,
+      });
+
+      const resp = await fetch(SPOTIFY_TOKEN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      });
+
+      if (!resp.ok) return null;
+      const data = await resp.json();
+      localStorage.setItem("spotify_access_token", data.access_token);
+      localStorage.setItem("spotify_token_expires", Date.now() + data.expires_in * 1000);
+      if (data.refresh_token) localStorage.setItem("spotify_refresh_token", data.refresh_token);
+      return data.access_token;
+    }
+
+    async function getSpotifyToken() {
+      const token = localStorage.getItem("spotify_access_token");
+      const expires = parseInt(localStorage.getItem("spotify_token_expires") || "0");
+      if (token && Date.now() < expires - 60000) return token;
+      return await spotifyRefreshToken();
+    }
+
+    async function loadCurrentlyPlaying() {
+      const statusEl = document.getElementById("listenStatus");
+      const token = await getSpotifyToken();
+      if (!token) {
+        statusEl.innerHTML = '<button class="listen-connect" onclick="spotifyLogin()">Connect Spotify</button>';
+        return;
+      }
+
+      try {
+        const resp = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        if (resp.status === 204 || resp.status === 202) {
+          statusEl.textContent = "Nothing playing";
+          return;
+        }
+
+        if (!resp.ok) {
+          statusEl.textContent = "";
+          return;
+        }
+
+        const data = await resp.json();
+        if (!data || !data.is_playing || !data.item) {
+          statusEl.textContent = "Paused";
+          return;
+        }
+
+        statusEl.textContent = data.item.name;
+        statusEl.title = data.item.name;
+      } catch (e) {
+        statusEl.textContent = "";
+      }
+    }
+
+    async function loadTopTracks() {
+      const el = document.getElementById("listenTopTracks");
+      const connectEl = document.getElementById("listenConnect");
+      const token = await getSpotifyToken();
+      if (!token) {
+        connectEl.innerHTML = "";
+        return;
+      }
+
+      try {
+        const resp = await fetch("https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=3", {
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        if (!resp.ok) {
+          el.innerHTML = "";
+          return;
+        }
+
+        const data = await resp.json();
+        if (!data.items || !data.items.length) {
+          el.innerHTML = "";
+          return;
+        }
+
+        el.innerHTML = data.items.map(track => `
+          <div class="listen-track">
+            <div class="listen-track-name">${track.name}</div>
+            <div class="listen-track-artist">${track.artists.map(a => a.name).join(", ")}</div>
+          </div>
+        `).join("");
+      } catch (e) {
         el.innerHTML = "";
       }
     }
