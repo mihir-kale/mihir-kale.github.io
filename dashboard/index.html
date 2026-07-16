@@ -182,13 +182,28 @@
 
     .task-item.high-priority .task-title { color: #0a84ff; }
 
-    .task-input-row {
-      padding: 12px 18px;
-      border-top: 1px solid #1a1a1a;
+    .task-add-btn {
+      opacity: 0;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0 4px;
+      transition: opacity .2s, color .2s;
+      flex-shrink: 0;
     }
-    .task-input-row input {
-      width: 100%;
-      padding: 8px;
+    .task-item:hover .task-add-btn { opacity: 1; }
+    .task-add-btn:hover { color: #fff; }
+
+    .task-child-input {
+      display: flex;
+      gap: 6px;
+      padding: 6px 0 6px 32px;
+    }
+    .task-child-input input {
+      flex: 1;
+      padding: 6px 8px;
       border: 1px solid #333;
       border-radius: 6px;
       background: var(--bg);
@@ -196,8 +211,8 @@
       font-size: 13px;
       font-family: inherit;
     }
-    .task-input-row input::placeholder { color: #666; }
-    .task-input-row input:focus { outline: none; border-color: #444; }
+    .task-child-input input::placeholder { color: #666; }
+    .task-child-input input:focus { outline: none; border-color: #444; }
 
     .empty-state {
       padding: 40px 20px;
@@ -571,9 +586,6 @@
     <section class="widget">
       <h2>Tasks</h2>
       <div id="tasksContainer" class="loading">Loading...</div>
-      <div class="task-input-row">
-        <input type="text" id="taskInput" placeholder="Add task..." />
-      </div>
     </section>
 
     <div class="right-col">
@@ -719,6 +731,7 @@
             </div>
             <span class="task-title">${t.title}</span>
             ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
+            <button class="task-add-btn" data-parent-id="${t.id}">+</button>
           </li>`;
         }).join("") + "</ul>";
       }
@@ -726,7 +739,44 @@
       el.innerHTML = html;
 
       el.querySelectorAll(".task-item").forEach(item => {
-        item.addEventListener("click", () => completeTask(item.dataset.id, item));
+        item.addEventListener("click", (e) => {
+          if (e.target.closest(".task-add-btn")) return;
+          completeTask(item.dataset.id, item);
+        });
+      });
+
+      el.querySelectorAll(".task-add-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const existing = el.querySelector(".task-child-input");
+          if (existing) existing.remove();
+          const li = btn.closest(".task-item");
+          const inputRow = document.createElement("div");
+          inputRow.className = "task-child-input";
+          inputRow.innerHTML = `<input type="text" placeholder="Add subtask..." autofocus />`;
+          li.after(inputRow);
+          const input = inputRow.querySelector("input");
+          input.focus();
+          input.addEventListener("keydown", async (ev) => {
+            if (ev.key === "Enter") {
+              const title = input.value.trim();
+              if (!title) return;
+              input.disabled = true;
+              try {
+                await addTask(title, btn.dataset.parentId);
+                inputRow.remove();
+              } catch (err) {
+                console.error("Failed to add task:", err);
+                input.disabled = false;
+              }
+            } else if (ev.key === "Escape") {
+              inputRow.remove();
+            }
+          });
+          input.addEventListener("blur", () => {
+            setTimeout(() => inputRow.remove(), 150);
+          });
+        });
       });
     }
 
@@ -749,11 +799,12 @@
       return values.reduce((acc, x) => acc + chars[x & 63], "");
     }
 
-    async function addTask(title) {
+    async function addTask(title, parentId = null) {
       const id = generateNodeId();
       const now = new Date().toISOString();
       const { error } = await db.from("nodes").insert({
         id,
+        parent_id: parentId,
         title,
         status: "ready",
         priority: "medium",
@@ -763,19 +814,6 @@
       if (error) throw error;
       loadTasks();
     }
-
-    document.getElementById("taskInput").addEventListener("keydown", async (e) => {
-      if (e.key !== "Enter") return;
-      const input = e.target;
-      const title = input.value.trim();
-      if (!title) return;
-      input.value = "";
-      try {
-        await addTask(title);
-      } catch (err) {
-        console.error("Failed to add task:", err);
-      }
-    });
 
     async function loadTasks() {
       try {
