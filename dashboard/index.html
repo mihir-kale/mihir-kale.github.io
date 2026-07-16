@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
   <title>Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -305,40 +308,80 @@
       color: #fff;
     }
 
-    /* Workout */
-    .workout-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: #fff;
-      margin-bottom: 4px;
+    /* Workout Card */
+    .workout-card {
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #222;
+      margin-top: 8px;
     }
 
-    .workout-date {
-      font-size: 11px;
-      color: #fff;
-      margin-bottom: 12px;
+    .workout-card-header {
+      padding: 16px 18px 12px;
+      background: linear-gradient(135deg, #0a84ff22 0%, #0a84ff0a 100%);
+      border-bottom: 1px solid #1e1e1e;
     }
 
-    .workout-exercise {
+    .workout-card-top {
       display: flex;
-      align-items: baseline;
-      gap: 8px;
-      padding: 5px 0;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .workout-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .workout-card-badge {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #0a84ff28;
+      color: #0a84ff;
+    }
+
+    .workout-card-badge.strength { background: #ff6b3520; color: #ff6b35; }
+    .workout-card-badge.cardio   { background: #0a84ff20; color: #0a84ff; }
+    .workout-card-badge.run      { background: #30d15820; color: #30d158; }
+
+    .workout-card-date {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .workout-card-exercises {
+      padding: 6px 0;
+    }
+
+    .workout-card-exercise {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
       border-bottom: 1px solid #1a1a1a;
     }
 
-    .workout-exercise:last-child { border-bottom: none; }
+    .workout-card-exercise:last-child { border-bottom: none; }
 
-    .workout-exercise-name {
+    .workout-card-exercise-name {
       font-size: 13px;
       color: #fff;
-      flex: 1;
+      font-weight: 400;
     }
 
-    .workout-exercise-detail {
+    .workout-card-exercise-detail {
       font-size: 12px;
-      color: #fff;
+      color: #888;
       white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     @media (max-width: 900px) {
@@ -780,11 +823,34 @@
       });
     }
 
+    async function updateDailyLogs() {
+      try {
+        const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+        const { data: tasks } = await db.from("nodes").select("status");
+        const counts = { completed: 0, pending: 0, in_progress: 0, total: tasks?.length || 0 };
+        for (const t of tasks || []) {
+          if (t.status === "done") counts.completed++;
+          else if (t.status === "in_progress") counts.in_progress++;
+          else counts.pending++;
+        }
+        await db.from("daily_logs").upsert({
+          date: today,
+          completed: counts.completed,
+          pending: counts.pending,
+          in_progress: counts.in_progress,
+          total: counts.total,
+        }, { onConflict: "date" });
+      } catch (e) {
+        console.error("Failed to update daily logs:", e);
+      }
+    }
+
     async function completeTask(id, item) {
       item.style.opacity = "0.4";
       item.style.pointerEvents = "none";
       try {
         await db.from("nodes").update({ status: "done" }).eq("id", id);
+        await updateDailyLogs();
         setTimeout(() => item.remove(), 300);
       } catch (e) {
         console.error("Failed to complete task:", e);
@@ -831,6 +897,7 @@
       });
       if (error) throw error;
       loadTasks();
+      updateDailyLogs();
     }
 
     async function loadTasks() {
@@ -962,23 +1029,34 @@
           let detail = "";
           if (w.workout_type === "cardio" || w.workout_type === "run") {
             detail = ex.duration_min && ex.target_pace_min_km
-              ? `${ex.duration_min} min @ ${ex.target_pace_min_km} /km`
+              ? `${ex.duration_min} min · ${ex.target_pace_min_km} /km`
               : ex.duration_min ? `${ex.duration_min} min` : "";
           } else {
             const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : "";
-            const weight = ex.target_weight_kg ? ` @ ${ex.target_weight_kg}kg` : "";
+            const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
             detail = setsReps + weight;
           }
-          return `<div class="workout-exercise">
-            <span class="workout-exercise-name">${ex.name}</span>
-            <span class="workout-exercise-detail">${detail}</span>
+          return `<div class="workout-card-exercise">
+            <span class="workout-card-exercise-name">${ex.name}</span>
+            <span class="workout-card-exercise-detail">${detail}</span>
           </div>`;
         }).join("");
 
+        const typeClass = w.workout_type || "cardio";
+
         el.innerHTML = `
-          <div class="workout-title">${w.title}</div>
-          <div class="workout-date">${dateStr}</div>
-          ${exList || '<div class="empty-state">No exercises added</div>'}
+          <div class="workout-card">
+            <div class="workout-card-header">
+              <div class="workout-card-top">
+                <div class="workout-card-title">${w.title}</div>
+                <span class="workout-card-badge ${typeClass}">${typeClass}</span>
+              </div>
+              <div class="workout-card-date">${dateStr}</div>
+            </div>
+            <div class="workout-card-exercises">
+              ${exList || '<div class="empty-state" style="padding:12px 18px">No exercises added</div>'}
+            </div>
+          </div>
         `;
       } catch (e) {
         console.error("Failed to load workout:", e);
@@ -991,6 +1069,7 @@
       document.getElementById("authGate").style.display = "block";
       renderDate();
       loadTasks();
+      updateDailyLogs();
       loadStrava();
       loadCalendar();
       loadWorkout();
