@@ -104,9 +104,21 @@ def main():
             seen.add(a["url"])
             unique.append(a)
 
-    # Shuffle and pick 5
-    random.shuffle(unique)
-    selected = unique[:5]
+    # Pick at least 2 from each source, then fill randomly
+    by_source = {}
+    for a in unique:
+        by_source.setdefault(a["source"], []).append(a)
+
+    selected = []
+    for source, articles in by_source.items():
+        random.shuffle(articles)
+        selected.extend(articles[:2])
+
+    remaining = [a for a in unique if a not in selected]
+    random.shuffle(remaining)
+    selected.extend(remaining)
+
+    selected = selected[:5]
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     out = {

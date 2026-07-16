@@ -1,35 +1,35 @@
 {
-  "last_updated": "2026-07-16T03:31:19.668755+00:00",
+  "last_updated": "2026-07-16T03:33:09.357228+00:00",
   "articles": [
     {
-      "title": "Madonna Wants to Take You There",
-      "url": "https://www.newyorker.com/magazine/2026/07/20/madonna-wants-to-take-you-there",
+      "title": "The Best Books of 2026 So Far",
+      "url": "https://www.newyorker.com/best-books-2026",
       "source": "The New Yorker",
-      "date": "2026-07-13"
+      "date": "2026-07-15"
     },
     {
-      "title": "The Great American State Flop",
-      "url": "https://www.newyorker.com/magazine/2026/07/20/the-great-american-state-flop",
+      "title": "Daily Cartoon: Tuesday, July 14th",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/tuesday-july-14th-spongebob-popsicles",
+      "source": "The New Yorker",
+      "date": "2026-07-14"
+    },
+    {
+      "title": "Cover Story newsletter: \u00a0The man who would change Russia",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/10/cover-story-newsletter-the-man-who-would-change-russia",
+      "source": "The Economist",
+      "date": "2026-07-10"
+    },
+    {
+      "title": "An Unbeliever\u2019s View of the Jonestown Massacre",
+      "url": "https://www.newyorker.com/books/second-read/an-unbelievers-view-of-the-jonestown-massacre",
+      "source": "The New Yorker",
+      "date": "2026-07-14"
+    },
+    {
+      "title": "Can Office-to-Residential Conversions Survive the Pfizer-Building Crisis?",
+      "url": "https://www.newyorker.com/news/the-lede/can-office-to-residential-conversions-survive-the-pfizer-building-crisis",
       "source": "The New Yorker",
       "date": "2026-07-11"
-    },
-    {
-      "title": "Meet the Minion-Maker",
-      "url": "https://www.newyorker.com/magazine/2026/07/20/meet-the-minion-maker",
-      "source": "The New Yorker",
-      "date": "2026-07-13"
-    },
-    {
-      "title": "Voting Rights, Updated",
-      "url": "https://www.newyorker.com/magazine/2026/07/20/voting-rights-updated",
-      "source": "The New Yorker",
-      "date": "2026-07-13"
-    },
-    {
-      "title": "Inside ICE\u2019s Largest Detention Center",
-      "url": "https://www.newyorker.com/magazine/2026/07/20/locked-away",
-      "source": "The New Yorker",
-      "date": "2026-07-13"
     }
   ]
 }
