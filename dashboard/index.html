@@ -802,12 +802,30 @@
     async function addTask(title, parentId = null) {
       const id = generateNodeId();
       const now = new Date().toISOString();
+
+      let parentPath = "";
+      if (parentId) {
+        const { data: parent } = await db.from("nodes").select("path").eq("id", parentId).single();
+        parentPath = parent?.path || "";
+      }
+
+      const path = parentId ? `${parentPath}/${id}` : `/${id}`;
+
+      const { count } = await db.from("nodes")
+        .select("id", { count: "exact", head: true })
+        .eq("parent_id", parentId);
+
       const { error } = await db.from("nodes").insert({
         id,
         parent_id: parentId,
+        path,
         title,
+        description: "",
         status: "ready",
         priority: "medium",
+        order_index: count || 0,
+        hidden_today: false,
+        recurring: false,
         created_at: now,
         updated_at: now,
       });
