@@ -529,20 +529,6 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Handle Spotify OAuth callback
-    (async () => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-      if (code) {
-        try {
-          await spotifyExchangeCode(code);
-          window.history.replaceState({}, document.title, window.location.pathname);
-        } catch (e) {
-          console.error("Spotify auth failed:", e);
-        }
-      }
-    })();
-
     function renderCalendar(events) {
       const el = document.getElementById("calendarContainer");
       const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
@@ -1110,6 +1096,20 @@
         el.innerHTML = "";
       }
     }
+
+    // Handle Spotify OAuth callback (must be after spotifyExchangeCode is defined)
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (code) {
+        try {
+          await spotifyExchangeCode(code);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (e) {
+          console.error("Spotify auth failed:", e);
+        }
+      }
+    })();
 
     function showLogin() {
       document.getElementById("loginForm").style.display = "block";
