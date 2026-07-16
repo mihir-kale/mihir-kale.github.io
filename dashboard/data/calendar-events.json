@@ -1,10 +1,10 @@
 {
-  "last_updated": "2026-07-15T22:56:44.782517+00:00",
+  "last_updated": "2026-07-16T00:21:42.298767+00:00",
   "events": [
     {
       "title": "Video Interview w/ JLF: Mihir Kale",
-      "start": "2026-07-15T09:30:00+00:00",
-      "end": "2026-07-15T10:15:00+00:00",
+      "start": "2026-07-15T09:30:00-04:00",
+      "end": "2026-07-15T10:15:00-04:00",
       "allDay": false,
       "location": "ZOOM",
       "calendar": "Outlook",
@@ -12,8 +12,8 @@
     },
     {
       "title": "Bain Undergrad: Case Interview Workshop",
-      "start": "2026-07-15T15:00:00+00:00",
-      "end": "2026-07-15T16:00:00+00:00",
+      "start": "2026-07-15T15:00:00-04:00",
+      "end": "2026-07-15T16:00:00-04:00",
       "allDay": false,
       "location": "",
       "calendar": "Outlook",
@@ -21,8 +21,8 @@
     },
     {
       "title": "Coffee Chat w/ Greg Duckworth",
-      "start": "2026-07-17T11:00:00+00:00",
-      "end": "2026-07-17T11:30:00+00:00",
+      "start": "2026-07-17T11:00:00-04:00",
+      "end": "2026-07-17T11:30:00-04:00",
       "allDay": false,
       "location": "",
       "calendar": "Outlook",
