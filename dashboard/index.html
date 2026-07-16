@@ -173,17 +173,27 @@
       opacity: .5;
     }
 
-    .task-title { flex: 1; font-size: 14px; font-weight: 400; color: #fff; }
+    .task-title { font-size: 14px; font-weight: 400; color: #fff; }
 
-    .task-due {
+    .task-link {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+      min-width: 0;
+    }
+
+    .task-link .task-due {
       font-size: 11px;
       color: #fff;
       white-space: nowrap;
     }
 
-    .task-due.overdue { color: #ff453a; }
+    .task-link .task-due.overdue { color: #ff453a; }
 
-    .task-item.high-priority .task-title { color: #0a84ff; }
+    .task-item.high-priority .task-link .task-title { color: #0a84ff; }
 
     .task-add-btn {
       opacity: 0;
@@ -783,8 +793,10 @@
                 <polyline points="2 6 5 9 10 3"/>
               </svg>
             </div>
-            <span class="task-title">${t.title}</span>
-            ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
+            <a href="/tracker/#${t.id}" class="task-link">
+              <span class="task-title">${t.title}</span>
+              ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
+            </a>
             <button class="task-add-btn" data-parent-id="${t.id}">+</button>
           </li>`;
         }).join("") + "</ul>";
@@ -795,6 +807,9 @@
       el.querySelectorAll(".task-item").forEach(item => {
         item.addEventListener("click", (e) => {
           if (e.target.closest(".task-add-btn")) return;
+          if (e.target.closest(".task-link")) {
+            e.preventDefault();
+          }
           completeTask(item.dataset.id, item);
         });
       });
