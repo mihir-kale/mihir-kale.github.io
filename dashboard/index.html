@@ -969,9 +969,9 @@
           return;
         }
         el.innerHTML = data.articles.map(a => {
-          const proxyUrl = "https://archive.is/" + a.url;
+          const url = a.source === "The New Yorker" ? "https://archive.is/" + a.url : a.url;
           return `<div class="read-item">
-            <a href="${proxyUrl}" target="_blank" rel="noopener">${a.title}</a>
+            <a href="${url}" target="_blank" rel="noopener">${a.title}</a>
             <div class="read-source">${a.source}</div>
           </div>`;
         }).join("");
