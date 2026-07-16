@@ -909,7 +909,7 @@
           return;
         }
         el.innerHTML = data.articles.map(a => {
-          const proxyUrl = "https://removepaywall.com/" + a.url;
+          const proxyUrl = "https://archive.is/" + a.url;
           return `<div class="read-item">
             <a href="${proxyUrl}" target="_blank" rel="noopener">${a.title}</a>
             <div class="read-source">${a.source}</div>
