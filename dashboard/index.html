@@ -825,7 +825,7 @@
           .order("created_at", { ascending: true });
         if (error) throw error;
         if (!data.length) {
-          el.innerHTML = '<div class="nutrition-empty">No entries today</div>';
+          el.innerHTML = "";
           return;
         }
         el.innerHTML = data.map(n => {
@@ -834,7 +834,7 @@
         }).join("");
       } catch (e) {
         console.error("Failed to load nutrition:", e);
-        el.innerHTML = '<div class="nutrition-empty">Failed to load</div>';
+        el.innerHTML = "";
       }
     }
 
