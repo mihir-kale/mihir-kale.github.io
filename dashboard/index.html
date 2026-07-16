@@ -1119,7 +1119,9 @@
       loadCurrentlyPlaying();
       loadTopTracks();
       setInterval(() => {
-        if (!document.hidden) loadCurrentlyPlaying();
+        if (document.hidden) return;
+        loadCurrentlyPlaying();
+        if (todayEt() !== lastNutritionDate) loadNutrition();
       }, 30000);
     }
 
@@ -1160,10 +1162,6 @@
         console.error("Failed to load nutrition:", e);
       }
     }
-
-    setInterval(() => {
-      if (todayEt() !== lastNutritionDate) loadNutrition();
-    }, 60000);
 
     async function addNutrition() {
       const foodEl = document.getElementById("nutritionFood");
