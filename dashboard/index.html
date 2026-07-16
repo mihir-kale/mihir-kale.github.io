@@ -1137,9 +1137,12 @@
       if (e.key === "Enter") document.getElementById("nutritionCal").focus();
     });
 
+    let lastNutritionDate = "";
+
     async function loadNutrition() {
       const el = document.getElementById("nutritionTotal");
       const today = todayEt();
+      lastNutritionDate = today;
       try {
         const { data, error } = await db
           .from("nutrition")
@@ -1157,6 +1160,10 @@
         console.error("Failed to load nutrition:", e);
       }
     }
+
+    setInterval(() => {
+      if (todayEt() !== lastNutritionDate) loadNutrition();
+    }, 60000);
 
     async function addNutrition() {
       const foodEl = document.getElementById("nutritionFood");
