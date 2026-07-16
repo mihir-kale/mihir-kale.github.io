@@ -455,6 +455,7 @@
     .nutrition-header h2 { margin: 0; }
     .nutrition-total { font-size: 13px; color: #0a84ff; font-weight: 500; }
     .chevron { font-size: 14px; transition: transform 0.2s; color: var(--text); }
+    .nutrition-widget.collapsed .nutrition-header { padding-bottom: 16px; }
     .nutrition-widget.collapsed .chevron { transform: rotate(-90deg); }
     .nutrition-body { overflow: hidden; max-height: 60px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
     .nutrition-widget.collapsed .nutrition-body { max-height: 0; padding: 0 18px 0; }
@@ -473,6 +474,7 @@
     .read-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 0; }
     .read-header h2 { margin: 0; }
     .read-body { overflow: hidden; max-height: 400px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
+    .read-widget.collapsed .read-header { padding-bottom: 16px; }
     .read-widget.collapsed .read-body { max-height: 0; padding: 0 18px 0; }
     .read-widget.collapsed .chevron { transform: rotate(-90deg); }
     .read-item { padding: 8px 0; border-bottom: 1px solid #1a1a1a; }
@@ -487,6 +489,7 @@
     .listen-header h2 { margin: 0; }
     .listen-status { font-size: 13px; color: #0a84ff; font-weight: 500; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
     .listen-body { overflow: hidden; max-height: 200px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
+    .listen-widget.collapsed .listen-header { padding-bottom: 16px; }
     .listen-widget.collapsed .listen-body { max-height: 0; padding: 0 18px 0; }
     .listen-widget.collapsed .chevron { transform: rotate(-90deg); }
     .listen-connect { font-size: 13px; color: var(--text-muted); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
