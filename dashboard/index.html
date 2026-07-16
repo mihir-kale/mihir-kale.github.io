@@ -818,7 +818,7 @@
       const el = document.getElementById("nutritionList");
       const today = new Date().toISOString().slice(0, 10);
       try {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("nutrition")
           .select("food_name, calories, protein")
           .eq("logged_date", today)
@@ -851,7 +851,7 @@
       const id = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2,"0")).join("");
       const today = new Date().toISOString().slice(0, 10);
       try {
-        const { error } = await supabase.from("nutrition").insert({
+        const { error } = await db.from("nutrition").insert({
           id, food_name: food, calories, protein, logged_date: today
         });
         if (error) throw error;
