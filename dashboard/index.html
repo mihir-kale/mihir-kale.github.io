@@ -670,14 +670,22 @@
     function renderCalendar(events) {
       const el = document.getElementById("calendarContainer");
       const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+      const cutoff = new Date(today + "T12:00:00");
+      cutoff.setDate(cutoff.getDate() + 5);
+      const cutoffStr = cutoff.toISOString().slice(0, 10);
 
-      if (!events.length) {
+      const filtered = events.filter(ev => {
+        const date = ev.start.slice(0, 10);
+        return date >= today && date <= cutoffStr;
+      });
+
+      if (!filtered.length) {
         el.innerHTML = '<div class="empty-state">No upcoming events</div>';
         return;
       }
 
       const grouped = {};
-      events.forEach(ev => {
+      filtered.forEach(ev => {
         const date = ev.start.slice(0, 10);
         if (!grouped[date]) grouped[date] = [];
         grouped[date].push(ev);
