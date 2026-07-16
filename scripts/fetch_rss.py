@@ -41,9 +41,9 @@ NAMESPACES = {
 }
 
 
-def parse_rss(text, source_name):
+def parse_rss(content_bytes, source_name):
     """Parse RSS/Atom feed and return list of articles."""
-    root = ET.fromstring(text)
+    root = ET.fromstring(content_bytes)
     articles = []
 
     items = root.findall(".//item")
@@ -93,7 +93,7 @@ def main():
             print(f"Warning: Failed to fetch {feed['name']}: {e}")
             continue
 
-        articles = parse_rss(resp.text, feed["name"])
+        articles = parse_rss(resp.content, feed["name"])
         print(f"{feed['name']}: {len(articles)} articles parsed")
 
         # Filter to last 7 days

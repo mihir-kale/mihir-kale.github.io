@@ -1,35 +1,35 @@
 {
-  "last_updated": "2026-07-16T00:41:56.918960+00:00",
+  "last_updated": "2026-07-16T03:28:09.721794+00:00",
   "articles": [
     {
-      "title": "Should You Recline Your Airplane Seat?",
-      "url": "https://www.newyorker.com/culture/open-questions/should-you-recline-your-airplane-seat",
+      "title": "\u201cThe Odyssey\u201d Movie Review",
+      "url": "https://www.newyorker.com/magazine/2026/07/27/the-odyssey-christopher-nolan-movie-review",
+      "source": "The New Yorker",
+      "date": "2026-07-15"
+    },
+    {
+      "title": "Letters from Our Readers",
+      "url": "https://www.newyorker.com/magazine/2026/07/20/letters-from-the-july-20-2026-issue",
+      "source": "The New Yorker",
+      "date": "2026-07-13"
+    },
+    {
+      "title": "The Story of France vs. Morocco",
+      "url": "https://www.newyorker.com/sports/world-cup-2026/the-story-of-france-vs-morocco",
       "source": "The New Yorker",
       "date": "2026-07-10"
     },
     {
-      "title": "America\u00e2\u0080\u0099s other elections problem",
-      "url": "https://www.economist.com/united-states/2026/07/13/americas-other-elections-problem",
+      "title": "Daily Cartoon: Wednesday, July 15th",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/wednesday-july-15th-world-cup-heat-wave",
+      "source": "The New Yorker",
+      "date": "2026-07-15"
+    },
+    {
+      "title": "Earth is dimming",
+      "url": "https://www.economist.com/interactive/science-and-technology/2026/07/15/earth-is-dimming",
       "source": "The Economist",
-      "date": "2026-07-13"
-    },
-    {
-      "title": "The Lost Art of the Bromance",
-      "url": "https://www.newyorker.com/magazine/2026/07/20/who-needs-friends-andrew-mccarthy-book-review",
-      "source": "The New Yorker",
-      "date": "2026-07-13"
-    },
-    {
-      "title": "Daily Cartoon: Friday, July 10th",
-      "url": "https://www.newyorker.com/cartoons/daily-cartoon/friday-july-10th-sun-exposure",
-      "source": "The New Yorker",
-      "date": "2026-07-10"
-    },
-    {
-      "title": "Bryan Washington on Striving for Gentleness",
-      "url": "https://www.newyorker.com/books/this-week-in-fiction/bryan-washington-07-20-26",
-      "source": "The New Yorker",
-      "date": "2026-07-12"
+      "date": "2026-07-15"
     }
   ]
 }
