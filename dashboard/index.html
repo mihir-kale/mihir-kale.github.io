@@ -521,7 +521,7 @@
 
     async function loadCalendar() {
       try {
-        const resp = await fetch("data/calendar-events.json");
+        const resp = await fetch("data/calendar-events.json?v=" + Date.now());
         if (!resp.ok) throw new Error("No data");
         const data = await resp.json();
         renderCalendar(data.events || []);
@@ -726,7 +726,7 @@
 
     async function loadStrava() {
       try {
-        const resp = await fetch("data/fitness-data.json");
+        const resp = await fetch("data/fitness-data.json?v=" + Date.now());
         if (!resp.ok) throw new Error("No data");
         const data = await resp.json();
         renderStrava(data);
