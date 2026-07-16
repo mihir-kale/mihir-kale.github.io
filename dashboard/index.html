@@ -374,24 +374,6 @@
       margin-top: 8px;
       display: none;
     }
-    .logout-btn {
-      position: fixed;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid #333;
-      border-radius: 6px;
-      color: #555;
-      font-family: inherit;
-      font-size: 11px;
-      padding: 4px 10px;
-      cursor: pointer;
-      transition: color .2s, border-color .2s;
-    }
-    .logout-btn:hover {
-      color: #fff;
-      border-color: #fff;
-    }
 
     /* Nutrition widget */
     .nutrition-widget { padding: 0; }
@@ -439,6 +421,69 @@
     .listen-track:last-child { border-bottom: none; }
     .listen-track-name { font-size: 14px; font-weight: 400; color: #fff; }
     .listen-track-artist { font-size: 11px; color: #666; margin-top: 2px; }
+
+    /* Top bar & Focus button */
+    .top-bar { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 8px; }
+    .focus-btn, .logout-btn {
+      background: none;
+      border: 1px solid #333;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .focus-btn:hover, .logout-btn:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+    .focus-btn.active {
+      color: #0a84ff;
+      border-color: #0a84ff;
+    }
+
+    /* Pomodoro timer */
+    .pomodoro-timer {
+      font-size: 48px;
+      font-weight: 300;
+      text-align: center;
+      padding: 16px 0 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .pomodoro-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      padding-bottom: 14px;
+    }
+    .pomodoro-btn {
+      background: none;
+      border: 1px solid #333;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12px;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .pomodoro-btn:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    /* Focus mode — hide everything except calendar & tasks */
+    body.focus-mode .right-col,
+    body.focus-mode .left-col .read-widget,
+    body.focus-mode .left-col .listen-widget {
+      display: none !important;
+    }
+    body.focus-mode .left-col {
+      flex: 1;
+    }
+    body.focus-mode .pomodoro-widget {
+      display: block !important;
+    }
   </style>
 </head>
 <body>
@@ -458,7 +503,10 @@
   </div>
 
   <div id="authGate">
-    <button class="logout-btn" id="logoutBtn">Sign out</button>
+    <div class="top-bar">
+      <button class="focus-btn" id="focusBtn">Focus</button>
+      <button class="logout-btn" id="logoutBtn">Sign out</button>
+    </div>
     <div class="date-header" id="dateHeader"></div>
 
     <div class="columns">
@@ -466,6 +514,16 @@
       <section class="widget">
         <h2>Calendar</h2>
         <div id="calendarContainer" class="loading">Loading...</div>
+      </section>
+
+      <section class="widget pomodoro-widget" id="pomodoroWidget" style="display:none">
+        <h2>Focus</h2>
+        <div class="pomodoro-timer" id="pomodoroTimer">25:00</div>
+        <div class="pomodoro-controls">
+          <button class="pomodoro-btn" id="pomodoroStart">Start</button>
+          <button class="pomodoro-btn" id="pomodoroPause" style="display:none">Pause</button>
+          <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
+        </div>
       </section>
 
       <section class="widget read-widget collapsed">
@@ -1110,6 +1168,75 @@
         }
       }
     })();
+
+    /* ── Focus mode & Pomodoro timer ─────────────── */
+    const focusBtn = document.getElementById("focusBtn");
+    const pomodoroWidget = document.getElementById("pomodoroWidget");
+    const pomodoroTimer = document.getElementById("pomodoroTimer");
+    const pomodoroStart = document.getElementById("pomodoroStart");
+    const pomodoroPause = document.getElementById("pomodoroPause");
+    const pomodoroReset = document.getElementById("pomodoroReset");
+
+    let pomodoroInterval = null;
+    let pomodoroSeconds = 25 * 60;
+
+    function updatePomodoroDisplay() {
+      const m = Math.floor(pomodoroSeconds / 60);
+      const s = pomodoroSeconds % 60;
+      pomodoroTimer.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function pomodoroTick() {
+      if (pomodoroSeconds <= 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        pomodoroStart.style.display = "";
+        pomodoroPause.style.display = "none";
+        pomodoroTimer.textContent = "00:00";
+        return;
+      }
+      pomodoroSeconds--;
+      updatePomodoroDisplay();
+    }
+
+    pomodoroStart.addEventListener("click", () => {
+      if (pomodoroSeconds <= 0) return;
+      pomodoroStart.style.display = "none";
+      pomodoroPause.style.display = "";
+      pomodoroInterval = setInterval(pomodoroTick, 1000);
+    });
+
+    pomodoroPause.addEventListener("click", () => {
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+      pomodoroStart.style.display = "";
+      pomodoroPause.style.display = "none";
+    });
+
+    pomodoroReset.addEventListener("click", () => {
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+      pomodoroSeconds = 25 * 60;
+      updatePomodoroDisplay();
+      pomodoroStart.style.display = "";
+      pomodoroPause.style.display = "none";
+    });
+
+    focusBtn.addEventListener("click", () => {
+      document.body.classList.toggle("focus-mode");
+      focusBtn.classList.toggle("active");
+      if (document.body.classList.contains("focus-mode")) {
+        pomodoroWidget.style.display = "block";
+      } else {
+        pomodoroWidget.style.display = "none";
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        pomodoroSeconds = 25 * 60;
+        updatePomodoroDisplay();
+        pomodoroStart.style.display = "";
+        pomodoroPause.style.display = "none";
+      }
+    });
 
     function showLogin() {
       document.getElementById("loginForm").style.display = "block";
