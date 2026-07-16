@@ -916,7 +916,7 @@
 
         const childCount = {};
         all.forEach(n => {
-          if (n.parent_id) childCount[n.parent_id] = (childCount[n.parent_id] || 0) + 1;
+          if (n.parent_id && n.status !== "done") childCount[n.parent_id] = (childCount[n.parent_id] || 0) + 1;
         });
 
         const pending = all
