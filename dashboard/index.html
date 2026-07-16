@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+
   <title>Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -674,9 +672,48 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    /* ── Utilities ─────────────────────────────────── */
+    const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const DAY_NAMES_FULL = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+    const MONTH_NAMES_FULL = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+
+    function esc(str) {
+      if (!str) return "";
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function todayEt() {
+      return new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    }
+
+    function generateId() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const values = crypto.getRandomValues(new Uint8Array(21));
+      return values.reduce((acc, x) => acc + chars[x & 63], "");
+    }
+
+    function isOverdue(dateStr) {
+      if (!dateStr) return false;
+      return dateStr < todayEt();
+    }
+
+    async function fetchWithRetry(url, retries = 2) {
+      for (let i = 0; i <= retries; i++) {
+        try {
+          const resp = await fetch(url);
+          if (!resp.ok) throw new Error(resp.status);
+          return resp;
+        } catch (e) {
+          if (i === retries) throw e;
+          await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+        }
+      }
+    }
+
     function renderCalendar(events) {
       const el = document.getElementById("calendarContainer");
-      const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+      const today = todayEt();
       const cutoff = new Date(today + "T12:00:00");
       cutoff.setDate(cutoff.getDate() + 5);
       const cutoffStr = cutoff.toISOString().slice(0, 10);
@@ -698,22 +735,19 @@
         grouped[date].push(ev);
       });
 
-      const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-      const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-
       el.innerHTML = '<ul class="calendar-list">' + Object.entries(grouped).map(([date, evts]) => {
         const d = new Date(date + "T12:00:00");
         const isToday = date === today;
-        const label = `${dayNames[d.getDay()]}, ${d.getDate()} ${monthNames[d.getMonth()]}`;
+        const label = `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
 
         const items = evts.map(ev => {
           const startTime = new Date(ev.start);
           const timeStr = ev.allDay ? "All day" : startTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
           const timeClass = isToday ? "cal-event-time today" : "cal-event-time";
-          const loc = ev.location ? `<div class="cal-event-loc">${ev.location}</div>` : "";
+          const loc = ev.location ? `<div class="cal-event-loc">${esc(ev.location)}</div>` : "";
           return `<div class="cal-event">
-            <span class="${timeClass}">${timeStr}</span>
-            <span class="cal-event-title">${ev.title}</span>
+            <span class="${timeClass}">${esc(timeStr)}</span>
+            <span class="cal-event-title">${esc(ev.title)}</span>
           </div>${loc ? `<div style="padding-left:68px">${loc}</div>` : ""}`;
         }).join("");
 
@@ -726,7 +760,7 @@
 
     async function loadCalendar() {
       try {
-        const resp = await fetch("data/calendar-events.json?v=" + Date.now());
+        const resp = await fetchWithRetry("data/calendar-events.json");
         if (!resp.ok) throw new Error("No data");
         const data = await resp.json();
         renderCalendar(data.events || []);
@@ -738,8 +772,6 @@
 
     function renderDate() {
       const now = new Date();
-      const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
-      const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
       const day = now.getDate();
       const suffix = (d) => {
         if (d > 3 && d < 21) return "TH";
@@ -751,19 +783,13 @@
         }
       };
       document.getElementById("dateHeader").textContent =
-        `${days[now.getDay()]}, ${day}${suffix(day)} ${months[now.getMonth()]}`;
+        `${DAY_NAMES_FULL[now.getDay()]}, ${day}${suffix(day)} ${MONTH_NAMES_FULL[now.getMonth()]}`;
     }
 
     function formatDate(dateStr) {
       if (!dateStr) return "";
       const d = new Date(dateStr + "T00:00:00");
       return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    }
-
-    function isOverdue(dateStr) {
-      if (!dateStr) return false;
-      const today = new Date().toISOString().slice(0, 10);
-      return dateStr < today;
     }
 
     function renderTasks(grouped) {
@@ -778,21 +804,21 @@
       let html = "";
       for (const [parent, tasks] of Object.entries(grouped)) {
         if (parent) {
-          html += `<div class="task-parent">${parent}</div>`;
+          html += `<div class="task-parent">${esc(parent)}</div>`;
         }
         html += '<ul class="task-list">' + tasks.map(t => {
           const dueClass = isOverdue(t.due_date) ? "overdue" : "";
           const dueText = t.due_date ? formatDate(t.due_date) : "";
           const priorityClass = t.priority === "high" ? "high-priority" : "";
-          return `<li class="task-item ${priorityClass}" data-id="${t.id}">
+          return `<li class="task-item ${priorityClass}" data-id="${esc(t.id)}" role="button" tabindex="0" aria-label="Complete task: ${esc(t.title)}">
             <div class="task-check">
               <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
                 <polyline points="2 6 5 9 10 3"/>
               </svg>
             </div>
-            <span class="task-title">${t.title}</span>
+            <span class="task-title">${esc(t.title)}</span>
             ${dueText ? `<span class="task-due ${dueClass}">${dueText}</span>` : ""}
-            <button class="task-add-btn" data-parent-id="${t.id}">+</button>
+            <button class="task-add-btn" data-parent-id="${esc(t.id)}" aria-label="Add subtask to ${esc(t.title)}">+</button>
           </li>`;
         }).join("") + "</ul>";
       }
@@ -803,6 +829,12 @@
         item.addEventListener("click", (e) => {
           if (e.target.closest(".task-add-btn")) return;
           completeTask(item.dataset.id, item);
+        });
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            completeTask(item.dataset.id, item);
+          }
         });
       });
 
@@ -841,16 +873,9 @@
       });
     }
 
-    async function updateDailyLogs() {
+    async function updateDailyLogs(counts) {
       try {
-        const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
-        const { data: tasks } = await db.from("nodes").select("status");
-        const counts = { completed: 0, pending: 0, in_progress: 0, total: tasks?.length || 0 };
-        for (const t of tasks || []) {
-          if (t.status === "done") counts.completed++;
-          else if (t.status === "in_progress") counts.in_progress++;
-          else counts.pending++;
-        }
+        const today = todayEt();
         await db.from("daily_logs").upsert({
           date: today,
           completed: counts.completed,
@@ -868,7 +893,6 @@
       item.style.pointerEvents = "none";
       try {
         await db.from("nodes").update({ status: "done" }).eq("id", id);
-        await updateDailyLogs();
         setTimeout(() => item.remove(), 300);
       } catch (e) {
         console.error("Failed to complete task:", e);
@@ -877,14 +901,8 @@
       }
     }
 
-    function generateNodeId() {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      const values = crypto.getRandomValues(new Uint8Array(21));
-      return values.reduce((acc, x) => acc + chars[x & 63], "");
-    }
-
     async function addTask(title, parentId = null) {
-      const id = generateNodeId();
+      const id = generateId();
       const now = new Date().toISOString();
 
       let parentPath = "";
@@ -914,8 +932,7 @@
         updated_at: now,
       });
       if (error) throw error;
-      loadTasks();
-      updateDailyLogs();
+      await loadTasks();
     }
 
     async function loadTasks() {
@@ -925,6 +942,14 @@
 
         if (error) throw error;
         const all = data || [];
+
+        const counts = { completed: 0, pending: 0, in_progress: 0, total: all.length };
+        for (const n of all) {
+          if (n.status === "done") counts.completed++;
+          else if (n.status === "in_progress") counts.in_progress++;
+          else counts.pending++;
+        }
+        updateDailyLogs(counts);
 
         const byId = {};
         all.forEach(n => byId[n.id] = n);
@@ -1007,7 +1032,7 @@
 
     async function loadStrava() {
       try {
-        const resp = await fetch("data/fitness-data.json?v=" + Date.now());
+        const resp = await fetchWithRetry("data/fitness-data.json");
         if (!resp.ok) throw new Error("No data");
         const data = await resp.json();
         renderStrava(data);
@@ -1020,7 +1045,7 @@
     async function loadWorkout() {
       const el = document.getElementById("workoutContainer");
       try {
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayEt();
         const { data: workouts, error } = await db.from("planned_workouts")
           .select("id, title, workout_date, workout_type")
           .gte("workout_date", today)
@@ -1040,8 +1065,7 @@
           .order("order_index", { ascending: true });
 
         const d = new Date(w.workout_date + "T12:00:00");
-        const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const dateStr = `${dayNames[d.getDay()]}, ${d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+        const dateStr = `${DAY_NAMES[d.getDay()]}, ${d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
 
         const exList = (exercises || []).map(ex => {
           let detail = "";
@@ -1055,8 +1079,8 @@
             detail = setsReps + weight;
           }
           return `<div class="workout-card-exercise">
-            <span class="workout-card-exercise-name">${ex.name}</span>
-            <span class="workout-card-exercise-detail">${detail}</span>
+            <span class="workout-card-exercise-name">${esc(ex.name)}</span>
+            <span class="workout-card-exercise-detail">${esc(detail)}</span>
           </div>`;
         }).join("");
 
@@ -1066,7 +1090,7 @@
           <div class="workout-card">
             <div class="workout-card-header">
               <div class="workout-card-top">
-                <div class="workout-card-title">${w.title}</div>
+                <div class="workout-card-title">${esc(w.title)}</div>
                 <span class="workout-card-badge ${typeClass}">${typeClass}</span>
               </div>
               <div class="workout-card-date">${dateStr}</div>
@@ -1087,7 +1111,6 @@
       document.getElementById("authGate").style.display = "block";
       renderDate();
       loadTasks();
-      updateDailyLogs();
       loadStrava();
       loadCalendar();
       loadWorkout();
@@ -1095,7 +1118,9 @@
       loadRead();
       loadCurrentlyPlaying();
       loadTopTracks();
-      setInterval(loadCurrentlyPlaying, 30000);
+      setInterval(() => {
+        if (!document.hidden) loadCurrentlyPlaying();
+      }, 30000);
     }
 
     /* ── Nutrition ────────────────────────────────── */
@@ -1114,7 +1139,7 @@
 
     async function loadNutrition() {
       const el = document.getElementById("nutritionTotal");
-      const today = new Date().toISOString().slice(0, 10);
+      const today = todayEt();
       try {
         const { data, error } = await db
           .from("nutrition")
@@ -1144,7 +1169,7 @@
       const protein  = parts.length > 1 ? parseInt(parts[1], 10) : null;
       if (isNaN(calories)) return;
       const id = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2,"0")).join("");
-      const today = new Date().toISOString().slice(0, 10);
+      const today = todayEt();
       try {
         const { error } = await db.from("nutrition").insert({
           id, food_name: food, calories, protein, logged_date: today
@@ -1168,7 +1193,7 @@
     async function loadRead() {
       const el = document.getElementById("readList");
       try {
-        const resp = await fetch("data/read-feeds.json?v=" + Date.now());
+        const resp = await fetchWithRetry("data/read-feeds.json");
         if (!resp.ok) throw new Error("No data");
         const data = await resp.json();
         if (!data.articles || !data.articles.length) {
@@ -1178,8 +1203,8 @@
         el.innerHTML = data.articles.map(a => {
           const url = a.source === "The New Yorker" ? "https://archive.is/" + a.url : a.url;
           return `<div class="read-item">
-            <a href="${url}" target="_blank" rel="noopener">${a.title}</a>
-            <div class="read-source">${a.source}</div>
+            <a href="${esc(url)}" target="_blank" rel="noopener">${esc(a.title)}</a>
+            <div class="read-source">${esc(a.source)}</div>
           </div>`;
         }).join("");
       } catch (e) {
@@ -1296,7 +1321,10 @@
       const statusEl = document.getElementById("listenStatus");
       const token = await getSpotifyToken();
       if (!token) {
-        statusEl.innerHTML = '<button class="listen-connect" onclick="spotifyLogin()">Connect Spotify</button>';
+        statusEl.innerHTML = "";
+        document.getElementById("listenConnect").innerHTML =
+          '<button class="listen-connect">Connect Spotify</button>';
+        document.getElementById("listenConnect").querySelector("button").addEventListener("click", spotifyLogin);
         return;
       }
 
@@ -1355,8 +1383,8 @@
 
         el.innerHTML = data.items.map(track => `
           <div class="listen-track">
-            <div class="listen-track-name">${track.name}</div>
-            <div class="listen-track-artist">${track.artists.map(a => a.name).join(", ")}</div>
+            <div class="listen-track-name">${esc(track.name)}</div>
+            <div class="listen-track-artist">${esc(track.artists.map(a => a.name).join(", "))}</div>
           </div>
         `).join("");
       } catch (e) {
