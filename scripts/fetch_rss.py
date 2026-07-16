@@ -18,19 +18,7 @@ FEEDS = [
     },
     {
         "name": "The Economist",
-        "url": "https://www.economist.com/science-and-technology/rss.xml",
-    },
-    {
-        "name": "The Economist",
-        "url": "https://www.economist.com/finance-and-economics/rss.xml",
-    },
-    {
-        "name": "The Economist",
-        "url": "https://www.economist.com/international/rss.xml",
-    },
-    {
-        "name": "The Economist",
-        "url": "https://www.economist.com/united-states/rss.xml",
+        "url": "http://www.economist.com/rss/the_world_this_week_rss.xml",
     },
 ]
 
