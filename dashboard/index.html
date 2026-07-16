@@ -1039,7 +1039,7 @@
         });
 
         if (resp.status === 204 || resp.status === 202) {
-          statusEl.textContent = "Nothing playing";
+          statusEl.textContent = "";
           return;
         }
 
@@ -1050,7 +1050,7 @@
 
         const data = await resp.json();
         if (!data || !data.is_playing || !data.item) {
-          statusEl.textContent = "Paused";
+          statusEl.textContent = "";
           return;
         }
 
