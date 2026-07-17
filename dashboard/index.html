@@ -474,18 +474,26 @@
     .meal-next:hover { background: #222; }
     .meal-next.logged { opacity: 0.4; pointer-events: none; }
     .meal-next-check {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #444;
-      border-radius: 4px;
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #444;
+      border-radius: 50%;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: border-color .2s, background .2s;
+      transition: all .2s;
     }
-    .meal-next:hover .meal-next-check { border-color: #0a84ff; }
+    .meal-next:hover .meal-next-check { border-color: #fff; }
     .meal-next.logged .meal-next-check { background: #0a84ff; border-color: #0a84ff; }
+    .meal-next-check svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .meal-next:hover .meal-next-check svg { opacity: .5; }
+    .meal-next.logged .meal-next-check svg { opacity: 1; }
     .meal-next-info { flex: 1; min-width: 0; }
     .meal-next-name { font-size: 13px; font-weight: 500; color: #fff; }
     .meal-next-macro { font-size: 12px; color: #888; margin-top: 2px; }
@@ -1182,7 +1190,7 @@
         for (const m of upcoming) {
           html += `
             <div class="meal-next" data-id="${esc(m.id)}">
-              <div class="meal-next-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="meal-next-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></div>
               <div class="meal-next-info">
                 <div class="meal-next-name">${esc(m.food_name)}</div>
                 <div class="meal-next-macro">${m.calories} cal</div>
@@ -1192,7 +1200,7 @@
 
         html += `
           <div class="meal-next meal-snack">
-            <div class="meal-next-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="meal-next-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></div>
             <div class="meal-next-info">
               <input type="text" class="meal-snack-name" placeholder="Snack" />
               <input type="text" class="meal-snack-cal" placeholder="cal" />
@@ -1220,10 +1228,7 @@
 
     async function logPlannedMeal(meal) {
       const card = document.querySelector(`.meal-next[data-id="${meal.id}"]`);
-      if (card) {
-        card.classList.add("logged");
-        card.querySelector(".meal-next-check").style.background = "#0a84ff";
-      }
+      if (card) card.classList.add("logged");
       const id = generateId();
       try {
         await db.from("nutrition").insert({
@@ -1244,7 +1249,6 @@
       const cal = parseInt(calEl.value.trim(), 10);
       if (isNaN(cal) || cal <= 0) return;
       card.classList.add("logged");
-      card.querySelector(".meal-next-check").style.background = "#0a84ff";
       const id = generateId();
       try {
         await db.from("nutrition").insert({
