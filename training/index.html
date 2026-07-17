@@ -26,44 +26,61 @@
     .header h1 { font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
     .header a { color: #666; font-size: 12px; text-decoration: none; transition: color .2s; }
     .header a:hover { color: #fff; }
-    .stats { display: flex; gap: 12px; margin-bottom: 24px; }
-    .stat-box { flex: 1; background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; text-align: center; }
+    .layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+    .left-col { display: flex; flex-direction: column; gap: 12px; }
+    .stat-box { background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; text-align: center; }
     .stat-value { font-size: 28px; font-weight: 600; color: #fff; }
     .stat-label { font-size: 11px; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
-    .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .panel { display: flex; flex-direction: column; gap: 12px; }
-    .panel-header { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: #888; padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; }
-    .day-card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; }
-    .day-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 10px; }
+    .week-box { background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; margin-top: auto; }
+    .week-box-title { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .week-bar { display: flex; gap: 4px; margin-bottom: 6px; }
+    .week-day { flex: 1; height: 6px; border-radius: 3px; background: #222; }
+    .week-day.done { background: #0a84ff; }
+    .week-day.today { background: #444; }
+    .week-labels { display: flex; gap: 4px; }
+    .week-labels span { flex: 1; text-align: center; font-size: 9px; color: #555; }
+    .week-labels span.today { color: #0a84ff; }
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .right-col::-webkit-scrollbar { width: 4px; }
+    .right-col::-webkit-scrollbar-track { background: transparent; }
+    .right-col::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .day-card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 14px 16px; flex-shrink: 0; }
+    .day-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px; }
     .day-label.today { color: #0a84ff; }
     .day-label.past { color: #333; }
-    .workout-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #1a1a1a; }
-    .workout-item:last-child { border-bottom: none; }
     .workout-badge {
+      display: inline-block;
       font-size: 9px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 3px 8px;
       border-radius: 6px;
-      flex-shrink: 0;
+      margin-bottom: 8px;
     }
     .workout-badge.run { background: #30d15820; color: #30d158; }
     .workout-badge.strength { background: #ff6b3520; color: #ff6b35; }
     .workout-badge.rest { background: #33333320; color: #666; }
-    .workout-info { flex: 1; min-width: 0; }
-    .workout-title { font-size: 14px; font-weight: 500; color: #fff; }
-    .workout-exercises { margin-top: 6px; }
+    .workout-title { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 8px; }
     .exercise-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
     .exercise-name { color: #ccc; }
     .exercise-detail { color: #888; font-variant-numeric: tabular-nums; }
-    .rest-label { font-size: 13px; color: #555; font-style: italic; padding: 4px 0; }
-    .empty-day { font-size: 13px; color: #333; padding: 4px 0; }
-    .completed-dot { width: 8px; height: 8px; border-radius: 50%; background: #0a84ff; flex-shrink: 0; }
+    .rest-label { font-size: 13px; color: #555; font-style: italic; }
+    .empty-day { font-size: 13px; color: #333; }
+    .completed-dot { width: 8px; height: 8px; border-radius: 50%; background: #0a84ff; display: inline-block; margin-left: 8px; vertical-align: middle; }
     @media (max-width: 768px) {
-      .panels { grid-template-columns: 1fr; }
-      .stats { flex-wrap: wrap; }
-      .stat-box { min-width: calc(50% - 6px); }
+      .layout { grid-template-columns: 1fr; }
+      .left-col { flex-direction: row; flex-wrap: wrap; }
+      .stat-box { flex: 1; min-width: calc(50% - 6px); }
+      .week-box { min-width: 100%; }
+      .right-col { max-height: none; overflow-y: visible; }
     }
   </style>
 </head>
@@ -73,11 +90,9 @@
     <a href="/dashboard/">← Dashboard</a>
   </div>
 
-  <div class="stats" id="statsContainer"></div>
-
-  <div class="panels">
-    <div class="panel" id="panelLeft"></div>
-    <div class="panel" id="panelRight"></div>
+  <div class="layout">
+    <div class="left-col" id="leftCol"></div>
+    <div class="right-col" id="workoutList"></div>
   </div>
 
   <script>
@@ -86,7 +101,6 @@
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const DAY_NAMES_FULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     function todayEt() {
@@ -114,24 +128,21 @@
         days.push({
           date: `${y}-${m}-${dd}`,
           label: `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`,
+          shortLabel: DAY_NAMES[d.getDay()],
           isToday: `${y}-${m}-${dd}` === todayEt(),
           isPast: d < new Date(todayEt() + "T00:00:00") && `${y}-${m}-${dd}` !== todayEt(),
-          fullDay: DAY_NAMES_FULL[d.getDay()],
         });
       }
       return days;
     }
 
-    function renderStats(strava) {
-      const el = document.getElementById("statsContainer");
-      const { cardio, workouts } = strava;
-
+    function renderStats(cardio, workouts) {
       const now = new Date();
       const weekAgo = new Date(now);
       weekAgo.setDate(now.getDate() - 7);
 
       const weekCardio = cardio.filter(a => new Date(a.activity_date) >= weekAgo);
-      const weekWorkouts = (workouts || []).filter(w => new Date(w.workout_date) >= weekAgo);
+      const weekWorkouts = workouts.filter(w => new Date(w.workout_date) >= weekAgo);
 
       const km = weekCardio.reduce((s, a) => s + (a.distance_km || 0), 0).toFixed(1);
       const sets = weekWorkouts.reduce((s, w) =>
@@ -140,7 +151,7 @@
         s + (w.exercises || []).reduce((ss, ex) => ss + (ex.sets || 0) * (ex.reps || 0) * (ex.weight_kg || 0), 0), 0);
       const sessions = weekWorkouts.length + weekCardio.length;
 
-      el.innerHTML = `
+      document.getElementById("leftCol").innerHTML = `
         <div class="stat-box"><div class="stat-value">${km}</div><div class="stat-label">KM this week</div></div>
         <div class="stat-box"><div class="stat-value">${(volume / 1000).toFixed(1)}</div><div class="stat-label">Volume</div></div>
         <div class="stat-box"><div class="stat-value">${sets}</div><div class="stat-label">Sets</div></div>
@@ -148,9 +159,29 @@
       `;
     }
 
+    function renderWeekBar(days, completedDates) {
+      const bars = days.map(d => {
+        const done = completedDates.has(d.date);
+        const cls = done ? "done" : d.isToday ? "today" : "";
+        return `<div class="week-day ${cls}"></div>`;
+      }).join("");
+      const labels = days.map(d => {
+        const cls = d.isToday ? "today" : "";
+        return `<span class="${cls}">${d.shortLabel}</span>`;
+      }).join("");
+
+      return `
+        <div class="week-box">
+          <div class="week-box-title">This week</div>
+          <div class="week-bar">${bars}</div>
+          <div class="week-labels">${labels}</div>
+        </div>`;
+    }
+
     function renderDay(day, workout, completed) {
       const labelClass = day.isToday ? "today" : day.isPast ? "past" : "";
-      const todayMarker = day.isToday ? " — TODAY" : "";
+      const todayMarker = day.isToday ? '<span class="completed-dot"></span>' : "";
+      const pastOpacity = day.isPast ? "opacity:0.5;" : "";
 
       let content = "";
       if (!workout) {
@@ -172,17 +203,15 @@
             <span class="exercise-detail">${esc(detail)}</span>
           </div>`;
         }).join("");
-
-        content = exercises ? `<div class="workout-exercises">${exercises}</div>` : "";
+        content = exercises ? exercises : "";
       }
 
-      const dot = completed ? '<div class="completed-dot"></div>' : '';
+      const completedDot = completed && !day.isToday ? '<span class="completed-dot"></span>' : '';
 
       return `
-        <div class="day-card">
-          <div class="day-label ${labelClass}">${day.label}${todayMarker}</div>
-          ${dot}
-          ${workout ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div class="day-card" style="${pastOpacity}">
+          <div class="day-label ${labelClass}">${day.label}${todayMarker}${completedDot}</div>
+          ${workout ? `<div>
             <span class="workout-badge ${esc(workout.workout_type)}">${esc(workout.workout_type)}</span>
             <span class="workout-title">${esc(workout.title)}</span>
           </div>` : ""}
@@ -195,7 +224,7 @@
       const startDate = days[0].date;
       const endDate = days[6].date;
 
-      const [planRes, actRes, wktRes] = await Promise.all([
+      const [planRes, actRes, wktRes, cardioRes, fullWorkoutRes] = await Promise.all([
         db.from("planned_workouts")
           .select("id, title, workout_date, workout_type, planned_exercises(name, sets, reps, weight_kg, order_index)")
           .gte("workout_date", startDate)
@@ -209,6 +238,8 @@
           .select("workout_date")
           .gte("workout_date", startDate)
           .lte("workout_date", endDate),
+        db.from("strava_activities").select("activity_date, distance_km"),
+        db.from("strava_workouts").select("workout_date, strava_exercises(sets, reps, weight_kg)")
       ]);
 
       const plans = (planRes.data || []).map(w => ({
@@ -223,33 +254,22 @@
       const planByDate = {};
       plans.forEach(w => { planByDate[w.workout_date] = w; });
 
-      const leftDays = days.slice(0, 4);
-      const rightDays = days.slice(4);
+      // Render week progress bar in stats column
+      const leftCol = document.getElementById("leftCol");
+      leftCol.insertAdjacentHTML("beforeend", renderWeekBar(days, completedDates));
 
-      document.getElementById("panelLeft").innerHTML =
-        '<div class="panel-header">Mon – Thu</div>' +
-        leftDays.map(d => renderDay(d, planByDate[d.date], completedDates.has(d.date))).join("");
+      // Render workout list (right side, scrollable)
+      document.getElementById("workoutList").innerHTML =
+        days.map(d => renderDay(d, planByDate[d.date], completedDates.has(d.date))).join("");
 
-      document.getElementById("panelRight").innerHTML =
-        '<div class="panel-header">Fri – Sun</div>' +
-        rightDays.map(d => renderDay(d, planByDate[d.date], completedDates.has(d.date))).join("");
-
-      // Load strava stats
-      try {
-        const [cardioRes, workoutRes] = await Promise.all([
-          db.from("strava_activities").select("activity_date, distance_km"),
-          db.from("strava_workouts").select("workout_date, strava_exercises(sets, reps, weight_kg)")
-        ]);
-        renderStats({
-          cardio: cardioRes.data || [],
-          workouts: (workoutRes.data || []).map(w => ({
-            workout_date: w.workout_date,
-            exercises: w.strava_exercises || [],
-          })),
-        });
-      } catch (e) {
-        console.error("Failed to load stats:", e);
-      }
+      // Render stats
+      renderStats(
+        cardioRes.data || [],
+        (fullWorkoutRes.data || []).map(w => ({
+          workout_date: w.workout_date,
+          exercises: w.strava_exercises || [],
+        }))
+      );
     }
 
     init();
