@@ -448,8 +448,9 @@
 
     /* Nutrition widget */
     .nutrition-widget { padding: 0; }
-    .nutrition-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 4px; }
+    .nutrition-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 8px; }
     .nutrition-header h2 { margin: 0; }
+    .nutrition-total { font-size: 13px; color: #0a84ff; font-weight: 500; }
     .chevron { font-size: 14px; transition: transform 0.2s; color: var(--text); }
     .nutrition-widget.collapsed .nutrition-header { padding-bottom: 16px; }
     .nutrition-widget.collapsed .chevron { transform: rotate(-90deg); }
@@ -670,6 +671,7 @@
       <section class="widget nutrition-widget collapsed">
         <div class="nutrition-header" id="nutritionToggle">
           <h2>Nutrition</h2>
+          <span class="nutrition-total" id="nutritionTotal"></span>
           <span class="chevron" id="nutritionChevron">&#9662;</span>
         </div>
         <div class="nutrition-body" id="nutritionBody">
@@ -1152,16 +1154,22 @@
     let lastNutritionDate = "";
 
     async function loadNutrition() {
+      const totalEl = document.getElementById("nutritionTotal");
       const queueEl = document.getElementById("mealQueue");
       const today = todayEt();
       lastNutritionDate = today;
 
       try {
-        const { data: plans } = await db
-          .from("planned_meals")
-          .select("id, food_name, calories, order_index, logged")
-          .eq("meal_date", today)
-          .order("order_index");
+        const [logRes, planRes] = await Promise.all([
+          db.from("nutrition").select("calories").eq("logged_date", today),
+          db.from("planned_meals").select("id, food_name, calories, order_index, logged").eq("meal_date", today).order("order_index"),
+        ]);
+
+        const logs = logRes.data || [];
+        const loggedCal = logs.reduce((s, n) => s + (n.calories || 0), 0);
+        totalEl.textContent = loggedCal > 0 ? `${loggedCal} cal` : "";
+
+        const plans = planRes.data || [];
 
         const upcoming = (plans || []).filter(p => !p.logged).slice(0, 2);
 
