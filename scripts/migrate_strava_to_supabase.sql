@@ -54,3 +54,22 @@ ALTER TABLE strava_exercises ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "public_all" ON strava_activities FOR ALL USING (true);
 CREATE POLICY "public_all" ON strava_workouts FOR ALL USING (true);
 CREATE POLICY "public_all" ON strava_exercises FOR ALL USING (true);
+
+-- Planned meals for calorie budgeting
+CREATE TABLE IF NOT EXISTS planned_meals (
+  id text PRIMARY KEY,
+  food_name text NOT NULL,
+  calories int4 NOT NULL,
+  protein int4,
+  meal_date text NOT NULL,
+  order_index int4 DEFAULT 0,
+  logged boolean DEFAULT false,
+  logged_at text,
+  created_at text DEFAULT now()::text
+);
+
+CREATE INDEX IF NOT EXISTS idx_planned_meals_date ON planned_meals (meal_date);
+CREATE INDEX IF NOT EXISTS idx_planned_meals_date_logged ON planned_meals (meal_date, logged);
+
+ALTER TABLE planned_meals ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public_all" ON planned_meals FOR ALL USING (true);
