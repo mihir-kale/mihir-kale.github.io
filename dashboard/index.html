@@ -543,10 +543,10 @@
     .listen-track-name { font-size: 14px; font-weight: 400; color: #fff; }
     .listen-track-artist { font-size: 11px; color: #666; margin-top: 2px; }
 
-    /* Top bar & Focus button */
+    /* Top bar */
     .header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; }
     .header-actions { display: flex; gap: 8px; }
-    .focus-btn, .logout-btn {
+    .logout-btn {
       background: none;
       border: 1px solid #333;
       color: var(--text-muted);
@@ -556,15 +556,10 @@
       cursor: pointer;
       transition: color .2s, border-color .2s;
     }
-    .focus-btn:hover, .logout-btn:hover {
+    .logout-btn:hover {
       color: #fff;
       border-color: #fff;
     }
-    .focus-btn.active {
-      color: #0a84ff;
-      border-color: #0a84ff;
-    }
-
     /* Pomodoro timer */
     .pomodoro-timer {
       font-size: 48px;
@@ -594,18 +589,6 @@
       border-color: #fff;
     }
 
-    /* Focus mode — hide everything except calendar & tasks */
-    body.focus-mode .right-col,
-    body.focus-mode .left-col .read-widget,
-    body.focus-mode .left-col .listen-widget {
-      display: none !important;
-    }
-    body.focus-mode .left-col {
-      flex: 1;
-    }
-    body.focus-mode .pomodoro-widget {
-      display: block !important;
-    }
   </style>
 </head>
 <body>
@@ -628,7 +611,6 @@
     <div class="header-row">
       <div class="date-header" id="dateHeader"></div>
       <div class="header-actions">
-        <button class="focus-btn" id="focusBtn">Focus</button>
         <button class="logout-btn" id="logoutBtn">Sign out</button>
       </div>
     </div>
@@ -640,8 +622,8 @@
         <div id="calendarContainer" class="loading">Loading...</div>
       </section>
 
-      <section class="widget pomodoro-widget" id="pomodoroWidget" style="display:none">
-        <h2>Focus</h2>
+      <section class="widget pomodoro-widget" id="pomodoroWidget">
+        <h2>Pomodoro</h2>
         <div class="pomodoro-timer" id="pomodoroTimer">25:00</div>
         <div class="pomodoro-controls">
           <button class="pomodoro-btn" id="pomodoroStart">Start</button>
@@ -650,7 +632,7 @@
         </div>
       </section>
 
-      <section class="widget read-widget collapsed">
+      <section class="widget read-widget collapsed" style="display:none">
         <div class="read-header" id="readToggle">
           <h2>Read</h2>
           <span class="chevron">&#9662;</span>
@@ -660,7 +642,7 @@
         </div>
       </section>
 
-      <section class="widget listen-widget collapsed">
+      <section class="widget listen-widget collapsed" style="display:none">
         <div class="listen-header" id="listenToggle">
           <h2>Listen</h2>
           <span class="listen-status" id="listenStatus"></span>
@@ -1154,12 +1136,8 @@
       loadCalendar();
       loadWorkout();
       loadNutrition();
-      loadRead();
-      loadCurrentlyPlaying();
-      loadTopTracks();
       setInterval(() => {
         if (document.hidden) return;
-        loadCurrentlyPlaying();
         if (todayEt() !== lastNutritionDate) loadNutrition();
       }, 30000);
     }
@@ -1485,9 +1463,7 @@
       }
     })();
 
-    /* ── Focus mode & Pomodoro timer ─────────────── */
-    const focusBtn = document.getElementById("focusBtn");
-    const pomodoroWidget = document.getElementById("pomodoroWidget");
+    /* ── Pomodoro timer ─────────────────────────── */
     const pomodoroTimer = document.getElementById("pomodoroTimer");
     const pomodoroStart = document.getElementById("pomodoroStart");
     const pomodoroPause = document.getElementById("pomodoroPause");
@@ -1536,22 +1512,6 @@
       updatePomodoroDisplay();
       pomodoroStart.style.display = "";
       pomodoroPause.style.display = "none";
-    });
-
-    focusBtn.addEventListener("click", () => {
-      document.body.classList.toggle("focus-mode");
-      focusBtn.classList.toggle("active");
-      if (document.body.classList.contains("focus-mode")) {
-        pomodoroWidget.style.display = "block";
-      } else {
-        pomodoroWidget.style.display = "none";
-        clearInterval(pomodoroInterval);
-        pomodoroInterval = null;
-        pomodoroSeconds = 25 * 60;
-        updatePomodoroDisplay();
-        pomodoroStart.style.display = "";
-        pomodoroPause.style.display = "none";
-      }
     });
 
     function showLogin() {
