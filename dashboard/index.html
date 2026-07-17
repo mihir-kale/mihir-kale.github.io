@@ -1119,7 +1119,7 @@
               <div class="workout-card-date">${dateStr}</div>
             </div>
             <div class="workout-card-exercises">
-              ${exList || '<div class="empty-state" style="padding:12px 18px">No exercises added</div>'}
+              ${exList || w.workout_type === 'rest' ? '<div class="empty-state" style="padding:12px 18px">Active recovery</div>' : '<div class="empty-state" style="padding:12px 18px">No exercises added</div>'}
             </div>
           </div>
         `;
