@@ -450,21 +450,59 @@
     .nutrition-widget { padding: 0; }
     .nutrition-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 0; }
     .nutrition-header h2 { margin: 0; }
-    .nutrition-total { font-size: 13px; color: #0a84ff; font-weight: 500; }
     .chevron { font-size: 14px; transition: transform 0.2s; color: var(--text); }
     .nutrition-widget.collapsed .nutrition-header { padding-bottom: 16px; }
     .nutrition-widget.collapsed .chevron { transform: rotate(-90deg); }
-    .nutrition-body { overflow: hidden; max-height: 60px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
+    .nutrition-body { overflow: hidden; max-height: 200px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
     .nutrition-widget.collapsed .nutrition-body { max-height: 0; padding: 0 18px 0; }
-    .nutrition-inputs { display: flex; gap: 8px; margin-top: 12px; }
-    .nutrition-inputs input { flex: 1; padding: 8px; border: 1px solid #333; border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; }
-    .nutrition-inputs input::placeholder { color: #666; }
-    .nutrition-inputs input:focus { outline: none; border-color: #444; }
     .nutrition-entry { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #2a2a2a; font-size: 13px; }
     .nutrition-entry:first-child { border-top: 1px solid #2a2a2a; margin-top: 6px; }
     .nutrition-entry .food-name { font-weight: 500; }
     .nutrition-entry .macros { color: var(--text-muted); }
     .nutrition-empty { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
+
+    .meal-next {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .meal-next:hover { background: #222; }
+    .meal-next.logged { opacity: 0.4; pointer-events: none; }
+    .meal-next-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #444;
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, background .2s;
+    }
+    .meal-next:hover .meal-next-check { border-color: #0a84ff; }
+    .meal-next.logged .meal-next-check { background: #0a84ff; border-color: #0a84ff; }
+    .meal-next-info { flex: 1; min-width: 0; }
+    .meal-next-name { font-size: 13px; font-weight: 500; color: #fff; }
+    .meal-next-macro { font-size: 12px; color: #888; margin-top: 2px; }
+    .meal-snack .meal-next-info { display: flex; gap: 6px; align-items: center; }
+    .meal-snack-name, .meal-snack-cal {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      padding: 0;
+      outline: none;
+      min-width: 0;
+    }
+    .meal-snack-name { flex: 1; }
+    .meal-snack-name::placeholder, .meal-snack-cal::placeholder { color: #555; }
+    .meal-snack-cal { width: 50px; text-align: right; font-variant-numeric: tabular-nums; }
 
     /* Read widget */
     .read-widget { padding: 0; }
@@ -633,7 +671,7 @@
 
     <div class="right-col">
       <section class="widget">
-        <h2>Workout</h2>
+        <h2>Training</h2>
         <div id="workoutContainer" class="loading">Loading...</div>
         <div id="stravaContainer"></div>
       </section>
@@ -641,14 +679,10 @@
       <section class="widget nutrition-widget collapsed">
         <div class="nutrition-header" id="nutritionToggle">
           <h2>Nutrition</h2>
-          <span class="nutrition-total" id="nutritionTotal"></span>
           <span class="chevron" id="nutritionChevron">&#9662;</span>
         </div>
         <div class="nutrition-body" id="nutritionBody">
-          <div class="nutrition-inputs">
-            <input type="text" id="nutritionFood" placeholder="Food" />
-            <input type="text" id="nutritionCal" placeholder="cal / pro" />
-          </div>
+          <div id="mealQueue"></div>
         </div>
       </section>
     </div>
@@ -1128,59 +1162,98 @@
       nutritionWidget.classList.toggle("collapsed");
     });
 
-    document.getElementById("nutritionCal").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") addNutrition();
-    });
-    document.getElementById("nutritionFood").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") document.getElementById("nutritionCal").focus();
-    });
-
     let lastNutritionDate = "";
 
     async function loadNutrition() {
-      const el = document.getElementById("nutritionTotal");
+      const queueEl = document.getElementById("mealQueue");
       const today = todayEt();
       lastNutritionDate = today;
+
       try {
-        const { data, error } = await db
-          .from("nutrition")
-          .select("calories, protein")
-          .eq("logged_date", today);
-        if (error) throw error;
-        if (!data.length) {
-          el.textContent = "";
-          return;
+        const { data: plans } = await db
+          .from("planned_meals")
+          .select("id, food_name, calories, order_index, logged")
+          .eq("meal_date", today)
+          .order("order_index");
+
+        const upcoming = (plans || []).filter(p => !p.logged).slice(0, 2);
+
+        let html = "";
+        for (const m of upcoming) {
+          html += `
+            <div class="meal-next" data-id="${esc(m.id)}">
+              <div class="meal-next-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="meal-next-info">
+                <div class="meal-next-name">${esc(m.food_name)}</div>
+                <div class="meal-next-macro">${m.calories} cal</div>
+              </div>
+            </div>`;
         }
-        const totalCal = data.reduce((s, n) => s + (n.calories || 0), 0);
-        const totalPro = data.reduce((s, n) => s + (n.protein || 0), 0);
-        el.textContent = totalPro > 0 ? `${totalCal} cal / ${totalPro}g pro` : `${totalCal} cal`;
+
+        html += `
+          <div class="meal-next meal-snack">
+            <div class="meal-next-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="meal-next-info">
+              <input type="text" class="meal-snack-name" placeholder="Snack" />
+              <input type="text" class="meal-snack-cal" placeholder="cal" />
+            </div>
+          </div>`;
+
+        queueEl.innerHTML = html;
+
+        for (const m of upcoming) {
+          queueEl.querySelector(`.meal-next[data-id="${m.id}"]`).addEventListener("click", () => logPlannedMeal(m));
+        }
+
+        const snackCard = queueEl.querySelector(".meal-snack");
+        snackCard.addEventListener("click", (e) => {
+          if (e.target.tagName === "INPUT") return;
+          logSnack(snackCard);
+        });
+        snackCard.querySelector(".meal-snack-cal").addEventListener("keydown", (e) => {
+          if (e.key === "Enter") logSnack(snackCard);
+        });
       } catch (e) {
         console.error("Failed to load nutrition:", e);
       }
     }
 
-    async function addNutrition() {
-      const foodEl = document.getElementById("nutritionFood");
-      const calEl  = document.getElementById("nutritionCal");
-      const food   = foodEl.value.trim();
-      const raw    = calEl.value.trim();
-      if (!food || !raw) return;
-      const parts = raw.split("/").map(s => s.trim());
-      const calories = parseInt(parts[0], 10);
-      const protein  = parts.length > 1 ? parseInt(parts[1], 10) : null;
-      if (isNaN(calories)) return;
-      const id = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2,"0")).join("");
-      const today = todayEt();
+    async function logPlannedMeal(meal) {
+      const card = document.querySelector(`.meal-next[data-id="${meal.id}"]`);
+      if (card) {
+        card.classList.add("logged");
+        card.querySelector(".meal-next-check").style.background = "#0a84ff";
+      }
+      const id = generateId();
       try {
-        const { error } = await db.from("nutrition").insert({
-          id, food_name: food, calories, protein, logged_date: today
+        await db.from("nutrition").insert({
+          id, food_name: meal.food_name, calories: meal.calories, logged_date: todayEt(),
         });
-        if (error) throw error;
-        foodEl.value = "";
-        calEl.value  = "";
-        loadNutrition();
+        await db.from("planned_meals").update({ logged: true, logged_at: new Date().toISOString() }).eq("id", meal.id);
+        setTimeout(() => loadNutrition(), 300);
       } catch (e) {
-        console.error("Failed to add nutrition:", e);
+        console.error("Failed to log meal:", e);
+        if (card) card.classList.remove("logged");
+      }
+    }
+
+    async function logSnack(card) {
+      const nameEl = card.querySelector(".meal-snack-name");
+      const calEl = card.querySelector(".meal-snack-cal");
+      const name = nameEl.value.trim() || "Snack";
+      const cal = parseInt(calEl.value.trim(), 10);
+      if (isNaN(cal) || cal <= 0) return;
+      card.classList.add("logged");
+      card.querySelector(".meal-next-check").style.background = "#0a84ff";
+      const id = generateId();
+      try {
+        await db.from("nutrition").insert({
+          id, food_name: name, calories: cal, logged_date: todayEt(),
+        });
+        setTimeout(() => loadNutrition(), 300);
+      } catch (e) {
+        console.error("Failed to log snack:", e);
+        card.classList.remove("logged");
       }
     }
 
