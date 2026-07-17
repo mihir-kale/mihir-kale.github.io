@@ -1018,10 +1018,20 @@
 
     async function loadStrava() {
       try {
-        const resp = await fetchWithRetry("data/fitness-data.json");
-        if (!resp.ok) throw new Error("No data");
-        const data = await resp.json();
-        renderStrava(data);
+        const [actRes, wktRes] = await Promise.all([
+          db.from("strava_activities").select("activity_date, distance_km"),
+          db.from("strava_workouts").select("id, workout_date, strava_exercises(name, sets, reps, weight_kg)")
+        ]);
+
+        const cardio = (actRes.data || []).map(a => ({ date: a.activity_date, distance_km: a.distance_km }));
+        const workouts = (wktRes.data || []).map(w => ({
+          date: w.workout_date,
+          exercises: (w.strava_exercises || []).map(ex => ({
+            name: ex.name, sets: ex.sets, reps: ex.reps, weight_kg: ex.weight_kg,
+          })),
+        }));
+
+        renderStrava({ cardio, workouts });
       } catch (e) {
         document.getElementById("stravaContainer").innerHTML =
           '<div class="empty-state">No data yet</div>';

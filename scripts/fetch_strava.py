@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Fetch Strava activities, parse Hevy workouts from Descriptions, output JSON for the dashboard."""
+"""Fetch Strava activities, parse Hevy workouts, upsert to Supabase."""
 
-import json
 import os
 import re
 import sys
+import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -12,21 +12,22 @@ import requests
 
 STRAVA_AUTH_URL = "https://www.strava.com/oauth/token"
 STRAVA_API_BASE = "https://www.strava.com/api/v3"
-DATA_DIR = Path(__file__).resolve().parent.parent / "dashboard" / "data"
 
 def load_env(env_path=None):
     env = {}
-    for key in ("STRAVA_CLIENT_ID", "STRAVA_CLIENT_SECRET", "STRAVA_REFRESH_TOKEN"):
+    for key in ("STRAVA_CLIENT_ID", "STRAVA_CLIENT_SECRET", "STRAVA_REFRESH_TOKEN",
+                "SUPABASE_URL", "SUPABASE_ANON_KEY"):
         val = os.environ.get(key)
         if val:
             env[key] = val
-    if len(env) == 3:
+    if all(k in env for k in ("STRAVA_CLIENT_ID", "STRAVA_CLIENT_SECRET", "STRAVA_REFRESH_TOKEN",
+                               "SUPABASE_URL", "SUPABASE_ANON_KEY")):
         return env
 
     if env_path is None:
         env_path = Path(__file__).resolve().parent.parent / ".env"
     if not env_path.exists():
-        print(f"ERROR: .env not found and STRAVA_* env vars not set. Copy .env.example to .env and fill in your secrets.")
+        print("ERROR: Missing env vars. Set STRAVA_* and SUPABASE_* as env vars or in .env")
         sys.exit(1)
     for line in env_path.read_text().splitlines():
         line = line.strip()
@@ -74,18 +75,7 @@ def fetch_activities(access_token, after_epoch=None):
     return activities
 
 def parse_hevy_description(description):
-    """Parse Hevy-formatted workout text from a Strava activity description.
-    Expected format:
-
-        Logged with hevyapp.com
-
-        Exercise Name
-        Set 1: 80 lbs x 8
-        Set 2: 90 lbs x 5
-
-        Next Exercise
-        Set 1: 7 reps
-    """
+    """Parse Hevy-formatted workout text from a Strava activity description."""
     if not description:
         return None
 
@@ -176,7 +166,6 @@ def process_activities(raw_activities, access_token=None):
 
         description = act.get("description")
 
-        # List endpoint doesn't include descriptions; fetch detail for strength
         if access_token and activity_type == "weighttraining":
             try:
                 resp = requests.get(
@@ -191,8 +180,8 @@ def process_activities(raw_activities, access_token=None):
 
         entry = {
             "id": act["id"],
-            "date": start[:10],
-            "type": act.get("type"),
+            "activity_date": start[:10],
+            "activity_type": act.get("type", ""),
             "name": act.get("name", ""),
             "distance_km": round((act.get("distance") or 0) / 1000, 2),
             "moving_time_min": round((act.get("moving_time") or 0) / 60, 1),
@@ -214,56 +203,89 @@ def process_activities(raw_activities, access_token=None):
         exercises = parse_hevy_description(description)
         if exercises is not None or activity_type == "weighttraining":
             workouts.append({
-                "date": start[:10],
+                "id": f"stv_{act['id']}",
+                "strava_activity_id": act["id"],
+                "workout_date": start[:10],
                 "name": act.get("name", ""),
-                "strava_id": act["id"],
                 "exercises": exercises or [],
             })
 
     return cardio, workouts
 
-def compute_summary(cardio, workouts):
-    monthly_cardio = {}
-    for c in cardio:
-        month = c["date"][:7]
-        monthly_cardio.setdefault(month, {"runs": 0, "distance_km": 0, "time_min": 0, "elevation": 0})
-        monthly_cardio[month]["runs"] += 1
-        monthly_cardio[month]["distance_km"] += c["distance_km"]
-        monthly_cardio[month]["time_min"] += c["moving_time_min"]
-        monthly_cardio[month]["elevation"] += c["elevation_gain"]
-
-    monthly_lifting = {}
-    for w in workouts:
-        month = w["date"][:7]
-        monthly_lifting.setdefault(month, {"sessions": 0, "total_volume_kg": 0})
-        monthly_lifting[month]["sessions"] += 1
-        for ex in w["exercises"]:
-            if "weight_kg" in ex:
-                monthly_lifting[month]["total_volume_kg"] += ex["weight_kg"] * ex["sets"] * ex["reps"]
-
-    pr_lifts = {}
-    for w in workouts:
-        for ex in w["exercises"]:
-            if "weight_kg" in ex:
-                key = ex["name"].lower()
-                if key not in pr_lifts or ex["weight_kg"] > pr_lifts[key]["weight_kg"]:
-                    pr_lifts[key] = {
-                        "name": ex["name"],
-                        "weight_kg": ex["weight_kg"],
-                        "sets": ex["sets"],
-                        "reps": ex["reps"],
-                        "date": w["date"],
-                    }
-
-    return {
-        "monthly_cardio": monthly_cardio,
-        "monthly_lifting": monthly_lifting,
-        "pr_lifts": pr_lifts,
-        "total_cardio_activities": len(cardio),
-        "total_strength_sessions": len(workouts),
-        "total_distance_km": round(sum(c["distance_km"] for c in cardio), 1),
-        "total_time_hours": round(sum(c["moving_time_min"] for c in cardio) / 60, 1),
+def upsert_to_supabase(env, cardio, workouts):
+    url = env["SUPABASE_URL"]
+    key = env["SUPABASE_ANON_KEY"]
+    headers = {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates",
     }
+
+    # Upsert cardio activities
+    if cardio:
+        resp = requests.post(
+            f"{url}/rest/v1/strava_activities",
+            headers=headers,
+            json=cardio,
+            timeout=30,
+        )
+        if not resp.ok:
+            print(f"ERROR upserting activities: {resp.status_code} {resp.text}")
+        else:
+            print(f"Upserted {len(cardio)} activities")
+
+    # Upsert workouts
+    workout_rows = [
+        {k: v for k, v in w.items() if k != "exercises"}
+        for w in workouts
+    ]
+    if workout_rows:
+        resp = requests.post(
+            f"{url}/rest/v1/strava_workouts",
+            headers=headers,
+            json=workout_rows,
+            timeout=30,
+        )
+        if not resp.ok:
+            print(f"ERROR upserting workouts: {resp.status_code} {resp.text}")
+        else:
+            print(f"Upserted {len(workout_rows)} workouts")
+
+    # Upsert exercises — delete existing then insert fresh
+    for w in workouts:
+        if not w["exercises"]:
+            continue
+        # Delete old exercises for this workout
+        requests.delete(
+            f"{url}/rest/v1/strava_exercises?workout_id=eq.{w['id']}",
+            headers=headers,
+            timeout=15,
+        )
+        # Insert new
+        exercise_rows = [
+            {
+                "id": str(uuid.uuid4())[:20],
+                "workout_id": w["id"],
+                "name": ex["name"],
+                "sets": ex.get("sets", 0),
+                "reps": ex.get("reps", 0),
+                "weight_kg": ex.get("weight_kg"),
+                "order_index": i,
+            }
+            for i, ex in enumerate(w["exercises"])
+        ]
+        resp = requests.post(
+            f"{url}/rest/v1/strava_exercises",
+            headers=headers,
+            json=exercise_rows,
+            timeout=30,
+        )
+        if not resp.ok:
+            print(f"ERROR upserting exercises for {w['id']}: {resp.status_code} {resp.text}")
+
+    total_exercises = sum(len(w["exercises"]) for w in workouts)
+    print(f"Upserted {total_exercises} exercises across {len(workouts)} workouts")
 
 def main():
     env = load_env()
@@ -281,28 +303,16 @@ def main():
         )
         env_path.write_text(env_content)
 
-    # Fetch last 2 years of activities (or all if first run)
+    # Fetch last 2 years of activities
     two_years_ago = int((datetime.now(timezone.utc) - timedelta(days=730)).timestamp())
     raw = fetch_activities(token, after_epoch=two_years_ago)
     print(f"Fetched {len(raw)} activities from Strava.")
 
     cardio, workouts = process_activities(raw, access_token=token)
-    summary = compute_summary(cardio, workouts)
+    print(f"Parsed {len(cardio)} cardio activities, {len(workouts)} strength sessions")
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-    output = {
-        "last_updated": datetime.now(timezone.utc).isoformat(),
-        "summary": summary,
-        "cardio": cardio,
-        "workouts": workouts,
-    }
-
-    data_path = DATA_DIR / "fitness-data.json"
-    data_path.write_text(json.dumps(output, indent=2, default=str))
-    print(f"Data written to {data_path}")
-    print(f"  Cardio activities: {len(cardio)}")
-    print(f"  Strength sessions: {len(workouts)}")
+    upsert_to_supabase(env, cardio, workouts)
+    print("Done.")
 
 if __name__ == "__main__":
     main()
