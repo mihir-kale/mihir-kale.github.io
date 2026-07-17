@@ -381,6 +381,13 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .workout-card-rest {
+      padding: 16px 18px;
+      font-size: 13px;
+      color: #666;
+      font-style: italic;
+    }
+
     @media (max-width: 900px) {
       .columns {
         grid-template-columns: 1fr;
@@ -1109,6 +1116,8 @@
 
         const typeClass = w.workout_type || "cardio";
 
+        const isRest = w.workout_type === "rest";
+
         el.innerHTML = `
           <div class="workout-card">
             <div class="workout-card-header">
@@ -1118,9 +1127,10 @@
               </div>
               <div class="workout-card-date">${dateStr}</div>
             </div>
-            <div class="workout-card-exercises">
-              ${exList || w.workout_type === 'rest' ? '<div class="empty-state" style="padding:12px 18px">Active recovery</div>' : '<div class="empty-state" style="padding:12px 18px">No exercises added</div>'}
-            </div>
+            ${isRest
+              ? '<div class="workout-card-rest">Active recovery</div>'
+              : `<div class="workout-card-exercises">${exList || '<div class="empty-state" style="padding:12px 18px">No exercises added</div>'}</div>`
+            }
           </div>
         `;
       } catch (e) {
