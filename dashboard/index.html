@@ -71,6 +71,52 @@
     }
 
     /* Calendar */
+    .widget-header { display: flex; align-items: center; justify-content: space-between; }
+    .widget-header h2 { margin: 0; }
+    .widget-add-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-size: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .2s, border-color .2s;
+    }
+    .widget-add-btn:hover { color: #fff; border-color: #fff; }
+    .cal-add-form {
+      display: flex;
+      gap: 6px;
+      padding: 10px 0;
+    }
+    .cal-add-form input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .cal-add-form input::placeholder { color: #555; }
+    .cal-add-form input:focus { outline: none; border-color: #444; }
+    .cal-add-submit {
+      padding: 6px 12px;
+      border: 1px solid #0a84ff;
+      border-radius: 6px;
+      background: transparent;
+      color: #0a84ff;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .cal-add-submit:hover { background: #0a84ff; color: #000; }
     .calendar-list { list-style: none; max-height: 560px; overflow-y: auto; }
 
     .cal-day {
@@ -626,7 +672,16 @@
     <div class="columns">
     <div class="left-col">
       <section class="widget">
-        <h2>Calendar</h2>
+        <div class="widget-header">
+          <h2>Calendar</h2>
+          <button class="widget-add-btn" id="calAddBtn" aria-label="Add event">+</button>
+        </div>
+        <div id="calAddForm" class="cal-add-form" style="display:none">
+          <input type="text" id="calTitle" placeholder="Title" />
+          <input type="date" id="calDate" />
+          <input type="time" id="calTime" />
+          <button class="cal-add-submit" id="calAddSubmit">Add</button>
+        </div>
         <div id="calendarContainer" class="loading">Loading...</div>
       </section>
 
@@ -791,6 +846,42 @@
           '<div class="empty-state">No data yet</div>';
       }
     }
+
+    /* ── Calendar add event ──────────────────────── */
+    const calAddBtn = document.getElementById("calAddBtn");
+    const calAddForm = document.getElementById("calAddForm");
+    const calDate = document.getElementById("calDate");
+
+    calAddBtn.addEventListener("click", () => {
+      const open = calAddForm.style.display !== "none";
+      calAddForm.style.display = open ? "none" : "flex";
+      if (!open) {
+        calDate.value = todayEt();
+        document.getElementById("calTitle").focus();
+      }
+    });
+
+    document.getElementById("calAddSubmit").addEventListener("click", () => {
+      const title = document.getElementById("calTitle").value.trim();
+      const date = calDate.value;
+      const time = document.getElementById("calTime").value;
+      if (!title || !date) return;
+
+      const fmt = (d, t) => {
+        const dt = t ? `${date}T${t}:00` : `${date}T090000`;
+        return dt.replace(/[-:]/g, "").replace("T", "T");
+      };
+      const padDate = date.replace(/-/g, "");
+      const start = time ? `${padDate}T${time.replace(":", "")}00` : `${padDate}T090000`;
+      const end = time ? `${padDate}T${String(parseInt(time.slice(0,2)) + 1).padStart(2,"0")}${time.slice(3)}00` : `${padDate}T100000`;
+
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&ctz=America/New_York`;
+      window.open(url, "_blank");
+
+      document.getElementById("calTitle").value = "";
+      document.getElementById("calTime").value = "";
+      calAddForm.style.display = "none";
+    });
 
     function renderDate() {
       const now = new Date();
