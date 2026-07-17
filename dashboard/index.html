@@ -238,21 +238,10 @@
     }
 
     /* Strava */
-    .strava-section { margin-bottom: 20px; }
-    .strava-section:last-child { margin-bottom: 0; }
-
-    .strava-label {
-      font-size: 10px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #fff;
-      margin-bottom: 10px;
-    }
-
     .stat-row {
       display: flex;
       gap: 12px;
+      margin-top: 12px;
     }
 
     .stat-box {
@@ -644,8 +633,9 @@
 
     <div class="right-col">
       <section class="widget">
-        <h2>Next Workout</h2>
+        <h2>Workout</h2>
         <div id="workoutContainer" class="loading">Loading...</div>
+        <div id="stravaContainer"></div>
       </section>
 
       <section class="widget nutrition-widget collapsed">
@@ -660,11 +650,6 @@
             <input type="text" id="nutritionCal" placeholder="cal / pro" />
           </div>
         </div>
-      </section>
-
-      <section class="widget">
-        <h2>Strava</h2>
-        <div id="stravaContainer" class="loading">Loading...</div>
       </section>
     </div>
   </div>
@@ -1014,20 +999,18 @@
         s + (w.exercises || []).reduce((ss, ex) => ss + (ex.sets || 0) * (ex.reps || 0) * (ex.weight_kg || 0), 0), 0);
 
       el.innerHTML = `
-        <div class="strava-section">
-          <div class="stat-row">
-            <div class="stat-box">
-              <div class="stat-value">${totalKm}</div>
-              <div class="stat-unit">KM</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value">${(totalVolume / 1000).toFixed(1)}</div>
-              <div class="stat-unit">VOLUME</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value">${totalSets}</div>
-              <div class="stat-unit">SETS</div>
-            </div>
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="stat-value">${totalKm}</div>
+            <div class="stat-unit">KM</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">${(totalVolume / 1000).toFixed(1)}</div>
+            <div class="stat-unit">VOLUME</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">${totalSets}</div>
+            <div class="stat-unit">SETS</div>
           </div>
         </div>
       `;
