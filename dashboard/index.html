@@ -725,7 +725,7 @@
 
     <div class="right-col">
       <section class="widget">
-        <h2>Training <a href="/training/" style="font-size:10px;color:#666;text-decoration:none;margin-left:6px;font-weight:400">→ View all</a></h2>
+        <h2><a href="/training/">Training</a></h2>
         <div id="workoutContainer" class="loading">Loading...</div>
         <div id="stravaContainer"></div>
       </section>
@@ -1171,7 +1171,7 @@
           .select("id, title, workout_date, workout_type")
           .gte("workout_date", today)
           .order("workout_date", { ascending: true })
-          .limit(1);
+          .limit(5);
 
         if (error) throw error;
         if (!workouts || !workouts.length) {
@@ -1179,51 +1179,24 @@
           return;
         }
 
-        const w = workouts[0];
-        const { data: exercises } = await db.from("planned_exercises")
-          .select("name, sets, reps, duration_min, target_weight_kg, target_pace_min_km")
-          .eq("workout_id", w.id)
-          .order("order_index", { ascending: true });
-
-        const d = new Date(w.workout_date + "T12:00:00");
-        const dateStr = `${DAY_NAMES[d.getDay()]}, ${d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
-
-        const exList = (exercises || []).map(ex => {
-          let detail = "";
-          if (w.workout_type === "cardio" || w.workout_type === "run") {
-            detail = ex.duration_min && ex.target_pace_min_km
-              ? `${ex.duration_min} min · ${ex.target_pace_min_km} /km`
-              : ex.duration_min ? `${ex.duration_min} min` : "";
-          } else {
-            const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : "";
-            const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
-            detail = setsReps + weight;
-          }
-          return `<div class="workout-card-exercise">
-            <span class="workout-card-exercise-name">${esc(ex.name)}</span>
-            <span class="workout-card-exercise-detail">${esc(detail)}</span>
-          </div>`;
-        }).join("");
-
-        const typeClass = w.workout_type || "cardio";
-
-        const isRest = w.workout_type === "rest";
-
-        el.innerHTML = `
-          <div class="workout-card">
-            <div class="workout-card-header">
-              <div class="workout-card-top">
-                <div class="workout-card-title">${esc(w.title)}</div>
-                <span class="workout-card-badge ${typeClass}">${typeClass}</span>
-              </div>
-              <div class="workout-card-date">${dateStr}</div>
+        const typeColors = { run: "#30d158", strength: "#ff6b35", rest: "#555" };
+        let html = '<ul class="task-list">';
+        html += workouts.map(w => {
+          const d = new Date(w.workout_date + "T12:00:00");
+          const dateStr = w.workout_date === today ? "Today" : `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
+          const color = typeColors[w.workout_type] || "#0a84ff";
+          return `<li class="task-item">
+            <div class="task-check" style="border-color:${color}">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
+                <polyline points="2 6 5 9 10 3"/>
+              </svg>
             </div>
-            ${isRest
-              ? '<div class="workout-card-rest">Active recovery</div>'
-              : `<div class="workout-card-exercises">${exList || '<div class="empty-state" style="padding:12px 18px">No exercises added</div>'}</div>`
-            }
-          </div>
-        `;
+            <span class="task-title">${esc(w.title)}</span>
+            <span class="task-due">${dateStr}</span>
+          </li>`;
+        }).join("");
+        html += "</ul>";
+        el.innerHTML = html;
       } catch (e) {
         console.error("Failed to load workout:", e);
         el.innerHTML = '<div class="empty-state">Failed to load</div>';
