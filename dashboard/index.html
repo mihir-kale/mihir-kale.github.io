@@ -1171,7 +1171,7 @@
           .select("id, title, workout_date, workout_type")
           .gte("workout_date", today)
           .order("workout_date", { ascending: true })
-          .limit(5);
+          .limit(1);
 
         if (error) throw error;
         if (!workouts || !workouts.length) {
