@@ -31,12 +31,13 @@
     .stat-box { background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; text-align: center; }
     .stat-value { font-size: 28px; font-weight: 600; color: #fff; }
     .stat-label { font-size: 11px; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
-    .week-box { background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; margin-top: auto; }
+    .week-box { background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px; }
     .week-box-title { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .week-bar { display: flex; gap: 4px; margin-bottom: 6px; }
     .week-day { flex: 1; height: 6px; border-radius: 3px; background: #222; }
     .week-day.done { background: #0a84ff; }
     .week-day.today { background: #444; }
+    .week-day.future { background: #222; }
     .week-labels { display: flex; gap: 4px; }
     .week-labels span { flex: 1; text-align: center; font-size: 9px; color: #555; }
     .week-labels span.today { color: #0a84ff; }
@@ -54,27 +55,26 @@
     .day-card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 14px 16px; flex-shrink: 0; }
     .day-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px; }
     .day-label.today { color: #0a84ff; }
-    .day-label.past { color: #333; }
+    .day-badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .workout-badge {
-      display: inline-block;
       font-size: 9px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 3px 8px;
       border-radius: 6px;
-      margin-bottom: 8px;
     }
     .workout-badge.run { background: #30d15820; color: #30d158; }
     .workout-badge.strength { background: #ff6b3520; color: #ff6b35; }
     .workout-badge.rest { background: #33333320; color: #666; }
-    .workout-title { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+    .workout-title { font-size: 14px; font-weight: 500; color: #fff; }
     .exercise-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
     .exercise-name { color: #ccc; }
     .exercise-detail { color: #888; font-variant-numeric: tabular-nums; }
     .rest-label { font-size: 13px; color: #555; font-style: italic; }
     .empty-day { font-size: 13px; color: #333; }
-    .completed-dot { width: 8px; height: 8px; border-radius: 50%; background: #0a84ff; display: inline-block; margin-left: 8px; vertical-align: middle; }
+    .completed-dot { width: 8px; height: 8px; border-radius: 50%; background: #0a84ff; flex-shrink: 0; }
+    .section-header { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: #888; padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; margin-bottom: 2px; }
     @media (max-width: 768px) {
       .layout { grid-template-columns: 1fr; }
       .left-col { flex-direction: row; flex-wrap: wrap; }
@@ -112,28 +112,15 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
 
-    function getWeekDays() {
-      const today = new Date();
-      const day = today.getDay();
-      const monday = new Date(today);
-      monday.setDate(today.getDate() - ((day + 6) % 7));
+    function formatDate(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${dd}`;
+    }
 
-      const days = [];
-      for (let i = 0; i < 7; i++) {
-        const d = new Date(monday);
-        d.setDate(monday.getDate() + i);
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, "0");
-        const dd = String(d.getDate()).padStart(2, "0");
-        days.push({
-          date: `${y}-${m}-${dd}`,
-          label: `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`,
-          shortLabel: DAY_NAMES[d.getDay()],
-          isToday: `${y}-${m}-${dd}` === todayEt(),
-          isPast: d < new Date(todayEt() + "T00:00:00") && `${y}-${m}-${dd}` !== todayEt(),
-        });
-      }
-      return days;
+    function formatLabel(d) {
+      return `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
     }
 
     function renderStats(cardio, workouts) {
@@ -159,29 +146,37 @@
       `;
     }
 
-    function renderWeekBar(days, completedDates) {
-      const bars = days.map(d => {
-        const done = completedDates.has(d.date);
-        const cls = done ? "done" : d.isToday ? "today" : "";
-        return `<div class="week-day ${cls}"></div>`;
-      }).join("");
-      const labels = days.map(d => {
-        const cls = d.isToday ? "today" : "";
-        return `<span class="${cls}">${d.shortLabel}</span>`;
-      }).join("");
+    function renderWeekBar(planned, completedDates) {
+      if (!planned.length) return "";
+      const start = new Date(planned[0].workout_date + "T12:00:00");
+      const end = new Date(planned[planned.length - 1].workout_date + "T12:00:00");
+      const today = todayEt();
+
+      const bars = [];
+      const labels = [];
+      const d = new Date(start);
+      while (d <= end) {
+        const ds = formatDate(d);
+        const done = completedDates.has(ds);
+        const isToday = ds === today;
+        bars.push(`<div class="week-day ${done ? "done" : isToday ? "today" : "future"}"></div>`);
+        labels.push(`<span class="${isToday ? "today" : ""}">${DAY_NAMES[d.getDay()]}</span>`);
+        d.setDate(d.getDate() + 1);
+      }
 
       return `
         <div class="week-box">
-          <div class="week-box-title">This week</div>
-          <div class="week-bar">${bars}</div>
-          <div class="week-labels">${labels}</div>
+          <div class="week-box-title">Schedule</div>
+          <div class="week-bar">${bars.join("")}</div>
+          <div class="week-labels">${labels.join("")}</div>
         </div>`;
     }
 
-    function renderDay(day, workout, completed) {
-      const labelClass = day.isToday ? "today" : day.isPast ? "past" : "";
-      const todayMarker = day.isToday ? '<span class="completed-dot"></span>' : "";
-      const pastOpacity = day.isPast ? "opacity:0.5;" : "";
+    function renderDay(day, workout, completed, isToday) {
+      const labelClass = isToday ? "today" : "";
+      const todayDot = isToday ? '<div class="completed-dot"></div>' : "";
+      const completedDot = completed && !isToday ? '<div class="completed-dot"></div>' : "";
+      const dots = todayDot + completedDot;
 
       let content = "";
       if (!workout) {
@@ -189,7 +184,7 @@
       } else if (workout.workout_type === "rest") {
         content = '<div class="rest-label">Active recovery</div>';
       } else {
-        const exercises = (workout.exercises || []).map(ex => {
+        content = (workout.exercises || []).map(ex => {
           let detail = "";
           if (workout.workout_type === "run") {
             detail = ex.name || "";
@@ -203,15 +198,12 @@
             <span class="exercise-detail">${esc(detail)}</span>
           </div>`;
         }).join("");
-        content = exercises ? exercises : "";
       }
 
-      const completedDot = completed && !day.isToday ? '<span class="completed-dot"></span>' : '';
-
       return `
-        <div class="day-card" style="${pastOpacity}">
-          <div class="day-label ${labelClass}">${day.label}${todayMarker}${completedDot}</div>
-          ${workout ? `<div>
+        <div class="day-card">
+          <div class="day-label ${labelClass}">${day.label}${dots}</div>
+          ${workout ? `<div class="day-badge-row">
             <span class="workout-badge ${esc(workout.workout_type)}">${esc(workout.workout_type)}</span>
             <span class="workout-title">${esc(workout.title)}</span>
           </div>` : ""}
@@ -220,24 +212,14 @@
     }
 
     async function init() {
-      const days = getWeekDays();
-      const startDate = days[0].date;
-      const endDate = days[6].date;
+      const today = todayEt();
 
-      const [planRes, actRes, wktRes, cardioRes, fullWorkoutRes] = await Promise.all([
+      const [planRes, cardioRes, wktRes] = await Promise.all([
         db.from("planned_workouts")
           .select("id, title, workout_date, workout_type, planned_exercises(name, sets, reps, weight_kg, order_index)")
-          .gte("workout_date", startDate)
-          .lte("workout_date", endDate)
-          .order("workout_date"),
-        db.from("strava_activities")
-          .select("activity_date")
-          .gte("activity_date", startDate)
-          .lte("activity_date", endDate),
-        db.from("strava_workouts")
-          .select("workout_date")
-          .gte("workout_date", startDate)
-          .lte("workout_date", endDate),
+          .gte("workout_date", today)
+          .order("workout_date")
+          .limit(8),
         db.from("strava_activities").select("activity_date, distance_km"),
         db.from("strava_workouts").select("workout_date, strava_exercises(sets, reps, weight_kg)")
       ]);
@@ -246,30 +228,61 @@
         ...w,
         exercises: (w.planned_exercises || []).sort((a, b) => a.order_index - b.order_index),
       }));
+
       const completedDates = new Set([
-        ...(actRes.data || []).map(a => a.activity_date),
+        ...(cardioRes.data || []).map(a => a.activity_date),
         ...(wktRes.data || []).map(w => w.workout_date),
       ]);
 
       const planByDate = {};
       plans.forEach(w => { planByDate[w.workout_date] = w; });
 
-      // Render week progress bar in stats column
-      const leftCol = document.getElementById("leftCol");
-      leftCol.insertAdjacentHTML("beforeend", renderWeekBar(days, completedDates));
-
-      // Render workout list (right side, scrollable)
-      document.getElementById("workoutList").innerHTML =
-        days.map(d => renderDay(d, planByDate[d.date], completedDates.has(d.date))).join("");
-
-      // Render stats
+      // Stats
       renderStats(
         cardioRes.data || [],
-        (fullWorkoutRes.data || []).map(w => ({
+        (wktRes.data || []).map(w => ({
           workout_date: w.workout_date,
           exercises: w.strava_exercises || [],
         }))
       );
+
+      // Week bar
+      const leftCol = document.getElementById("leftCol");
+      leftCol.insertAdjacentHTML("beforeend", renderWeekBar(plans, completedDates));
+
+      // Workout list
+      const workoutList = document.getElementById("workoutList");
+      if (plans.length === 0) {
+        workoutList.innerHTML = '<div class="empty-day" style="padding:20px;text-align:center">No upcoming workouts planned</div>';
+        return;
+      }
+
+      let html = '<div class="section-header">Today</div>';
+      const first = plans[0];
+      const firstDate = new Date(first.workout_date + "T12:00:00");
+      const isToday = first.workout_date === today;
+      html += renderDay(
+        { label: formatLabel(firstDate) },
+        first,
+        completedDates.has(first.workout_date),
+        isToday
+      );
+
+      const upcoming = plans.slice(1);
+      if (upcoming.length) {
+        html += '<div class="section-header" style="margin-top:16px">Upcoming</div>';
+        html += upcoming.map(w => {
+          const d = new Date(w.workout_date + "T12:00:00");
+          return renderDay(
+            { label: formatLabel(d) },
+            w,
+            completedDates.has(w.workout_date),
+            false
+          );
+        }).join("");
+      }
+
+      workoutList.innerHTML = html;
     }
 
     init();
