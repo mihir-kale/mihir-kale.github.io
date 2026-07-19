@@ -190,7 +190,7 @@
             detail = ex.name || "";
           } else {
             const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sets` : "";
-            const weight = ex.weight_kg ? ` · ${ex.weight_kg}kg` : "";
+            const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
             detail = setsReps + weight;
           }
           return `<div class="exercise-row">
@@ -216,7 +216,7 @@
 
       const [planRes, cardioRes, wktRes] = await Promise.all([
         db.from("planned_workouts")
-          .select("id, title, workout_date, workout_type, planned_exercises(name, sets, reps, weight_kg, order_index)")
+          .select("id, title, workout_date, workout_type, planned_exercises(name, sets, reps, target_weight_kg, order_index)")
           .gte("workout_date", today)
           .order("workout_date")
           .limit(8),
