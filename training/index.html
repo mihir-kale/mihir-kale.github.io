@@ -53,9 +53,10 @@
     .right-col::-webkit-scrollbar-track { background: transparent; }
     .right-col::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     .day-card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 14px 16px; flex-shrink: 0; }
-    .day-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px; }
+    .day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .day-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #666; }
     .day-label.today { color: #0a84ff; }
-    .day-badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .day-badge-row { display: flex; align-items: center; gap: 8px; }
     .workout-badge {
       font-size: 9px;
       font-weight: 600;
@@ -64,7 +65,7 @@
       padding: 3px 8px;
       border-radius: 6px;
     }
-    .workout-badge.run { background: #30d15820; color: #30d158; }
+    .workout-badge.cardio { background: #0a84ff20; color: #0a84ff; }
     .workout-badge.strength { background: #ff6b3520; color: #ff6b35; }
     .workout-badge.rest { background: #33333320; color: #666; }
     .workout-title { font-size: 14px; font-weight: 500; color: #fff; }
@@ -183,29 +184,30 @@
         content = '<div class="empty-day">No workout planned</div>';
       } else if (workout.workout_type === "rest") {
         content = '<div class="rest-label">Active recovery</div>';
+      } else if (workout.workout_type === "run") {
+        content = `<div class="exercise-row">
+          <span class="exercise-name">Run</span>
+          <span class="exercise-detail">${esc(workout.title.replace(/^Run\s*/i, ""))}</span>
+        </div>`;
       } else {
         content = (workout.exercises || []).map(ex => {
-          let detail = "";
-          if (workout.workout_type === "run") {
-            detail = ex.name || "";
-          } else {
-            const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sets` : "";
-            const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
-            detail = setsReps + weight;
-          }
+          const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sets` : "";
+          const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
           return `<div class="exercise-row">
             <span class="exercise-name">${esc(ex.name)}</span>
-            <span class="exercise-detail">${esc(detail)}</span>
+            <span class="exercise-detail">${esc(setsReps + weight)}</span>
           </div>`;
         }).join("");
       }
 
       return `
         <div class="day-card">
-          <div class="day-label ${labelClass}">${day.label}${dots}</div>
-          ${workout ? `<div class="day-badge-row">
-            <span class="workout-badge ${esc(workout.workout_type)}">${esc(workout.workout_type)}</span>
-          </div>` : ""}
+          <div class="day-header">
+            <div class="day-badge-row">
+              ${workout ? `<span class="workout-badge ${esc(workout.workout_type === "run" ? "cardio" : workout.workout_type)}">${esc(workout.workout_type === "run" ? "cardio" : workout.workout_type)}</span>` : ""}
+            </div>
+            <div class="day-label ${labelClass}">${day.label}${dots}</div>
+          </div>
           ${content}
         </div>`;
     }
