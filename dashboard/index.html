@@ -1127,8 +1127,8 @@
             <div class="stat-unit">KM</div>
           </div>
           <div class="stat-box">
-            <div class="stat-value">${(totalVolume / 1000).toFixed(1)}</div>
-            <div class="stat-unit">VOLUME</div>
+            <div class="stat-value">${Math.round(totalVolume * 2.20462).toLocaleString()}</div>
+            <div class="stat-unit">VOLUME (lbs)</div>
           </div>
           <div class="stat-box">
             <div class="stat-value">${totalSets}</div>

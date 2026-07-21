@@ -141,7 +141,7 @@
 
       document.getElementById("leftCol").innerHTML = `
         <div class="stat-box"><div class="stat-value">${km}</div><div class="stat-label">KM this week</div></div>
-        <div class="stat-box"><div class="stat-value">${(volume / 1000).toFixed(1)}</div><div class="stat-label">Volume</div></div>
+        <div class="stat-box"><div class="stat-value">${Math.round(volume * 2.20462).toLocaleString()}</div><div class="stat-label">Volume (lbs)</div></div>
         <div class="stat-box"><div class="stat-value">${sets}</div><div class="stat-label">Sets</div></div>
         <div class="stat-box"><div class="stat-value">${sessions}</div><div class="stat-label">Sessions</div></div>
       `;
