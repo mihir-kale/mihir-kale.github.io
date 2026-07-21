@@ -1220,7 +1220,7 @@
                   <polyline points="2 6 5 9 10 3"/>
                 </svg>
               </div>
-              <span class="task-title">${esc(w.title)}</span>
+              <span class="task-title">${esc(w.workout_type === "run" ? "Run" : w.title)}</span>
               <span class="task-due">${dateStr}</span>
             </li>
           </ul>
