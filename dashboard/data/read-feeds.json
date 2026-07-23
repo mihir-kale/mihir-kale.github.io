@@ -1,23 +1,17 @@
 {
-  "last_updated": "2026-07-22T08:30:09.390389+00:00",
+  "last_updated": "2026-07-23T08:31:37.274752+00:00",
   "articles": [
     {
-      "title": "I Give My Kid the Talk",
-      "url": "https://www.newyorker.com/magazine/2026/07/27/i-give-my-kid-the-talk",
+      "title": "Daily Cartoon: Friday, July 17th",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/friday-july-17th-long-movie",
       "source": "The New Yorker",
-      "date": "2026-07-20"
+      "date": "2026-07-17"
     },
     {
-      "title": "Daily Cartoon: Thursday, July 16th",
-      "url": "https://www.newyorker.com/cartoons/daily-cartoon/thursday-july-16th-washing-berries",
+      "title": "The Voice of Google",
+      "url": "https://www.newyorker.com/culture/the-weekend-essay/the-voice-of-google",
       "source": "The New Yorker",
-      "date": "2026-07-16"
-    },
-    {
-      "title": "Politics",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/16/politics",
-      "source": "The Economist",
-      "date": "2026-07-16"
+      "date": "2026-07-18"
     },
     {
       "title": "Cover Story newsletter: It\u2019s too darn hot",
@@ -26,10 +20,16 @@
       "date": "2026-07-17"
     },
     {
-      "title": "Marcellus Hall\u2019s \u201cSpa Day\u201d",
-      "url": "https://www.newyorker.com/culture/cover-story/cover-story-2026-07-27",
+      "title": "Donald Trump Can\u2019t Quit the 2020 Election",
+      "url": "https://www.newyorker.com/podcast/political-scene/donald-trump-cant-quit-the-2020-election",
       "source": "The New Yorker",
-      "date": "2026-07-20"
+      "date": "2026-07-18"
+    },
+    {
+      "title": "Daily Cartoon: Tuesday, July 21st",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/tuesday-july-21st-gi-joe-high-testosterone",
+      "source": "The New Yorker",
+      "date": "2026-07-21"
     }
   ]
 }
