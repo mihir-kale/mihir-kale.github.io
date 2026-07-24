@@ -252,6 +252,54 @@
     .task-item:hover .task-add-btn { opacity: 1; }
     .task-add-btn:hover { color: #fff; }
 
+    .task-dl-btn {
+      opacity: 0;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0 4px;
+      transition: opacity .2s, color .2s;
+      flex-shrink: 0;
+    }
+    .task-item:hover .task-dl-btn { opacity: 1; }
+    .task-dl-btn:hover { color: #ff453a; }
+    .task-dl-btn.has-date { opacity: 1; color: #ff453a; }
+
+    .task-dl-popup {
+      position: fixed;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 8px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.5);
+    }
+    .task-dl-popup input[type="date"] {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 4px 6px;
+      font-size: 13px;
+      font-family: inherit;
+      color-scheme: dark;
+    }
+    .task-dl-popup input[type="date"]:focus { outline: none; border-color: #444; }
+    .task-dl-popup button {
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+    .task-dl-popup button:hover { color: #fff; }
+
     .task-child-input {
       display: flex;
       gap: 6px;
@@ -929,6 +977,7 @@
             </div>
             <span class="task-title">${esc(t.title)}</span>
             ${daysUntil !== null ? `<span class="task-due">${daysUntil}</span>` : ""}
+            <button class="task-dl-btn${t.due_date ? " has-date" : ""}" data-task-id="${esc(t.id)}" data-due="${esc(t.due_date || "")}" aria-label="Set deadline for ${esc(t.title)}">&#128197;</button>
             <button class="task-add-btn" data-parent-id="${esc(t.id)}" aria-label="Add subtask to ${esc(t.title)}">+</button>
           </li>`;
         }).join("") + "</ul>";
@@ -938,7 +987,7 @@
 
       el.querySelectorAll(".task-item").forEach(item => {
         item.addEventListener("click", (e) => {
-          if (e.target.closest(".task-add-btn")) return;
+          if (e.target.closest(".task-add-btn") || e.target.closest(".task-dl-btn") || e.target.closest(".task-dl-popup")) return;
           completeTask(item.dataset.id, item);
         });
         item.addEventListener("keydown", (e) => {
@@ -946,6 +995,33 @@
             e.preventDefault();
             completeTask(item.dataset.id, item);
           }
+        });
+      });
+
+      el.querySelectorAll(".task-dl-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const existing = el.querySelector(".task-dl-popup");
+          if (existing) { existing.remove(); return; }
+          const taskId = btn.dataset.taskId;
+          const li = btn.closest(".task-item");
+          const popup = document.createElement("div");
+          popup.className = "task-dl-popup";
+          popup.innerHTML = `<input type="date" value="${btn.dataset.due || ""}" /><button class="task-dl-clear" title="Clear deadline">&times;</button>`;
+          li.appendChild(popup);
+          const rect = btn.getBoundingClientRect();
+          popup.style.top = (rect.bottom + 4) + "px";
+          popup.style.left = rect.left + "px";
+          const dateInput = popup.querySelector("input");
+          dateInput.focus();
+          const save = async (val) => {
+            await db.from("nodes").update({ due_date: val || null, updated_at: new Date().toISOString() }).eq("id", taskId);
+            loadTasks();
+          };
+          dateInput.addEventListener("change", () => { save(dateInput.value); popup.remove(); });
+          popup.querySelector(".task-dl-clear").addEventListener("click", (ev) => { ev.stopPropagation(); save(null); popup.remove(); });
+          const close = (ev) => { if (!popup.contains(ev.target) && ev.target !== btn) { popup.remove(); document.removeEventListener("click", close); } };
+          setTimeout(() => document.addEventListener("click", close), 0);
         });
       });
 
