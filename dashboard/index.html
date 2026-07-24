@@ -279,7 +279,7 @@
       gap: 6px;
       box-shadow: 0 4px 12px rgba(0,0,0,.5);
     }
-    .task-dl-popup input[type="date"] {
+    .task-dl-popup input[type="text"] {
       background: var(--bg);
       color: var(--text);
       border: 1px solid #333;
@@ -287,9 +287,9 @@
       padding: 4px 6px;
       font-size: 13px;
       font-family: inherit;
-      color-scheme: dark;
+      width: 60px;
     }
-    .task-dl-popup input[type="date"]:focus { outline: none; border-color: #444; }
+    .task-dl-popup input[type="text"]:focus { outline: none; border-color: #444; }
     .task-dl-popup button {
       background: none;
       border: none;
@@ -1005,9 +1005,11 @@
           if (existing) { existing.remove(); return; }
           const taskId = btn.dataset.taskId;
           const li = btn.closest(".task-item");
+          const due = btn.dataset.due || "";
+          const mmdd = due ? due.slice(5).replace("-", "/") : "";
           const popup = document.createElement("div");
           popup.className = "task-dl-popup";
-          popup.innerHTML = `<input type="date" value="${btn.dataset.due || ""}" /><button class="task-dl-clear" title="Clear deadline">&times;</button>`;
+          popup.innerHTML = `<input type="text" value="${mmdd}" placeholder="mm/dd" maxlength="5" /><button class="task-dl-clear" title="Clear deadline">&times;</button>`;
           li.appendChild(popup);
           const rect = btn.getBoundingClientRect();
           popup.style.top = (rect.bottom + 4) + "px";
@@ -1015,10 +1017,17 @@
           const dateInput = popup.querySelector("input");
           dateInput.focus();
           const save = async (val) => {
-            await db.from("nodes").update({ due_date: val || null, updated_at: new Date().toISOString() }).eq("id", taskId);
+            let iso = null;
+            if (val && /^\d{1,2}\/\d{1,2}$/.test(val)) {
+              const [m, d] = val.split("/").map(Number);
+              const y = new Date().getFullYear();
+              iso = `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+            }
+            await db.from("nodes").update({ due_date: iso, updated_at: new Date().toISOString() }).eq("id", taskId);
             loadTasks();
           };
-          dateInput.addEventListener("change", () => { save(dateInput.value); popup.remove(); });
+          dateInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") { save(dateInput.value); popup.remove(); } if (ev.key === "Escape") popup.remove(); });
+          dateInput.addEventListener("blur", () => { setTimeout(() => { if (popup.parentNode) { save(dateInput.value); popup.remove(); } }, 150); });
           popup.querySelector(".task-dl-clear").addEventListener("click", (ev) => { ev.stopPropagation(); save(null); popup.remove(); });
           const close = (ev) => { if (!popup.contains(ev.target) && ev.target !== btn) { popup.remove(); document.removeEventListener("click", close); } };
           setTimeout(() => document.addEventListener("click", close), 0);
