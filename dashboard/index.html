@@ -1026,7 +1026,7 @@
             await db.from("nodes").update({ due_date: iso, updated_at: new Date().toISOString() }).eq("id", taskId);
             loadTasks();
           };
-          dateInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") { save(dateInput.value); popup.remove(); } if (ev.key === "Escape") popup.remove(); });
+          dateInput.addEventListener("keydown", (ev) => { ev.stopPropagation(); if (ev.key === "Enter") { save(dateInput.value); popup.remove(); } if (ev.key === "Escape") popup.remove(); });
           dateInput.addEventListener("blur", () => { setTimeout(() => { if (popup.parentNode) { save(dateInput.value); popup.remove(); } }, 150); });
           popup.querySelector(".task-dl-clear").addEventListener("click", (ev) => { ev.stopPropagation(); save(null); popup.remove(); });
           const close = (ev) => { if (!popup.contains(ev.target) && ev.target !== btn) { popup.remove(); document.removeEventListener("click", close); } };
