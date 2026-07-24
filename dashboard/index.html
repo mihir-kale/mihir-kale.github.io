@@ -50,7 +50,7 @@
       background: #111;
       border: 1px solid #222;
       border-radius: 12px;
-      padding: 20px;
+      padding: 16px 20px;
       text-align: left;
     }
 
@@ -60,7 +60,7 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       color: #fff;
-      margin-bottom: 4px;
+      margin-bottom: 0;
     }
     .widget h2 a {
       color: inherit;
@@ -324,7 +324,7 @@
     }
 
     .loading {
-      padding: 40px 20px;
+      padding: 8px 0;
       color: #fff;
       font-size: 13px;
     }
@@ -436,9 +436,9 @@
       color: #0a84ff;
     }
 
-    .workout-card-badge.strength { background: #ff6b3520; color: #ff6b35; }
+    .workout-card-badge.strength { background: #0a84ff20; color: #0a84ff; }
     .workout-card-badge.cardio   { background: #0a84ff20; color: #0a84ff; }
-    .workout-card-badge.run      { background: #30d15820; color: #30d158; }
+    .workout-card-badge.run      { background: #0a84ff20; color: #0a84ff; }
 
     .workout-card-date {
       font-size: 12px;
@@ -1263,7 +1263,7 @@
           return;
         }
 
-        const typeColors = { run: "#30d158", strength: "#ff6b35", rest: "#555" };
+        const typeColors = { run: "#0a84ff", strength: "#0a84ff", rest: "#555" };
         const w = workouts[0];
         const { data: exercises } = await db.from("planned_exercises")
           .select("name, sets, reps, target_weight_kg, order_index")
