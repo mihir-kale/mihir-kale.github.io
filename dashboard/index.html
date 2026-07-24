@@ -265,7 +265,6 @@
     }
     .task-item:hover .task-dl-btn { opacity: 1; }
     .task-dl-btn:hover { color: #ff453a; }
-    .task-dl-btn.has-date { opacity: 1; color: #ff453a; }
 
     .task-dl-popup {
       position: fixed;
@@ -977,7 +976,7 @@
             </div>
             <span class="task-title">${esc(t.title)}</span>
             ${daysUntil !== null ? `<span class="task-due">${daysUntil}</span>` : ""}
-            <button class="task-dl-btn${t.due_date ? " has-date" : ""}" data-task-id="${esc(t.id)}" data-due="${esc(t.due_date || "")}" aria-label="Set deadline for ${esc(t.title)}">&#128197;</button>
+            <button class="task-dl-btn" data-task-id="${esc(t.id)}" data-due="${esc(t.due_date || "")}" aria-label="Set deadline for ${esc(t.title)}">&#128197;</button>
             <button class="task-add-btn" data-parent-id="${esc(t.id)}" aria-label="Add subtask to ${esc(t.title)}">+</button>
           </li>`;
         }).join("") + "</ul>";
@@ -1157,7 +1156,12 @@
 
         const pending = all
           .filter(n => n.status !== "done" && !childCount[n.id])
-          .sort((a, b) => (a.due_date || "").localeCompare(b.due_date || ""));
+          .sort((a, b) => {
+            if (a.due_date && b.due_date) return a.due_date.localeCompare(b.due_date);
+            if (a.due_date) return -1;
+            if (b.due_date) return 1;
+            return 0;
+          });
 
         const grouped = {};
         pending.forEach(n => {
