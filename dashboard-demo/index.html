@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", -apple-system, sans-serif;
+      font-weight: 400;
+      background: #000;
+      color: #fff;
+      padding: 24px;
+      max-width: 1400px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .date-header {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .left-col, .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .widget {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+    }
+
+    #workoutContainer .task-due {
+      color: #0a84ff;
+    }
+
+    .widget h2 {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin-bottom: 0;
+    }
+    .widget h2 a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .widget h2 a:hover {
+      color: #0a84ff;
+    }
+
+    /* Calendar */
+    .widget-header { display: flex; align-items: center; justify-content: space-between; }
+    .widget-header h2 { margin: 0; }
+    .widget-add-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-size: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .2s, border-color .2s;
+    }
+    .widget-add-btn:hover { color: #fff; border-color: #fff; }
+    .cal-add-form {
+      display: flex;
+      gap: 6px;
+      padding: 10px 0;
+    }
+    .cal-add-form input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .cal-add-form input::placeholder { color: #555; }
+    .cal-add-form input:focus { outline: none; border-color: #444; }
+    .cal-add-submit {
+      padding: 6px 12px;
+      border: 1px solid #0a84ff;
+      border-radius: 6px;
+      background: transparent;
+      color: #0a84ff;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .cal-add-submit:hover { background: #0a84ff; color: #000; }
+    .calendar-list { list-style: none; max-height: 560px; overflow-y: auto; }
+
+    .cal-day {
+      margin-bottom: 16px;
+    }
+
+    .cal-day:last-child { margin-bottom: 0; }
+
+    .cal-day-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .cal-day-label.today { color: #0a84ff; }
+
+    .cal-event {
+      padding: 6px 0;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .cal-event-time {
+      font-size: 14px;
+      color: #fff;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-event-time.today {
+      color: #0a84ff;
+    }
+
+    .cal-event-title {
+      font-size: 15px;
+      color: #fff;
+      font-weight: 400;
+      flex: 1;
+    }
+
+    .cal-event-loc {
+      font-size: 12px;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    /* Tasks */
+    .task-parent {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #0a84ff;
+      margin-bottom: 6px;
+      margin-top: 12px;
+    }
+
+    .task-parent:first-child {
+      margin-top: 0;
+    }
+
+    .task-list { list-style: none; }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #1a1a1a;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+
+    .task-item:hover { opacity: .7; }
+
+    .task-item:last-child { border-bottom: none; }
+
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #444;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+
+    .task-item:hover .task-check {
+      border-color: #fff;
+    }
+
+    .task-check svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .task-item:hover .task-check svg {
+      opacity: .5;
+    }
+
+    .task-title { flex: 1; font-size: 14px; font-weight: 400; color: #fff; }
+
+    .task-due {
+      font-size: 11px;
+      font-weight: 600;
+      color: #ff453a;
+      white-space: nowrap;
+    }
+
+    .task-item.high-priority .task-title { color: #0a84ff; }
+
+    .task-add-btn {
+      opacity: 0;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0 4px;
+      transition: opacity .2s, color .2s;
+      flex-shrink: 0;
+    }
+    .task-item:hover .task-add-btn { opacity: 1; }
+    .task-add-btn:hover { color: #fff; }
+
+    .task-dl-btn {
+      opacity: 0;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0 4px;
+      transition: opacity .2s, color .2s;
+      flex-shrink: 0;
+    }
+    .task-item:hover .task-dl-btn { opacity: 1; }
+    .task-dl-btn:hover { color: #ff453a; }
+
+    .task-dl-popup {
+      position: fixed;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 8px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.5);
+    }
+    .task-dl-popup input[type="text"] {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 4px 6px;
+      font-size: 13px;
+      font-family: inherit;
+      width: 60px;
+    }
+    .task-dl-popup input[type="text"]:focus { outline: none; border-color: #444; }
+    .task-dl-popup button {
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+    .task-dl-popup button:hover { color: #fff; }
+
+    .task-child-input {
+      display: flex;
+      gap: 6px;
+      padding: 6px 0 6px 32px;
+    }
+    .task-child-input input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .task-child-input input::placeholder { color: #666; }
+    .task-child-input input:focus { outline: none; border-color: #444; }
+
+    .empty-state {
+      padding: 40px 20px;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .loading {
+      padding: 8px 0;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    /* Strava */
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .stat-unit {
+      font-size: 11px;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    .last-run {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .last-run-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .last-run-meta {
+      font-size: 12px;
+      color: #fff;
+      display: flex;
+      gap: 12px;
+    }
+
+    .pr-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .pr-item:last-child { border-bottom: none; }
+
+    .pr-name {
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .pr-weight {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Workout Card */
+    .workout-card {
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #222;
+      margin-top: 8px;
+    }
+
+    .workout-card-header {
+      padding: 16px 18px 12px;
+      background: linear-gradient(135deg, #0a84ff22 0%, #0a84ff0a 100%);
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .workout-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .workout-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .workout-card-badge {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #0a84ff28;
+      color: #0a84ff;
+    }
+
+    .workout-card-badge.strength { background: #0a84ff20; color: #0a84ff; }
+    .workout-card-badge.cardio   { background: #0a84ff20; color: #0a84ff; }
+    .workout-card-badge.run      { background: #0a84ff20; color: #0a84ff; }
+
+    .workout-card-date {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .workout-card-exercises {
+      padding: 6px 0;
+    }
+
+    .workout-card-exercise {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .workout-card-exercise:last-child { border-bottom: none; }
+
+    .workout-card-exercise-name {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 400;
+    }
+
+    .workout-card-exercise-detail {
+      font-size: 12px;
+      color: #888;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .workout-card-rest {
+      padding: 16px 18px;
+      font-size: 13px;
+      color: #666;
+      font-style: italic;
+    }
+
+    @media (max-width: 900px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Nutrition widget */
+    .nutrition-widget { padding: 0; }
+    .nutrition-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 18px 8px; }
+    .nutrition-header h2 { margin: 0; }
+    .nutrition-total { font-size: 13px; color: #0a84ff; font-weight: 500; }
+    .chevron { font-size: 14px; transition: transform 0.2s; color: var(--text); }
+    .nutrition-widget.collapsed .nutrition-header { padding-bottom: 16px; }
+    .nutrition-widget.collapsed .chevron { transform: rotate(-90deg); }
+    .nutrition-body { overflow: hidden; max-height: 200px; transition: max-height 0.2s ease, padding 0.2s ease; padding: 0 18px 14px; }
+    .nutrition-widget.collapsed .nutrition-body { max-height: 0; padding: 0 18px 0; }
+    .nutrition-entry { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #2a2a2a; font-size: 13px; }
+    .nutrition-entry:first-child { border-top: 1px solid #2a2a2a; margin-top: 6px; }
+    .nutrition-entry .food-name { font-weight: 500; }
+    .nutrition-entry .macros { color: var(--text-muted); }
+    .nutrition-empty { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
+
+    .meal-next {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .meal-next:hover { background: #222; }
+    .meal-next.logged { opacity: 0.4; pointer-events: none; }
+    .meal-next-check {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #444;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+    .meal-next:hover .meal-next-check { border-color: #fff; }
+    .meal-next.logged .meal-next-check { background: #0a84ff; border-color: #0a84ff; }
+    .meal-next-check svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .meal-next:hover .meal-next-check svg { opacity: .5; }
+    .meal-next.logged .meal-next-check svg { opacity: 1; }
+    .meal-next-info { flex: 1; min-width: 0; }
+    .meal-snack { background: none; padding: 0; border-radius: 0; }
+    .meal-next-name { font-size: 13px; font-weight: 500; color: #0a84ff; }
+    .meal-next-macro { font-size: 12px; color: #0a84ff; margin-top: 2px; }
+    .meal-snack .meal-next-info { display: flex; gap: 6px; align-items: center; }
+    .meal-snack-name, .meal-snack-cal {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      padding: 0;
+      outline: none;
+      min-width: 0;
+    }
+    .meal-snack-name { flex: 1; }
+    .meal-snack-name::placeholder, .meal-snack-cal::placeholder { color: #555; }
+    .meal-snack-cal { width: 50px; text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Top bar */
+    .header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .demo-badge {
+      background: #0a84ff20;
+      color: #0a84ff;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    /* Pomodoro timer */
+    .pomodoro-timer {
+      font-size: 48px;
+      font-weight: 300;
+      text-align: center;
+      padding: 16px 0 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .pomodoro-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      padding-bottom: 14px;
+    }
+    .pomodoro-btn {
+      background: none;
+      border: 1px solid #333;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12px;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .pomodoro-btn:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="header-row">
+    <div class="date-header" id="dateHeader"></div>
+    <div class="header-actions">
+      <span class="demo-badge">Demo</span>
+    </div>
+  </div>
+
+  <div class="columns">
+  <div class="left-col">
+    <section class="widget">
+      <div class="widget-header">
+        <h2>Calendar</h2>
+        <button class="widget-add-btn" id="calAddBtn" aria-label="Add event">+</button>
+      </div>
+      <div id="calAddForm" class="cal-add-form" style="display:none">
+        <input type="text" id="calTitle" placeholder="Title" />
+        <input type="date" id="calDate" />
+        <input type="time" id="calTime" />
+        <button class="cal-add-submit" id="calAddSubmit">Add</button>
+      </div>
+      <div id="calendarContainer" class="loading">Loading...</div>
+    </section>
+
+    <section class="widget pomodoro-widget" id="pomodoroWidget">
+      <h2>Pomodoro</h2>
+      <div class="pomodoro-timer" id="pomodoroTimer">25:00</div>
+      <div class="pomodoro-controls">
+        <button class="pomodoro-btn" id="pomodoroStart">Start</button>
+        <button class="pomodoro-btn" id="pomodoroPause" style="display:none">Pause</button>
+        <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="widget">
+    <h2><a href="/tracker-demo/">Tasks</a></h2>
+    <div id="tasksContainer" class="loading">Loading...</div>
+  </section>
+
+  <div class="right-col">
+    <section class="widget">
+      <h2><a href="/training/">Training</a></h2>
+      <div id="workoutContainer" class="loading">Loading...</div>
+      <div id="stravaContainer"></div>
+    </section>
+
+    <section class="widget nutrition-widget collapsed">
+      <div class="nutrition-header" id="nutritionToggle">
+        <h2>Nutrition</h2>
+        <span class="nutrition-total" id="nutritionTotal"></span>
+        <span class="chevron" id="nutritionChevron">&#9662;</span>
+      </div>
+      <div class="nutrition-body" id="nutritionBody">
+        <div id="mealQueue"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+  <script>
+    /* ── Utilities ─────────────────────────────────── */
+    const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const DAY_NAMES_FULL = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+    const MONTH_NAMES_FULL = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+
+    function esc(str) {
+      if (!str) return "";
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function todayEt() {
+      return new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    }
+
+    function generateId() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const values = crypto.getRandomValues(new Uint8Array(21));
+      return values.reduce((acc, x) => acc + chars[x & 63], "");
+    }
+
+    /* ── Dummy Data ────────────────────────────────── */
+    function getDummyCalendarEvents() {
+      const today = new Date();
+      const et = new Date(today.toLocaleString("en-US", { timeZone: "America/New_York" }));
+      const fmt = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${dd}`;
+      };
+      const addDays = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
+
+      return [
+        { start: fmt(et) + "T090000", title: "Team Standup", location: "Zoom" },
+        { start: fmt(et) + "T140000", title: "Design Review", location: "Conference Room B" },
+        { start: fmt(addDays(et, 1)) + "T100000", title: "1:1 with Manager" },
+        { start: fmt(addDays(et, 1)) + "T150000", title: "Gym — Strength Day" },
+        { start: fmt(addDays(et, 2)) + "T090000", title: "Sprint Planning" },
+        { start: fmt(addDays(et, 3)) + "T120000", title: "Lunch with Alex" },
+        { start: fmt(addDays(et, 4)) + "T180000", title: "Yoga Class" },
+        { start: fmt(addDays(et, 5)) + "T100000", title: "Dentist Appointment", location: "Downtown Dental" },
+      ];
+    }
+
+    const DEMO_TASKS = [
+      { id: "demo-task-01", parent_id: null, title: "Ship landing page redesign", status: "ready", priority: "high", due_date: null },
+      { id: "demo-task-02", parent_id: "demo-parent-1", title: "Finalize hero copy", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-task-03", parent_id: "demo-parent-1", title: "Review analytics dashboard PR", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-task-04", parent_id: "demo-parent-1", title: "Update API documentation", status: "ready", priority: "low", due_date: null },
+      { id: "demo-task-05", parent_id: null, title: "Grocery run", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-task-06", parent_id: "demo-parent-2", title: "Meal prep for the week", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-task-07", parent_id: "demo-parent-2", title: "Clean apartment", status: "ready", priority: "low", due_date: null },
+      { id: "demo-task-08", parent_id: null, title: "Log 5 runs this week", status: "ready", priority: "high", due_date: null },
+      { id: "demo-task-09", parent_id: "demo-parent-3", title: "Pull-ups 4x10", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-task-10", parent_id: "demo-parent-3", title: "Stretch routine", status: "ready", priority: "low", due_date: null },
+    ];
+
+    const DEMO_PARENTS = {
+      "demo-parent-1": { title: "Work" },
+      "demo-parent-2": { title: "Personal" },
+      "demo-parent-3": { title: "Health" },
+    };
+
+    const DEMO_WORKOUT = {
+      id: "demo-wkt-1",
+      title: "Full Body Strength",
+      workout_date: null, // will be set to today
+      workout_type: "strength",
+      exercises: [
+        { name: "Barbell Bench Press", sets: 3, reps: 8, target_weight_kg: 60, order_index: 0 },
+        { name: "Bent-Over Row", sets: 3, reps: 8, target_weight_kg: 50, order_index: 1 },
+        { name: "Dumbbell Shoulder Press", sets: 2, reps: 10, target_weight_kg: 16, order_index: 2 },
+        { name: "Pull-Ups", sets: 2, reps: 10, target_weight_kg: 0, order_index: 3 },
+        { name: "Hanging Leg Raises", sets: 2, reps: 12, target_weight_kg: 0, order_index: 4 },
+        { name: "Plank", sets: 2, reps: 60, target_weight_kg: 0, order_index: 5 },
+      ],
+    };
+
+    const DEMO_STRAVA = {
+      cardio: [
+        { date: null, distance_km: 5.2 },  // today
+        { date: null, distance_km: 8.1 },  // yesterday
+        { date: null, distance_km: 4.8 },  // 2 days ago
+        { date: null, distance_km: 10.3 }, // 4 days ago
+      ],
+      workouts: [
+        { date: null, exercises: [
+          { name: "Bench Press", sets: 3, reps: 8, weight_kg: 60 },
+          { name: "Rows", sets: 3, reps: 8, weight_kg: 50 },
+          { name: "OHP", sets: 2, reps: 10, weight_kg: 16 },
+        ]},
+        { date: null, exercises: [
+          { name: "Squats", sets: 3, reps: 10, weight_kg: 70 },
+          { name: "Romanian Deadlift", sets: 3, reps: 8, weight_kg: 60 },
+          { name: "Pull-Ups", sets: 2, reps: 10, weight_kg: 0 },
+        ]},
+      ],
+    };
+
+    const DEMO_MEALS = [
+      { id: "demo-meal-1", food_name: "Oatmeal with berries", calories: 350, order_index: 0, logged: false },
+      { id: "demo-meal-2", food_name: "Grilled chicken salad", calories: 520, order_index: 1, logged: false },
+      { id: "demo-meal-3", food_name: "Salmon with rice", calories: 620, order_index: 2, logged: false },
+    ];
+
+    /* ── Populate dates relative to today ─────────── */
+    (function seedDates() {
+      const today = new Date();
+      const et = new Date(today.toLocaleString("en-US", { timeZone: "America/New_York" }));
+      const fmt = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${dd}`;
+      };
+      const addDays = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
+
+      DEMO_WORKOUT.workout_date = fmt(et);
+
+      DEMO_STRAVA.cardio[0].date = fmt(et);
+      DEMO_STRAVA.cardio[1].date = fmt(addDays(et, -1));
+      DEMO_STRAVA.cardio[2].date = fmt(addDays(et, -2));
+      DEMO_STRAVA.cardio[3].date = fmt(addDays(et, -4));
+
+      DEMO_STRAVA.workouts[0].date = fmt(addDays(et, -1));
+      DEMO_STRAVA.workouts[1].date = fmt(addDays(et, -3));
+    })();
+
+    /* ── Local state for demo writes ──────────────── */
+    let demoTasks = [...DEMO_TASKS];
+    let demoMeals = DEMO_MEALS.map(m => ({ ...m }));
+    let demoNutritionLog = [];
+
+    /* ── Calendar ──────────────────────────────────── */
+    function renderCalendar(events) {
+      const el = document.getElementById("calendarContainer");
+      const today = todayEt();
+      const cutoff = new Date(today + "T12:00:00");
+      cutoff.setDate(cutoff.getDate() + 5);
+      const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+      const filtered = events.filter(ev => {
+        const date = ev.start.slice(0, 10);
+        return date >= today && date <= cutoffStr;
+      });
+
+      if (!filtered.length) {
+        el.innerHTML = '<div class="empty-state">No upcoming events</div>';
+        return;
+      }
+
+      const grouped = {};
+      filtered.forEach(ev => {
+        const date = ev.start.slice(0, 10);
+        if (!grouped[date]) grouped[date] = [];
+        grouped[date].push(ev);
+      });
+
+      el.innerHTML = '<ul class="calendar-list">' + Object.entries(grouped).map(([date, evts]) => {
+        const d = new Date(date + "T12:00:00");
+        const isToday = date === today;
+        const label = `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
+
+        const items = evts.map(ev => {
+          const startTime = new Date(ev.start);
+          const timeStr = ev.allDay ? "All day" : startTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
+          const timeClass = isToday ? "cal-event-time today" : "cal-event-time";
+          const loc = ev.location ? `<div class="cal-event-loc">${esc(ev.location)}</div>` : "";
+          return `<div class="cal-event">
+            <span class="${timeClass}">${esc(timeStr)}</span>
+            <span class="cal-event-title">${esc(ev.title)}</span>
+          </div>${loc ? `<div style="padding-left:68px">${loc}</div>` : ""}`;
+        }).join("");
+
+        return `<li class="cal-day">
+          <div class="cal-day-label${isToday ? " today" : ""}">${label}${isToday ? " — TODAY" : ""}</div>
+          ${items}
+        </li>`;
+      }).join("") + "</ul>";
+    }
+
+    /* ── Calendar add event ──────────────────────── */
+    const calAddBtn = document.getElementById("calAddBtn");
+    const calAddForm = document.getElementById("calAddForm");
+    const calDate = document.getElementById("calDate");
+
+    calAddBtn.addEventListener("click", () => {
+      const open = calAddForm.style.display !== "none";
+      calAddForm.style.display = open ? "none" : "flex";
+      if (!open) {
+        calDate.value = todayEt();
+        document.getElementById("calTitle").focus();
+      }
+    });
+
+    document.getElementById("calAddSubmit").addEventListener("click", () => {
+      const title = document.getElementById("calTitle").value.trim();
+      const date = calDate.value;
+      const time = document.getElementById("calTime").value;
+      if (!title || !date) return;
+
+      const padDate = date.replace(/-/g, "");
+      const start = time ? `${padDate}T${time.replace(":", "")}00` : `${padDate}T090000`;
+      const end = time ? `${padDate}T${String(parseInt(time.slice(0,2)) + 1).padStart(2,"0")}${time.slice(3)}00` : `${padDate}T100000`;
+
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&ctz=America/New_York`;
+      window.open(url, "_blank");
+
+      document.getElementById("calTitle").value = "";
+      document.getElementById("calTime").value = "";
+      calAddForm.style.display = "none";
+    });
+
+    function renderDate() {
+      const now = new Date();
+      const day = now.getDate();
+      const suffix = (d) => {
+        if (d > 3 && d < 21) return "TH";
+        switch (d % 10) {
+          case 1: return "ST";
+          case 2: return "ND";
+          case 3: return "RD";
+          default: return "TH";
+        }
+      };
+      document.getElementById("dateHeader").textContent =
+        `${DAY_NAMES_FULL[now.getDay()]}, ${day}${suffix(day)} ${MONTH_NAMES_FULL[now.getMonth()]}`;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T00:00:00");
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
+
+    /* ── Tasks ────────────────────────────────────── */
+    function renderTasks(grouped) {
+      const el = document.getElementById("tasksContainer");
+      const totalTasks = Object.values(grouped).reduce((s, arr) => s + arr.length, 0);
+
+      if (!totalTasks) {
+        el.innerHTML = '<div class="empty-state">All clear</div>';
+        return;
+      }
+
+      let html = "";
+      for (const [parent, tasks] of Object.entries(grouped)) {
+        if (parent) {
+          html += `<div class="task-parent">${esc(parent)}</div>`;
+        }
+        html += '<ul class="task-list">' + tasks.map(t => {
+          const daysUntil = t.due_date ? Math.ceil((new Date(t.due_date + "T00:00:00") - new Date(todayEt() + "T00:00:00")) / 86400000) : null;
+          const priorityClass = t.priority === "high" ? "high-priority" : "";
+          return `<li class="task-item ${priorityClass}" data-id="${esc(t.id)}" role="button" tabindex="0" aria-label="Complete task: ${esc(t.title)}">
+            <div class="task-check">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
+                <polyline points="2 6 5 9 10 3"/>
+              </svg>
+            </div>
+            <span class="task-title">${esc(t.title)}</span>
+            ${daysUntil !== null ? `<span class="task-due">${daysUntil}</span>` : ""}
+          </li>`;
+        }).join("") + "</ul>";
+      }
+
+      el.innerHTML = html;
+
+      el.querySelectorAll(".task-item").forEach(item => {
+        item.addEventListener("click", () => completeTask(item.dataset.id, item));
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            completeTask(item.dataset.id, item);
+          }
+        });
+      });
+    }
+
+    function completeTask(id, item) {
+      item.style.opacity = "0.4";
+      item.style.pointerEvents = "none";
+      setTimeout(() => item.remove(), 300);
+    }
+
+    function loadTasks() {
+      const today = todayEt();
+      const byId = {};
+      demoTasks.forEach(n => byId[n.id] = n);
+
+      const childCount = {};
+      demoTasks.forEach(n => {
+        if (n.parent_id && n.status !== "done") childCount[n.parent_id] = (childCount[n.parent_id] || 0) + 1;
+      });
+
+      const pending = demoTasks
+        .filter(n => n.status !== "done" && !childCount[n.id])
+        .sort((a, b) => {
+          if (a.due_date && b.due_date) return a.due_date.localeCompare(b.due_date);
+          if (a.due_date) return -1;
+          if (b.due_date) return 1;
+          return 0;
+        });
+
+      const grouped = {};
+      pending.forEach(n => {
+        const parent = n.parent_id && byId[n.parent_id] ? DEMO_PARENTS[n.parent_id]?.title || byId[n.parent_id].title : null;
+        if (!grouped[parent || ""]) grouped[parent || ""] = [];
+        grouped[parent || ""].push(n);
+      });
+
+      renderTasks(grouped);
+    }
+
+    /* ── Strava / Training Stats ──────────────────── */
+    function getWeekBounds() {
+      const end = new Date();
+      end.setHours(23, 59, 59, 999);
+      const start = new Date(end);
+      start.setDate(end.getDate() - 6);
+      start.setHours(0, 0, 0, 0);
+      return { start, end };
+    }
+
+    function renderStrava(data) {
+      const el = document.getElementById("stravaContainer");
+      const { cardio, workouts } = data;
+
+      const { start, end } = getWeekBounds();
+      const weekCardio = cardio.filter(a => {
+        const d = new Date(a.date + "T00:00:00");
+        return d >= start && d <= end;
+      });
+      const totalKm = weekCardio.reduce((s, a) => s + a.distance_km, 0).toFixed(1);
+
+      const weekWorkouts = (workouts || []).filter(w => {
+        const d = new Date(w.date + "T00:00:00");
+        return d >= start && d <= end;
+      });
+      const totalSets = weekWorkouts.reduce((s, w) =>
+        s + (w.exercises || []).reduce((ss, ex) => ss + (ex.sets || 0), 0), 0);
+      const totalVolume = weekWorkouts.reduce((s, w) =>
+        s + (w.exercises || []).reduce((ss, ex) => ss + (ex.sets || 0) * (ex.reps || 0) * (ex.weight_kg || 0), 0), 0);
+
+      el.innerHTML = `
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="stat-value">${totalKm}</div>
+            <div class="stat-unit">KM</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">${Math.round(totalVolume * 2.20462).toLocaleString()}</div>
+            <div class="stat-unit">VOLUME (lbs)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">${totalSets}</div>
+            <div class="stat-unit">SETS</div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ── Workout Card ─────────────────────────────── */
+    function loadWorkout() {
+      const el = document.getElementById("workoutContainer");
+      const today = todayEt();
+      const w = DEMO_WORKOUT;
+      const exercises = w.exercises;
+
+      const d = new Date(w.workout_date + "T12:00:00");
+      const dateStr = w.workout_date === today ? "Today" : `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
+
+      let detailRows = exercises.map(ex => {
+        const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sets` : "";
+        const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
+        const detail = setsReps + weight;
+        return `<div class="workout-card-exercise" style="padding:2px 0 2px 30px">
+          <span class="workout-card-exercise-name" style="color:#ccc;font-size:13px">${esc(ex.name)}</span>
+          <span class="workout-card-exercise-detail" style="color:#888;font-size:13px">${esc(detail)}</span>
+        </div>`;
+      }).join("");
+
+      el.innerHTML = `
+        <ul class="task-list">
+          <li class="task-item">
+            <div class="task-check" style="border-color:#0a84ff">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
+                <polyline points="2 6 5 9 10 3"/>
+              </svg>
+            </div>
+            <span class="task-title">${esc(w.title)}</span>
+            <span class="task-due">${dateStr}</span>
+          </li>
+        </ul>
+        ${detailRows}
+      `;
+    }
+
+    /* ── Nutrition ────────────────────────────────── */
+    const nutritionToggle = document.getElementById("nutritionToggle");
+    const nutritionWidget = nutritionToggle.closest(".nutrition-widget");
+    nutritionToggle.addEventListener("click", () => {
+      nutritionWidget.classList.toggle("collapsed");
+    });
+
+    function loadNutrition() {
+      const totalEl = document.getElementById("nutritionTotal");
+      const queueEl = document.getElementById("mealQueue");
+
+      const loggedCal = demoNutritionLog.reduce((s, n) => s + (n.calories || 0), 0);
+      totalEl.textContent = loggedCal > 0 ? `${loggedCal} cal` : "";
+
+      const upcoming = demoMeals.filter(p => !p.logged).slice(0, 2);
+
+      let html = "";
+      for (const m of upcoming) {
+        html += `
+          <div class="meal-next" data-id="${esc(m.id)}">
+            <div class="meal-next-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></div>
+            <div class="meal-next-info">
+              <div class="meal-next-name">${esc(m.food_name)}</div>
+              <div class="meal-next-macro">${m.calories} cal</div>
+            </div>
+          </div>`;
+      }
+
+      html += `
+        <div class="meal-next meal-snack">
+          <div class="meal-next-check"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></div>
+          <div class="meal-next-info">
+            <input type="text" class="meal-snack-name" placeholder="Snack" />
+            <input type="text" class="meal-snack-cal" placeholder="cal" />
+          </div>
+        </div>`;
+
+      queueEl.innerHTML = html;
+
+      for (const m of upcoming) {
+        queueEl.querySelector(`.meal-next[data-id="${m.id}"]`).addEventListener("click", () => logPlannedMeal(m));
+      }
+
+      const snackCard = queueEl.querySelector(".meal-snack");
+      snackCard.addEventListener("click", (e) => {
+        if (e.target.tagName === "INPUT") return;
+        logSnack(snackCard);
+      });
+      snackCard.querySelector(".meal-snack-cal").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") logSnack(snackCard);
+      });
+    }
+
+    function logPlannedMeal(meal) {
+      const card = document.querySelector(`.meal-next[data-id="${meal.id}"]`);
+      if (card) card.classList.add("logged");
+      demoNutritionLog.push({ food_name: meal.food_name, calories: meal.calories });
+      const m = demoMeals.find(x => x.id === meal.id);
+      if (m) m.logged = true;
+      setTimeout(() => loadNutrition(), 300);
+    }
+
+    function logSnack(card) {
+      const nameEl = card.querySelector(".meal-snack-name");
+      const calEl = card.querySelector(".meal-snack-cal");
+      const name = nameEl.value.trim() || "Snack";
+      const cal = parseInt(calEl.value.trim(), 10);
+      if (isNaN(cal) || cal <= 0) return;
+      card.classList.add("logged");
+      demoNutritionLog.push({ food_name: name, calories: cal });
+      setTimeout(() => loadNutrition(), 300);
+    }
+
+    /* ── Pomodoro timer ─────────────────────────── */
+    const pomodoroTimer = document.getElementById("pomodoroTimer");
+    const pomodoroStart = document.getElementById("pomodoroStart");
+    const pomodoroPause = document.getElementById("pomodoroPause");
+    const pomodoroReset = document.getElementById("pomodoroReset");
+
+    let pomodoroInterval = null;
+    let pomodoroSeconds = 25 * 60;
+
+    function updatePomodoroDisplay() {
+      const m = Math.floor(pomodoroSeconds / 60);
+      const s = pomodoroSeconds % 60;
+      pomodoroTimer.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function pomodoroTick() {
+      if (pomodoroSeconds <= 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        pomodoroStart.style.display = "";
+        pomodoroPause.style.display = "none";
+        pomodoroTimer.textContent = "00:00";
+        return;
+      }
+      pomodoroSeconds--;
+      updatePomodoroDisplay();
+    }
+
+    pomodoroStart.addEventListener("click", () => {
+      if (pomodoroSeconds <= 0) return;
+      pomodoroStart.style.display = "none";
+      pomodoroPause.style.display = "";
+      pomodoroInterval = setInterval(pomodoroTick, 1000);
+    });
+
+    pomodoroPause.addEventListener("click", () => {
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+      pomodoroStart.style.display = "";
+      pomodoroPause.style.display = "none";
+    });
+
+    pomodoroReset.addEventListener("click", () => {
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+      pomodoroSeconds = 25 * 60;
+      updatePomodoroDisplay();
+      pomodoroStart.style.display = "";
+      pomodoroPause.style.display = "none";
+    });
+
+    /* ── Init ──────────────────────────────────────── */
+    renderDate();
+    loadTasks();
+    renderStrava(DEMO_STRAVA);
+    renderCalendar(getDummyCalendarEvents());
+    loadWorkout();
+    loadNutrition();
+  </script>
+</body>
+</html>

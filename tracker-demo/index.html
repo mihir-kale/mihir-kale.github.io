@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Planning Tree — Demo</title>
+    <link rel="stylesheet" crossorigin href="./assets/index-kTQDwIqS.css?v=2">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      /* ── Demo: no-op sync, no-op load ─────────────── */
+      window.syncToSupabase = async function() {};
+      window.loadFromSupabase = async function() { return null; };
+
+      /* ── Seed dummy data into localStorage ────────── */
+      const _PPT_KEY = "ppt-tree-state";
+
+      (function seedDemoData() {
+        try {
+          const existing = localStorage.getItem(_PPT_KEY);
+          if (existing) {
+            const parsed = JSON.parse(existing);
+            if (parsed.nodes && parsed.nodes.length > 0) return;
+          }
+        } catch {}
+
+        const now = new Date().toISOString();
+        const nodes = [
+          /* ── Work (top-level) ─────────────────────── */
+          { id: "wk-root", parentId: null, path: "/wk-root", title: "Work", description: "", status: "ready", priority: "medium", orderIndex: 0, estimateMinutes: null, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "wk-ship", parentId: "wk-root", path: "/wk-root/wk-ship", title: "Ship landing page redesign", description: "", status: "ready", priority: "high", orderIndex: 0, estimateMinutes: 120, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "wk-hero", parentId: "wk-ship", path: "/wk-root/wk-ship/wk-hero", title: "Finalize hero section copy", description: "", status: "ready", priority: "medium", orderIndex: 0, estimateMinutes: 30, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "wk-pr", parentId: "wk-ship", path: "/wk-root/wk-ship/wk-pr", title: "Review analytics dashboard PR", description: "", status: "ready", priority: "medium", orderIndex: 1, estimateMinutes: 45, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "wk-api", parentId: "wk-ship", path: "/wk-root/wk-ship/wk-api", title: "Update API docs for v2 endpoints", description: "", status: "ready", priority: "low", orderIndex: 2, estimateMinutes: 60, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "wk-standup", parentId: "wk-root", path: "/wk-root/wk-standup", title: "Prep standup notes", description: "", status: "ready", priority: "medium", orderIndex: 1, estimateMinutes: 10, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+
+          /* ── Personal (top-level) ─────────────────── */
+          { id: "pr-root", parentId: null, path: "/pr-root", title: "Personal", description: "", status: "ready", priority: "medium", orderIndex: 1, estimateMinutes: null, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "pr-grocery", parentId: "pr-root", path: "/pr-root/pr-grocery", title: "Grocery run", description: "", status: "ready", priority: "medium", orderIndex: 0, estimateMinutes: 30, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "pr-mealprep", parentId: "pr-root", path: "/pr-root/pr-mealprep", title: "Meal prep for the week", description: "", status: "ready", priority: "medium", orderIndex: 1, estimateMinutes: 90, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "pr-clean", parentId: "pr-root", path: "/pr-root/pr-clean", title: "Deep clean apartment", description: "", status: "ready", priority: "low", orderIndex: 2, estimateMinutes: 120, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+
+          /* ── Health (top-level) ───────────────────── */
+          { id: "hl-root", parentId: null, path: "/hl-root", title: "Health", description: "", status: "ready", priority: "medium", orderIndex: 2, estimateMinutes: null, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "hl-runs", parentId: "hl-root", path: "/hl-root/hl-runs", title: "Log 5 runs this week", description: "", status: "ready", priority: "high", orderIndex: 0, estimateMinutes: null, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "hl-pullups", parentId: "hl-root", path: "/hl-root/hl-pullups", title: "Daily pull-ups 4x10", description: "", status: "ready", priority: "medium", orderIndex: 1, estimateMinutes: 15, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+          { id: "hl-stretch", parentId: "hl-root", path: "/hl-root/hl-stretch", title: "Evening stretch routine", description: "", status: "ready", priority: "low", orderIndex: 2, estimateMinutes: 10, dueDate: null, hiddenToday: false, recurring: false, createdAt: now, updatedAt: now },
+        ];
+
+        localStorage.setItem(_PPT_KEY, JSON.stringify({ nodes }));
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-CY4Ktyp3.js?v=4"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
