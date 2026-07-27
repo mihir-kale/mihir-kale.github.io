@@ -600,6 +600,106 @@
       border-color: #fff;
     }
 
+    /* Tour */
+    .tour-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .tour-btn:hover { color: #fff; border-color: #fff; }
+    .tour-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .tour-overlay.active { pointer-events: auto; }
+    .tour-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      z-index: 1000;
+      transition: opacity .25s;
+    }
+    .tour-spotlight {
+      position: fixed;
+      z-index: 1001;
+      border-radius: 12px;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,.72);
+      transition: top .3s ease, left .3s ease, width .3s ease, height .3s ease;
+      pointer-events: none;
+    }
+    .tour-tooltip {
+      position: fixed;
+      z-index: 1002;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 320px;
+      color: #fff;
+      transition: top .3s ease, left .3s ease, opacity .2s;
+    }
+    .tour-tooltip.hidden { opacity: 0; pointer-events: none; }
+    .tour-step-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #0a84ff;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+    .tour-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .tour-desc {
+      font-size: 13px;
+      color: #999;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .tour-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tour-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .tour-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #333;
+      transition: background .2s;
+    }
+    .tour-dot.active { background: #0a84ff; }
+    .tour-btns { display: flex; gap: 8px; }
+    .tour-btn-next, .tour-btn-skip {
+      background: none;
+      border: none;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background .2s, color .2s;
+    }
+    .tour-btn-next { background: #0a84ff; color: #fff; }
+    .tour-btn-next:hover { background: #0974e6; }
+    .tour-btn-skip { color: #666; }
+    .tour-btn-skip:hover { color: #fff; }
+
   </style>
 </head>
 <body>
@@ -607,6 +707,7 @@
   <div class="header-row">
     <div class="date-header" id="dateHeader"></div>
     <div class="header-actions">
+      <button class="tour-btn" id="tourBtn">Tour</button>
       <span class="demo-badge">Demo</span>
     </div>
   </div>
@@ -1193,6 +1294,90 @@
     renderCalendar(getDummyCalendarEvents());
     loadWorkout();
     loadNutrition();
+
+    /* ── Tour ──────────────────────────────────────── */
+    (function() {
+      const steps = [
+        { sel: ".left-col .widget:first-child", title: "Calendar", desc: "5-day event view synced with your Google Calendar. Add events inline — they persist in local storage." },
+        { sel: "#tasksContainer", title: "Tasks", desc: "Hierarchical task planner with checkboxes and priority levels. Click through to the full tracker app." },
+        { sel: ".right-col .widget:first-child", title: "Training", desc: "Next scheduled workout and weekly Strava stats. Data pulled live from Supabase — running, lifting, and cardio." },
+        { sel: ".nutrition-widget", title: "Nutrition", desc: "Meal queue with calorie targets. Log planned meals with one tap, or quick-add snacks from the library." },
+        { sel: "#pomodoroWidget", title: "Pomodoro", desc: "25-minute focus timer. Always visible, no dependencies — start a session anytime." },
+      ];
+
+      const overlay = document.createElement("div");
+      overlay.className = "tour-overlay";
+      overlay.innerHTML = `<div class="tour-spotlight" id="tourSpotlight"></div><div class="tour-tooltip hidden" id="tourTooltip"><div class="tour-step-label" id="tourLabel"></div><div class="tour-title" id="tourTitle"></div><div class="tour-desc" id="tourDesc"></div><div class="tour-controls"><div class="tour-dots" id="tourDots"></div><div class="tour-btns"><button class="tour-btn-skip" id="tourSkip">Skip</button><button class="tour-btn-next" id="tourNext">Next</button></div></div></div>`;
+      document.body.appendChild(overlay);
+
+      const spotlight = document.getElementById("tourSpotlight");
+      const tooltip = document.getElementById("tourTooltip");
+      const label = document.getElementById("tourLabel");
+      const title = document.getElementById("tourTitle");
+      const desc = document.getElementById("tourDesc");
+      const dotsEl = document.getElementById("tourDots");
+      const skipBtn = document.getElementById("tourSkip");
+      const nextBtn = document.getElementById("tourNext");
+      let current = 0;
+
+      dotsEl.innerHTML = steps.map((_, i) => `<div class="tour-dot" data-i="${i}"></div>`).join("");
+
+      function position() {
+        const el = document.querySelector(steps[current].sel);
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const pad = 10;
+        spotlight.style.top = (r.top - pad) + "px";
+        spotlight.style.left = (r.left - pad) + "px";
+        spotlight.style.width = (r.width + pad * 2) + "px";
+        spotlight.style.height = (r.height + pad * 2) + "px";
+
+        tooltip.classList.remove("hidden");
+        const tw = 320;
+        let tx = r.right + 16;
+        if (tx + tw > window.innerWidth - 16) tx = r.left - tw - 16;
+        if (tx < 16) tx = Math.max(16, (r.left + r.width / 2) - tw / 2);
+        let ty = r.top;
+        if (ty + 200 > window.innerHeight) ty = window.innerHeight - 216;
+        if (ty < 16) ty = 16;
+        tooltip.style.left = tx + "px";
+        tooltip.style.top = ty + "px";
+      }
+
+      function render() {
+        label.textContent = `Step ${current + 1} of ${steps.length}`;
+        title.textContent = steps[current].title;
+        desc.textContent = steps[current].desc;
+        nextBtn.textContent = current === steps.length - 1 ? "Done" : "Next";
+        dotsEl.querySelectorAll(".tour-dot").forEach((d, i) => d.classList.toggle("active", i === current));
+        position();
+      }
+
+      function startTour() {
+        current = 0;
+        overlay.classList.add("active");
+        render();
+      }
+
+      function endTour() {
+        overlay.classList.remove("active");
+        tooltip.classList.add("hidden");
+        localStorage.setItem("dashboard_tour_done", "1");
+      }
+
+      nextBtn.addEventListener("click", () => {
+        if (current < steps.length - 1) { current++; render(); }
+        else endTour();
+      });
+      skipBtn.addEventListener("click", endTour);
+      document.getElementById("tourBtn").addEventListener("click", startTour);
+
+      window.addEventListener("resize", () => { if (overlay.classList.contains("active")) position(); });
+
+      if (!localStorage.getItem("dashboard_tour_done")) {
+        setTimeout(startTour, 600);
+      }
+    })();
   </script>
 </body>
 </html>
