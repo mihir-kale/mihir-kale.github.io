@@ -13,23 +13,26 @@
       font-family: "Inter", -apple-system, sans-serif;
       background: #000;
       color: #888;
-      font-size: 1.2vw;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       -webkit-font-smoothing: antialiased;
     }
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 5vw;
+    }
     .photo-ring {
-      position: absolute;
-      left: 33.33%;
-      top: 40%;
-      transform: translate(-50%, -50%);
       width: 15vw;
       height: 15vw;
+      min-width: 120px;
+      min-height: 120px;
       border-radius: 50%;
-      padding: 0.3vw;
+      padding: 4px;
       background: linear-gradient(135deg, #0a84ff, #5e5ce6, #bf5af2);
+      flex-shrink: 0;
     }
     .photo-ring img {
       width: 100%;
@@ -38,68 +41,74 @@
       object-fit: cover;
       object-position: center 85%;
       display: block;
-      border: 0.3vw solid #000;
-    }
-    .text-block {
-      position: absolute;
-      left: 50%;
-      top: 40%;
-      transform: translateY(-50%);
+      border: 4px solid #000;
     }
     h1 {
-      font-size: 1.4vw;
+      font-size: clamp(24px, 1.4vw, 28px);
       font-weight: 400;
       color: inherit;
-      margin-bottom: 1.2vw;
+      margin-bottom: 12px;
     }
     .subtitle {
-      font-size: 1.2vw;
+      font-size: clamp(16px, 1.2vw, 22px);
       color: inherit;
-      margin-bottom: 2vw;
+      margin-bottom: 24px;
       line-height: 1.6;
     }
     .links {
-      font-size: 1.2vw;
+      font-size: clamp(16px, 1.2vw, 22px);
       color: inherit;
       display: flex;
       flex-direction: row;
-      gap: 1.6vw;
-      margin-bottom: 2vw;
+      gap: 24px;
+      margin-bottom: 24px;
     }
     .links a {
       color: inherit;
       text-decoration: underline;
-      text-underline-offset: 0.2vw;
+      text-underline-offset: 3px;
       transition: color .2s;
     }
     .links a:hover { color: #fff; }
     .demos {
-      font-size: 1.2vw;
+      font-size: clamp(16px, 1.2vw, 22px);
       color: inherit;
     }
     .demos a {
       color: inherit;
       text-decoration: underline;
-      text-underline-offset: 0.2vw;
+      text-underline-offset: 3px;
       transition: color .2s;
     }
     .demos a:hover { color: #fff; }
+    @media (max-width: 640px) {
+      .container {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 24px;
+      }
+      .links {
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="photo-ring">
-    <img src="profile.jpg" alt="mihir kale">
-  </div>
-  <div class="text-block">
-    <h1>hi, i'm mihir!</h1>
-    <div class="subtitle">📍 swe intern @ siemens<br>📍 cs & business @ unc</div>
-    <div class="links">
-      <a href="https://linkedin.com/in/mihirpkale" target="_blank" rel="noopener">linkedin</a>
-      <a href="https://www.strava.com/athletes/michelobkultra" target="_blank" rel="noopener">strava</a>
-      <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
+  <div class="container">
+    <div class="photo-ring">
+      <img src="profile.jpg" alt="mihir kale">
     </div>
-    <div class="demos">
-      <span>here to see the dashboard demo?: <a href="/dashboard-demo/">click here</a></span>
+    <div class="text-block">
+      <h1>hi, i'm mihir!</h1>
+      <div class="subtitle">📍 swe intern @ siemens<br>📍 cs & business @ unc</div>
+      <div class="links">
+        <a href="https://linkedin.com/in/mihirpkale" target="_blank" rel="noopener">linkedin</a>
+        <a href="https://www.strava.com/athletes/michelobkultra" target="_blank" rel="noopener">strava</a>
+        <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
+      </div>
+      <div class="demos">
+        <span>here to see the dashboard demo?: <a href="/dashboard-demo/">click here</a></span>
+      </div>
     </div>
   </div>
 </body>
