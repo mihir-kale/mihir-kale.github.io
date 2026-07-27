@@ -697,35 +697,32 @@
       const addDays = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
 
       return [
-        { start: fmt(et) + "T090000", title: "Team Standup", location: "Zoom" },
-        { start: fmt(et) + "T140000", title: "Design Review", location: "Conference Room B" },
-        { start: fmt(addDays(et, 1)) + "T100000", title: "1:1 with Manager" },
-        { start: fmt(addDays(et, 1)) + "T150000", title: "Gym — Strength Day" },
-        { start: fmt(addDays(et, 2)) + "T090000", title: "Sprint Planning" },
-        { start: fmt(addDays(et, 3)) + "T120000", title: "Lunch with Alex" },
-        { start: fmt(addDays(et, 4)) + "T180000", title: "Yoga Class" },
-        { start: fmt(addDays(et, 5)) + "T100000", title: "Dentist Appointment", location: "Downtown Dental" },
+        { start: fmt(et) + "T09:00:00-04:00", title: "Team Standup", location: "Zoom" },
+        { start: fmt(et) + "T14:00:00-04:00", title: "Design Review", location: "Conference Room B" },
+        { start: fmt(addDays(et, 1)) + "T10:00:00-04:00", title: "1:1 with Manager" },
+        { start: fmt(addDays(et, 1)) + "T15:00:00-04:00", title: "Gym — Strength Day" },
+        { start: fmt(addDays(et, 2)) + "T09:00:00-04:00", title: "Sprint Planning" },
+        { start: fmt(addDays(et, 3)) + "T12:00:00-04:00", title: "Lunch with Alex" },
+        { start: fmt(addDays(et, 4)) + "T18:00:00-04:00", title: "Yoga Class" },
+        { start: fmt(addDays(et, 5)) + "T10:00:00-04:00", title: "Dentist Appointment", location: "Downtown Dental" },
       ];
     }
 
     const DEMO_TASKS = [
-      { id: "demo-task-01", parent_id: null, title: "Ship landing page redesign", status: "ready", priority: "high", due_date: null },
+      { id: "demo-parent-1", parent_id: null, title: "Work", status: "ready", priority: "medium", due_date: null },
       { id: "demo-task-02", parent_id: "demo-parent-1", title: "Finalize hero copy", status: "ready", priority: "medium", due_date: null },
       { id: "demo-task-03", parent_id: "demo-parent-1", title: "Review analytics dashboard PR", status: "ready", priority: "medium", due_date: null },
       { id: "demo-task-04", parent_id: "demo-parent-1", title: "Update API documentation", status: "ready", priority: "low", due_date: null },
-      { id: "demo-task-05", parent_id: null, title: "Grocery run", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-parent-2", parent_id: null, title: "Personal", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-task-05", parent_id: "demo-parent-2", title: "Grocery run", status: "ready", priority: "medium", due_date: null },
       { id: "demo-task-06", parent_id: "demo-parent-2", title: "Meal prep for the week", status: "ready", priority: "medium", due_date: null },
       { id: "demo-task-07", parent_id: "demo-parent-2", title: "Clean apartment", status: "ready", priority: "low", due_date: null },
-      { id: "demo-task-08", parent_id: null, title: "Log 5 runs this week", status: "ready", priority: "high", due_date: null },
+      { id: "demo-parent-3", parent_id: null, title: "Health", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-task-08", parent_id: "demo-parent-3", title: "Log 5 runs this week", status: "ready", priority: "high", due_date: null },
       { id: "demo-task-09", parent_id: "demo-parent-3", title: "Pull-ups 4x10", status: "ready", priority: "medium", due_date: null },
       { id: "demo-task-10", parent_id: "demo-parent-3", title: "Stretch routine", status: "ready", priority: "low", due_date: null },
+      { id: "demo-task-01", parent_id: null, title: "Ship landing page redesign", status: "ready", priority: "high", due_date: null },
     ];
-
-    const DEMO_PARENTS = {
-      "demo-parent-1": { title: "Work" },
-      "demo-parent-2": { title: "Personal" },
-      "demo-parent-3": { title: "Health" },
-    };
 
     const DEMO_WORKOUT = {
       id: "demo-wkt-1",
@@ -969,7 +966,7 @@
 
       const grouped = {};
       pending.forEach(n => {
-        const parent = n.parent_id && byId[n.parent_id] ? DEMO_PARENTS[n.parent_id]?.title || byId[n.parent_id].title : null;
+        const parent = n.parent_id && byId[n.parent_id] ? byId[n.parent_id].title : null;
         if (!grouped[parent || ""]) grouped[parent || ""] = [];
         grouped[parent || ""].push(n);
       });
@@ -1034,26 +1031,38 @@
 
       const d = new Date(w.workout_date + "T12:00:00");
       const dateStr = w.workout_date === today ? "Today" : `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
+      const color = w.workout_type === "run" ? "#0a84ff" : "#0a84ff";
 
-      let detailRows = exercises.map(ex => {
-        const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sets` : "";
-        const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
-        const detail = setsReps + weight;
-        return `<div class="workout-card-exercise" style="padding:2px 0 2px 30px">
-          <span class="workout-card-exercise-name" style="color:#ccc;font-size:13px">${esc(ex.name)}</span>
-          <span class="workout-card-exercise-detail" style="color:#888;font-size:13px">${esc(detail)}</span>
+      let detailRows = "";
+      if (w.workout_type === "rest") {
+        detailRows = '<div style="padding:2px 0 2px 30px;font-size:13px;color:#555;font-style:italic">Active recovery</div>';
+      } else if (w.workout_type === "run") {
+        detailRows = `<div style="padding:2px 0 2px 30px;display:flex;justify-content:space-between">
+          <span style="color:#ccc;font-size:13px">Run</span>
+          <span style="color:#888;font-size:13px">${esc(w.title.replace(/^Run\s*/i, ""))}</span>
         </div>`;
-      }).join("");
+      } else if (exercises && exercises.length) {
+        detailRows = exercises.map(ex => {
+          let detail = "";
+          const setsReps = ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sets` : "";
+          const weight = ex.target_weight_kg ? ` · ${ex.target_weight_kg}kg` : "";
+          detail = setsReps + weight;
+          return `<div class="workout-card-exercise" style="padding:2px 0 2px 30px">
+            <span class="workout-card-exercise-name" style="color:#ccc;font-size:13px">${esc(ex.name)}</span>
+            <span class="workout-card-exercise-detail" style="color:#888;font-size:13px">${esc(detail)}</span>
+          </div>`;
+        }).join("");
+      }
 
       el.innerHTML = `
         <ul class="task-list">
           <li class="task-item">
-            <div class="task-check" style="border-color:#0a84ff">
+            <div class="task-check" style="border-color:${color}">
               <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
                 <polyline points="2 6 5 9 10 3"/>
               </svg>
             </div>
-            <span class="task-title">${esc(w.title)}</span>
+            <span class="task-title">${esc(w.workout_type === "run" ? "Run" : w.title)}</span>
             <span class="task-due">${dateStr}</span>
           </li>
         </ul>
