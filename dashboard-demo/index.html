@@ -815,18 +815,19 @@
 
     const DEMO_TASKS = [
       { id: "demo-parent-1", parent_id: null, title: "Work", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-02", parent_id: "demo-parent-1", title: "Finalize hero copy", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-03", parent_id: "demo-parent-1", title: "Review analytics dashboard PR", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-04", parent_id: "demo-parent-1", title: "Update API documentation", status: "ready", priority: "low", due_date: null },
+      { id: "demo-ship", parent_id: "demo-parent-1", title: "Ship landing page redesign", status: "ready", priority: "high", due_date: null },
+      { id: "demo-hero", parent_id: "demo-ship", title: "Finalize hero section copy", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-pr", parent_id: "demo-ship", title: "Review analytics dashboard PR", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-api", parent_id: "demo-ship", title: "Update API docs for v2 endpoints", status: "ready", priority: "low", due_date: null },
+      { id: "demo-standup", parent_id: "demo-parent-1", title: "Prep standup notes", status: "ready", priority: "medium", due_date: null },
       { id: "demo-parent-2", parent_id: null, title: "Personal", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-05", parent_id: "demo-parent-2", title: "Grocery run", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-06", parent_id: "demo-parent-2", title: "Meal prep for the week", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-07", parent_id: "demo-parent-2", title: "Clean apartment", status: "ready", priority: "low", due_date: null },
+      { id: "demo-grocery", parent_id: "demo-parent-2", title: "Grocery run", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-mealprep", parent_id: "demo-parent-2", title: "Meal prep for the week", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-clean", parent_id: "demo-parent-2", title: "Deep clean apartment", status: "ready", priority: "low", due_date: null },
       { id: "demo-parent-3", parent_id: null, title: "Health", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-08", parent_id: "demo-parent-3", title: "Log 5 runs this week", status: "ready", priority: "high", due_date: null },
-      { id: "demo-task-09", parent_id: "demo-parent-3", title: "Pull-ups 4x10", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-task-10", parent_id: "demo-parent-3", title: "Stretch routine", status: "ready", priority: "low", due_date: null },
-      { id: "demo-task-01", parent_id: null, title: "Ship landing page redesign", status: "ready", priority: "high", due_date: null },
+      { id: "demo-runs", parent_id: "demo-parent-3", title: "Log 5 runs this week", status: "ready", priority: "high", due_date: null },
+      { id: "demo-pullups", parent_id: "demo-parent-3", title: "Daily pull-ups 4x10", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-stretch", parent_id: "demo-parent-3", title: "Evening stretch routine", status: "ready", priority: "low", due_date: null },
     ];
 
     const DEMO_MEALS = [
