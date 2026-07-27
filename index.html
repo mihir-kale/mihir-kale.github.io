@@ -20,23 +20,9 @@
       justify-content: center;
       -webkit-font-smoothing: antialiased;
     }
-    .layout {
-      position: relative;
-      width: 600px;
-      height: 400px;
-    }
-    .line {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: #222;
-    }
-    .line-left { left: 200px; }
-    .line-right { left: 400px; }
     .photo-ring {
       position: absolute;
-      left: 200px;
+      left: 33.33%;
       top: 50%;
       transform: translate(-50%, -50%);
       width: 160px;
@@ -56,7 +42,7 @@
     }
     .text-block {
       position: absolute;
-      left: 420px;
+      left: 66.66%;
       top: 50%;
       transform: translateY(-50%);
     }
@@ -101,23 +87,19 @@
   </style>
 </head>
 <body>
-  <div class="layout">
-    <div class="line line-left"></div>
-    <div class="line line-right"></div>
-    <div class="photo-ring">
-      <img src="profile.jpg" alt="mihir kale">
+  <div class="photo-ring">
+    <img src="profile.jpg" alt="mihir kale">
+  </div>
+  <div class="text-block">
+    <h1>hi, i'm mihir!</h1>
+    <div class="subtitle">📍 swe intern @ siemens<br>📍 cs & business @ unc</div>
+    <div class="links">
+      <a href="https://linkedin.com/in/mihirpkale" target="_blank" rel="noopener">linkedin</a>
+      <a href="https://www.strava.com/athletes/michelobkultra" target="_blank" rel="noopener">strava</a>
+      <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
     </div>
-    <div class="text-block">
-      <h1>hi, i'm mihir!</h1>
-      <div class="subtitle">📍 swe intern @ siemens<br>📍 cs & business @ unc</div>
-      <div class="links">
-        <a href="https://linkedin.com/in/mihirpkale" target="_blank" rel="noopener">linkedin</a>
-        <a href="https://www.strava.com/athletes/michelobkultra" target="_blank" rel="noopener">strava</a>
-        <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
-      </div>
-      <div class="demos">
-        <span>here to see the dashboard demo?: <a href="/dashboard-demo/">click here</a></span>
-      </div>
+    <div class="demos">
+      <span>here to see the dashboard demo?: <a href="/dashboard-demo/">click here</a></span>
     </div>
   </div>
 </body>
