@@ -836,18 +836,18 @@
 
     const DEMO_TASKS = [
       { id: "demo-parent-1", parent_id: null, title: "Work", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-ship", parent_id: "demo-parent-1", title: "Ship landing page redesign", status: "ready", priority: "high", due_date: null },
+      { id: "demo-ship", parent_id: "demo-parent-1", title: "Ship landing page redesign", status: "ready", priority: "high", due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 2); return d.toISOString().slice(0,10); })() },
       { id: "demo-hero", parent_id: "demo-ship", title: "Finalize hero section copy", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-pr", parent_id: "demo-ship", title: "Review analytics dashboard PR", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-pr", parent_id: "demo-ship", title: "Review analytics dashboard PR", status: "ready", priority: "medium", due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 5); return d.toISOString().slice(0,10); })() },
       { id: "demo-api", parent_id: "demo-ship", title: "Update API docs for v2 endpoints", status: "ready", priority: "low", due_date: null },
-      { id: "demo-standup", parent_id: "demo-parent-1", title: "Prep standup notes", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-standup", parent_id: "demo-parent-1", title: "Prep standup notes", status: "ready", priority: "medium", due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().slice(0,10); })() },
       { id: "demo-parent-2", parent_id: null, title: "Personal", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-grocery", parent_id: "demo-parent-2", title: "Grocery run", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-grocery", parent_id: "demo-parent-2", title: "Grocery run", status: "ready", priority: "medium", due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().slice(0,10); })() },
       { id: "demo-mealprep", parent_id: "demo-parent-2", title: "Meal prep for the week", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-clean", parent_id: "demo-parent-2", title: "Deep clean apartment", status: "ready", priority: "low", due_date: null },
+      { id: "demo-clean", parent_id: "demo-parent-2", title: "Deep clean apartment", status: "ready", priority: "low", due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString().slice(0,10); })() },
       { id: "demo-parent-3", parent_id: null, title: "Health", status: "ready", priority: "medium", due_date: null },
-      { id: "demo-runs", parent_id: "demo-parent-3", title: "Log 5 runs this week", status: "ready", priority: "high", due_date: null },
-      { id: "demo-pullups", parent_id: "demo-parent-3", title: "Daily pull-ups 4x10", status: "ready", priority: "medium", due_date: null },
+      { id: "demo-runs", parent_id: "demo-parent-3", title: "Log 5 runs this week", status: "ready", priority: "high", due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 4); return d.toISOString().slice(0,10); })() },
+      { id: "demo-pullups", parent_id: "demo-parent-3", title: "Daily pull-ups 4x10", status: "ready", priority: "medium", due_date: (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().slice(0,10); })() },
       { id: "demo-stretch", parent_id: "demo-parent-3", title: "Evening stretch routine", status: "ready", priority: "low", due_date: null },
     ];
 
@@ -990,6 +990,8 @@
             </div>
             <span class="task-title">${esc(t.title)}</span>
             ${daysUntil !== null ? `<span class="task-due">${daysUntil}</span>` : ""}
+            <button class="task-dl-btn" data-task-id="${esc(t.id)}" data-due="${esc(t.due_date || "")}" aria-label="Set deadline for ${esc(t.title)}">&#128197;</button>
+            <button class="task-add-btn" data-parent-id="${esc(t.id)}" aria-label="Add subtask to ${esc(t.title)}">+</button>
           </li>`;
         }).join("") + "</ul>";
       }
@@ -997,12 +999,79 @@
       el.innerHTML = html;
 
       el.querySelectorAll(".task-item").forEach(item => {
-        item.addEventListener("click", () => completeTask(item.dataset.id, item));
+        item.addEventListener("click", (e) => {
+          if (e.target.closest(".task-add-btn") || e.target.closest(".task-dl-btn") || e.target.closest(".task-dl-popup")) return;
+          completeTask(item.dataset.id, item);
+        });
         item.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             completeTask(item.dataset.id, item);
           }
+        });
+      });
+
+      el.querySelectorAll(".task-dl-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const existing = el.querySelector(".task-dl-popup");
+          if (existing) { existing.remove(); return; }
+          const taskId = btn.dataset.taskId;
+          const li = btn.closest(".task-item");
+          const due = btn.dataset.due || "";
+          const mmdd = due ? due.slice(5).replace("-", "/") : "";
+          const popup = document.createElement("div");
+          popup.className = "task-dl-popup";
+          popup.innerHTML = `<input type="text" value="${mmdd}" placeholder="mm/dd" maxlength="5" /><button class="task-dl-clear" title="Clear deadline">&times;</button>`;
+          li.appendChild(popup);
+          const rect = btn.getBoundingClientRect();
+          popup.style.top = (rect.bottom + 4) + "px";
+          popup.style.left = rect.left + "px";
+          const dateInput = popup.querySelector("input");
+          dateInput.focus();
+          const save = (val) => {
+            let iso = null;
+            if (val && /^\d{1,2}\/\d{1,2}$/.test(val)) {
+              const [m, d] = val.split("/").map(Number);
+              const y = new Date().getFullYear();
+              iso = `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+            }
+            const task = demoTasks.find(t => t.id === taskId);
+            if (task) task.due_date = iso;
+            loadTasks();
+          };
+          dateInput.addEventListener("keydown", (ev) => { ev.stopPropagation(); if (ev.key === "Enter") { save(dateInput.value); popup.remove(); } if (ev.key === "Escape") popup.remove(); });
+          dateInput.addEventListener("blur", () => { setTimeout(() => { if (popup.parentNode) { save(dateInput.value); popup.remove(); } }, 150); });
+          popup.querySelector(".task-dl-clear").addEventListener("click", (ev) => { ev.stopPropagation(); save(null); popup.remove(); });
+          const close = (ev) => { if (!popup.contains(ev.target) && ev.target !== btn) { popup.remove(); document.removeEventListener("click", close); } };
+          setTimeout(() => document.addEventListener("click", close), 0);
+        });
+      });
+
+      el.querySelectorAll(".task-add-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const existing = el.querySelector(".task-child-input");
+          if (existing) existing.remove();
+          const li = btn.closest(".task-item");
+          const inputRow = document.createElement("div");
+          inputRow.className = "task-child-input";
+          inputRow.innerHTML = `<input type="text" placeholder="Add subtask..." autofocus />`;
+          li.after(inputRow);
+          const input = inputRow.querySelector("input");
+          input.focus();
+          const save = () => {
+            const title = input.value.trim();
+            if (title) {
+              const newId = "demo-" + Math.random().toString(36).slice(2, 9);
+              demoTasks.push({ id: newId, parent_id: btn.dataset.parentId, title, status: "ready", priority: "medium", due_date: null });
+              loadTasks();
+            } else {
+              inputRow.remove();
+            }
+          };
+          input.addEventListener("keydown", (ev) => { ev.stopPropagation(); if (ev.key === "Enter") { save(); } if (ev.key === "Escape") inputRow.remove(); });
+          input.addEventListener("blur", () => { setTimeout(() => { if (inputRow.parentNode) save(); }, 150); });
         });
       });
     }
