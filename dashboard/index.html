@@ -251,6 +251,32 @@
     .task-due.overdue { color: #ff453a; }
     .task-due.today { color: #ff9f0a; }
 
+    /* Applications */
+    .app-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .app-item:last-child { border-bottom: none; }
+    .app-info { flex: 1; min-width: 0; }
+    .app-company { font-size: 13px; font-weight: 500; color: #fff; }
+    .app-role { font-size: 11px; color: #888; margin-top: 1px; }
+    .app-status {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .app-status.needs-action { background: #ff453a28; color: #ff453a; }
+    .app-status.pending { background: #ff9f0a28; color: #ff9f0a; }
+    .app-status.offer { background: #30d15828; color: #30d158; }
+    .app-status.rejected { background: #555; color: #999; }
+
     .task-add-btn {
       opacity: 0;
       background: none;
@@ -792,6 +818,11 @@
         <div id="stravaContainer"></div>
       </section>
 
+      <section class="widget" id="applicationsWidget">
+        <h2>Applications</h2>
+        <div id="applicationsContainer" class="loading">Loading...</div>
+      </section>
+
       <section class="widget nutrition-widget collapsed">
         <div class="nutrition-header" id="nutritionToggle">
           <h2>Nutrition</h2>
@@ -1091,6 +1122,36 @@
       }
     }
 
+    /* ── Applications ──────────────────────────── */
+    async function loadApplications() {
+      const el = document.getElementById("applicationsContainer");
+      try {
+        const { data, error } = await db.from("applications")
+          .select("id, company, role, status, priority")
+          .order("priority", { ascending: false });
+
+        if (error) throw error;
+        if (!data || !data.length) {
+          el.innerHTML = '<div class="empty-state">No applications</div>';
+          return;
+        }
+
+        el.innerHTML = data.map(a => {
+          const statusClass = a.status.toLowerCase().replace(/\s+/g, "-");
+          return `<div class="app-item">
+            <div class="app-info">
+              <div class="app-company">${esc(a.company)}</div>
+              <div class="app-role">${esc(a.role)}</div>
+            </div>
+            <span class="app-status ${statusClass}">${esc(a.status)}</span>
+          </div>`;
+        }).join("");
+      } catch (e) {
+        console.error("Failed to load applications:", e);
+        el.innerHTML = '<div class="empty-state">Failed to load</div>';
+      }
+    }
+
     /* ── View toggle ──────────────────────────── */
     const viewToggle = document.getElementById("viewToggle");
     viewToggle.addEventListener("click", () => {
@@ -1245,6 +1306,7 @@
       document.getElementById("authGate").style.display = "block";
       renderDate();
       loadArgusTasks();
+      loadApplications();
       loadStrava();
       loadCalendar();
       loadWorkout();

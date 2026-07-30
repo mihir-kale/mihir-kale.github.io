@@ -250,7 +250,7 @@ The `people`, `events`, and `tasks` tables are the core CRM. They are managed by
 | `role` | text | Required |
 | `location` | text | |
 | `posting_url` | text | |
-| `status` | text | `saved`, `applied`, `phone_screen`, `interview`, `offer`, `rejected`, `withdrawn` |
+| `status` | text | `Needs Action`, `Pending`, `Rejected`, `Offer` |
 | `priority` | text | `low`, `medium`, `high`, `urgent` |
 | `applied_date` | date | |
 | `person_id` | text | FK → people (recruiter/hiring manager) |
