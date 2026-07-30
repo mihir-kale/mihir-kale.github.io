@@ -241,6 +241,15 @@
     }
 
     .task-item.high-priority .task-title { color: #0a84ff; }
+    .task-item.urgent-priority .task-title { color: #ff453a; }
+
+    .task-person {
+      font-size: 11px;
+      color: #888;
+      white-space: nowrap;
+    }
+    .task-due.overdue { color: #ff453a; }
+    .task-due.today { color: #ff9f0a; }
 
     .task-add-btn {
       opacity: 0;
@@ -768,10 +777,10 @@
       </section>
     </div>
 
-    <section class="widget">
-      <h2><a href="/tracker/">Tasks</a></h2>
-      <div id="tasksContainer" class="loading">Loading...</div>
-    </section>
+      <section class="widget">
+        <h2><a href="/crm/">Projects</a></h2>
+        <div id="tasksContainer" class="loading">Loading...</div>
+      </section>
 
     <div class="right-col">
       <section class="widget">
@@ -955,23 +964,67 @@
       return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
     }
 
-    function renderTasks(grouped) {
+    /* ── Argus Projects / Tasks ───────────────────── */
+    async function loadArgusTasks() {
       const el = document.getElementById("tasksContainer");
-      const totalTasks = Object.values(grouped).reduce((s, arr) => s + arr.length, 0);
+      try {
+        const [tasksRes, peopleRes] = await Promise.all([
+          db.from("tasks")
+            .select("id, title, status, priority, due_date, project, person_id")
+            .in("status", ["pending", "in_progress"])
+            .order("priority", { ascending: false })
+            .order("due_date"),
+          db.from("people").select("id, name"),
+        ]);
 
-      if (!totalTasks) {
+        if (tasksRes.error) throw tasksRes.error;
+
+        const tasks = tasksRes.data || [];
+        const peopleMap = {};
+        if (peopleRes.data) peopleRes.data.forEach(p => peopleMap[p.id] = p.name);
+
+        const grouped = {};
+        tasks.forEach(t => {
+          const proj = t.project || "Uncategorized";
+          if (!grouped[proj]) grouped[proj] = [];
+          grouped[proj].push(t);
+        });
+
+        renderArgusTasks(grouped, peopleMap);
+      } catch (e) {
+        console.error("Failed to load argus tasks:", e);
+        el.innerHTML = '<div class="empty-state">Failed to load</div>';
+      }
+    }
+
+    function renderArgusTasks(grouped, peopleMap) {
+      const el = document.getElementById("tasksContainer");
+      const total = Object.values(grouped).reduce((s, arr) => s + arr.length, 0);
+
+      if (!total) {
         el.innerHTML = '<div class="empty-state">All clear</div>';
         return;
       }
 
+      const today = todayEt();
       let html = "";
-      for (const [parent, tasks] of Object.entries(grouped)) {
-        if (parent) {
-          html += `<div class="task-parent">${esc(parent)}</div>`;
-        }
+      for (const [project, tasks] of Object.entries(grouped)) {
+        html += `<div class="task-parent">${esc(project)}</div>`;
         html += '<ul class="task-list">' + tasks.map(t => {
-          const daysUntil = t.due_date ? Math.ceil((new Date(t.due_date + "T00:00:00") - new Date(todayEt() + "T00:00:00")) / 86400000) : null;
-          const priorityClass = t.priority === "high" ? "high-priority" : "";
+          const daysUntil = t.due_date ? Math.ceil((new Date(t.due_date + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000) : null;
+          const isUrgent = t.priority === "urgent";
+          const isHigh = t.priority === "high";
+          const priorityClass = isUrgent ? "urgent-priority" : isHigh ? "high-priority" : "";
+          const personName = t.person_id && peopleMap[t.person_id] ? peopleMap[t.person_id] : null;
+
+          let dueLabel = "";
+          let dueClass = "";
+          if (daysUntil !== null) {
+            if (daysUntil < 0) { dueLabel = `${Math.abs(daysUntil)}d ago`; dueClass = "overdue"; }
+            else if (daysUntil === 0) { dueLabel = "Today"; dueClass = "today"; }
+            else { dueLabel = `${daysUntil}d`; }
+          }
+
           return `<li class="task-item ${priorityClass}" data-id="${esc(t.id)}" role="button" tabindex="0" aria-label="Complete task: ${esc(t.title)}">
             <div class="task-check">
               <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
@@ -979,9 +1032,8 @@
               </svg>
             </div>
             <span class="task-title">${esc(t.title)}</span>
-            ${daysUntil !== null ? `<span class="task-due">${daysUntil}</span>` : ""}
-            <button class="task-dl-btn" data-task-id="${esc(t.id)}" data-due="${esc(t.due_date || "")}" aria-label="Set deadline for ${esc(t.title)}">&#128197;</button>
-            <button class="task-add-btn" data-parent-id="${esc(t.id)}" aria-label="Add subtask to ${esc(t.title)}">+</button>
+            ${personName ? `<span class="task-person">${esc(personName)}</span>` : ""}
+            ${dueLabel ? `<span class="task-due ${dueClass}">${dueLabel}</span>` : ""}
           </li>`;
         }).join("") + "</ul>";
       }
@@ -989,196 +1041,26 @@
       el.innerHTML = html;
 
       el.querySelectorAll(".task-item").forEach(item => {
-        item.addEventListener("click", (e) => {
-          if (e.target.closest(".task-add-btn") || e.target.closest(".task-dl-btn") || e.target.closest(".task-dl-popup")) return;
-          completeTask(item.dataset.id, item);
-        });
+        item.addEventListener("click", () => completeArgusTask(item.dataset.id, item));
         item.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            completeTask(item.dataset.id, item);
+            completeArgusTask(item.dataset.id, item);
           }
         });
       });
-
-      el.querySelectorAll(".task-dl-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const existing = el.querySelector(".task-dl-popup");
-          if (existing) { existing.remove(); return; }
-          const taskId = btn.dataset.taskId;
-          const li = btn.closest(".task-item");
-          const due = btn.dataset.due || "";
-          const mmdd = due ? due.slice(5).replace("-", "/") : "";
-          const popup = document.createElement("div");
-          popup.className = "task-dl-popup";
-          popup.innerHTML = `<input type="text" value="${mmdd}" placeholder="mm/dd" maxlength="5" /><button class="task-dl-clear" title="Clear deadline">&times;</button>`;
-          li.appendChild(popup);
-          const rect = btn.getBoundingClientRect();
-          popup.style.top = (rect.bottom + 4) + "px";
-          popup.style.left = rect.left + "px";
-          const dateInput = popup.querySelector("input");
-          dateInput.focus();
-          const save = async (val) => {
-            let iso = null;
-            if (val && /^\d{1,2}\/\d{1,2}$/.test(val)) {
-              const [m, d] = val.split("/").map(Number);
-              const y = new Date().getFullYear();
-              iso = `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-            }
-            await db.from("nodes").update({ due_date: iso, updated_at: new Date().toISOString() }).eq("id", taskId);
-            loadTasks();
-          };
-          dateInput.addEventListener("keydown", (ev) => { ev.stopPropagation(); if (ev.key === "Enter") { save(dateInput.value); popup.remove(); } if (ev.key === "Escape") popup.remove(); });
-          dateInput.addEventListener("blur", () => { setTimeout(() => { if (popup.parentNode) { save(dateInput.value); popup.remove(); } }, 150); });
-          popup.querySelector(".task-dl-clear").addEventListener("click", (ev) => { ev.stopPropagation(); save(null); popup.remove(); });
-          const close = (ev) => { if (!popup.contains(ev.target) && ev.target !== btn) { popup.remove(); document.removeEventListener("click", close); } };
-          setTimeout(() => document.addEventListener("click", close), 0);
-        });
-      });
-
-      el.querySelectorAll(".task-add-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const existing = el.querySelector(".task-child-input");
-          if (existing) existing.remove();
-          const li = btn.closest(".task-item");
-          const inputRow = document.createElement("div");
-          inputRow.className = "task-child-input";
-          inputRow.innerHTML = `<input type="text" placeholder="Add subtask..." autofocus />`;
-          li.after(inputRow);
-          const input = inputRow.querySelector("input");
-          input.focus();
-          input.addEventListener("keydown", async (ev) => {
-            if (ev.key === "Enter") {
-              const title = input.value.trim();
-              if (!title) return;
-              input.disabled = true;
-              try {
-                await addTask(title, btn.dataset.parentId);
-                inputRow.remove();
-              } catch (err) {
-                console.error("Failed to add task:", err);
-                input.disabled = false;
-              }
-            } else if (ev.key === "Escape") {
-              inputRow.remove();
-            }
-          });
-          input.addEventListener("blur", () => {
-            setTimeout(() => inputRow.remove(), 150);
-          });
-        });
-      });
     }
 
-    async function updateDailyLogs(counts) {
-      try {
-        const today = todayEt();
-        await db.from("daily_logs").upsert({
-          date: today,
-          completed: counts.completed,
-          pending: counts.pending,
-          in_progress: counts.in_progress,
-          total: counts.total,
-        }, { onConflict: "date" });
-      } catch (e) {
-        console.error("Failed to update daily logs:", e);
-      }
-    }
-
-    async function completeTask(id, item) {
+    async function completeArgusTask(id, item) {
       item.style.opacity = "0.4";
       item.style.pointerEvents = "none";
       try {
-        await db.from("nodes").update({ status: "done" }).eq("id", id);
+        await db.from("tasks").update({ status: "done", updated_at: new Date().toISOString() }).eq("id", id);
         setTimeout(() => item.remove(), 300);
       } catch (e) {
         console.error("Failed to complete task:", e);
         item.style.opacity = "1";
         item.style.pointerEvents = "auto";
-      }
-    }
-
-    async function addTask(title, parentId = null) {
-      const id = generateId();
-      const now = new Date().toISOString();
-
-      let parentPath = "";
-      if (parentId) {
-        const { data: parent } = await db.from("nodes").select("path").eq("id", parentId).single();
-        parentPath = parent?.path || "";
-      }
-
-      const path = parentId ? `${parentPath}/${id}` : `/${id}`;
-
-      const { count } = await db.from("nodes")
-        .select("id", { count: "exact", head: true })
-        .eq("parent_id", parentId);
-
-      const { error } = await db.from("nodes").insert({
-        id,
-        parent_id: parentId,
-        path,
-        title,
-        description: "",
-        status: "ready",
-        priority: "medium",
-        order_index: count || 0,
-        hidden_today: false,
-        recurring: false,
-        created_at: now,
-        updated_at: now,
-      });
-      if (error) throw error;
-      await loadTasks();
-    }
-
-    async function loadTasks() {
-      try {
-        const { data, error } = await db.from("nodes")
-          .select("id, parent_id, title, status, priority, due_date");
-
-        if (error) throw error;
-        const all = data || [];
-
-        const counts = { completed: 0, pending: 0, in_progress: 0, total: all.length };
-        for (const n of all) {
-          if (n.status === "done") counts.completed++;
-          else if (n.status === "in_progress") counts.in_progress++;
-          else counts.pending++;
-        }
-        updateDailyLogs(counts);
-
-        const byId = {};
-        all.forEach(n => byId[n.id] = n);
-
-        const childCount = {};
-        all.forEach(n => {
-          if (n.parent_id && n.status !== "done") childCount[n.parent_id] = (childCount[n.parent_id] || 0) + 1;
-        });
-
-        const pending = all
-          .filter(n => n.status !== "done" && !childCount[n.id])
-          .sort((a, b) => {
-            if (a.due_date && b.due_date) return a.due_date.localeCompare(b.due_date);
-            if (a.due_date) return -1;
-            if (b.due_date) return 1;
-            return 0;
-          });
-
-        const grouped = {};
-        pending.forEach(n => {
-          const parent = n.parent_id && byId[n.parent_id] ? byId[n.parent_id].title : null;
-          if (!grouped[parent || ""]) grouped[parent || ""] = [];
-          grouped[parent || ""].push(n);
-        });
-
-        renderTasks(grouped);
-      } catch (e) {
-        console.error("Failed to load tasks:", e);
-        document.getElementById("tasksContainer").innerHTML =
-          '<div class="empty-state">Failed to load</div>';
       }
     }
 
@@ -1327,7 +1209,7 @@
       document.getElementById("loginForm").style.display = "none";
       document.getElementById("authGate").style.display = "block";
       renderDate();
-      loadTasks();
+      loadArgusTasks();
       loadStrava();
       loadCalendar();
       loadWorkout();
