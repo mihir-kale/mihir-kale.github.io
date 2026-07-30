@@ -36,6 +36,7 @@ Read and Listen widgets are disabled (code preserved, Spotify polling off).
 - `dashboard/index.html` — Dashboard app (all CSS/JS inline)
 - `tracker/index.html` — Vite/React task planner app
 - `tracker/assets/index-CY4Ktyp3.js` — Compiled tracker bundle (do not edit directly)
+- `resume_engine/` — AI resume and cover letter generator (see Resume Engine section)
 - `scripts/fetch_strava.py` — Fetches Strava activities, parses Hevy workouts, upserts to Supabase
 - `scripts/fetch_calendar.py` — Parses ICS feeds, writes `dashboard/data/calendar-events.json`
 - `scripts/fetch_rss.py` — Fetches RSS feeds, writes `dashboard/data/read-feeds.json`
@@ -88,6 +89,49 @@ Reference file for generating or updating planned workouts in Supabase. Contains
   - Runs `fetch_rss.py` (writes JSON)
   - Commits calendar/RSS JSON to repo
 - Requires GitHub secrets: `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`
+
+## Resume Engine
+
+**Location:** `resume_engine/` at repo root.
+
+AI-powered resume and cover letter generator that tailors content to specific job descriptions using GPT-4o-mini.
+
+### Quick Start
+
+```bash
+# Web UI (recommended)
+python app.py
+# Open http://localhost:5001
+
+# CLI: basic generation
+python main.py job_descriptions/<job>.txt [--cover-letter/--no-cover-letter]
+
+# Two-pass: tailor then verify through skeptical hiring manager lens
+python two_pass_analysis.py job_descriptions/<job>.txt
+```
+
+### Key Files
+
+| File | Purpose |
+|---|---|
+| `resume_content.md` | Source of truth for all resume content — edit here first |
+| `ai_customizer.py` | GPT-4o-mini prompts for resume + cover letter |
+| `docx_generator.py` | Populates `template.docx` with tailored content |
+| `cover_letter_generator.py` | Builds cover letter DOCX from scratch |
+| `main.py` | CLI entry point, orchestrates pipeline |
+| `two_pass_analysis.py` | AI analysis: tailor → verify with skeptical hiring manager |
+| `job_descriptions/` | Save job descriptions as `<slug>.txt` here |
+
+### Constraints
+- **Education is frozen** — never modified by AI
+- **Template is immutable** — `template.docx` is fixed
+- **ATS keywords** injected as white font at 1pt (hidden from humans, readable by parsers)
+- Output goes to `output/<job_slug>/` as PDF
+
+### Workflow
+1. Save job description to `job_descriptions/<slug>.txt`
+2. Run `python main.py job_descriptions/<slug>.txt` or use web UI
+3. Output appears in `output/<slug>/` as PDF + optional cover letter
 
 ## Conventions
 
