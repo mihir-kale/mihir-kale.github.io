@@ -778,7 +778,10 @@
     </div>
 
       <section class="widget">
-        <h2><a href="/crm/">Projects</a></h2>
+        <div class="widget-header">
+          <h2><a href="/crm/">Projects</a></h2>
+          <button class="widget-add-btn" id="viewToggle" aria-label="Toggle view">&#8855;</button>
+        </div>
         <div id="tasksContainer" class="loading">Loading...</div>
       </section>
 
@@ -965,6 +968,8 @@
     }
 
     /* ── Argus Projects / Tasks ───────────────────── */
+    let viewMode = "projects";
+
     async function loadArgusTasks() {
       const el = document.getElementById("tasksContainer");
       try {
@@ -989,6 +994,37 @@
         const peopleMap = {};
         if (peopleRes.data) peopleRes.data.forEach(p => peopleMap[p.id] = p.name);
 
+        renderArgusTasks(tasks, peopleMap);
+      } catch (e) {
+        console.error("Failed to load argus tasks:", e);
+        el.innerHTML = '<div class="empty-state">Failed to load</div>';
+      }
+    }
+
+    function renderArgusTasks(tasks, peopleMap) {
+      const el = document.getElementById("tasksContainer");
+
+      if (!tasks.length) {
+        el.innerHTML = '<div class="empty-state">All clear</div>';
+        return;
+      }
+
+      const today = todayEt();
+
+      if (viewMode === "queue") {
+        const sorted = [...tasks].sort((a, b) => {
+          const pri = { urgent: 0, high: 1, medium: 2, low: 3 };
+          const pa = pri[a.priority] ?? 2;
+          const pb = pri[b.priority] ?? 2;
+          if (pa !== pb) return pa - pb;
+          if (a.due_date && b.due_date) return a.due_date.localeCompare(b.due_date);
+          if (a.due_date) return -1;
+          if (b.due_date) return 1;
+          return 0;
+        });
+
+        el.innerHTML = '<ul class="task-list">' + sorted.map(t => taskHtml(t, peopleMap, today)).join("") + '</ul>';
+      } else {
         const grouped = {};
         tasks.forEach(t => {
           const proj = t.project || "Uncategorized";
@@ -996,55 +1032,13 @@
           grouped[proj].push(t);
         });
 
-        renderArgusTasks(grouped, peopleMap);
-      } catch (e) {
-        console.error("Failed to load argus tasks:", e);
-        el.innerHTML = '<div class="empty-state">Failed to load</div>';
+        let html = "";
+        for (const [project, pts] of Object.entries(grouped)) {
+          html += `<div class="task-parent">${esc(project)}</div>`;
+          html += '<ul class="task-list">' + pts.map(t => taskHtml(t, peopleMap, today)).join("") + '</ul>';
+        }
+        el.innerHTML = html;
       }
-    }
-
-    function renderArgusTasks(grouped, peopleMap) {
-      const el = document.getElementById("tasksContainer");
-      const total = Object.values(grouped).reduce((s, arr) => s + arr.length, 0);
-
-      if (!total) {
-        el.innerHTML = '<div class="empty-state">All clear</div>';
-        return;
-      }
-
-      const today = todayEt();
-      let html = "";
-      for (const [project, tasks] of Object.entries(grouped)) {
-        html += `<div class="task-parent">${esc(project)}</div>`;
-        html += '<ul class="task-list">' + tasks.map(t => {
-          const daysUntil = t.due_date ? Math.ceil((new Date(t.due_date + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000) : null;
-          const isUrgent = t.priority === "urgent";
-          const isHigh = t.priority === "high";
-          const priorityClass = isUrgent ? "urgent-priority" : isHigh ? "high-priority" : "";
-          const personName = t.person_id && peopleMap[t.person_id] ? peopleMap[t.person_id] : null;
-
-          let dueLabel = "";
-          let dueClass = "";
-          if (daysUntil !== null) {
-            if (daysUntil < 0) { dueLabel = `${Math.abs(daysUntil)}d ago`; dueClass = "overdue"; }
-            else if (daysUntil === 0) { dueLabel = "Today"; dueClass = "today"; }
-            else { dueLabel = `${daysUntil}d`; }
-          }
-
-          return `<li class="task-item ${priorityClass}" data-id="${esc(t.id)}" role="button" tabindex="0" aria-label="Complete task: ${esc(t.title)}">
-            <div class="task-check">
-              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
-                <polyline points="2 6 5 9 10 3"/>
-              </svg>
-            </div>
-            <span class="task-title">${esc(t.title)}</span>
-            ${personName ? `<span class="task-person">${esc(personName)}</span>` : ""}
-            ${dueLabel ? `<span class="task-due ${dueClass}">${dueLabel}</span>` : ""}
-          </li>`;
-        }).join("") + "</ul>";
-      }
-
-      el.innerHTML = html;
 
       el.querySelectorAll(".task-item").forEach(item => {
         item.addEventListener("click", () => completeArgusTask(item.dataset.id, item));
@@ -1055,6 +1049,33 @@
           }
         });
       });
+    }
+
+    function taskHtml(t, peopleMap, today) {
+      const daysUntil = t.due_date ? Math.ceil((new Date(t.due_date + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000) : null;
+      const isUrgent = t.priority === "urgent";
+      const isHigh = t.priority === "high";
+      const priorityClass = isUrgent ? "urgent-priority" : isHigh ? "high-priority" : "";
+      const personName = t.person_id && peopleMap[t.person_id] ? peopleMap[t.person_id] : null;
+
+      let dueLabel = "";
+      let dueClass = "";
+      if (daysUntil !== null) {
+        if (daysUntil < 0) { dueLabel = `${Math.abs(daysUntil)}d ago`; dueClass = "overdue"; }
+        else if (daysUntil === 0) { dueLabel = "Today"; dueClass = "today"; }
+        else { dueLabel = `${daysUntil}d`; }
+      }
+
+      return `<li class="task-item ${priorityClass}" data-id="${esc(t.id)}" role="button" tabindex="0" aria-label="Complete task: ${esc(t.title)}">
+        <div class="task-check">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2">
+            <polyline points="2 6 5 9 10 3"/>
+          </svg>
+        </div>
+        <span class="task-title">${esc(t.title)}</span>
+        ${personName ? `<span class="task-person">${esc(personName)}</span>` : ""}
+        ${dueLabel ? `<span class="task-due ${dueClass}">${dueLabel}</span>` : ""}
+      </li>`;
     }
 
     async function completeArgusTask(id, item) {
@@ -1069,6 +1090,14 @@
         item.style.pointerEvents = "auto";
       }
     }
+
+    /* ── View toggle ──────────────────────────── */
+    const viewToggle = document.getElementById("viewToggle");
+    viewToggle.addEventListener("click", () => {
+      viewMode = viewMode === "projects" ? "queue" : "projects";
+      viewToggle.textContent = viewMode === "projects" ? "\u2297" : "\u2261";
+      loadArgusTasks();
+    });
 
     function getWeekBounds() {
       const end = new Date();
