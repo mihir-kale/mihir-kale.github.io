@@ -72,6 +72,7 @@ Reference file for generating or updating planned workouts in Supabase. Contains
 | `events` | Phone screens, meetings, deadlines |
 | `tasks` | Flat tasks linked to people & events |
 | `projects` | Project registry with active/dormant status |
+| `applications` | Job application tracking (saved → → offer/rejected) |
 | `planned_workouts` | Upcoming workout sessions |
 | `planned_exercises` | Exercises within planned workouts |
 | `strava_activities` | Cardio activities from Strava |
@@ -237,6 +238,23 @@ The `people`, `events`, and `tasks` tables are the core CRM. They are managed by
 | `id` | text (PK) | MD5 hash |
 | `name` | text | Unique project label matching `tasks.project` |
 | `status` | text | `active` or `dormant` — dormant projects hidden from dashboard |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
+#### applications
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | text (21-char PK) | |
+| `company` | text | Required |
+| `role` | text | Required |
+| `location` | text | |
+| `posting_url` | text | |
+| `status` | text | `saved`, `applied`, `phone_screen`, `interview`, `offer`, `rejected`, `withdrawn` |
+| `priority` | text | `low`, `medium`, `high`, `urgent` |
+| `applied_date` | date | |
+| `person_id` | text | FK → people (recruiter/hiring manager) |
+| `notes` | text | |
 | `created_at` | timestamptz | |
 | `updated_at` | timestamptz | |
 
