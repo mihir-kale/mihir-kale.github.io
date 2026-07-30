@@ -881,15 +881,19 @@
       }
     }
 
+    function etDate(isoStr) {
+      return new Date(isoStr).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    }
+
     function renderCalendar(events) {
       const el = document.getElementById("calendarContainer");
       const today = todayEt();
       const cutoff = new Date(today + "T12:00:00");
       cutoff.setDate(cutoff.getDate() + 5);
-      const cutoffStr = cutoff.toISOString().slice(0, 10);
+      const cutoffStr = cutoff.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 
       const filtered = events.filter(ev => {
-        const date = ev.start.slice(0, 10);
+        const date = etDate(ev.start);
         return date >= today && date <= cutoffStr;
       });
 
@@ -900,7 +904,7 @@
 
       const grouped = {};
       filtered.forEach(ev => {
-        const date = ev.start.slice(0, 10);
+        const date = etDate(ev.start);
         if (!grouped[date]) grouped[date] = [];
         grouped[date].push(ev);
       });
