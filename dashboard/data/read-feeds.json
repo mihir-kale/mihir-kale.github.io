@@ -1,35 +1,35 @@
 {
-  "last_updated": "2026-07-30T07:29:24.760398+00:00",
+  "last_updated": "2026-07-30T14:05:04.351855+00:00",
   "articles": [
     {
-      "title": "\u201cEarthly Delights,\u201d by Sheila Heti",
-      "url": "https://www.newyorker.com/magazine/2026/08/03/earthly-delights-fiction-sheila-heti",
+      "title": "What Would It Mean to See a New Color?",
+      "url": "https://www.newyorker.com/magazine/2026/08/03/what-would-it-mean-to-see-a-new-color",
       "source": "The New Yorker",
-      "date": "2026-07-26"
+      "date": "2026-07-27"
     },
     {
-      "title": "Three Books Sheila Heti Recommends",
-      "url": "https://www.newyorker.com/books/what-were-reading/three-books-sheila-heti-recommends",
+      "title": "Pierre-Emmanuel Lyet\u2019s \u201cRepose\u201d",
+      "url": "https://www.newyorker.com/culture/cover-story/cover-story-2026-08-03",
       "source": "The New Yorker",
-      "date": "2026-07-29"
+      "date": "2026-07-27"
     },
     {
-      "title": "Cover Story newsletter: Should you be afraid of Elon Musk?",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/24/cover-story-newsletter-should-you-be-afraid-of-elon-musk",
+      "title": "Politics",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/30/politics",
       "source": "The Economist",
+      "date": "2026-07-30"
+    },
+    {
+      "title": "Cartoon: Who benefits from AI?",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/30/cartoon-who-benefits-from-ai",
+      "source": "The Economist",
+      "date": "2026-07-30"
+    },
+    {
+      "title": "One Refugee\u2019s Journey Through ICE Detention",
+      "url": "https://www.newyorker.com/podcast/the-new-yorker-radio-hour/one-refugees-journey-through-ice-detention",
+      "source": "The New Yorker",
       "date": "2026-07-24"
-    },
-    {
-      "title": "Johnny Knoxville, America\u2019s God of Mischief",
-      "url": "https://www.newyorker.com/magazine/2026/08/03/johnny-knoxville-profile",
-      "source": "The New Yorker",
-      "date": "2026-07-27"
-    },
-    {
-      "title": "Fab Morvan Takes Back His Voice",
-      "url": "https://www.newyorker.com/magazine/2026/08/03/fab-morvan-takes-back-his-voice",
-      "source": "The New Yorker",
-      "date": "2026-07-27"
     }
   ]
 }
