@@ -881,8 +881,9 @@
       }
     }
 
-    function etDate(isoStr) {
-      return new Date(isoStr).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    function eventDate(ev) {
+      if (ev.allDay) return ev.start.slice(0, 10);
+      return new Date(ev.start).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
     }
 
     function renderCalendar(events) {
@@ -893,7 +894,7 @@
       const cutoffStr = cutoff.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 
       const filtered = events.filter(ev => {
-        const date = etDate(ev.start);
+        const date = eventDate(ev);
         return date >= today && date <= cutoffStr;
       });
 
@@ -904,7 +905,7 @@
 
       const grouped = {};
       filtered.forEach(ev => {
-        const date = etDate(ev.start);
+        const date = eventDate(ev);
         if (!grouped[date]) grouped[date] = [];
         grouped[date].push(ev);
       });
