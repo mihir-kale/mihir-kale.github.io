@@ -1143,12 +1143,29 @@
               <div class="app-company">${esc(a.company)}</div>
               <div class="app-role">${esc(a.role)}</div>
             </div>
-            <span class="app-status ${statusClass}">${esc(a.status)}</span>
+            <span class="app-status ${statusClass}" data-app-id="${a.id}">${esc(a.status)}</span>
           </div>`;
         }).join("");
+
+        el.querySelectorAll(".app-status").forEach(span => {
+          span.addEventListener("click", () => toggleAppStatus(span.dataset.appId, span));
+        });
       } catch (e) {
         console.error("Failed to load applications:", e);
         el.innerHTML = '<div class="empty-state">Failed to load</div>';
+      }
+    }
+
+    const STATUS_CYCLE = ["Needs Action", "Pending", "Offer", "Rejected"];
+
+    async function toggleAppStatus(id, span) {
+      const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(span.textContent) + 1) % STATUS_CYCLE.length];
+      try {
+        await db.from("applications").update({ status: next, updated_at: new Date().toISOString() }).eq("id", id);
+        span.textContent = next;
+        span.className = `app-status ${next.toLowerCase().replace(/\s+/g, "-")}`;
+      } catch (e) {
+        console.error("Failed to update status:", e);
       }
     }
 
