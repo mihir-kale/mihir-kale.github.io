@@ -182,10 +182,58 @@
       color: #0a84ff;
       margin-bottom: 6px;
       margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .task-parent:first-child {
       margin-top: 0;
+    }
+
+    .task-parent-add {
+      opacity: 0;
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-size: 12px;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .2s, color .2s, border-color .2s;
+      flex-shrink: 0;
+    }
+    .task-parent:hover .task-parent-add { opacity: 1; }
+    .task-parent-add:hover { color: #fff; border-color: #fff; }
+
+    .task-parent-input {
+      display: none;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .task-parent-input input {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 4px 8px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+    }
+    .task-parent-input input:focus { border-color: #0a84ff; }
+    .task-parent-input button {
+      background: #0a84ff;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
     }
 
     .task-list { list-style: none; }
@@ -1037,6 +1085,30 @@
       }
     }
 
+    async function addProjectTask(inputRow) {
+      const inp = inputRow.querySelector("input");
+      const title = inp.value.trim();
+      if (!title) return;
+      const proj = inputRow.dataset.project;
+      const id = generateId();
+      try {
+        await db.from("tasks").insert({
+          id,
+          title,
+          project: proj,
+          status: "pending",
+          priority: "medium",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+        inp.value = "";
+        inputRow.style.display = "none";
+        loadArgusTasks();
+      } catch (e) {
+        console.error("Failed to add task:", e);
+      }
+    }
+
     function renderArgusTasks(tasks, peopleMap) {
       const el = document.getElementById("tasksContainer");
 
@@ -1070,7 +1142,14 @@
 
         let html = "";
         for (const [project, pts] of Object.entries(grouped)) {
-          html += `<div class="task-parent">${esc(project)}</div>`;
+          html += `<div class="task-parent">
+            <span>${esc(project)}</span>
+            <button class="task-parent-add" data-project="${esc(project)}" aria-label="Add task">+</button>
+          </div>
+          <div class="task-parent-input" data-project="${esc(project)}">
+            <input type="text" placeholder="Task title" />
+            <button>Add</button>
+          </div>`;
           html += '<ul class="task-list">' + pts.map(t => taskHtml(t, peopleMap, today)).join("") + '</ul>';
         }
         el.innerHTML = html;
@@ -1083,6 +1162,30 @@
             e.preventDefault();
             completeArgusTask(item.dataset.id, item);
           }
+        });
+      });
+
+      el.querySelectorAll(".task-parent-add").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const inputRow = btn.parentElement.nextElementSibling;
+          if (!inputRow || !inputRow.classList.contains("task-parent-input")) return;
+          const open = inputRow.style.display !== "flex";
+          inputRow.style.display = open ? "flex" : "none";
+          if (open) {
+            const inp = inputRow.querySelector("input");
+            inp.value = "";
+            setTimeout(() => inp.focus(), 50);
+          }
+        });
+      });
+
+      el.querySelectorAll(".task-parent-input").forEach(inputRow => {
+        const btn = inputRow.querySelector("button");
+        const inp = inputRow.querySelector("input");
+        btn.addEventListener("click", async () => addProjectTask(inputRow));
+        inp.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") { e.preventDefault(); addProjectTask(inputRow); }
         });
       });
     }
