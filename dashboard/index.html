@@ -968,18 +968,24 @@
     async function loadArgusTasks() {
       const el = document.getElementById("tasksContainer");
       try {
-        const [tasksRes, peopleRes] = await Promise.all([
+        const [tasksRes, peopleRes, projectsRes] = await Promise.all([
           db.from("tasks")
             .select("id, title, status, priority, due_date, project, person_id")
             .in("status", ["pending", "in_progress"])
             .order("priority", { ascending: false })
             .order("due_date"),
           db.from("people").select("id, name"),
+          db.from("projects").select("name, status"),
         ]);
 
         if (tasksRes.error) throw tasksRes.error;
 
-        const tasks = tasksRes.data || [];
+        const dormantProjects = new Set();
+        if (projectsRes.data) {
+          projectsRes.data.filter(p => p.status === "dormant").forEach(p => dormantProjects.add(p.name));
+        }
+
+        const tasks = (tasksRes.data || []).filter(t => !dormantProjects.has(t.project));
         const peopleMap = {};
         if (peopleRes.data) peopleRes.data.forEach(p => peopleMap[p.id] = p.name);
 

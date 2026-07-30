@@ -60,6 +60,12 @@ Meetings, phone screens, deadlines. FK → people.
 
 Key columns: `id`, `title`, `event_date`, `event_type` (phone_screen, interview, meeting, deadline, social, other), `status` (tentative, confirmed, completed, cancelled), `person_id`.
 
+### `projects`
+
+Project registry with status tracking. Each project maps to `tasks.project`.
+
+Key columns: `id`, `name` (unique), `status` (active/dormant). Dormant projects are filtered from the dashboard widget but retain their tasks for reopening.
+
 ### `tasks`
 
 Flat tasks (no tree). FK → people and events.

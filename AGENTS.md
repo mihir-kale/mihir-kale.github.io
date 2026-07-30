@@ -70,6 +70,7 @@ Reference file for generating or updating planned workouts in Supabase. Contains
 | `people` | Contacts with outreach lifecycle |
 | `events` | Phone screens, meetings, deadlines |
 | `tasks` | Flat tasks linked to people & events |
+| `projects` | Project registry with active/dormant status |
 | `planned_workouts` | Upcoming workout sessions |
 | `planned_exercises` | Exercises within planned workouts |
 | `strava_activities` | Cardio activities from Strava |
@@ -185,6 +186,16 @@ The `people`, `events`, and `tasks` tables are the core CRM. They are managed by
 | `created_at` | timestamptz | |
 | `updated_at` | timestamptz | |
 
+#### projects
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | text (PK) | MD5 hash |
+| `name` | text | Unique project label matching `tasks.project` |
+| `status` | text | `active` or `dormant` — dormant projects hidden from dashboard |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
 #### tasks
 
 | Field | Type | Notes |
@@ -196,7 +207,7 @@ The `people`, `events`, and `tasks` tables are the core CRM. They are managed by
 | `priority` | text | `low`, `medium`, `high`, `urgent` |
 | `due_date` | date | |
 | `estimated_minutes` | int | |
-| `project` | text | Simple label for grouping (not tree-based) |
+| `project` | text | Label for grouping, matches `projects.name` |
 | `person_id` | text | FK → people |
 | `event_id` | text | FK → events |
 | `created_at` | timestamptz | |
