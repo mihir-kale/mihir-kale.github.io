@@ -770,14 +770,9 @@
         <div id="calendarContainer" class="loading">Loading...</div>
       </section>
 
-      <section class="widget pomodoro-widget" id="pomodoroWidget">
-        <h2>Pomodoro</h2>
-        <div class="pomodoro-timer" id="pomodoroTimer">25:00</div>
-        <div class="pomodoro-controls">
-          <button class="pomodoro-btn" id="pomodoroStart">Start</button>
-          <button class="pomodoro-btn" id="pomodoroPause" style="display:none">Pause</button>
-          <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
-        </div>
+      <section class="widget" id="applicationsWidget">
+        <h2>Applications</h2>
+        <div id="applicationsContainer" class="loading">Loading...</div>
       </section>
 
       <section class="widget read-widget collapsed" style="display:none">
@@ -818,11 +813,6 @@
         <div id="stravaContainer"></div>
       </section>
 
-      <section class="widget" id="applicationsWidget">
-        <h2>Applications</h2>
-        <div id="applicationsContainer" class="loading">Loading...</div>
-      </section>
-
       <section class="widget nutrition-widget collapsed">
         <div class="nutrition-header" id="nutritionToggle">
           <h2>Nutrition</h2>
@@ -831,6 +821,16 @@
         </div>
         <div class="nutrition-body" id="nutritionBody">
           <div id="mealQueue"></div>
+        </div>
+      </section>
+
+      <section class="widget pomodoro-widget" id="pomodoroWidget">
+        <h2>Pomodoro</h2>
+        <div class="pomodoro-timer" id="pomodoroTimer">25:00</div>
+        <div class="pomodoro-controls">
+          <button class="pomodoro-btn" id="pomodoroStart">Start</button>
+          <button class="pomodoro-btn" id="pomodoroPause" style="display:none">Pause</button>
+          <button class="pomodoro-btn" id="pomodoroReset">Reset</button>
         </div>
       </section>
     </div>

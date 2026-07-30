@@ -27,6 +27,7 @@ Personal dashboard + task planner deployed as a GitHub Pages site.
 | Tasks | `nodes` table | Links to tracker, group by parent |
 | Training | `planned_workouts` + `strava_*` tables | Next workout card + weekly stats (KM, VOLUME, SETS) |
 | Nutrition | `planned_meals` + `nutrition` tables | Meal queue with checkboxes, snack quick-add |
+| Applications | `applications` table | Status badges: Needs Action, Pending, Offer, Rejected |
 | Pomodoro | Local state | 25-min timer, always visible |
 
 Read and Listen widgets are disabled (code preserved, Spotify polling off).
