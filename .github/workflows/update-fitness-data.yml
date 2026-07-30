@@ -31,6 +31,9 @@ jobs:
         run: python scripts/fetch_strava.py
 
       - name: Fetch and process calendar data
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: python scripts/fetch_calendar.py
 
       - name: Fetch and process RSS feeds

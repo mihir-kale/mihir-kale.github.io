@@ -67,6 +67,9 @@ Reference file for generating or updating planned workouts in Supabase. Contains
 | Table | Purpose |
 |---|---|
 | `nodes` | Task tree (tracker) |
+| `people` | Contacts with outreach lifecycle |
+| `events` | Phone screens, meetings, deadlines |
+| `tasks` | Flat tasks linked to people & events |
 | `planned_workouts` | Upcoming workout sessions |
 | `planned_exercises` | Exercises within planned workouts |
 | `strava_activities` | Cardio activities from Strava |
@@ -93,3 +96,108 @@ Reference file for generating or updating planned workouts in Supabase. Contains
 - `fetchWithRetry(url, retries)` with exponential backoff for JSON fetches
 - Nutrition date check piggybacks on 30-second Spotify interval (now only checks nutrition)
 - After editing `dashboard/index.html`, commit and push — GitHub Pages auto-deploys on push to `main`
+
+## Argus — AI Project Management
+
+**Location:** `~/Library/CloudStorage/OneDrive-.../Obsidian Vault/argus/`
+
+Per-project markdown files. Each file tracks one project: goals, active tasks, decisions, session notes. I (the AI) read/write these files and manage the corresponding Supabase data.
+
+### NL Workflow
+
+You talk to me in natural language. I:
+
+1. **Read** the relevant Argus project file for context
+2. **Act** via Supabase REST API (CRUD on `nodes`, `planned_workouts`, `planned_meals`, etc.)
+3. **Write** session notes back to the Argus markdown file
+4. **Confirm** what changed
+
+### Supabase REST API
+
+Base URL: `https://heyrtjzntnicqsfemcmi.supabase.co/rest/v1/`
+Headers: `apikey` + `Authorization: Bearer` (anon key from `dashboard/index.html:799`)
+
+| Operation | Method | Endpoint |
+|---|---|---|
+| List rows | `GET` | `/table?select=*&column=eq.value` |
+| Insert | `POST` | `/table` |
+| Upsert | `POST` | `/table?on_conflict=id` |
+| Update | `PATCH` | `/table?column=eq.value` |
+| Delete | `DELETE` | `/table?column=eq.value` |
+
+### Project Markdown Convention
+
+```markdown
+# Project Name
+
+## Goals
+- ...
+
+## Active Tasks
+- [ ] Task title (tracker node: `{id}`)
+- [x] Done task (tracker node: `{id}`)
+
+## Session Log
+### 2026-07-29
+- What was done
+- Decisions made
+```
+
+### CRM Entity Schemas
+
+The `people`, `events`, and `tasks` tables are the core CRM. They are managed by me (the AI) via REST API and are independent of the tracker's `nodes` table.
+
+#### people
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | text (21-char PK) | Generated at creation |
+| `name` | text | Required |
+| `company` | text | |
+| `role` | text | |
+| `email` | text | |
+| `phone` | text | |
+| `linkedin_url` | text | |
+| `notes` | text | |
+| `status` | text | `cold`, `contacted`, `replied`, `meeting_scheduled`, `met`, `nurturing`, `closed` |
+| `last_contacted_at` | timestamptz | |
+| `next_follow_up` | date | |
+| `source` | text | How we found them |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
+#### events
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | text (21-char PK) | |
+| `title` | text | Required |
+| `description` | text | |
+| `event_date` | date | Required |
+| `start_time` | time | |
+| `end_time` | time | |
+| `timezone` | text | Default `America/New_York` |
+| `location` | text | |
+| `event_type` | text | `phone_screen`, `interview`, `meeting`, `deadline`, `social`, `other` |
+| `status` | text | `tentative`, `confirmed`, `completed`, `cancelled` |
+| `person_id` | text | FK → people |
+| `url` | text | Zoom/Meet link |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
+#### tasks
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | text (21-char PK) | |
+| `title` | text | Required |
+| `description` | text | Default `''` |
+| `status` | text | `pending`, `in_progress`, `done`, `cancelled`, `blocked` |
+| `priority` | text | `low`, `medium`, `high`, `urgent` |
+| `due_date` | date | |
+| `estimated_minutes` | int | |
+| `project` | text | Simple label for grouping (not tree-based) |
+| `person_id` | text | FK → people |
+| `event_id` | text | FK → events |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
