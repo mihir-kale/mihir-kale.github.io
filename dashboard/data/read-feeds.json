@@ -1,23 +1,17 @@
 {
-  "last_updated": "2026-07-31T14:10:04.659265+00:00",
+  "last_updated": "2026-07-31T19:27:38.279112+00:00",
   "articles": [
     {
-      "title": "Pierre-Emmanuel Lyet\u2019s \u201cRepose\u201d",
-      "url": "https://www.newyorker.com/culture/cover-story/cover-story-2026-08-03",
+      "title": "Daily Cartoon: Friday, July 31st",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/friday-july-31st-birth-of-venus-sunscreen",
+      "source": "The New Yorker",
+      "date": "2026-07-31"
+    },
+    {
+      "title": "Briefly Noted Book Reviews",
+      "url": "https://www.newyorker.com/magazine/2026/08/03/the-renoir-girls-little-blue-dot-air-i-want-you-to-be-happy",
       "source": "The New Yorker",
       "date": "2026-07-27"
-    },
-    {
-      "title": "\u201cEarthly Delights,\u201d by Sheila Heti",
-      "url": "https://www.newyorker.com/magazine/2026/08/03/earthly-delights-fiction-sheila-heti",
-      "source": "The New Yorker",
-      "date": "2026-07-26"
-    },
-    {
-      "title": "Cartoon: Who benefits from AI?",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/30/cartoon-who-benefits-from-ai",
-      "source": "The Economist",
-      "date": "2026-07-30"
     },
     {
       "title": "Politics",
@@ -26,10 +20,16 @@
       "date": "2026-07-30"
     },
     {
-      "title": "Daily Cartoon: Thursday, July 30th",
-      "url": "https://www.newyorker.com/cartoons/daily-cartoon/thursday-july-30th-socks-with-sandals",
-      "source": "The New Yorker",
+      "title": "Cartoon: Who benefits from AI?",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/30/cartoon-who-benefits-from-ai",
+      "source": "The Economist",
       "date": "2026-07-30"
+    },
+    {
+      "title": "How to Survive an Infestation of Toxic Caterpillars",
+      "url": "https://www.newyorker.com/science/elements/how-to-survive-an-infestation-of-toxic-caterpillars",
+      "source": "The New Yorker",
+      "date": "2026-07-31"
     }
   ]
 }
