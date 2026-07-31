@@ -1,22 +1,16 @@
 {
-  "last_updated": "2026-07-31T02:54:43.479126+00:00",
+  "last_updated": "2026-07-31T08:51:53.983064+00:00",
   "articles": [
     {
-      "title": "The Irony and the Ecstasy of Colson Whitehead",
-      "url": "https://www.newyorker.com/podcast/critics-at-large/the-irony-and-the-ecstasy-of-colson-whitehead",
+      "title": "\u201cTick Check,\u201d by Michael Dickman",
+      "url": "https://www.newyorker.com/magazine/2026/08/03/tick-check-michael-dickman-poem",
       "source": "The New Yorker",
-      "date": "2026-07-30"
+      "date": "2026-07-27"
     },
     {
-      "title": "Gregg Araki Thinks It\u2019s Good to Get Your Heart Broken",
-      "url": "https://www.newyorker.com/culture/the-new-yorker-interview/gregg-araki-thinks-its-good-to-get-your-heart-broken",
+      "title": "Memorandum from the National Review Committee for National Day Designations",
+      "url": "https://www.newyorker.com/humor/shouts-murmurs/memorandum-from-the-national-review-committee-for-national-day-designations",
       "source": "The New Yorker",
-      "date": "2026-07-26"
-    },
-    {
-      "title": "Politics",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/30/politics",
-      "source": "The Economist",
       "date": "2026-07-30"
     },
     {
@@ -26,10 +20,16 @@
       "date": "2026-07-30"
     },
     {
-      "title": "How Bots Took Over Our Lives",
-      "url": "https://www.newyorker.com/culture/the-lede/how-bots-took-over-our-lives",
+      "title": "Business",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/30/business",
+      "source": "The Economist",
+      "date": "2026-07-30"
+    },
+    {
+      "title": "Mitch McConnell: The Musical",
+      "url": "https://www.newyorker.com/cartoons/blitts-kvetchbook/mitch-mcconnell-the-musical",
       "source": "The New Yorker",
-      "date": "2026-07-27"
+      "date": "2026-07-30"
     }
   ]
 }
