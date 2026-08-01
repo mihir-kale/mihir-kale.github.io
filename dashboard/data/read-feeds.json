@@ -1,23 +1,17 @@
 {
-  "last_updated": "2026-08-01T08:23:07.807966+00:00",
+  "last_updated": "2026-08-01T13:23:42.706423+00:00",
   "articles": [
     {
-      "title": "\u201cTick Check,\u201d by Michael Dickman",
-      "url": "https://www.newyorker.com/magazine/2026/08/03/tick-check-michael-dickman-poem",
+      "title": "How Netanyahu\u2019s Top General Became His Strongest Challenger",
+      "url": "https://www.newyorker.com/magazine/2026/08/03/how-netanyahus-top-general-became-his-strongest-challenger",
       "source": "The New Yorker",
       "date": "2026-07-27"
     },
     {
-      "title": "What Would It Mean to See a New Color?",
-      "url": "https://www.newyorker.com/magazine/2026/08/03/what-would-it-mean-to-see-a-new-color",
+      "title": "Richard Blanco Reads Elizabeth Bishop",
+      "url": "https://www.newyorker.com/podcast/poetry/richard-blanco-reads-elizabeth-bishop",
       "source": "The New Yorker",
-      "date": "2026-07-27"
-    },
-    {
-      "title": "Politics",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/30/politics",
-      "source": "The Economist",
-      "date": "2026-07-30"
+      "date": "2026-07-29"
     },
     {
       "title": "Business",
@@ -26,10 +20,16 @@
       "date": "2026-07-30"
     },
     {
-      "title": "The Accidental Architect of the Internet\u2019s Brain",
-      "url": "https://www.newyorker.com/culture/the-lede/the-accidental-architect-of-the-internets-brain",
+      "title": "Cover Story newsletter: The global currency beef",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/31/cover-story-newsletter-the-global-currency-beef",
+      "source": "The Economist",
+      "date": "2026-07-31"
+    },
+    {
+      "title": "The Outlandish Case Against James Comey",
+      "url": "https://www.newyorker.com/news/the-lede/the-outlandish-case-against-james-comey",
       "source": "The New Yorker",
-      "date": "2026-07-30"
+      "date": "2026-07-31"
     }
   ]
 }
