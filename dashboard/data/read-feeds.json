@@ -1,16 +1,22 @@
 {
-  "last_updated": "2026-08-02T02:53:00.797976+00:00",
+  "last_updated": "2026-08-02T08:25:52.595584+00:00",
   "articles": [
     {
-      "title": "The Best Books of 2026 So Far",
-      "url": "https://www.newyorker.com/best-books-2026",
+      "title": "Daily Cartoon: Thursday, July 30th",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/thursday-july-30th-socks-with-sandals",
       "source": "The New Yorker",
-      "date": "2026-07-29"
+      "date": "2026-07-30"
     },
     {
-      "title": "Memorandum from the National Review Committee for National Day Designations",
-      "url": "https://www.newyorker.com/humor/shouts-murmurs/memorandum-from-the-national-review-committee-for-national-day-designations",
+      "title": "Inside OpenAI\u2019s Hack of Hugging Face",
+      "url": "https://www.newyorker.com/news/the-lede/inside-openai-hack-of-hugging-face",
       "source": "The New Yorker",
+      "date": "2026-07-30"
+    },
+    {
+      "title": "Politics",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/30/politics",
+      "source": "The Economist",
       "date": "2026-07-30"
     },
     {
@@ -20,16 +26,10 @@
       "date": "2026-07-30"
     },
     {
-      "title": "Cover Story newsletter: The global currency beef",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/31/cover-story-newsletter-the-global-currency-beef",
-      "source": "The Economist",
-      "date": "2026-07-31"
-    },
-    {
-      "title": "\u201cFurious\u201d Is a Crime Drama for a Post-Epstein World",
-      "url": "https://www.newyorker.com/magazine/2026/08/10/furious-tv-review-hulu",
+      "title": "Richard Blanco Reads Elizabeth Bishop",
+      "url": "https://www.newyorker.com/podcast/poetry/richard-blanco-reads-elizabeth-bishop",
       "source": "The New Yorker",
-      "date": "2026-07-30"
+      "date": "2026-07-29"
     }
   ]
 }
