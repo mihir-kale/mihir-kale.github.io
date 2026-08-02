@@ -1,17 +1,23 @@
 {
-  "last_updated": "2026-08-02T08:25:52.595584+00:00",
+  "last_updated": "2026-08-02T13:23:48.231110+00:00",
   "articles": [
     {
-      "title": "Daily Cartoon: Thursday, July 30th",
-      "url": "https://www.newyorker.com/cartoons/daily-cartoon/thursday-july-30th-socks-with-sandals",
+      "title": "Obsession-Worthy Stories: A Washington Summer Roundtable",
+      "url": "https://www.newyorker.com/podcast/political-scene/obsession-worthy-stories-a-washington-summer-roundtable",
       "source": "The New Yorker",
-      "date": "2026-07-30"
+      "date": "2026-08-01"
     },
     {
-      "title": "Inside OpenAI\u2019s Hack of Hugging Face",
-      "url": "https://www.newyorker.com/news/the-lede/inside-openai-hack-of-hugging-face",
+      "title": "Daily Cartoon: Friday, July 31st",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/friday-july-31st-birth-of-venus-sunscreen",
       "source": "The New Yorker",
-      "date": "2026-07-30"
+      "date": "2026-07-31"
+    },
+    {
+      "title": "Cover Story newsletter: The global currency beef",
+      "url": "https://www.economist.com/the-world-this-week/2026/07/31/cover-story-newsletter-the-global-currency-beef",
+      "source": "The Economist",
+      "date": "2026-07-31"
     },
     {
       "title": "Politics",
@@ -20,16 +26,10 @@
       "date": "2026-07-30"
     },
     {
-      "title": "Business",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/30/business",
-      "source": "The Economist",
-      "date": "2026-07-30"
-    },
-    {
-      "title": "Richard Blanco Reads Elizabeth Bishop",
-      "url": "https://www.newyorker.com/podcast/poetry/richard-blanco-reads-elizabeth-bishop",
+      "title": "\u201cThe Promise,\u201d by Rachel Yoder",
+      "url": "https://www.newyorker.com/magazine/2026/08/10/the-promise-fiction-rachel-yoder",
       "source": "The New Yorker",
-      "date": "2026-07-29"
+      "date": "2026-08-02"
     }
   ]
 }
