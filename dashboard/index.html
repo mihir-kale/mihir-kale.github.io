@@ -848,7 +848,7 @@
 
       <section class="widget">
         <div class="widget-header">
-          <h2><a href="/crm/">Projects</a></h2>
+          <h2><a href="/tracker/">Projects</a></h2>
           <button class="widget-add-btn" id="viewToggle" aria-label="Toggle view">&#8855;</button>
         </div>
         <div id="tasksContainer" class="loading">Loading...</div>
@@ -856,7 +856,7 @@
 
     <div class="right-col">
       <section class="widget">
-        <h2><a href="/training/">Training</a></h2>
+        <h2>Training</h2>
         <div id="workoutContainer" class="loading">Loading...</div>
         <div id="stravaContainer"></div>
       </section>
@@ -983,10 +983,28 @@
 
     async function loadCalendar() {
       try {
-        const resp = await fetchWithRetry("data/calendar-events.json");
-        if (!resp.ok) throw new Error("No data");
-        const data = await resp.json();
-        renderCalendar(data.events || []);
+        const { data, error } = await db
+          .from("events")
+          .select("title, description, event_date, start_time, end_time, location, event_type, status")
+          .neq("status", "cancelled")
+          .order("event_date")
+          .order("start_time");
+        if (error) throw error;
+
+        const events = (data || []).map(ev => ({
+          title: ev.title,
+          location: ev.location || "",
+          allDay: !ev.start_time,
+          start: ev.start_time
+            ? `${ev.event_date}T${ev.start_time}:00`
+            : `${ev.event_date}T00:00:00`,
+          end: ev.end_time
+            ? `${ev.event_date}T${ev.end_time}:00`
+            : ev.start_time
+              ? `${ev.event_date}T${ev.start_time}:00`
+              : `${ev.event_date}T23:59:59`
+        }));
+        renderCalendar(events);
       } catch (e) {
         document.getElementById("calendarContainer").innerHTML =
           '<div class="empty-state">No data yet</div>';
@@ -1236,6 +1254,7 @@
       try {
         const { data, error } = await db.from("applications")
           .select("id, company, role, status, priority")
+          .eq("status", "Pending")
           .order("priority", { ascending: false });
 
         if (error) throw error;

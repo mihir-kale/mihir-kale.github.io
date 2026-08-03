@@ -8,7 +8,7 @@ Personal dashboard + task planner deployed as a GitHub Pages site.
 
 - `dashboard/` — Main dashboard app, served at `mihir-kale.github.io/dashboard/`
 - `tracker/` — Hierarchical task planner, served at `mihir-kale.github.io/tracker/`
-- `scripts/` — Data fetch scripts (Strava, calendar, RSS)
+- `scripts/` — Data fetch scripts (calendar, RSS; Strava moved to mihirOS/training)
 - `.github/workflows/` — Daily cron to fetch external data
 - Root (`index.html`, etc.) — Public website profile (WIP)
 
@@ -23,7 +23,7 @@ Personal dashboard + task planner deployed as a GitHub Pages site.
 
 | Widget | Source | Notes |
 |---|---|---|
-| Calendar | `calendar-events.json` (GitHub Action) | Today + next 5 days, Eastern Time |
+| Calendar | `events` table | Today + next 5 days, Eastern Time |
 | Tasks | `nodes` table | Links to tracker, group by parent |
 | Training | `planned_workouts` + `strava_*` tables | Next workout card + weekly stats (KM, VOLUME, SETS) |
 | Nutrition | `planned_meals` + `nutrition` tables | Meal queue with checkboxes, snack quick-add |
@@ -35,34 +35,26 @@ Read and Listen widgets are disabled (code preserved, Spotify polling off).
 ## Key Files
 
 - `dashboard/index.html` — Dashboard app (all CSS/JS inline)
-- `tracker/index.html` — Vite/React task planner app
+- `tracker/index.html` — Vite/React task planner app (auth-gated)
 - `tracker/assets/index-CY4Ktyp3.js` — Compiled tracker bundle (do not edit directly)
-- `resume_engine/` — AI resume and cover letter generator (see Resume Engine section)
-- `scripts/fetch_strava.py` — Fetches Strava activities, parses Hevy workouts, upserts to Supabase
-- `scripts/fetch_calendar.py` — Parses ICS feeds, writes `dashboard/data/calendar-events.json`
 - `scripts/fetch_rss.py` — Fetches RSS feeds, writes `dashboard/data/read-feeds.json`
-- `scripts/migrate_strava_to_supabase.sql` — SQL migration for Supabase tables
-- `workout.md` — Training preferences, restrictions, and goals (gitignored, local only)
 
-## workout.md
+The compiled CRM app (`crm/`), `archon/`, `opencode.json`, and `fetch_calendar.py` were removed from this repo — they live in `mihirOS/tools/` and `mihirOS/opencode.json` instead. The dashboard calendar reads the `events` table directly (no JSON).
 
-Reference file for generating or updating planned workouts in Supabase. Contains:
+## Training module
 
-- **Daily non-negotiables**: pull-ups + push-ups every day (separate from strength sessions)
-- **Weekly schedule**: Sun rest, Mon/Wed/Fri strength, Tue/Thu/Sat runs
-- **Strength rules**: 2 sets to failure per exercise, max 14 sets/session, varied exercises across days, each day covers chest/back/shoulders/abs
-- **Running rules**: zone 2 base, tempo intervals for quality, builds medium → long → longest
-- **Equipment**: DBs, KBs, barbell, pull-up bar, bench (no cables)
-- **Approved exercise library**: by muscle group
+Training/workout content lives in `mihirOS/training/` (sibling of this repo in the mihirOS monorepo), not here. That includes `workout.md` (training preferences, restrictions, goals), the training app (`app/index.html`), the Strava/Hevy pipeline (`scripts/fetch_strava.py`, `scripts/seed_planned_workouts.sql`, `scripts/migrate_strava_to_supabase.sql`), and a local `.env` copy.
 
-**When to use**: Read `workout.md` before creating or modifying `planned_workouts` / `planned_exercises` rows. Respect the constraints (equipment, volume caps, muscle group splits). Never add exercises not in the approved library without asking.
+**When to use**: Read `mihirOS/training/workout.md` before creating or modifying `planned_workouts` / `planned_exercises` rows. Respect the constraints (equipment, volume caps, muscle group splits). Never add exercises not in the approved library without asking.
+
+The dashboard still renders its Training widget from `planned_workouts` + `strava_*` tables live from Supabase, so no data changes are needed here.
 
 ## Supabase
 
 - Project ID: `heyrtjzntnicqsfemcmi`
 - URL: `https://heyrtjzntnicqsfemcmi.supabase.co`
-- Anon key is in `dashboard/index.html` (RLS-protected)
-- RLS enabled with public read/write policy on all tables
+- Anon key is in `dashboard/index.html` and `tracker/index.html` (RLS-protected)
+- RLS: all personal-data tables are `authenticated`-only (see `supabase/migrations/20260802100000_secure_rls.sql`). The anon key can read nothing. Sign in is required; `enable_signup = false` recommended.
 
 ### Tables
 
@@ -85,16 +77,14 @@ Reference file for generating or updating planned workouts in Supabase. Contains
 
 ## Scripts & CI
 
-- `.github/workflows/update-fitness-data.yml` — Daily cron at 6am UTC
-  - Runs `fetch_strava.py` (upserts to Supabase)
-  - Runs `fetch_calendar.py` (writes JSON)
-  - Runs `fetch_rss.py` (writes JSON)
-  - Commits calendar/RSS JSON to repo
+- `.github/workflows/update-fitness-data.yml` — Manual (`workflow_dispatch` only; auto-run removed)
+  - Strava step is stubbed out (script moved to `mihirOS/training/scripts/`; CI wiring not yet settled)
+  - Calendar/RSS fetch and the data-commit steps were removed (calendar now reads the `events` table; `read-feeds.json` is committed as a static asset)
 - Requires GitHub secrets: `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_REFRESH_TOKEN`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`
 
 ## Resume Engine
 
-**Location:** `resume_engine/` at repo root.
+**Location:** `mihirOS/career/applications/resume_engine/` (moved out of this repo).
 
 AI-powered resume and cover letter generator that tailors content to specific job descriptions using GPT-4o-mini.
 
@@ -142,27 +132,26 @@ python two_pass_analysis.py job_descriptions/<job>.txt
 - Dashboard uses `esc()` for XSS protection on all innerHTML interpolations
 - `fetchWithRetry(url, retries)` with exponential backoff for JSON fetches
 - Nutrition date check piggybacks on 30-second Spotify interval (now only checks nutrition)
+- Dashboard and tracker are both auth-gated (Supabase email/password); all Supabase tables require `authenticated` role
 - After editing `dashboard/index.html`, commit and push — GitHub Pages auto-deploys on push to `main`
 
 ## Argus — AI Project Management
 
-**Location:** `~/Library/CloudStorage/OneDrive-.../Obsidian Vault/argus/`
-
-Per-project markdown files. Each file tracks one project: goals, active tasks, decisions, session notes. I (the AI) read/write these files and manage the corresponding Supabase data.
+Retired. Argus per-project markdown files and the Obsidian vault references were removed; live project tracking moved to `mihirOS/now/` and `mihirOS/career/`. The Supabase REST API below still applies for CRM data.
 
 ### NL Workflow
 
 You talk to me in natural language. I:
 
-1. **Read** the relevant Argus project file for context
+1. **Read** the relevant project file in `mihirOS/now/`, `mihirOS/career/`, or `mihirOS/training/` for context
 2. **Act** via Supabase REST API (CRUD on `nodes`, `planned_workouts`, `planned_meals`, etc.)
-3. **Write** session notes back to the Argus markdown file
+3. **Write** session notes back to the relevant markdown file
 4. **Confirm** what changed
 
 ### Supabase REST API
 
 Base URL: `https://heyrtjzntnicqsfemcmi.supabase.co/rest/v1/`
-Headers: `apikey` + `Authorization: Bearer` (anon key from `dashboard/index.html:799`)
+Headers: `apikey` + `Authorization: Bearer`. The anon key can no longer read or write personal tables (RLS = `authenticated` only). Use a user session token (JWT from `supabase.auth`) or the service-role key for scripted access.
 
 | Operation | Method | Endpoint |
 |---|---|---|

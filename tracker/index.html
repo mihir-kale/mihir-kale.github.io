@@ -69,10 +69,63 @@
           return null;
         }
       };
+
+      function showLogin() {
+        document.getElementById("loginForm").style.display = "flex";
+        document.getElementById("authGate").style.display = "none";
+      }
+
+      function showTracker() {
+        document.getElementById("authGate").style.display = "block";
+        document.getElementById("loginForm").style.display = "none";
+        import("./assets/index-CY4Ktyp3.js?v=4");
+      }
+
+      document.getElementById("authForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("authEmail").value;
+        const pass = document.getElementById("authPass").value;
+        const errEl = document.getElementById("authError");
+        errEl.style.display = "none";
+        const { error } = await _db.auth.signInWithPassword({ email, password: pass });
+        if (error) {
+          errEl.textContent = error.message;
+          errEl.style.display = "block";
+        } else {
+          showTracker();
+        }
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await _db.auth.signOut();
+        showLogin();
+      });
+
+      (async () => {
+        const { data: { session } } = await _db.auth.getSession();
+        if (session) {
+          showTracker();
+        } else {
+          showLogin();
+        }
+      })();
     </script>
-    <script type="module" crossorigin src="./assets/index-CY4Ktyp3.js?v=4"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="loginForm" style="display:none; min-height:100vh; align-items:center; justify-content:center; background:#000; color:#fff; font-family:Inter, sans-serif;">
+      <form id="authForm" style="background:#111; border:1px solid #333; border-radius:12px; padding:32px; width:320px;">
+        <h1 style="font-size:18px; margin-bottom:16px;">Sign in to continue</h1>
+        <input id="authEmail" type="email" required placeholder="Email" style="width:100%; box-sizing:border-box; margin-bottom:10px; padding:10px; border-radius:6px; border:1px solid #333; background:#000; color:#fff;">
+        <input id="authPass" type="password" required placeholder="Password" style="width:100%; box-sizing:border-box; margin-bottom:10px; padding:10px; border-radius:6px; border:1px solid #333; background:#000; color:#fff;">
+        <div id="authError" style="display:none; color:#ff6b6b; font-size:13px; margin-bottom:10px;"></div>
+        <button type="submit" style="width:100%; padding:10px; border-radius:6px; border:none; background:#4a7cff; color:#fff; cursor:pointer;">Sign in</button>
+      </form>
+    </div>
+    <div id="authGate" style="display:none;">
+      <div style="position:fixed; top:0; right:0; z-index:9999; padding:10px;">
+        <button id="logoutBtn" style="padding:8px 14px; border-radius:6px; border:1px solid #333; background:#111; color:#fff; cursor:pointer;">Log out</button>
+      </div>
+      <div id="root"></div>
+    </div>
   </body>
 </html>
