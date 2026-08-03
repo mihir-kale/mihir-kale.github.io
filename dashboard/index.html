@@ -986,6 +986,7 @@
         const { data, error } = await db
           .from("events")
           .select("title, description, event_date, start_time, end_time, location, event_type, status")
+          .eq("source", "calendar")
           .neq("status", "cancelled")
           .order("event_date")
           .order("start_time");
