@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Inter", -apple-system, sans-serif;
+      font-weight: 400;
+      background: #000;
+      color: #fff;
+      padding: 24px;
+      max-width: 1400px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #authGate { display: none; }
+    #loginForm {
+      display: none;
+      max-width: 360px;
+      margin: 10vh auto;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 28px;
+    }
+    #loginForm h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .login-sub { font-size: 12px; color: #888; margin-bottom: 20px; }
+    .login-field input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #000;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #4a7cff;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .login-btn:hover { opacity: .85; }
+    .login-error { color: #ff453a; font-size: 12px; margin-top: 10px; }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .page-title { font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .logout-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #111;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .logout-btn:hover { background: #222; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #111;
+      color: #888;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+    }
+    .tab-btn.active { background: #222; color: #fff; border-color: #444; }
+
+    .widget {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .widget-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .widget h2 { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; }
+    .add-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #000;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .add-btn:hover { background: #222; }
+
+    .empty-state { color: #666; font-size: 13px; padding: 24px 0; text-align: center; }
+    .loading { color: #666; font-size: 13px; }
+
+    /* Applications */
+    .app-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #1c1c1c;
+    }
+    .app-item:last-child { border-bottom: none; }
+    .app-company { font-size: 13px; font-weight: 500; color: #fff; }
+    .app-role { font-size: 11px; color: #888; margin-top: 1px; }
+    .app-meta { font-size: 11px; color: #666; margin-top: 3px; }
+    .app-deadline { color: #ff9f0a; }
+    .app-deadline.overdue { color: #ff453a; }
+    .app-right { display: flex; align-items: center; gap: 10px; }
+    .app-status {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    .app-status.needs-action { background: #ff453a28; color: #ff453a; }
+    .app-status.pending { background: #ff9f0a28; color: #ff9f0a; }
+    .app-status.offer { background: #30d15828; color: #30d158; }
+    .app-status.rejected { background: #555; color: #999; }
+    .app-status.complete { background: #0a84ff28; color: #0a84ff; }
+    .app-actions { display: flex; gap: 6px; }
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+    .icon-btn:hover { color: #fff; }
+    .icon-btn.danger:hover { color: #ff453a; }
+
+    /* People / networking */
+    .person-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #1c1c1c;
+    }
+    .person-item:last-child { border-bottom: none; }
+    .person-name { font-size: 13px; font-weight: 500; color: #fff; }
+    .person-detail { font-size: 11px; color: #888; margin-top: 1px; }
+    .person-detail a { color: #0a84ff; text-decoration: none; }
+    .person-detail a:hover { text-decoration: underline; }
+    .person-followup { font-size: 11px; color: #ff9f0a; margin-top: 3px; }
+    .person-status {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    .person-status.cold { background: #555; color: #999; }
+    .person-status.contacted { background: #0a84ff28; color: #0a84ff; }
+    .person-status.replied { background: #bf5af228; color: #bf5af2; }
+    .person-status.meeting-scheduled { background: #ff9f0a28; color: #ff9f0a; }
+    .person-status.met { background: #30d15828; color: #30d158; }
+    .person-status.nurturing { background: #64d2ff28; color: #64d2ff; }
+    .person-status.closed { background: #555; color: #666; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #151515;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      width: 460px;
+      max-width: 92vw;
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+    .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-field { display: flex; flex-direction: column; gap: 4px; }
+    .modal-field.full { grid-column: 1 / -1; }
+    .modal-field label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #888; }
+    .modal-field input, .modal-field select, .modal-field textarea {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #000;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .modal-field textarea { resize: vertical; min-height: 60px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+    .modal-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .modal-btn.primary { background: #4a7cff; color: #fff; }
+    .modal-btn.ghost { background: #222; color: #fff; }
+    .modal-btn.primary:hover { opacity: .85; }
+    .modal-btn.ghost:hover { background: #333; }
+  </style>
+</head>
+<body>
+  <div id="loginForm">
+    <h2>Career</h2>
+    <div class="login-sub">Applications &amp; networking</div>
+    <form id="authForm">
+      <div class="login-field">
+        <input type="email" id="authEmail" placeholder="Email" required />
+      </div>
+      <div class="login-field">
+        <input type="password" id="authPass" placeholder="Password" required />
+      </div>
+      <button type="submit" class="login-btn">Sign in</button>
+      <div class="login-error" id="authError"></div>
+    </form>
+  </div>
+
+  <div id="authGate">
+    <div class="header-row">
+      <div class="page-title">Career</div>
+      <div class="header-actions">
+        <button class="logout-btn" id="logoutBtn">Sign out</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabApplications">Applications</button>
+      <button class="tab-btn" id="tabNetworking">Networking</button>
+    </div>
+
+    <div class="widget" id="applicationsView">
+      <div class="widget-header">
+        <h2>Applications</h2>
+        <button class="add-btn" id="addAppBtn">+ Add</button>
+      </div>
+      <div id="applicationsContainer" class="loading">Loading...</div>
+    </div>
+
+    <div class="widget" id="networkingView" style="display:none">
+      <div class="widget-header">
+        <h2>Networking</h2>
+        <button class="add-btn" id="addPersonBtn">+ Add</button>
+      </div>
+      <div id="peopleContainer" class="loading">Loading...</div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3 id="modalTitle"></h3>
+      <div class="modal-grid" id="modalFields"></div>
+      <div class="modal-actions">
+        <button class="modal-btn ghost" id="modalCancel">Cancel</button>
+        <button class="modal-btn primary" id="modalSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const APP_STATUSES = ["Needs Action", "Pending", "Offer", "Rejected", "Complete"];
+    const PERSON_STATUSES = ["cold", "contacted", "replied", "meeting_scheduled", "met", "nurturing", "closed"];
+    const PRIORITIES = ["low", "medium", "high", "urgent"];
+
+    function esc(str) {
+      if (str == null) return "";
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+    function todayStr() {
+      return new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    }
+    function generateId() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const values = crypto.getRandomValues(new Uint8Array(21));
+      return values.reduce((acc, x) => acc + chars[x & 63], "");
+    }
+
+    let apps = [];
+    let people = [];
+    let editingApp = null;
+    let editingPerson = null;
+
+    /* ── View switching ── */
+    function showTab(tab) {
+      document.getElementById("tabApplications").classList.toggle("active", tab === "apps");
+      document.getElementById("tabNetworking").classList.toggle("active", tab === "network");
+      document.getElementById("applicationsView").style.display = tab === "apps" ? "" : "none";
+      document.getElementById("networkingView").style.display = tab === "network" ? "" : "none";
+    }
+    document.getElementById("tabApplications").addEventListener("click", () => showTab("apps"));
+    document.getElementById("tabNetworking").addEventListener("click", () => showTab("network"));
+
+    /* ── Applications ── */
+    async function loadApplications() {
+      const el = document.getElementById("applicationsContainer");
+      try {
+        const { data, error } = await db.from("applications")
+          .select("id, company, role, location, posting_url, status, priority, applied_date, deadline, person_id, notes")
+          .order("priority", { ascending: false });
+        if (error) throw error;
+        apps = data || [];
+        renderApplications();
+      } catch (e) {
+        el.innerHTML = '<div class="empty-state">Failed to load</div>';
+      }
+    }
+
+    function renderApplications() {
+      const el = document.getElementById("applicationsContainer");
+      const today = todayStr();
+      if (!apps.length) {
+        el.innerHTML = '<div class="empty-state">No applications yet</div>';
+        return;
+      }
+      const order = { urgent: 0, high: 1, medium: 2, low: 3 };
+      const sorted = [...apps].sort((a, b) =>
+        (order[a.priority] ?? 9) - (order[b.priority] ?? 9));
+      el.innerHTML = sorted.map(a => {
+        const statusClass = a.status.toLowerCase().replace(/\s+/g, "-");
+        const dl = a.deadline ? `<span class="app-deadline${a.deadline < today ? " overdue" : ""}">due ${esc(a.deadline)}</span>` : "";
+        const meta = [a.location, dl].filter(Boolean).join(" · ");
+        return `<div class="app-item">
+          <div>
+            <div class="app-company">${esc(a.company)}</div>
+            <div class="app-role">${esc(a.role)}</div>
+            ${meta ? `<div class="app-meta">${meta}</div>` : ""}
+          </div>
+          <div class="app-right">
+            <span class="app-status ${statusClass}" data-app-id="${esc(a.id)}" data-status="${esc(a.status)}">${esc(a.status)}</span>
+            <div class="app-actions">
+              <button class="icon-btn" data-edit-app="${esc(a.id)}" title="Edit">&#9998;</button>
+              <button class="icon-btn danger" data-del-app="${esc(a.id)}" title="Delete">&#10005;</button>
+            </div>
+          </div>
+        </div>`;
+      }).join("");
+
+      el.querySelectorAll(".app-status").forEach(span => {
+        span.addEventListener("click", () => cycleAppStatus(span.dataset.appId, span.dataset.status));
+      });
+      el.querySelectorAll("[data-edit-app]").forEach(b => b.addEventListener("click", () => openAppModal(b.dataset.editApp)));
+      el.querySelectorAll("[data-del-app]").forEach(b => b.addEventListener("click", () => deleteApp(b.dataset.delApp)));
+    }
+
+    async function cycleAppStatus(id, current) {
+      const next = APP_STATUSES[(APP_STATUSES.indexOf(current) + 1) % APP_STATUSES.length];
+      try {
+        await db.from("applications").update({ status: next, updated_at: new Date().toISOString() }).eq("id", id);
+        const a = apps.find(x => x.id === id);
+        if (a) a.status = next;
+        renderApplications();
+      } catch (e) {
+        console.error("Failed to update status:", e);
+      }
+    }
+
+    async function deleteApp(id) {
+      if (!confirm("Delete this application?")) return;
+      try {
+        await db.from("applications").delete().eq("id", id);
+        apps = apps.filter(x => x.id !== id);
+        renderApplications();
+      } catch (e) {
+        console.error("Failed to delete:", e);
+      }
+    }
+
+    function openAppModal(id) {
+      const a = id ? apps.find(x => x.id === id) : null;
+      editingApp = a || null;
+      document.getElementById("modalTitle").textContent = a ? "Edit Application" : "Add Application";
+      document.getElementById("modalFields").innerHTML = `
+        <div class="modal-field full"><label>Company</label><input id="f_company" value="${esc(a?.company || "")}" /></div>
+        <div class="modal-field full"><label>Role</label><input id="f_role" value="${esc(a?.role || "")}" /></div>
+        <div class="modal-field"><label>Location</label><input id="f_location" value="${esc(a?.location || "")}" /></div>
+        <div class="modal-field"><label>Posting URL</label><input id="f_posting_url" value="${esc(a?.posting_url || "")}" /></div>
+        <div class="modal-field"><label>Status</label>
+          <select id="f_status">${APP_STATUSES.map(s => `<option ${s === (a?.status || "Needs Action") ? "selected" : ""}>${s}</option>`).join("")}</select>
+        </div>
+        <div class="modal-field"><label>Priority</label>
+          <select id="f_priority">${PRIORITIES.map(p => `<option value="${p}" ${p === (a?.priority || "medium") ? "selected" : ""}>${p}</option>`).join("")}</select>
+        </div>
+        <div class="modal-field"><label>Applied</label><input type="date" id="f_applied_date" value="${esc(a?.applied_date || "")}" /></div>
+        <div class="modal-field"><label>Deadline</label><input type="date" id="f_deadline" value="${esc(a?.deadline || "")}" /></div>
+        <div class="modal-field full"><label>Notes</label><textarea id="f_notes">${esc(a?.notes || "")}</textarea></div>`;
+      openModal();
+    }
+
+    async function saveApplication() {
+      const payload = {
+        company: document.getElementById("f_company").value.trim(),
+        role: document.getElementById("f_role").value.trim(),
+        location: document.getElementById("f_location").value.trim() || null,
+        posting_url: document.getElementById("f_posting_url").value.trim() || null,
+        status: document.getElementById("f_status").value,
+        priority: document.getElementById("f_priority").value,
+        applied_date: document.getElementById("f_applied_date").value || null,
+        deadline: document.getElementById("f_deadline").value || null,
+        notes: document.getElementById("f_notes").value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+      if (!payload.company) return;
+      try {
+        if (editingApp) {
+          await db.from("applications").update(payload).eq("id", editingApp.id);
+        } else {
+          payload.id = generateId();
+          await db.from("applications").insert(payload);
+        }
+        closeModal();
+        await loadApplications();
+      } catch (e) {
+        alert("Failed to save: " + e.message);
+      }
+    }
+
+    /* ── Networking / people ── */
+    async function loadPeople() {
+      const el = document.getElementById("peopleContainer");
+      try {
+        const { data, error } = await db.from("people")
+          .select("id, name, company, role, email, phone, linkedin_url, notes, status, last_contacted_at, next_follow_up, source")
+          .order("name");
+        if (error) throw error;
+        people = data || [];
+        renderPeople();
+      } catch (e) {
+        el.innerHTML = '<div class="empty-state">Failed to load</div>';
+      }
+    }
+
+    function renderPeople() {
+      const el = document.getElementById("peopleContainer");
+      if (!people.length) {
+        el.innerHTML = '<div class="empty-state">No contacts yet</div>';
+        return;
+      }
+      el.innerHTML = people.map(p => {
+        const statusClass = p.status.toLowerCase().replace(/\s+/g, "-");
+        const detail = [p.company, p.role].filter(Boolean).join(" — ");
+        const linkedin = p.linkedin_url ? ` · <a href="${esc(p.linkedin_url)}" target="_blank" rel="noopener">LinkedIn</a>` : "";
+        const follow = p.next_follow_up ? `<div class="person-followup">follow up ${esc(p.next_follow_up)}</div>` : "";
+        return `<div class="person-item">
+          <div>
+            <div class="person-name">${esc(p.name)}</div>
+            <div class="person-detail">${esc(detail)}${linkedin}</div>
+            ${follow}
+          </div>
+          <div class="app-right">
+            <span class="person-status ${statusClass}" data-person-id="${esc(p.id)}" data-status="${esc(p.status)}">${esc(p.status.replace("_", " "))}</span>
+            <div class="app-actions">
+              <button class="icon-btn" data-edit-person="${esc(p.id)}" title="Edit">&#9998;</button>
+              <button class="icon-btn danger" data-del-person="${esc(p.id)}" title="Delete">&#10005;</button>
+            </div>
+          </div>
+        </div>`;
+      }).join("");
+
+      el.querySelectorAll(".person-status").forEach(span => {
+        span.addEventListener("click", () => cyclePersonStatus(span.dataset.personId, span.dataset.status));
+      });
+      el.querySelectorAll("[data-edit-person]").forEach(b => b.addEventListener("click", () => openPersonModal(b.dataset.editPerson)));
+      el.querySelectorAll("[data-del-person]").forEach(b => b.addEventListener("click", () => deletePerson(b.dataset.delPerson)));
+    }
+
+    async function cyclePersonStatus(id, current) {
+      const next = PERSON_STATUSES[(PERSON_STATUSES.indexOf(current) + 1) % PERSON_STATUSES.length];
+      try {
+        await db.from("people").update({ status: next, updated_at: new Date().toISOString() }).eq("id", id);
+        const p = people.find(x => x.id === id);
+        if (p) p.status = next;
+        renderPeople();
+      } catch (e) {
+        console.error("Failed to update status:", e);
+      }
+    }
+
+    async function deletePerson(id) {
+      if (!confirm("Delete this contact?")) return;
+      try {
+        await db.from("people").delete().eq("id", id);
+        people = people.filter(x => x.id !== id);
+        renderPeople();
+      } catch (e) {
+        console.error("Failed to delete:", e);
+      }
+    }
+
+    function openPersonModal(id) {
+      const p = id ? people.find(x => x.id === id) : null;
+      editingPerson = p || null;
+      document.getElementById("modalTitle").textContent = p ? "Edit Contact" : "Add Contact";
+      document.getElementById("modalFields").innerHTML = `
+        <div class="modal-field full"><label>Name</label><input id="p_name" value="${esc(p?.name || "")}" /></div>
+        <div class="modal-field"><label>Company</label><input id="p_company" value="${esc(p?.company || "")}" /></div>
+        <div class="modal-field"><label>Role</label><input id="p_role" value="${esc(p?.role || "")}" /></div>
+        <div class="modal-field full"><label>Email</label><input id="p_email" value="${esc(p?.email || "")}" /></div>
+        <div class="modal-field"><label>Phone</label><input id="p_phone" value="${esc(p?.phone || "")}" /></div>
+        <div class="modal-field"><label>LinkedIn</label><input id="p_linkedin" value="${esc(p?.linkedin_url || "")}" /></div>
+        <div class="modal-field"><label>Status</label>
+          <select id="p_status">${PERSON_STATUSES.map(s => `<option value="${s}" ${s === (p?.status || "cold") ? "selected" : ""}>${s.replace("_", " ")}</option>`).join("")}</select>
+        </div>
+        <div class="modal-field"><label>Next follow-up</label><input type="date" id="p_next" value="${esc(p?.next_follow_up || "")}" /></div>
+        <div class="modal-field full"><label>Notes</label><textarea id="p_notes">${esc(p?.notes || "")}</textarea></div>`;
+      openModal();
+    }
+
+    async function savePerson() {
+      const payload = {
+        name: document.getElementById("p_name").value.trim(),
+        company: document.getElementById("p_company").value.trim() || null,
+        role: document.getElementById("p_role").value.trim() || null,
+        email: document.getElementById("p_email").value.trim() || null,
+        phone: document.getElementById("p_phone").value.trim() || null,
+        linkedin_url: document.getElementById("p_linkedin").value.trim() || null,
+        status: document.getElementById("p_status").value,
+        next_follow_up: document.getElementById("p_next").value || null,
+        notes: document.getElementById("p_notes").value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+      if (!payload.name) return;
+      try {
+        if (editingPerson) {
+          await db.from("people").update(payload).eq("id", editingPerson.id);
+        } else {
+          payload.id = generateId();
+          await db.from("people").insert(payload);
+        }
+        closeModal();
+        await loadPeople();
+      } catch (e) {
+        alert("Failed to save: " + e.message);
+      }
+    }
+
+    /* ── Modal ── */
+    const modalOverlay = document.getElementById("modalOverlay");
+    function openModal() { modalOverlay.classList.add("open"); }
+    function closeModal() { modalOverlay.classList.remove("open"); }
+    document.getElementById("modalCancel").addEventListener("click", closeModal);
+    modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) closeModal(); });
+    document.getElementById("modalSave").addEventListener("click", () => {
+      if (editingApp !== null || document.getElementById("modalTitle").textContent.includes("Application")) {
+        saveApplication();
+      } else {
+        savePerson();
+      }
+    });
+    document.getElementById("addAppBtn").addEventListener("click", () => openAppModal(null));
+    document.getElementById("addPersonBtn").addEventListener("click", () => openPersonModal(null));
+
+    /* ── Auth ── */
+    function showLogin() {
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("authGate").style.display = "none";
+    }
+    function showApp() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("authGate").style.display = "block";
+      loadApplications();
+      loadPeople();
+    }
+
+    document.getElementById("authForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("authEmail").value;
+      const pass = document.getElementById("authPass").value;
+      const errEl = document.getElementById("authError");
+      errEl.style.display = "none";
+      const { error } = await db.auth.signInWithPassword({ email, password: pass });
+      if (error) {
+        errEl.textContent = error.message;
+        errEl.style.display = "block";
+      } else {
+        showApp();
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await db.auth.signOut();
+      showLogin();
+    });
+
+    (async () => {
+      const { data: { session } } = await db.auth.getSession();
+      if (session) showApp();
+      else showLogin();
+    })();
+  </script>
+</body>
+</html>
