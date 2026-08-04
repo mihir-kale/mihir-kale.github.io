@@ -983,29 +983,13 @@
 
     async function loadCalendar() {
       try {
-        const { data, error } = await db
-          .from("events")
-          .select("title, description, event_date, start_time, end_time, location, event_type, status")
-          .eq("source", "calendar")
-          .neq("status", "cancelled")
-          .order("event_date")
-          .order("start_time");
-        if (error) throw error;
-
-        const events = (data || []).map(ev => ({
-          title: ev.title,
-          location: ev.location || "",
-          allDay: !ev.start_time,
-          start: ev.start_time
-            ? `${ev.event_date}T${ev.start_time}:00`
-            : `${ev.event_date}T00:00:00`,
-          end: ev.end_time
-            ? `${ev.event_date}T${ev.end_time}:00`
-            : ev.start_time
-              ? `${ev.event_date}T${ev.start_time}:00`
-              : `${ev.event_date}T23:59:59`
-        }));
-        renderCalendar(events);
+        const resp = await fetch(
+          SUPABASE_URL + "/functions/v1/calendar-proxy",
+          { headers: { "apikey": SUPABASE_ANON_KEY } }
+        );
+        if (!resp.ok) throw new Error(resp.status);
+        const data = await resp.json();
+        renderCalendar(data.events || []);
       } catch (e) {
         document.getElementById("calendarContainer").innerHTML =
           '<div class="empty-state">No data yet</div>';
