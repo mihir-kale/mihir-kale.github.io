@@ -125,6 +125,23 @@
     .empty-state { color: #666; font-size: 13px; padding: 24px 0; text-align: center; }
     .loading { color: #666; font-size: 13px; }
 
+    .term-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .term-tab-btn {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid #333;
+      background: #000;
+      color: #888;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .term-tab-btn.active { background: #222; color: #fff; border-color: #444; }
+
     /* Applications */
     .app-item {
       display: flex;
@@ -288,6 +305,12 @@
         <h2>Applications</h2>
         <button class="add-btn" id="addAppBtn">+ Add</button>
       </div>
+      <div class="term-tabs">
+        <button class="term-tab-btn active" data-term="">All</button>
+        <button class="term-tab-btn" data-term="Fall 2026">Fall 26</button>
+        <button class="term-tab-btn" data-term="Spring 2026">Spring 26</button>
+        <button class="term-tab-btn" data-term="Summer 2027">Summer 27</button>
+      </div>
       <div id="applicationsContainer" class="loading">Loading...</div>
     </div>
 
@@ -335,6 +358,7 @@
 
     let apps = [];
     let people = [];
+    let activeTerm = "";
     let editingApp = null;
     let editingPerson = null;
 
@@ -348,12 +372,21 @@
     document.getElementById("tabApplications").addEventListener("click", () => showTab("apps"));
     document.getElementById("tabNetworking").addEventListener("click", () => showTab("network"));
 
+    /* ── Term filtering ── */
+    document.querySelectorAll(".term-tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeTerm = btn.dataset.term;
+        document.querySelectorAll(".term-tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+        renderApplications();
+      });
+    });
+
     /* ── Applications ── */
     async function loadApplications() {
       const el = document.getElementById("applicationsContainer");
       try {
         const { data, error } = await db.from("applications")
-          .select("id, company, role, location, posting_url, status, priority, applied_date, deadline, person_id, notes")
+          .select("id, company, role, location, posting_url, status, priority, applied_date, deadline, person_id, notes, term")
           .order("priority", { ascending: false });
         if (error) throw error;
         apps = data || [];
@@ -366,12 +399,13 @@
     function renderApplications() {
       const el = document.getElementById("applicationsContainer");
       const today = todayStr();
-      if (!apps.length) {
-        el.innerHTML = '<div class="empty-state">No applications yet</div>';
+      const filtered = activeTerm ? apps.filter(a => a.term === activeTerm) : apps;
+      if (!filtered.length) {
+        el.innerHTML = '<div class="empty-state">No applications' + (activeTerm ? " for this term" : " yet") + '</div>';
         return;
       }
       const order = { urgent: 0, high: 1, medium: 2, low: 3 };
-      const sorted = [...apps].sort((a, b) =>
+      const sorted = [...filtered].sort((a, b) =>
         (order[a.priority] ?? 9) - (order[b.priority] ?? 9));
       el.innerHTML = sorted.map(a => {
         const statusClass = a.status.toLowerCase().replace(/\s+/g, "-");
@@ -425,6 +459,7 @@
 
     function openAppModal(id) {
       const a = id ? apps.find(x => x.id === id) : null;
+      const preTerm = !a && activeTerm ? activeTerm : (a?.term || "");
       editingApp = a || null;
       document.getElementById("modalTitle").textContent = a ? "Edit Application" : "Add Application";
       document.getElementById("modalFields").innerHTML = `
@@ -437,6 +472,14 @@
         </div>
         <div class="modal-field"><label>Priority</label>
           <select id="f_priority">${PRIORITIES.map(p => `<option value="${p}" ${p === (a?.priority || "medium") ? "selected" : ""}>${p}</option>`).join("")}</select>
+        </div>
+        <div class="modal-field"><label>Term</label>
+          <select id="f_term">
+            <option value="" ${!preTerm ? "selected" : ""}>—</option>
+            <option value="Fall 2026" ${preTerm === "Fall 2026" ? "selected" : ""}>Fall 2026</option>
+            <option value="Spring 2026" ${preTerm === "Spring 2026" ? "selected" : ""}>Spring 2026</option>
+            <option value="Summer 2027" ${preTerm === "Summer 2027" ? "selected" : ""}>Summer 2027</option>
+          </select>
         </div>
         <div class="modal-field"><label>Applied</label><input type="date" id="f_applied_date" value="${esc(a?.applied_date || "")}" /></div>
         <div class="modal-field"><label>Deadline</label><input type="date" id="f_deadline" value="${esc(a?.deadline || "")}" /></div>
@@ -452,6 +495,7 @@
         posting_url: document.getElementById("f_posting_url").value.trim() || null,
         status: document.getElementById("f_status").value,
         priority: document.getElementById("f_priority").value,
+        term: document.getElementById("f_term").value || null,
         applied_date: document.getElementById("f_applied_date").value || null,
         deadline: document.getElementById("f_deadline").value || null,
         notes: document.getElementById("f_notes").value.trim() || null,
