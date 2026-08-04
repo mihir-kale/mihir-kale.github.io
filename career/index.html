@@ -352,9 +352,11 @@
         el.innerHTML = '<div class="empty-state">No applications' + (activeTerm ? " for this term" : " yet") + '</div>';
         return;
       }
-      const order = { urgent: 0, high: 1, medium: 2, low: 3 };
+      const statusOrder = { "Needs Action": 0, "Pending": 1, "Offer": 2, "Rejected": 3, "Complete": 4 };
+      const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
       const sorted = [...filtered].sort((a, b) =>
-        (order[a.priority] ?? 9) - (order[b.priority] ?? 9));
+        (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9)
+        || (priorityOrder[a.priority] ?? 9) - (priorityOrder[b.priority] ?? 9));
       el.innerHTML = sorted.map(a => {
         const statusClass = a.status.toLowerCase().replace(/\s+/g, "-");
         const dl = a.deadline ? `<span class="app-deadline${a.deadline < today ? " overdue" : ""}">due ${esc(a.deadline)}</span>` : "";
