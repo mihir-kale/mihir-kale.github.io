@@ -84,25 +84,6 @@
     }
     .logout-btn:hover { background: #222; }
 
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .tab-btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: #111;
-      color: #888;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      cursor: pointer;
-    }
-    .tab-btn.active { background: #222; color: #fff; border-color: #444; }
-
     .widget {
       background: #111;
       border: 1px solid #222;
@@ -186,39 +167,32 @@
     .icon-btn:hover { color: #fff; }
     .icon-btn.danger:hover { color: #ff453a; }
 
-    /* People / networking */
-    .person-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #1c1c1c;
+    /* Status dropdown */
+    .app-status-wrap { position: relative; }
+    .status-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: #1c1c1c;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 4px;
+      min-width: 140px;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
     }
-    .person-item:last-child { border-bottom: none; }
-    .person-name { font-size: 13px; font-weight: 500; color: #fff; }
-    .person-detail { font-size: 11px; color: #888; margin-top: 1px; }
-    .person-detail a { color: #0a84ff; text-decoration: none; }
-    .person-detail a:hover { text-decoration: underline; }
-    .person-followup { font-size: 11px; color: #ff9f0a; margin-top: 3px; }
-    .person-status {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      padding: 3px 8px;
+    .app-status-wrap.open .status-menu { display: block; }
+    .status-menu-item {
+      padding: 6px 10px;
       border-radius: 6px;
-      white-space: nowrap;
+      font-size: 12px;
       cursor: pointer;
-      user-select: none;
+      color: #bbb;
+      white-space: nowrap;
     }
-    .person-status.cold { background: #555; color: #999; }
-    .person-status.contacted { background: #0a84ff28; color: #0a84ff; }
-    .person-status.replied { background: #bf5af228; color: #bf5af2; }
-    .person-status.meeting-scheduled { background: #ff9f0a28; color: #ff9f0a; }
-    .person-status.met { background: #30d15828; color: #30d158; }
-    .person-status.nurturing { background: #64d2ff28; color: #64d2ff; }
-    .person-status.closed { background: #555; color: #666; }
+    .status-menu-item:hover { background: #2a2a2a; color: #fff; }
+    .status-menu-item.selected { color: #fff; font-weight: 600; }
 
     /* Modal */
     .modal-overlay {
@@ -274,7 +248,7 @@
 <body>
   <div id="loginForm">
     <h2>Career</h2>
-    <div class="login-sub">Applications &amp; networking</div>
+    <div class="login-sub">Application tracker</div>
     <form id="authForm">
       <div class="login-field">
         <input type="email" id="authEmail" placeholder="Email" required />
@@ -295,11 +269,6 @@
       </div>
     </div>
 
-    <div class="tabs">
-      <button class="tab-btn active" id="tabApplications">Applications</button>
-      <button class="tab-btn" id="tabNetworking">Networking</button>
-    </div>
-
     <div class="widget" id="applicationsView">
       <div class="widget-header">
         <h2>Applications</h2>
@@ -312,14 +281,6 @@
         <button class="term-tab-btn" data-term="Summer 2027">Summer 27</button>
       </div>
       <div id="applicationsContainer" class="loading">Loading...</div>
-    </div>
-
-    <div class="widget" id="networkingView" style="display:none">
-      <div class="widget-header">
-        <h2>Networking</h2>
-        <button class="add-btn" id="addPersonBtn">+ Add</button>
-      </div>
-      <div id="peopleContainer" class="loading">Loading...</div>
     </div>
   </div>
 
@@ -340,7 +301,6 @@
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const APP_STATUSES = ["Needs Action", "Pending", "Offer", "Rejected", "Complete"];
-    const PERSON_STATUSES = ["cold", "contacted", "replied", "meeting_scheduled", "met", "nurturing", "closed"];
     const PRIORITIES = ["low", "medium", "high", "urgent"];
 
     function esc(str) {
@@ -357,20 +317,8 @@
     }
 
     let apps = [];
-    let people = [];
     let activeTerm = "";
     let editingApp = null;
-    let editingPerson = null;
-
-    /* ── View switching ── */
-    function showTab(tab) {
-      document.getElementById("tabApplications").classList.toggle("active", tab === "apps");
-      document.getElementById("tabNetworking").classList.toggle("active", tab === "network");
-      document.getElementById("applicationsView").style.display = tab === "apps" ? "" : "none";
-      document.getElementById("networkingView").style.display = tab === "network" ? "" : "none";
-    }
-    document.getElementById("tabApplications").addEventListener("click", () => showTab("apps"));
-    document.getElementById("tabNetworking").addEventListener("click", () => showTab("network"));
 
     /* ── Term filtering ── */
     document.querySelectorAll(".term-tab-btn").forEach(btn => {
@@ -418,7 +366,12 @@
             ${meta ? `<div class="app-meta">${meta}</div>` : ""}
           </div>
           <div class="app-right">
-            <span class="app-status ${statusClass}" data-app-id="${esc(a.id)}" data-status="${esc(a.status)}">${esc(a.status)}</span>
+            <div class="app-status-wrap">
+              <span class="app-status ${statusClass}" data-app-id="${esc(a.id)}">${esc(a.status)}</span>
+              <div class="status-menu">
+                ${APP_STATUSES.map(s => `<div class="status-menu-item${s === a.status ? " selected" : ""}" data-set-status="${esc(a.id)}" data-status="${esc(s)}">${s}</div>`).join("")}
+              </div>
+            </div>
             <div class="app-actions">
               <button class="icon-btn" data-edit-app="${esc(a.id)}" title="Edit">&#9998;</button>
               <button class="icon-btn danger" data-del-app="${esc(a.id)}" title="Delete">&#10005;</button>
@@ -428,18 +381,32 @@
       }).join("");
 
       el.querySelectorAll(".app-status").forEach(span => {
-        span.addEventListener("click", () => cycleAppStatus(span.dataset.appId, span.dataset.status));
+        span.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeStatusMenus();
+          span.closest(".app-status-wrap").classList.add("open");
+        });
+      });
+      el.querySelectorAll(".status-menu-item").forEach(item => {
+        item.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setAppStatus(item.dataset.setStatus, item.dataset.status);
+        });
       });
       el.querySelectorAll("[data-edit-app]").forEach(b => b.addEventListener("click", () => openAppModal(b.dataset.editApp)));
       el.querySelectorAll("[data-del-app]").forEach(b => b.addEventListener("click", () => deleteApp(b.dataset.delApp)));
     }
 
-    async function cycleAppStatus(id, current) {
-      const next = APP_STATUSES[(APP_STATUSES.indexOf(current) + 1) % APP_STATUSES.length];
+    function closeStatusMenus() {
+      document.querySelectorAll(".app-status-wrap.open").forEach(w => w.classList.remove("open"));
+    }
+    document.addEventListener("click", closeStatusMenus);
+
+    async function setAppStatus(id, status) {
       try {
-        await db.from("applications").update({ status: next, updated_at: new Date().toISOString() }).eq("id", id);
+        await db.from("applications").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
         const a = apps.find(x => x.id === id);
-        if (a) a.status = next;
+        if (a) a.status = status;
         renderApplications();
       } catch (e) {
         console.error("Failed to update status:", e);
@@ -516,140 +483,14 @@
       }
     }
 
-    /* ── Networking / people ── */
-    async function loadPeople() {
-      const el = document.getElementById("peopleContainer");
-      try {
-        const { data, error } = await db.from("people")
-          .select("id, name, company, role, email, phone, linkedin_url, notes, status, last_contacted_at, next_follow_up, source")
-          .order("name");
-        if (error) throw error;
-        people = data || [];
-        renderPeople();
-      } catch (e) {
-        el.innerHTML = '<div class="empty-state">Failed to load</div>';
-      }
-    }
-
-    function renderPeople() {
-      const el = document.getElementById("peopleContainer");
-      if (!people.length) {
-        el.innerHTML = '<div class="empty-state">No contacts yet</div>';
-        return;
-      }
-      el.innerHTML = people.map(p => {
-        const statusClass = p.status.toLowerCase().replace(/\s+/g, "-");
-        const detail = [p.company, p.role].filter(Boolean).join(" — ");
-        const linkedin = p.linkedin_url ? ` · <a href="${esc(p.linkedin_url)}" target="_blank" rel="noopener">LinkedIn</a>` : "";
-        const follow = p.next_follow_up ? `<div class="person-followup">follow up ${esc(p.next_follow_up)}</div>` : "";
-        return `<div class="person-item">
-          <div>
-            <div class="person-name">${esc(p.name)}</div>
-            <div class="person-detail">${esc(detail)}${linkedin}</div>
-            ${follow}
-          </div>
-          <div class="app-right">
-            <span class="person-status ${statusClass}" data-person-id="${esc(p.id)}" data-status="${esc(p.status)}">${esc(p.status.replace("_", " "))}</span>
-            <div class="app-actions">
-              <button class="icon-btn" data-edit-person="${esc(p.id)}" title="Edit">&#9998;</button>
-              <button class="icon-btn danger" data-del-person="${esc(p.id)}" title="Delete">&#10005;</button>
-            </div>
-          </div>
-        </div>`;
-      }).join("");
-
-      el.querySelectorAll(".person-status").forEach(span => {
-        span.addEventListener("click", () => cyclePersonStatus(span.dataset.personId, span.dataset.status));
-      });
-      el.querySelectorAll("[data-edit-person]").forEach(b => b.addEventListener("click", () => openPersonModal(b.dataset.editPerson)));
-      el.querySelectorAll("[data-del-person]").forEach(b => b.addEventListener("click", () => deletePerson(b.dataset.delPerson)));
-    }
-
-    async function cyclePersonStatus(id, current) {
-      const next = PERSON_STATUSES[(PERSON_STATUSES.indexOf(current) + 1) % PERSON_STATUSES.length];
-      try {
-        await db.from("people").update({ status: next, updated_at: new Date().toISOString() }).eq("id", id);
-        const p = people.find(x => x.id === id);
-        if (p) p.status = next;
-        renderPeople();
-      } catch (e) {
-        console.error("Failed to update status:", e);
-      }
-    }
-
-    async function deletePerson(id) {
-      if (!confirm("Delete this contact?")) return;
-      try {
-        await db.from("people").delete().eq("id", id);
-        people = people.filter(x => x.id !== id);
-        renderPeople();
-      } catch (e) {
-        console.error("Failed to delete:", e);
-      }
-    }
-
-    function openPersonModal(id) {
-      const p = id ? people.find(x => x.id === id) : null;
-      editingPerson = p || null;
-      document.getElementById("modalTitle").textContent = p ? "Edit Contact" : "Add Contact";
-      document.getElementById("modalFields").innerHTML = `
-        <div class="modal-field full"><label>Name</label><input id="p_name" value="${esc(p?.name || "")}" /></div>
-        <div class="modal-field"><label>Company</label><input id="p_company" value="${esc(p?.company || "")}" /></div>
-        <div class="modal-field"><label>Role</label><input id="p_role" value="${esc(p?.role || "")}" /></div>
-        <div class="modal-field full"><label>Email</label><input id="p_email" value="${esc(p?.email || "")}" /></div>
-        <div class="modal-field"><label>Phone</label><input id="p_phone" value="${esc(p?.phone || "")}" /></div>
-        <div class="modal-field"><label>LinkedIn</label><input id="p_linkedin" value="${esc(p?.linkedin_url || "")}" /></div>
-        <div class="modal-field"><label>Status</label>
-          <select id="p_status">${PERSON_STATUSES.map(s => `<option value="${s}" ${s === (p?.status || "cold") ? "selected" : ""}>${s.replace("_", " ")}</option>`).join("")}</select>
-        </div>
-        <div class="modal-field"><label>Next follow-up</label><input type="date" id="p_next" value="${esc(p?.next_follow_up || "")}" /></div>
-        <div class="modal-field full"><label>Notes</label><textarea id="p_notes">${esc(p?.notes || "")}</textarea></div>`;
-      openModal();
-    }
-
-    async function savePerson() {
-      const payload = {
-        name: document.getElementById("p_name").value.trim(),
-        company: document.getElementById("p_company").value.trim() || null,
-        role: document.getElementById("p_role").value.trim() || null,
-        email: document.getElementById("p_email").value.trim() || null,
-        phone: document.getElementById("p_phone").value.trim() || null,
-        linkedin_url: document.getElementById("p_linkedin").value.trim() || null,
-        status: document.getElementById("p_status").value,
-        next_follow_up: document.getElementById("p_next").value || null,
-        notes: document.getElementById("p_notes").value.trim() || null,
-        updated_at: new Date().toISOString()
-      };
-      if (!payload.name) return;
-      try {
-        if (editingPerson) {
-          await db.from("people").update(payload).eq("id", editingPerson.id);
-        } else {
-          payload.id = generateId();
-          await db.from("people").insert(payload);
-        }
-        closeModal();
-        await loadPeople();
-      } catch (e) {
-        alert("Failed to save: " + e.message);
-      }
-    }
-
     /* ── Modal ── */
     const modalOverlay = document.getElementById("modalOverlay");
     function openModal() { modalOverlay.classList.add("open"); }
     function closeModal() { modalOverlay.classList.remove("open"); }
     document.getElementById("modalCancel").addEventListener("click", closeModal);
     modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) closeModal(); });
-    document.getElementById("modalSave").addEventListener("click", () => {
-      if (editingApp !== null || document.getElementById("modalTitle").textContent.includes("Application")) {
-        saveApplication();
-      } else {
-        savePerson();
-      }
-    });
+    document.getElementById("modalSave").addEventListener("click", saveApplication);
     document.getElementById("addAppBtn").addEventListener("click", () => openAppModal(null));
-    document.getElementById("addPersonBtn").addEventListener("click", () => openPersonModal(null));
 
     /* ── Auth ── */
     function showLogin() {
@@ -660,7 +501,6 @@
       document.getElementById("loginForm").style.display = "none";
       document.getElementById("authGate").style.display = "block";
       loadApplications();
-      loadPeople();
     }
 
     document.getElementById("authForm").addEventListener("submit", async (e) => {
