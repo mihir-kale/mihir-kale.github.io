@@ -133,8 +133,8 @@
       border-bottom: 1px solid #1c1c1c;
     }
     .app-item:last-child { border-bottom: none; }
-    .app-company { font-size: 13px; font-weight: 500; color: #fff; }
-    .app-role { font-size: 11px; color: #888; margin-top: 1px; }
+    .app-title { font-size: 13px; font-weight: 500; color: #fff; }
+    .app-sub { font-size: 11px; color: #888; margin-top: 1px; }
     .app-meta { font-size: 11px; color: #666; margin-top: 3px; }
     .app-deadline { color: #ff9f0a; }
     .app-deadline.overdue { color: #ff453a; }
@@ -150,6 +150,7 @@
       cursor: pointer;
       user-select: none;
     }
+    .app-status.waiting { background: #64d2ff28; color: #64d2ff; }
     .app-status.needs-action { background: #ff453a28; color: #ff453a; }
     .app-status.pending { background: #ff9f0a28; color: #ff9f0a; }
     .app-status.offer { background: #30d15828; color: #30d158; }
@@ -299,7 +300,7 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const APP_STATUSES = ["Needs Action", "Pending", "Offer", "Rejected"];
+    const APP_STATUSES = ["Waiting", "Needs Action", "Pending", "Offer", "Rejected"];
     const PRIORITIES = ["low", "medium", "high", "urgent"];
 
     function esc(str) {
@@ -351,7 +352,7 @@
         el.innerHTML = '<div class="empty-state">No applications' + (activeTerm ? " for this term" : " yet") + '</div>';
         return;
       }
-      const statusOrder = { "Needs Action": 0, "Pending": 1, "Offer": 2, "Rejected": 3 };
+      const statusOrder = { "Waiting": 0, "Needs Action": 1, "Pending": 2, "Offer": 3, "Rejected": 4 };
       const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
       const sorted = [...filtered].sort((a, b) =>
         (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9)
@@ -362,8 +363,8 @@
         const meta = [a.location, dl].filter(Boolean).join(" · ");
         return `<div class="app-item">
           <div>
-            <div class="app-company">${esc(a.company)}</div>
-            <div class="app-role">${esc(a.role)}</div>
+            <div class="app-title">${esc(a.role)}</div>
+            <div class="app-sub">${esc(a.company)}</div>
             ${meta ? `<div class="app-meta">${meta}</div>` : ""}
           </div>
           <div class="app-right">
