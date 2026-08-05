@@ -154,7 +154,6 @@
     .app-status.pending { background: #ff9f0a28; color: #ff9f0a; }
     .app-status.offer { background: #30d15828; color: #30d158; }
     .app-status.rejected { background: #555; color: #999; }
-    .app-status.complete { background: #0a84ff28; color: #0a84ff; }
     .app-actions { display: flex; gap: 6px; }
     .icon-btn {
       background: none;
@@ -300,7 +299,7 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const APP_STATUSES = ["Needs Action", "Pending", "Offer", "Rejected", "Complete"];
+    const APP_STATUSES = ["Needs Action", "Pending", "Offer", "Rejected"];
     const PRIORITIES = ["low", "medium", "high", "urgent"];
 
     function esc(str) {
@@ -352,7 +351,7 @@
         el.innerHTML = '<div class="empty-state">No applications' + (activeTerm ? " for this term" : " yet") + '</div>';
         return;
       }
-      const statusOrder = { "Needs Action": 0, "Pending": 1, "Offer": 2, "Rejected": 3, "Complete": 4 };
+      const statusOrder = { "Needs Action": 0, "Pending": 1, "Offer": 2, "Rejected": 3 };
       const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
       const sorted = [...filtered].sort((a, b) =>
         (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9)
