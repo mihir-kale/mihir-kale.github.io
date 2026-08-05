@@ -118,11 +118,43 @@
 
     .term-tabs {
       display: flex;
-      gap: 8px;
-      padding: 10px 16px;
-      border-bottom: 1px solid #e2e2e2;
+      gap: 0;
+      padding: 8px 16px 0;
+      background: #f1f3f4;
     }
-    .term-tab-btn, .cat-tab-btn {
+    .term-tab-btn {
+      position: relative;
+      padding: 7px 20px 8px;
+      margin-right: -1px;
+      border-radius: 6px 6px 0 0;
+      border: 1px solid #c8c8c8;
+      border-bottom: none;
+      background: #e2e5ea;
+      color: #5f6368;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .term-tab-btn:hover { background: #d4d9e0; }
+    .term-tab-btn.active {
+      background: #fff;
+      color: #202124;
+      font-weight: 700;
+      padding-top: 8px;
+      z-index: 2;
+    }
+    .term-tab-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: #fff;
+    }
+
+    .cat-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .cat-tab-btn {
       padding: 5px 12px;
       border-radius: 999px;
       border: 1px solid #d9d9d9;
@@ -132,10 +164,8 @@
       font-weight: 600;
       cursor: pointer;
     }
-    .term-tab-btn:hover, .cat-tab-btn:hover { background: #f1f3f4; }
-    .term-tab-btn.active, .cat-tab-btn.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
-
-    .cat-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .cat-tab-btn:hover { background: #f1f3f4; }
+    .cat-tab-btn.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
 
     /* Needs-action squares */
     #needsPanel .widget-header { background: #d93025; border-bottom: none; }
