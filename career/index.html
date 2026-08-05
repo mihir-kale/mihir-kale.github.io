@@ -135,6 +135,24 @@
     .term-tab-btn:hover { background: #f1f3f4; }
     .term-tab-btn.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
 
+    /* Needs-action squares */
+    .needs-container { display: flex; gap: 12px; flex-wrap: wrap; padding: 16px; }
+    .need-square {
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 8px;
+      padding: 14px 20px;
+      min-width: 140px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .need-square:hover { box-shadow: 0 2px 10px rgba(0,0,0,.12); }
+    .need-days { font-size: 28px; font-weight: 600; color: #1a73e8; }
+    .need-square.overdue .need-days { color: #d93025; }
+    .need-square.soon .need-days { color: #e37400; }
+    .need-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: #5f6368; margin-top: 2px; }
+    .need-company { font-size: 12px; font-weight: 500; color: #202124; margin-top: 8px; }
+
     /* Spreadsheet table */
     .ss-header {
       display: grid;
@@ -304,7 +322,14 @@
       </div>
     </div>
 
-    <div class="widget" id="applicationsView">
+    <div class="widget" id="needsPanel" style="display:none">
+      <div class="widget-header">
+        <h2>Needs Action</h2>
+      </div>
+      <div id="needsContainer" class="needs-container"></div>
+    </div>
+
+    <div class="widget" id="applicationsView" style="margin-top:16px">
       <div class="widget-header">
         <h2>Applications</h2>
         <button class="add-btn" id="addAppBtn">+ Add</button>
@@ -379,9 +404,37 @@
       }
     }
 
+    function renderNeedsPanel() {
+      const panel = document.getElementById("needsPanel");
+      const needs = apps.filter(a => a.status === "Needs Action");
+      if (!needs.length) { panel.style.display = "none"; return; }
+      panel.style.display = "";
+      const container = document.getElementById("needsContainer");
+      container.innerHTML = needs.map(a => {
+        let days, cls = "", label = "DAYS LEFT";
+        if (a.deadline) {
+          const dl = new Date(a.deadline + "T00:00:00");
+          days = Math.ceil((dl - Date.now()) / 86400000);
+          if (days < 0) { cls = " overdue"; label = "DAYS OVERDUE"; days = Math.abs(days); }
+          else if (days <= 7) { cls = " soon"; }
+        } else {
+          days = "—"; label = "NO DEADLINE";
+        }
+        return `<div class="need-square${cls}" data-edit-app="${esc(a.id)}" title="Edit">
+          <div class="need-days">${days}</div>
+          <div class="need-label">${label}</div>
+          <div class="need-company">${esc(a.company)}</div>
+        </div>`;
+      }).join("");
+      container.querySelectorAll(".need-square").forEach(sq => {
+        sq.addEventListener("click", () => openAppModal(sq.dataset.editApp));
+      });
+    }
+
     function renderApplications() {
       const el = document.getElementById("applicationsContainer");
       const today = todayStr();
+      renderNeedsPanel();
       const filtered = activeTerm ? apps.filter(a => a.term === activeTerm) : apps;
       if (!filtered.length) {
         el.innerHTML = '<div class="empty-state">No applications' + (activeTerm ? " for this term" : " yet") + '</div>';
