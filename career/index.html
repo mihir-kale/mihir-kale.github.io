@@ -16,8 +16,8 @@
     body {
       font-family: "Inter", -apple-system, sans-serif;
       font-weight: 400;
-      background: #000;
-      color: #fff;
+      background: #f1f3f4;
+      color: #202124;
       padding: 24px;
       max-width: 1400px;
       -webkit-font-smoothing: antialiased;
@@ -28,117 +28,149 @@
       display: none;
       max-width: 360px;
       margin: 10vh auto;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 10px;
       padding: 28px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
     }
     #loginForm h2 {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 4px;
+      color: #202124;
     }
-    .login-sub { font-size: 12px; color: #888; margin-bottom: 20px; }
+    .login-sub { font-size: 12px; color: #5f6368; margin-bottom: 20px; }
     .login-field input {
       width: 100%;
       box-sizing: border-box;
       padding: 10px 12px;
       margin-bottom: 10px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: #000;
-      color: #fff;
+      border-radius: 6px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      color: #202124;
       font-size: 13px;
       font-family: inherit;
     }
+    .login-field input:focus { outline: 2px solid #1a73e8; border-color: transparent; }
     .login-btn {
       width: 100%;
       padding: 10px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: none;
-      background: #4a7cff;
+      background: #1a73e8;
       color: #fff;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
     }
-    .login-btn:hover { opacity: .85; }
-    .login-error { color: #ff453a; font-size: 12px; margin-top: 10px; }
+    .login-btn:hover { background: #1765cc; }
+    .login-error { color: #d93025; font-size: 12px; margin-top: 10px; }
 
     .header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
-    .page-title { font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+    .page-title { font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #5f6368; }
     .header-actions { display: flex; gap: 10px; align-items: center; }
     .logout-btn {
       padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: #111;
-      color: #fff;
+      border-radius: 6px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      color: #3c4043;
       font-size: 12px;
       cursor: pointer;
     }
-    .logout-btn:hover { background: #222; }
+    .logout-btn:hover { background: #f1f3f4; }
 
     .widget {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
-      padding: 20px;
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 10px;
+      overflow: hidden;
     }
-    .widget-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-    .widget h2 { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; }
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e2e2e2;
+    }
+    .widget h2 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #5f6368; }
     .add-btn {
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: #000;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      background: #1a73e8;
       color: #fff;
       font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
     }
-    .add-btn:hover { background: #222; }
+    .add-btn:hover { background: #1765cc; }
 
-    .empty-state { color: #666; font-size: 13px; padding: 24px 0; text-align: center; }
-    .loading { color: #666; font-size: 13px; }
+    .empty-state { color: #5f6368; font-size: 13px; padding: 32px 16px; text-align: center; }
+    .loading { color: #5f6368; font-size: 13px; padding: 24px 16px; }
 
     .term-tabs {
       display: flex;
       gap: 8px;
-      margin-bottom: 14px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #e2e2e2;
     }
     .term-tab-btn {
       padding: 5px 12px;
       border-radius: 999px;
-      border: 1px solid #333;
-      background: #000;
-      color: #888;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      color: #5f6368;
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
     }
-    .term-tab-btn.active { background: #222; color: #fff; border-color: #444; }
+    .term-tab-btn:hover { background: #f1f3f4; }
+    .term-tab-btn.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
 
-    /* Applications */
+    /* Spreadsheet table */
+    .ss-header {
+      display: grid;
+      grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.1fr) 130px 150px 80px;
+      background: #f1f3f4;
+      border-bottom: 1px solid #d9d9d9;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #5f6368;
+    }
+    .ss-header > div {
+      padding: 8px 12px;
+      border-right: 1px solid #e2e2e2;
+    }
+    .ss-header > div:last-child { border-right: none; }
     .app-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.1fr) 130px 150px 80px;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #1c1c1c;
+      border-bottom: 1px solid #e2e2e2;
     }
     .app-item:last-child { border-bottom: none; }
-    .app-title { font-size: 13px; font-weight: 500; color: #fff; }
-    .app-sub { font-size: 11px; color: #888; margin-top: 1px; }
-    .app-meta { font-size: 11px; color: #666; margin-top: 3px; }
-    .app-deadline { color: #ff9f0a; }
-    .app-deadline.overdue { color: #ff453a; }
-    .app-right { display: flex; align-items: center; gap: 10px; }
+    .app-item > * {
+      padding: 10px 12px;
+      border-right: 1px solid #f0f0f0;
+      min-width: 0;
+    }
+    .app-item > *:last-child { border-right: none; }
+    .app-title { font-size: 13px; font-weight: 500; color: #202124; }
+    .app-sub { font-size: 11px; color: #5f6368; margin-top: 2px; }
+    .app-loc { font-size: 11px; color: #9aa0a6; margin-top: 2px; }
+    .app-deadline { font-size: 12px; color: #b45309; font-weight: 500; }
+    .app-deadline.overdue { color: #d93025; font-weight: 600; }
+    .app-none { font-size: 12px; color: #c0c4c9; }
     .app-status {
       font-size: 10px;
       font-weight: 600;
@@ -150,22 +182,22 @@
       cursor: pointer;
       user-select: none;
     }
-    .app-status.waiting { background: #64d2ff28; color: #64d2ff; }
-    .app-status.needs-action { background: #ff453a28; color: #ff453a; }
-    .app-status.pending { background: #ff9f0a28; color: #ff9f0a; }
-    .app-status.offer { background: #30d15828; color: #30d158; }
-    .app-status.rejected { background: #555; color: #999; }
-    .app-actions { display: flex; gap: 6px; }
+    .app-status.waiting { background: #e0f2fe; color: #0369a1; }
+    .app-status.needs-action { background: #fee2e2; color: #b91c1c; }
+    .app-status.pending { background: #fef3c7; color: #b45309; }
+    .app-status.offer { background: #dcfce7; color: #15803d; }
+    .app-status.rejected { background: #e5e5e5; color: #737373; }
+    .app-actions { display: flex; gap: 6px; justify-content: center; }
     .icon-btn {
       background: none;
       border: none;
-      color: #666;
+      color: #5f6368;
       font-size: 13px;
       cursor: pointer;
       padding: 2px 4px;
     }
-    .icon-btn:hover { color: #fff; }
-    .icon-btn.danger:hover { color: #ff453a; }
+    .icon-btn:hover { color: #202124; }
+    .icon-btn.danger:hover { color: #d93025; }
 
     /* Status dropdown */
     .app-status-wrap { position: relative; }
@@ -174,13 +206,13 @@
       position: absolute;
       top: calc(100% + 6px);
       right: 0;
-      background: #1c1c1c;
-      border: 1px solid #333;
+      background: #fff;
+      border: 1px solid #d9d9d9;
       border-radius: 8px;
       padding: 4px;
       min-width: 140px;
       z-index: 50;
-      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
     }
     .app-status-wrap.open .status-menu { display: block; }
     .status-menu-item {
@@ -188,61 +220,65 @@
       border-radius: 6px;
       font-size: 12px;
       cursor: pointer;
-      color: #bbb;
+      color: #3c4043;
       white-space: nowrap;
     }
-    .status-menu-item:hover { background: #2a2a2a; color: #fff; }
-    .status-menu-item.selected { color: #fff; font-weight: 600; }
+    .status-menu-item:hover { background: #f1f3f4; color: #202124; }
+    .status-menu-item.selected { color: #1a73e8; font-weight: 600; }
 
     /* Modal */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.4);
       align-items: center;
       justify-content: center;
       z-index: 1000;
     }
     .modal-overlay.open { display: flex; }
     .modal {
-      background: #151515;
-      border: 1px solid #333;
-      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 10px;
       padding: 24px;
       width: 460px;
       max-width: 92vw;
       max-height: 88vh;
       overflow-y: auto;
     }
-    .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #202124; }
     .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .modal-field { display: flex; flex-direction: column; gap: 4px; }
     .modal-field.full { grid-column: 1 / -1; }
-    .modal-field label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #888; }
+    .modal-field label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #5f6368; }
     .modal-field input, .modal-field select, .modal-field textarea {
       padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: #000;
-      color: #fff;
+      border-radius: 6px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      color: #202124;
       font-size: 13px;
       font-family: inherit;
     }
-    .modal-field textarea { resize: vertical; min-height: 60px; }
+    .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus {
+      outline: 2px solid #1a73e8;
+      border-color: transparent;
+    }
+    .modal-field textarea { resize: vertical; min-height: 120px; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
     .modal-btn {
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: none;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
     }
-    .modal-btn.primary { background: #4a7cff; color: #fff; }
-    .modal-btn.ghost { background: #222; color: #fff; }
-    .modal-btn.primary:hover { opacity: .85; }
-    .modal-btn.ghost:hover { background: #333; }
+    .modal-btn.primary { background: #1a73e8; color: #fff; }
+    .modal-btn.ghost { background: #f1f3f4; color: #202124; }
+    .modal-btn.primary:hover { background: #1765cc; }
+    .modal-btn.ghost:hover { background: #e2e4e6; }
   </style>
 </head>
 <body>
@@ -357,30 +393,40 @@
       const sorted = [...filtered].sort((a, b) =>
         (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9)
         || (priorityOrder[a.priority] ?? 9) - (priorityOrder[b.priority] ?? 9));
-      el.innerHTML = sorted.map(a => {
+      el.innerHTML = `
+        <div class="ss-header">
+          <div>Role</div>
+          <div>Company</div>
+          <div>Deadline</div>
+          <div>Status</div>
+          <div></div>
+        </div>
+        ${sorted.map(a => {
         const statusClass = a.status.toLowerCase().replace(/\s+/g, "-");
-        const dl = a.deadline ? `<span class="app-deadline${a.deadline < today ? " overdue" : ""}">due ${esc(a.deadline)}</span>` : "";
-        const meta = [a.location, dl].filter(Boolean).join(" · ");
+        const dl = a.deadline
+          ? `<span class="app-deadline${a.deadline < today ? " overdue" : ""}">${esc(a.deadline)}</span>`
+          : `<span class="app-none">—</span>`;
         return `<div class="app-item">
           <div>
             <div class="app-title">${esc(a.role)}</div>
             <div class="app-sub">${esc(a.company)}</div>
-            ${meta ? `<div class="app-meta">${meta}</div>` : ""}
           </div>
-          <div class="app-right">
-            <div class="app-status-wrap">
-              <span class="app-status ${statusClass}" data-app-id="${esc(a.id)}">${esc(a.status)}</span>
-              <div class="status-menu">
-                ${APP_STATUSES.map(s => `<div class="status-menu-item${s === a.status ? " selected" : ""}" data-set-status="${esc(a.id)}" data-status="${esc(s)}">${s}</div>`).join("")}
-              </div>
+          <div>
+            <div class="app-loc">${esc(a.location || "")}</div>
+          </div>
+          <div>${dl}</div>
+          <div class="app-status-wrap">
+            <span class="app-status ${statusClass}" data-app-id="${esc(a.id)}">${esc(a.status)}</span>
+            <div class="status-menu">
+              ${APP_STATUSES.map(s => `<div class="status-menu-item${s === a.status ? " selected" : ""}" data-set-status="${esc(a.id)}" data-status="${esc(s)}">${s}</div>`).join("")}
             </div>
-            <div class="app-actions">
-              <button class="icon-btn" data-edit-app="${esc(a.id)}" title="Edit">&#9998;</button>
-              <button class="icon-btn danger" data-del-app="${esc(a.id)}" title="Delete">&#10005;</button>
-            </div>
+          </div>
+          <div class="app-actions">
+            <button class="icon-btn" data-edit-app="${esc(a.id)}" title="Edit">&#9998;</button>
+            <button class="icon-btn danger" data-del-app="${esc(a.id)}" title="Delete">&#10005;</button>
           </div>
         </div>`;
-      }).join("");
+      }).join("")}`;
 
       el.querySelectorAll(".app-status").forEach(span => {
         span.addEventListener("click", (e) => {
