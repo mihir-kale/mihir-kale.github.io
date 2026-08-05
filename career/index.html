@@ -369,7 +369,7 @@
       const el = document.getElementById("applicationsContainer");
       try {
         const { data, error } = await db.from("applications")
-          .select("id, company, role, location, posting_url, status, priority, applied_date, deadline, person_id, notes, jd_text, term")
+          .select("id, company, role, posting_url, status, priority, applied_date, deadline, person_id, notes, jd_text, term")
           .order("priority", { ascending: false });
         if (error) throw error;
         apps = data || [];
@@ -476,7 +476,6 @@
       document.getElementById("modalFields").innerHTML = `
         <div class="modal-field full"><label>Company</label><input id="f_company" value="${esc(a?.company || "")}" /></div>
         <div class="modal-field full"><label>Role</label><input id="f_role" value="${esc(a?.role || "")}" /></div>
-        <div class="modal-field"><label>Location</label><input id="f_location" value="${esc(a?.location || "")}" /></div>
         <div class="modal-field"><label>Posting URL</label><input id="f_posting_url" value="${esc(a?.posting_url || "")}" /></div>
         <div class="modal-field"><label>Status</label>
           <select id="f_status">${APP_STATUSES.map(s => `<option ${s === (a?.status || "Needs Action") ? "selected" : ""}>${s}</option>`).join("")}</select>
@@ -502,7 +501,6 @@
       const payload = {
         company: document.getElementById("f_company").value.trim(),
         role: document.getElementById("f_role").value.trim(),
-        location: document.getElementById("f_location").value.trim() || null,
         posting_url: document.getElementById("f_posting_url").value.trim() || null,
         status: document.getElementById("f_status").value,
         priority: document.getElementById("f_priority").value,
