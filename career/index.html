@@ -419,6 +419,12 @@
       if (str == null) return "";
       return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
+    function formatDate(d) {
+      if (!d) return "";
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const parts = d.split("-");
+      return `${months[parseInt(parts[1], 10) - 1]} ${parseInt(parts[2], 10)}`;
+    }
     function todayStr() {
       return new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
     }
@@ -542,7 +548,7 @@
         ${sorted.map(a => {
         const statusClass = a.status.toLowerCase().replace(/\s+/g, "-");
         const dl = a.deadline
-          ? `<span class="app-deadline${a.deadline < today ? " overdue" : ""}">${esc(a.deadline)}</span>`
+          ? `<span class="app-deadline${a.deadline < today ? " overdue" : ""}">${esc(formatDate(a.deadline))}</span>`
           : `<span class="app-none">—</span>`;
         return `<div class="app-item">
           <div>
