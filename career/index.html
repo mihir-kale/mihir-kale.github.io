@@ -166,8 +166,7 @@
     }
     .app-item > *:last-child { border-right: none; }
     .app-title { font-size: 13px; font-weight: 500; color: #202124; }
-    .app-sub { font-size: 11px; color: #5f6368; margin-top: 2px; }
-    .app-loc { font-size: 11px; color: #9aa0a6; margin-top: 2px; }
+    .app-sub { font-size: 11px; color: #5f6368; }
     .app-deadline { font-size: 12px; color: #b45309; font-weight: 500; }
     .app-deadline.overdue { color: #d93025; font-weight: 600; }
     .app-none { font-size: 12px; color: #c0c4c9; }
@@ -409,11 +408,8 @@
         return `<div class="app-item">
           <div>
             <div class="app-title">${esc(a.role)}</div>
-            <div class="app-sub">${esc(a.company)}</div>
           </div>
-          <div>
-            <div class="app-loc">${esc(a.location || "")}</div>
-          </div>
+          <div class="app-sub">${esc(a.company)}</div>
           <div>${dl}</div>
           <div class="app-status-wrap">
             <span class="app-status ${statusClass}" data-app-id="${esc(a.id)}">${esc(a.status)}</span>
