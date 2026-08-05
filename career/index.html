@@ -334,7 +334,7 @@
       const el = document.getElementById("applicationsContainer");
       try {
         const { data, error } = await db.from("applications")
-          .select("id, company, role, location, posting_url, status, priority, applied_date, deadline, person_id, notes, term")
+          .select("id, company, role, location, posting_url, status, priority, applied_date, deadline, person_id, notes, jd_text, term")
           .order("priority", { ascending: false });
         if (error) throw error;
         apps = data || [];
@@ -452,7 +452,7 @@
         </div>
         <div class="modal-field"><label>Applied</label><input type="date" id="f_applied_date" value="${esc(a?.applied_date || "")}" /></div>
         <div class="modal-field"><label>Deadline</label><input type="date" id="f_deadline" value="${esc(a?.deadline || "")}" /></div>
-        <div class="modal-field full"><label>Notes</label><textarea id="f_notes">${esc(a?.notes || "")}</textarea></div>`;
+        <div class="modal-field full"><label>Job Description (JD)</label><textarea id="f_jd" placeholder="Paste the job description text...">${esc(a?.jd_text || "")}</textarea></div>`;
       openModal();
     }
 
@@ -467,7 +467,7 @@
         term: document.getElementById("f_term").value || null,
         applied_date: document.getElementById("f_applied_date").value || null,
         deadline: document.getElementById("f_deadline").value || null,
-        notes: document.getElementById("f_notes").value.trim() || null,
+        jd_text: document.getElementById("f_jd").value.trim() || null,
         updated_at: new Date().toISOString()
       };
       if (!payload.company) return;
