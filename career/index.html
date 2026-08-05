@@ -122,7 +122,7 @@
       padding: 10px 16px;
       border-bottom: 1px solid #e2e2e2;
     }
-    .term-tab-btn {
+    .term-tab-btn, .cat-tab-btn {
       padding: 5px 12px;
       border-radius: 999px;
       border: 1px solid #d9d9d9;
@@ -132,8 +132,10 @@
       font-weight: 600;
       cursor: pointer;
     }
-    .term-tab-btn:hover { background: #f1f3f4; }
-    .term-tab-btn.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+    .term-tab-btn:hover, .cat-tab-btn:hover { background: #f1f3f4; }
+    .term-tab-btn.active, .cat-tab-btn.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+
+    .cat-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
 
     /* Needs-action squares */
     #needsPanel .widget-header { background: #d93025; border-bottom: none; }
@@ -158,7 +160,6 @@
     /* Spreadsheet table */
     .ss-header {
       display: grid;
-      grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.1fr) 130px 150px 80px;
       background: #f1f3f4;
       border-bottom: 1px solid #d9d9d9;
       font-size: 11px;
@@ -174,7 +175,6 @@
     .ss-header > div:last-child { border-right: none; }
     .app-item {
       display: grid;
-      grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.1fr) 130px 150px 80px;
       align-items: center;
       border-bottom: 1px solid #e2e2e2;
     }
@@ -185,6 +185,18 @@
       min-width: 0;
     }
     .app-item > *:last-child { border-right: none; }
+    #applicationsContainer .ss-header,
+    #applicationsContainer .app-item {
+      grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.1fr) 130px 150px 80px;
+    }
+    #applicationsContainer.with-conn .ss-header,
+    #applicationsContainer.with-conn .app-item {
+      grid-template-columns: minmax(200px, 1.4fr) minmax(170px, 1.1fr) 130px 150px 140px 80px;
+    }
+    #peopleContainer .ss-header,
+    #peopleContainer .app-item {
+      grid-template-columns: minmax(200px, 1.4fr) 150px minmax(220px, 1.2fr) 80px;
+    }
     .app-title { font-size: 13px; font-weight: 500; color: #202124; }
     .app-sub { font-size: 11px; color: #5f6368; }
     .app-deadline { font-size: 12px; color: #b45309; font-weight: 500; }
@@ -206,6 +218,28 @@
     .app-status.pending { background: #fef3c7; color: #b45309; }
     .app-status.offer { background: #dcfce7; color: #15803d; }
     .app-status.rejected { background: #e5e5e5; color: #737373; }
+    .person-status.cold { background: #e5e5e5; color: #737373; }
+    .person-status.contacted { background: #e8f0fe; color: #1a73e8; }
+    .person-status.replied { background: #f3e8fd; color: #9333ea; }
+    .person-status.meeting-scheduled { background: #fef3c7; color: #b45309; }
+    .person-status.met { background: #dcfce7; color: #15803d; }
+    .person-status.nurturing { background: #e0f2fe; color: #0369a1; }
+    .person-status.closed { background: #e5e5e5; color: #9aa0a6; }
+    .conn-tag {
+      display: inline-block;
+      margin: 2px 4px 2px 0;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #e8f0fe;
+      color: #1a73e8;
+      font-size: 11px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .conn-tag:hover { background: #d2e3fc; }
+    .conn-plain { font-size: 12px; color: #3c4043; }
     .app-actions { display: flex; gap: 6px; justify-content: center; }
     .icon-btn {
       background: none;
@@ -324,6 +358,12 @@
       </div>
     </div>
 
+    <div class="cat-tabs">
+      <button class="term-tab-btn cat-tab-btn active" id="viewJobs">Jobs</button>
+      <button class="term-tab-btn cat-tab-btn" id="viewCollege">College</button>
+      <button class="term-tab-btn cat-tab-btn" id="viewNetworking">Networking</button>
+    </div>
+
     <div class="widget" id="needsPanel" style="display:none">
       <div class="widget-header">
         <h2>Needs Action</h2>
@@ -342,7 +382,15 @@
         <button class="term-tab-btn" data-term="Spring 2027">Spring 27</button>
         <button class="term-tab-btn" data-term="Summer 2027">Summer 27</button>
       </div>
-      <div id="applicationsContainer" class="loading">Loading...</div>
+      <div id="applicationsContainer" class="app-table loading">Loading...</div>
+    </div>
+
+    <div class="widget" id="networkingView" style="display:none; margin-top:16px">
+      <div class="widget-header">
+        <h2>Networking</h2>
+        <button class="add-btn" id="addPersonBtn">+ Add</button>
+      </div>
+      <div id="peopleContainer" class="app-table net-table loading">Loading...</div>
     </div>
   </div>
 
@@ -364,6 +412,8 @@
 
     const APP_STATUSES = ["Waiting", "Needs Action", "Pending", "Offer", "Rejected"];
     const PRIORITIES = ["low", "medium", "high", "urgent"];
+    const PERSON_STATUSES = ["cold", "contacted", "replied", "meeting_scheduled", "met", "nurturing", "closed"];
+    const VIEW_TITLES = { jobs: "Applications", college: "Research & Clubs" };
 
     function esc(str) {
       if (str == null) return "";
@@ -379,14 +429,37 @@
     }
 
     let apps = [];
+    let people = [];
     let activeTerm = "";
+    let currentView = "jobs";
     let editingApp = null;
+    let editingPerson = null;
+    let modalMode = "app";
+
+    /* ── Category & term tabs ── */
+    function showView(view) {
+      currentView = view;
+      document.querySelectorAll(".cat-tab-btn").forEach(b => b.classList.toggle("active", b.id === "view" + view[0].toUpperCase() + view.slice(1)));
+      const appsVisible = view === "jobs" || view === "college";
+      document.getElementById("applicationsView").style.display = appsVisible ? "" : "none";
+      document.getElementById("networkingView").style.display = view === "networking" ? "" : "none";
+      if (appsVisible) {
+        document.getElementById("applicationsView").querySelector("h2").textContent = VIEW_TITLES[view];
+        renderApplications();
+      } else {
+        renderPeople();
+      }
+    }
+
+    document.getElementById("viewJobs").addEventListener("click", () => showView("jobs"));
+    document.getElementById("viewCollege").addEventListener("click", () => showView("college"));
+    document.getElementById("viewNetworking").addEventListener("click", () => showView("networking"));
 
     /* ── Term filtering ── */
-    document.querySelectorAll(".term-tab-btn").forEach(btn => {
+    document.querySelectorAll(".term-tabs .term-tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         activeTerm = btn.dataset.term;
-        document.querySelectorAll(".term-tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+        document.querySelectorAll(".term-tabs .term-tab-btn").forEach(b => b.classList.toggle("active", b === btn));
         renderApplications();
       });
     });
@@ -396,7 +469,7 @@
       const el = document.getElementById("applicationsContainer");
       try {
         const { data, error } = await db.from("applications")
-          .select("id, company, role, posting_url, status, priority, applied_date, deadline, person_id, notes, jd_text, term")
+          .select("id, company, role, posting_url, status, priority, applied_date, deadline, person_id, notes, jd_text, term, type")
           .order("priority", { ascending: false });
         if (error) throw error;
         apps = data || [];
@@ -433,13 +506,22 @@
       });
     }
 
+    function connectionCell(a) {
+      const p = a.person_id ? people.find(x => x.id === a.person_id) : null;
+      return p ? `<span class="conn-plain">${esc(p.name)}</span>` : `<span class="app-none">—</span>`;
+    }
+
     function renderApplications() {
       const el = document.getElementById("applicationsContainer");
       const today = todayStr();
       renderNeedsPanel();
-      const filtered = activeTerm ? apps.filter(a => a.term === activeTerm) : apps;
+      const isJobs = currentView === "jobs";
+      const type = isJobs ? "job" : "college";
+      const typed = apps.filter(a => (a.type || "job") === type);
+      const filtered = activeTerm ? typed.filter(a => a.term === activeTerm) : typed;
       if (!filtered.length) {
-        el.innerHTML = '<div class="empty-state">No applications' + (activeTerm ? " for this term" : " yet") + '</div>';
+        el.classList.remove("with-conn");
+        el.innerHTML = '<div class="empty-state">No ' + (isJobs ? "applications" : "research or clubs") + (activeTerm ? " for this term" : " yet") + '</div>';
         return;
       }
       const statusOrder = { "Waiting": 0, "Needs Action": 1, "Pending": 2, "Offer": 3, "Rejected": 4 };
@@ -447,12 +529,14 @@
       const sorted = [...filtered].sort((a, b) =>
         (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9)
         || (priorityOrder[a.priority] ?? 9) - (priorityOrder[b.priority] ?? 9));
+      el.classList.toggle("with-conn", isJobs);
       el.innerHTML = `
         <div class="ss-header">
           <div>Role</div>
           <div>Company</div>
           <div>Deadline</div>
           <div>Status</div>
+          ${isJobs ? "<div>Connections</div>" : ""}
           <div></div>
         </div>
         ${sorted.map(a => {
@@ -472,6 +556,7 @@
               ${APP_STATUSES.map(s => `<div class="status-menu-item${s === a.status ? " selected" : ""}" data-set-status="${esc(a.id)}" data-status="${esc(s)}">${s}</div>`).join("")}
             </div>
           </div>
+          ${isJobs ? `<div class="app-conn">${connectionCell(a)}</div>` : ""}
           <div class="app-actions">
             <button class="icon-btn" data-edit-app="${esc(a.id)}" title="Edit">&#9998;</button>
             <button class="icon-btn danger" data-del-app="${esc(a.id)}" title="Delete">&#10005;</button>
@@ -523,9 +608,149 @@
       }
     }
 
+    /* ── Networking (people) ── */
+    async function loadPeople() {
+      const { data, error } = await db.from("people")
+        .select("id, name, company, role, status, notes, next_follow_up, linkedin_url, email")
+        .order("name");
+      if (error) {
+        console.error("Failed to load people:", error);
+        return;
+      }
+      people = data || [];
+      if (currentView === "networking") renderPeople();
+    }
+
+    function renderPeople() {
+      const el = document.getElementById("peopleContainer");
+      if (!people.length) {
+        el.innerHTML = '<div class="empty-state">No contacts yet</div>';
+        return;
+      }
+      const header = `
+        <div class="ss-header">
+          <div>Person</div>
+          <div>Outreach</div>
+          <div>Connected Companies</div>
+          <div></div>
+        </div>`;
+      const rows = people.map(p => {
+        const linked = apps.filter(a => a.person_id === p.id);
+        let conn;
+        if (linked.length) {
+          conn = linked.map(a => `<span class="conn-tag" data-open-app="${esc(a.id)}" title="Open ${esc(a.role)}">${esc(a.company)}</span>`).join("");
+        } else {
+          conn = `<span class="conn-plain">${esc(p.company || "—")}</span>`;
+        }
+        const statusClass = p.status.toLowerCase().replace(/[\s_]+/g, "-");
+        return `<div class="app-item">
+          <div>
+            <div class="app-title">${esc(p.name)}</div>
+            <div class="app-sub">${[p.company, p.role].filter(Boolean).join(" — ")}</div>
+          </div>
+          <div class="app-status-wrap">
+            <span class="app-status person-status ${statusClass}" data-person-id="${esc(p.id)}">${esc(p.status.replace("_", " "))}</span>
+            <div class="status-menu">
+              ${PERSON_STATUSES.map(s => `<div class="status-menu-item${s === p.status ? " selected" : ""}" data-set-person="${esc(p.id)}" data-status="${esc(s)}">${s.replace("_", " ")}</div>`).join("")}
+            </div>
+          </div>
+          <div class="app-conn">${conn}</div>
+          <div class="app-actions">
+            <button class="icon-btn" data-edit-person="${esc(p.id)}" title="Edit">&#9998;</button>
+            <button class="icon-btn danger" data-del-person="${esc(p.id)}" title="Delete">&#10005;</button>
+          </div>
+        </div>`;
+      }).join("");
+      el.innerHTML = header + rows;
+
+      el.querySelectorAll(".app-status").forEach(span => {
+        span.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeStatusMenus();
+          span.closest(".app-status-wrap").classList.add("open");
+        });
+      });
+      el.querySelectorAll(".status-menu-item").forEach(item => {
+        item.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setPersonStatus(item.dataset.setPerson, item.dataset.status);
+        });
+      });
+      el.querySelectorAll("[data-open-app]").forEach(tag => tag.addEventListener("click", () => openAppModal(tag.dataset.openApp)));
+      el.querySelectorAll("[data-edit-person]").forEach(b => b.addEventListener("click", () => openPersonModal(b.dataset.editPerson)));
+      el.querySelectorAll("[data-del-person]").forEach(b => b.addEventListener("click", () => deletePerson(b.dataset.delPerson)));
+    }
+
+    async function setPersonStatus(id, status) {
+      try {
+        await db.from("people").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
+        const p = people.find(x => x.id === id);
+        if (p) p.status = status;
+        renderPeople();
+      } catch (e) {
+        console.error("Failed to update status:", e);
+      }
+    }
+
+    async function deletePerson(id) {
+      if (!confirm("Delete this contact?")) return;
+      try {
+        await db.from("people").delete().eq("id", id);
+        people = people.filter(x => x.id !== id);
+        renderPeople();
+      } catch (e) {
+        console.error("Failed to delete:", e);
+      }
+    }
+
+    function openPersonModal(id) {
+      const p = id ? people.find(x => x.id === id) : null;
+      modalMode = "person";
+      editingPerson = p || null;
+      document.getElementById("modalTitle").textContent = p ? "Edit Contact" : "Add Contact";
+      document.getElementById("modalFields").innerHTML = `
+        <div class="modal-field full"><label>Name</label><input id="p_name" value="${esc(p?.name || "")}" /></div>
+        <div class="modal-field"><label>Company</label><input id="p_company" value="${esc(p?.company || "")}" /></div>
+        <div class="modal-field"><label>Role</label><input id="p_role" value="${esc(p?.role || "")}" /></div>
+        <div class="modal-field"><label>Outreach status</label>
+          <select id="p_status">${PERSON_STATUSES.map(s => `<option value="${s}" ${s === (p?.status || "cold") ? "selected" : ""}>${s.replace("_", " ")}</option>`).join("")}</select>
+        </div>
+        <div class="modal-field"><label>Next follow-up</label><input type="date" id="p_next" value="${esc(p?.next_follow_up || "")}" /></div>
+        <div class="modal-field"><label>LinkedIn</label><input id="p_linkedin" value="${esc(p?.linkedin_url || "")}" /></div>
+        <div class="modal-field full"><label>Notes</label><textarea id="p_notes">${esc(p?.notes || "")}</textarea></div>`;
+      openModal();
+    }
+
+    async function savePerson() {
+      const payload = {
+        name: document.getElementById("p_name").value.trim(),
+        company: document.getElementById("p_company").value.trim() || null,
+        role: document.getElementById("p_role").value.trim() || null,
+        status: document.getElementById("p_status").value,
+        next_follow_up: document.getElementById("p_next").value || null,
+        linkedin_url: document.getElementById("p_linkedin").value.trim() || null,
+        notes: document.getElementById("p_notes").value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+      if (!payload.name) return;
+      try {
+        if (editingPerson) {
+          await db.from("people").update(payload).eq("id", editingPerson.id);
+        } else {
+          payload.id = generateId();
+          await db.from("people").insert(payload);
+        }
+        closeModal();
+        await loadPeople();
+      } catch (e) {
+        alert("Failed to save: " + e.message);
+      }
+    }
+
     function openAppModal(id) {
       const a = id ? apps.find(x => x.id === id) : null;
       const preTerm = !a && activeTerm ? activeTerm : (a?.term || "");
+      modalMode = "app";
       editingApp = a || null;
       document.getElementById("modalTitle").textContent = a ? "Edit Application" : "Add Application";
       document.getElementById("modalFields").innerHTML = `
@@ -546,6 +771,12 @@
             <option value="Summer 2027" ${preTerm === "Summer 2027" ? "selected" : ""}>Summer 2027</option>
           </select>
         </div>
+        <div class="modal-field"><label>Connection</label>
+          <select id="f_person_id">
+            <option value="" ${!a?.person_id ? "selected" : ""}>—</option>
+            ${people.map(p => `<option value="${esc(p.id)}" ${a?.person_id === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}
+          </select>
+        </div>
         <div class="modal-field"><label>Applied</label><input type="date" id="f_applied_date" value="${esc(a?.applied_date || "")}" /></div>
         <div class="modal-field"><label>Deadline</label><input type="date" id="f_deadline" value="${esc(a?.deadline || "")}" /></div>
         <div class="modal-field full"><label>Job Description (JD)</label><textarea id="f_jd" placeholder="Paste the job description text...">${esc(a?.jd_text || "")}</textarea></div>`;
@@ -560,6 +791,7 @@
         status: document.getElementById("f_status").value,
         priority: document.getElementById("f_priority").value,
         term: document.getElementById("f_term").value || null,
+        person_id: document.getElementById("f_person_id").value || null,
         applied_date: document.getElementById("f_applied_date").value || null,
         deadline: document.getElementById("f_deadline").value || null,
         jd_text: document.getElementById("f_jd").value.trim() || null,
@@ -586,8 +818,12 @@
     function closeModal() { modalOverlay.classList.remove("open"); }
     document.getElementById("modalCancel").addEventListener("click", closeModal);
     modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) closeModal(); });
-    document.getElementById("modalSave").addEventListener("click", saveApplication);
+    document.getElementById("modalSave").addEventListener("click", () => {
+      if (modalMode === "person") savePerson();
+      else saveApplication();
+    });
     document.getElementById("addAppBtn").addEventListener("click", () => openAppModal(null));
+    document.getElementById("addPersonBtn").addEventListener("click", () => openPersonModal(null));
 
     /* ── Auth ── */
     function showLogin() {
@@ -597,7 +833,7 @@
     function showApp() {
       document.getElementById("loginForm").style.display = "none";
       document.getElementById("authGate").style.display = "block";
-      loadApplications();
+      Promise.all([loadApplications(), loadPeople()]).then(() => showView(currentView));
     }
 
     document.getElementById("authForm").addEventListener("submit", async (e) => {
