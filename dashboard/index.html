@@ -916,7 +916,10 @@
         });
       });
       boardEl.querySelectorAll("[data-toggle]").forEach(el => {
-        el.addEventListener("click", () => toggleNode(el.dataset.toggle));
+        el.addEventListener("click", () => {
+          if (state.pickEvent) return;
+          toggleNode(el.dataset.toggle);
+        });
       });
       boardEl.querySelectorAll("[data-sub]").forEach(el => {
         el.addEventListener("click", (e) => {
