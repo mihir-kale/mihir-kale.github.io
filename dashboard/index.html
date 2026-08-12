@@ -456,6 +456,90 @@
     .login-btn:hover { opacity: .85; }
     .login-error { color: #ff453a; font-size: 12px; margin-top: 8px; display: none; }
 
+    /* ── Light color scheme ───────────────────────── */
+    #themeToggle {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 100;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      background: #111;
+      color: #888;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      opacity: .55;
+      transition: opacity .2s, color .2s, border-color .2s, background .2s;
+    }
+    #themeToggle:hover { opacity: 1; color: #fff; border-color: #fff; }
+
+    body.light-mode { background: #f4f5f7; color: #111; }
+    body.light-mode .date-header { color: #111; }
+    body.light-mode .last-updated { color: #999; }
+    body.light-mode .logout-btn { border-color: #ccc; color: #666; }
+    body.light-mode .logout-btn:hover { color: #111; border-color: #111; }
+    body.light-mode .widget { background: #fff; border-color: #e3e4e8; }
+    body.light-mode .widget h2 { color: #111; }
+    body.light-mode .loading { color: #888; }
+    body.light-mode .empty-state { color: #999; }
+    body.light-mode .due-group-label { color: #777; }
+    body.light-mode .due-title { color: #111; }
+    body.light-mode .due-meta { color: #777; }
+    body.light-mode .task-check { border-color: #999; }
+    body.light-mode .task-check:hover { border-color: #111; }
+    body.light-mode .cal-tabs { background: #eceef1; }
+    body.light-mode .cal-tabs button { color: #777; }
+    body.light-mode .cal-tabs button:hover { color: #111; }
+    body.light-mode .cal-tabs button.active { background: #0a84ff; color: #fff; }
+    body.light-mode .cal-day-label { color: #111; border-bottom-color: #eceef1; }
+    body.light-mode .cal-day-label.today { color: #0a84ff; }
+    body.light-mode .cal-day-sub { color: #999; }
+    body.light-mode .cal-event-time { color: #111; }
+    body.light-mode .cal-event-time.all-day { color: #999; }
+    body.light-mode .cal-event-title { color: #111; }
+    body.light-mode .cal-event-loc { color: #777; }
+    body.light-mode .show-done { color: #777; }
+    body.light-mode .inline-input { background: #fff; border-color: #ccc; color: #111; }
+    body.light-mode .inline-input::placeholder { color: #999; }
+    body.light-mode .box { background: #fff; border-color: #e3e4e8; }
+    body.light-mode .box-header { border-bottom-color: #eceef1; }
+    body.light-mode .box-title { color: #111; }
+    body.light-mode .box-meta { color: #999; }
+    body.light-mode .box-btn { border-color: #ccc; color: #777; }
+    body.light-mode .box-btn:hover { color: #111; border-color: #111; }
+    body.light-mode .task-row { border-bottom-color: #f0f1f3; }
+    body.light-mode .task-title { color: #111; }
+    body.light-mode .task-row.done .task-title { color: #aaa; }
+    body.light-mode .task-row.in-progress .task-title { color: #0a84ff; }
+    body.light-mode .task-due { border-color: #d8d9dd; color: #777; }
+    body.light-mode .task-due:hover { border-color: #0a84ff; color: #0a84ff; }
+    body.light-mode .task-due.add-due { color: #111; }
+    body.light-mode .task-due.add-due:hover { color: #111; border-color: #0a84ff; }
+    body.light-mode .task-due.overdue,
+    body.light-mode .task-due.soon { color: #ff453a; border-color: #ff453a88; }
+    body.light-mode .task-due.today { color: #ff9f0a; border-color: #ff9f0a88; }
+    body.light-mode .task-due.later { color: #0a84ff; border-color: #0a84ff88; }
+    body.light-mode .due-input { background: #fff; color: #111; }
+    body.light-mode .task-sub,
+    body.light-mode .task-del,
+    body.light-mode .ev-link { color: #999; }
+    body.light-mode .task-sub:hover,
+    body.light-mode .task-del:hover,
+    body.light-mode .ev-link:hover { color: #111; }
+    body.light-mode .link-bar { background: #0a84ff14; border-color: #0a84ff55; }
+    body.light-mode .link-bar-msg { color: #0a84ff; }
+    body.light-mode .link-bar-msg strong { color: #111; }
+    body.light-mode .link-bar-cancel { border-color: #0a84ff; color: #0a84ff; }
+    body.light-mode .link-bar-cancel:hover { background: #0a84ff; color: #fff; }
+    body.light-mode #loginForm h2 { color: #111; }
+    body.light-mode .login-field input { background: #fff; border-color: #ccc; color: #111; }
+    body.light-mode .login-field input::placeholder { color: #999; }
+    body.light-mode #themeToggle { background: #fff; border-color: #ccc; color: #666; }
+    body.light-mode #themeToggle:hover { color: #111; border-color: #111; }
+
     @media (max-width: 1100px) {
       .layout { grid-template-columns: 1fr; }
     }
@@ -528,6 +612,8 @@
       </section>
     </div>
   </div>
+
+  <button id="themeToggle" title="Toggle color scheme">◐</button>
 
   <script>
     const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
@@ -1269,6 +1355,16 @@
       const box = e.target.closest("[data-toggle-due]");
       if (box) toggleDueItem(box.dataset.toggleDue, box.dataset.id);
     });
+
+    function applyTheme(light) {
+      document.body.classList.toggle("light-mode", light);
+      localStorage.setItem("theme", light ? "light" : "dark");
+    }
+
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      applyTheme(!document.body.classList.contains("light-mode"));
+    });
+    applyTheme(localStorage.getItem("theme") === "light");
 
     (async () => {
       const { data: { session } } = await db.auth.getSession();
