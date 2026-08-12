@@ -121,7 +121,6 @@
     .due-item:last-child { border-bottom: none; }
     .due-item .due-body { flex: 1; min-width: 0; }
     .due-title { font-size: 13px; color: #fff; line-height: 1.3; }
-    .due-title .deadline-tag { color: #ff453a; }
     .due-meta { font-size: 11px; color: #666; margin-top: 1px; }
 
     .task-check {
@@ -141,10 +140,6 @@
     .task-check:hover svg { opacity: .5; }
     .task-check.done { background: #0a84ff; border-color: #0a84ff; }
     .task-check.done svg { opacity: 1; }
-
-    .due-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-    }
 
     /* ── Calendar ────────────────────────────────────── */
     .cal-tabs { display: flex; gap: 2px; background: #1a1a1a; border-radius: 6px; padding: 2px; }
@@ -301,7 +296,6 @@
       border-color: #262626;
     }
     .box.archived .box-title { color: #8a8a8a; }
-    .box.archived .box-meta { color: #555; }
     .box.archived .task-title { color: #7a7a7a; }
 
     .box-tasks { list-style: none; }
@@ -644,7 +638,6 @@
     const DAY_NAMES_FULL = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
     const MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
     const MONTH_NAMES_FULL = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-    const TYPE_COLORS = { interview: "#0a84ff", phone_screen: "#30d158", deadline: "#ff453a", meeting: "#888", social: "#ff9f0a", other: "#666" };
 
     function esc(s) {
       if (s === null || s === undefined) return "";
@@ -665,14 +658,6 @@
       const d = new Date(dateStr + "T12:00:00");
       d.setDate(d.getDate() + days);
       return d.toLocaleDateString("en-CA", { timeZone: TZ });
-    }
-
-    function fmtTimeHm(t) {
-      if (!t) return null;
-      const [h, m] = String(t).split(":").map(Number);
-      const ap = h >= 12 ? "PM" : "AM";
-      const hr = h % 12 || 12;
-      return `${hr}:${String(m).padStart(2, "0")} ${ap}`;
     }
 
     function timeToMin(label) {
@@ -704,7 +689,6 @@
     let state = {
       nodes: [],
       tasks: [],
-      events: [],
       ics: [],
       viewDays: 1,
       showArchived: false,
@@ -731,18 +715,15 @@
     /* ── Data loading ─────────────────────────────── */
 
     async function loadAll() {
-      const [nodesRes, tasksRes, eventsRes] = await Promise.all([
+      const [nodesRes, tasksRes] = await Promise.all([
         db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date"),
         db.from("tasks").select("id,title,status,priority,due_date,project").in("status", ["pending", "in_progress"]),
-        db.from("events").select("id,title,event_date,start_time,end_time,event_type,status,location,url").neq("status", "cancelled").gte("event_date", addDays(todayEt(), -7)),
       ]);
       if (nodesRes.error) throw nodesRes.error;
       if (tasksRes.error) throw tasksRes.error;
-      if (eventsRes.error) throw eventsRes.error;
 
       state.nodes = sortNodes(nodesRes.data || []);
       state.tasks = tasksRes.data || [];
-      state.events = eventsRes.data || [];
 
       let ics = [];
       try {
@@ -784,9 +765,8 @@
 
       const dueNodes = state.nodes.filter(n => n.status !== "done" && n.status !== "archived" && n.due_date && n.due_date <= today);
       const dueTasks = state.tasks.filter(t => t.status !== "done" && t.due_date && t.due_date <= today);
-      const dueEvents = state.events.filter(e => e.event_type === "deadline" && e.event_date === today);
 
-      const total = dueNodes.length + dueTasks.length + dueEvents.length;
+      const total = dueNodes.length + dueTasks.length;
       document.getElementById("dueCount").textContent = total ? `${total} item${total > 1 ? "s" : ""}` : "";
 
       if (!total) {
@@ -818,27 +798,8 @@
         html += `<div class="due-group-label today">Today (${todays.length})</div>`;
         html += todays.map(it => dueItemHtml(it, false)).join("");
       }
-      if (dueEvents.length) {
-        html += `<div class="due-group-label today">Deadlines (${dueEvents.length})</div>`;
-        html += dueEvents.map(e => `
-          <li class="due-item">
-            <div class="due-dot" style="background:#ff453a"></div>
-            <div class="due-body">
-              <div class="due-title"><span class="deadline-tag">${esc(e.title)}</span></div>
-              <div class="due-meta">Deadline</div>
-            </div>
-            <button class="ev-link" data-ev-link data-pick-title="${esc(e.title)}" data-pick-date="${esc(e.event_date)}" title="Copy deadline to a task">${linkSvg()}</button>
-          </li>`).join("");
-      }
 
       el.innerHTML = `<ul class="due-list">${html}</ul>`;
-
-      el.querySelectorAll("[data-ev-link]").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          togglePick(unesc(btn.dataset.pickTitle), btn.dataset.pickDate);
-        });
-      });
     }
 
     function dueItemHtml(it, isOverdue) {
@@ -860,28 +821,12 @@
       return { date, time, tm: timeToMin(time), title: ev.title, location: ev.location || "", type: ev.event_type || "meeting", color: ev.color || "#666" };
     }
 
-    function tableEvent(ev) {
-      const time = ev.start_time ? fmtTimeHm(ev.start_time) : null;
-      return {
-        id: ev.id,
-        date: ev.event_date,
-        time,
-        tm: ev.start_time ? timeToMin(fmtTimeHm(ev.start_time)) : null,
-        title: ev.title,
-        location: ev.location || "",
-        type: ev.event_type || "meeting",
-        color: TYPE_COLORS[ev.event_type] || "#888",
-      };
-    }
-
     function renderCalendar() {
       const el = document.getElementById("calendarContainer");
       const today = todayEt();
       const end = addDays(today, state.viewDays);
 
-      const all = [];
-      state.ics.forEach(ev => all.push(icsEvent(ev)));
-      state.events.forEach(ev => all.push(tableEvent(ev)));
+      const all = state.ics.map(ev => icsEvent(ev));
 
       const filtered = all.filter(ev => ev.date >= today && ev.date < end)
         .sort((a, b) => a.date.localeCompare(b.date) || (a.tm ?? -1) - (b.tm ?? -1));
@@ -929,25 +874,6 @@
 
     /* ── Work board ───────────────────────────────── */
 
-    function subtreeStats(nodeId) {
-      const children = state.nodes.filter(n => n.parent_id === nodeId);
-      let open = 0, done = 0;
-      children.forEach(c => {
-        if (c.status === "done") done += 1 + subtreeDoneCount(c.id);
-        else {
-          open += 1;
-          const s = subtreeStats(c.id);
-          open += s.open; done += s.done;
-        }
-      });
-      return { open, done };
-    }
-
-    function subtreeDoneCount(nodeId) {
-      return state.nodes.filter(n => n.parent_id === nodeId)
-        .reduce((acc, c) => acc + subtreeDoneCount(c.id) + (c.status === "done" ? 1 : 0), 0);
-    }
-
     function taskRowHtml(n, depth) {
       const due = dueChip(n.due_date);
       const isDone = n.status === "done";
@@ -993,8 +919,6 @@
       }
 
       const boxHtml = (root, archived) => {
-        const stats = subtreeStats(root.id);
-        const meta = `${stats.open} open${stats.done ? ` · ${stats.done} done` : ""}`;
         const children = state.nodes.filter(c => c.parent_id === root.id);
         const visible = archived ? children : children.filter(c => c.status !== "done" && c.status !== "archived");
         const actionBtn = archived
@@ -1005,7 +929,6 @@
         return `<section class="box${archived ? " archived" : ""}">
           <div class="box-header">
             <span class="box-title" title="${esc(root.title)}">${esc(root.title)}</span>
-            <span class="box-meta">${meta}</span>
             ${actionBtn}
           </div>
           <div class="box-add-row hidden" data-box-row="${esc(root.id)}">
