@@ -1044,8 +1044,7 @@
       });
       boardEl.querySelectorAll("[data-due-month], [data-due-day]").forEach(el => {
         const nodeId = el.dataset.dueMonth || el.dataset.dueDay;
-        const key = el.dataset.dueMonth ? "due-month" : "due-day";
-        el.addEventListener("change", () => setDueFromSelects(nodeId, key));
+        el.addEventListener("change", () => setDueFromSelects(nodeId));
         el.addEventListener("keydown", (e) => {
           if (e.key === "Escape") { state.dueEditorId = null; renderBoard(); }
         });
@@ -1149,11 +1148,11 @@
       }
     }
 
-    async function setNodeDue(id, due, keepOpen) {
+    async function setNodeDue(id, due) {
       const n = state.nodes.find(x => x.id === id);
       if (!n) return;
       n.due_date = due;
-      if (!keepOpen) state.dueEditorId = null;
+      state.dueEditorId = null;
       renderBoard();
       renderDue();
       try {
@@ -1163,7 +1162,7 @@
       }
     }
 
-    function setDueFromSelects(id, changedKey) {
+    function setDueFromSelects(id) {
       const n = state.nodes.find(x => x.id === id);
       if (!n) return;
       const month = Number(boardElValue(id, "due-month"));
@@ -1172,11 +1171,7 @@
       const daysInMonth = new Date(baseYear, month, 0).getDate();
       const d = Math.min(day || 1, daysInMonth);
       const due = `${baseYear}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      setNodeDue(id, due, changedKey === "due-month");
-      if (changedKey === "due-month") {
-        const daySel = document.querySelector(`[data-due-day="${id}"]`);
-        if (daySel) daySel.focus();
-      }
+      setNodeDue(id, due);
     }
 
     function boardElValue(id, key) {
