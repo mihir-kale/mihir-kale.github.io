@@ -238,10 +238,8 @@
     .inline-input::placeholder { color: #555; }
 
     .board {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-      align-items: start;
+      columns: 3;
+      column-gap: 16px;
     }
 
     .box {
@@ -249,6 +247,8 @@
       border: 1px solid #222;
       border-radius: 12px;
       padding: 12px 14px 10px;
+      break-inside: avoid;
+      margin-bottom: 16px;
     }
 
     .box-header {
@@ -540,6 +540,12 @@
     body.light-mode #themeToggle { background: #fff; border-color: #ccc; color: #666; }
     body.light-mode #themeToggle:hover { color: #111; border-color: #111; }
 
+    @media (max-width: 1200px) {
+      .board { columns: 2; }
+    }
+    @media (max-width: 700px) {
+      .board { columns: 1; }
+    }
     @media (max-width: 1100px) {
       .layout { grid-template-columns: 1fr; }
     }
