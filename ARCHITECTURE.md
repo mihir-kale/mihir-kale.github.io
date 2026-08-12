@@ -22,12 +22,12 @@ mihirOS (private monorepo)          mihir-kale.github.io (this repo)
 
 - **RLS**: every personal-data table (`people`, `events`, `tasks`, `projects`, `applications`, `nodes`, `strava_*`, `planned_*`, `nutrition`, `daily_logs`) requires the `authenticated` role. The anon key in the public HTML can read and write nothing. See `supabase/migrations/20260802100000_secure_rls.sql`.
 - **App-level auth**: `dashboard/` and `tracker/` gate on Supabase email/password before loading data (`db.auth.getSession()` / `signInWithPassword`).
-- **No personal data in the repo**: calendar data comes from the `events` table; only `read-feeds.json` (public article links) is committed.
+- **No personal data in the repo**: calendar data comes from the `events` table plus the Outlook ICS feed fetched via the `calendar-proxy` edge function; only `read-feeds.json` (public article links) is committed.
 - The compiled CRM app (`/crm/`), `archon/`, `opencode.json`, and `fetch_calendar.py` were removed from this repo and moved into `mihirOS/tools/`.
 
 ## Data model
 
-The Supabase schema is defined in `supabase/migrations/` (people/events/tasks triad, projects, applications, plus tracker/fitness tables). The dashboard reads live from these tables after authentication; the tracker owns the `nodes` table via full-state sync.
+The Supabase schema is defined in `supabase/migrations/` (people/events/tasks triad, projects, applications, plus tracker/fitness tables). The dashboard reads live from these tables after authentication and is the primary read/write view of the `nodes` task tree; the tracker also syncs `nodes` via full-state sync.
 
 ## Components
 

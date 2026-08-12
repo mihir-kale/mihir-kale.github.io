@@ -19,18 +19,18 @@ Personal dashboard + task planner deployed as a GitHub Pages site.
 - Auth: Supabase email/password auth
 - Hosting: GitHub Pages (`mihir-kale.github.io`)
 
-## Dashboard Widgets
+## Dashboard Layout
 
-| Widget | Source | Notes |
+Single auth-gated page with three modules (all dark theme, Eastern Time):
+
+| Module | Source | Notes |
 |---|---|---|
-| Calendar | `events` table | Today + next 5 days, Eastern Time |
-| Tasks | `nodes` table | Links to tracker, group by parent |
-| Training | `planned_workouts` + `strava_*` tables | Next workout card + weekly stats (KM, VOLUME, SETS) |
-| Nutrition | `planned_meals` + `nutrition` tables | Meal queue with checkboxes, snack quick-add |
-| Applications | `applications` table | Status badges: Needs Action, Pending, Offer, Rejected |
-| Pomodoro | Local state | 25-min timer, always visible |
+| Due | `nodes` + `tasks` + `events` | Overdue/today buckets from open tasks and deadline events; checkbox toggles done |
+| Calendar | `events` table + Outlook ICS (via `calendar-proxy` edge function) | Scrollable next-N-days list; 1D/3D/7D toggle (default 1D), merged and de-duped client-side |
+| Work | `nodes` table | Board of boxes per project area (top-level nodes) with arbitrarily nested tasks, per-task deadlines, add/delete/due-date editing |
 
-Read and Listen widgets are disabled (code preserved, Spotify polling off).
+The old widgets (Applications, Training, Nutrition, Read, Listen, Pomodoro) were
+removed in the rebuild and are not coming back.
 
 ## Key Files
 
@@ -39,7 +39,7 @@ Read and Listen widgets are disabled (code preserved, Spotify polling off).
 - `tracker/assets/index-CY4Ktyp3.js` — Compiled tracker bundle (do not edit directly)
 - `scripts/fetch_rss.py` — Fetches RSS feeds, writes `dashboard/data/read-feeds.json`
 
-The compiled CRM app (`crm/`), `archon/`, `opencode.json`, and `fetch_calendar.py` were removed from this repo — they live in `mihirOS/tools/` and `mihirOS/opencode.json` instead. The dashboard calendar reads the `events` table directly (no JSON).
+The compiled CRM app (`crm/`), `archon/`, `opencode.json`, and `fetch_calendar.py` were removed from this repo — they live in `mihirOS/tools/` and `mihirOS/opencode.json` instead. The dashboard calendar merges the `events` table with the Outlook ICS feed from the `calendar-proxy` edge function.
 
 ## Training module
 
@@ -47,7 +47,7 @@ Training/workout content lives in `mihirOS/training/` (sibling of this repo in t
 
 **When to use**: Read `mihirOS/training/workout.md` before creating or modifying `planned_workouts` / `planned_exercises` rows. Respect the constraints (equipment, volume caps, muscle group splits). Never add exercises not in the approved library without asking.
 
-The dashboard still renders its Training widget from `planned_workouts` + `strava_*` tables live from Supabase, so no data changes are needed here.
+The rebuilt dashboard (tasks + calendar only) does not read training tables. No data changes are needed here.
 
 ## Supabase
 
@@ -84,46 +84,38 @@ The dashboard still renders its Training widget from `planned_workouts` + `strav
 
 ## Resume Engine
 
-**Location:** `mihirOS/career/applications/resume_engine/` (moved out of this repo).
+**Location:** `resume_engine/` (sibling of this repo, at `~/repos/resume_engine/`).
 
-AI-powered resume and cover letter generator that tailors content to specific job descriptions using GPT-4o-mini.
+Simple deterministic JSON → PDF resume renderer. No AI, no API keys, no DOCX. All AI tailoring scripts (generate.py, direct_ask.py, fit_review.py) and the duplicate ApplyAI copies were removed.
 
 ### Quick Start
 
 ```bash
-# Web UI (recommended)
-python app.py
-# Open http://localhost:5001
-
-# CLI: basic generation
-python main.py job_descriptions/<job>.txt [--cover-letter/--no-cover-letter]
-
-# Two-pass: tailor then verify through skeptical hiring manager lens
-python two_pass_analysis.py job_descriptions/<job>.txt
+python3.12 render.py                      # input/content.json -> output/<name>.pdf
+python3.12 render.py input/content.json   # explicit file
+python3.12 render.py --jd input/job.txt   # inject ATS keywords (white font) from a JD
 ```
+
+Edit `input/content.json`, then run `render.py`. Output filename is derived from the `header.name` + `output.company` / `output.job_id` fields.
 
 ### Key Files
 
 | File | Purpose |
 |---|---|
-| `resume_content.md` | Source of truth for all resume content — edit here first |
-| `ai_customizer.py` | GPT-4o-mini prompts for resume + cover letter |
-| `docx_generator.py` | Populates `template.docx` with tailored content |
-| `cover_letter_generator.py` | Builds cover letter DOCX from scratch |
-| `main.py` | CLI entry point, orchestrates pipeline |
-| `two_pass_analysis.py` | AI analysis: tailor → verify with skeptical hiring manager |
-| `job_descriptions/` | Save job descriptions as `<slug>.txt` here |
+| `render.py` | CLI entry point: JSON → PDF |
+| `pdf_generator.py` | Direct PDF layout (Times New Roman, 0.5" margins) |
+| `sections.py` | Section schema (education / experience / leadership) |
+| `ats_keywords.py` | Deterministic ATS keyword extraction (used with `--jd`) |
+| `parser.py` | Parses JD files (TXT/PDF/DOCX) for ATS extraction |
+| `input/content.json` | Resume content to render |
 
-### Constraints
-- **Education is frozen** — never modified by AI
-- **Template is immutable** — `template.docx` is fixed
-- **ATS keywords** injected as white font at 1pt (hidden from humans, readable by parsers)
-- Output goes to `output/<job_slug>/` as PDF
-
-### Workflow
-1. Save job description to `job_descriptions/<slug>.txt`
-2. Run `python main.py job_descriptions/<slug>.txt` or use web UI
-3. Output appears in `output/<slug>/` as PDF + optional cover letter
+### Content JSON Schema
+- `header` — `name`, `contact`, `email`, `linkedin`
+- `education[]` — `institution`, `location`, `date`, `degree`, `details[]`
+- `experience[]` — `company`, `location`, `dates`, `title`, `bullets[]`, optional `future`
+- `leadership[]` — `organization`, `location`, `dates`, `title`, `bullets[]`, optional `future`
+- `additional` — `bullets[]`
+- `output` — `company`, `job_id` (used only for the filename)
 
 ## Conventions
 
