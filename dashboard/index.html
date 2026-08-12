@@ -369,6 +369,63 @@
 
     .child-add-row, .box-add-row { padding: 4px 2px 2px calc(var(--depth, 0) * 16px + 26px); }
 
+    /* ── Event ⇄ task linking ──────────────────────── */
+    .link-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #0a84ff14;
+      border: 1px solid #0a84ff55;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .link-bar-msg { font-size: 12px; color: #7fc1ff; }
+    .link-bar-msg strong { color: #fff; font-weight: 600; }
+    .link-bar-cancel {
+      background: none;
+      border: 1px solid #0a84ff;
+      color: #0a84ff;
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+    .link-bar-cancel:hover { background: #0a84ff; color: #000; }
+
+    .ev-link {
+      background: none; border: none; color: #444;
+      cursor: pointer; padding: 0 2px; flex-shrink: 0;
+      display: flex; align-items: center;
+      opacity: 0; transition: all .2s;
+      align-self: center;
+    }
+    .cal-event:hover .ev-link, .due-item:hover .ev-link { opacity: 1; }
+    .ev-link:hover { color: #fff; }
+    .ev-link.linked { opacity: 1; color: #0a84ff; }
+    .ev-link.linked:hover { color: #fff; }
+    .ev-link svg { width: 12px; height: 12px; }
+
+    .task-link {
+      background: none; border: none; color: #0a84ff;
+      cursor: pointer; padding: 0 2px; flex-shrink: 0;
+      display: flex; align-items: center;
+      opacity: .7; transition: all .2s;
+    }
+    .task-link:hover { opacity: 1; color: #ff453a; }
+    .task-link svg { width: 11px; height: 11px; }
+
+    .board.link-mode .task-row { cursor: pointer; }
+    .board.link-mode .task-row.link-target {
+      border-radius: 6px;
+      box-shadow: inset 0 0 0 1px #0a84ff88;
+      transition: background .15s;
+    }
+    .board.link-mode .task-row.link-target:hover { background: #0a84ff22; }
+
     /* ── Auth ────────────────────────────────────────── */
     #authGate { display: none; }
     #loginForm { display: none; max-width: 320px; margin: 120px auto; }
@@ -466,6 +523,10 @@
             <button class="new-box-btn" id="newBoxBtn">+ New box</button>
           </div>
         </div>
+        <div id="linkBar" class="link-bar hidden">
+          <span class="link-bar-msg">Link to task: <strong id="linkBarTitle"></strong> — click a task to set its deadline</span>
+          <button class="link-bar-cancel" id="linkBarCancel">Cancel</button>
+        </div>
         <div id="newBoxRow" class="new-box-row hidden">
           <input class="inline-input" id="newBoxInput" placeholder="Project area name" />
         </div>
@@ -548,6 +609,7 @@
       viewDays: 1,
       showDone: false,
       dueEditorId: null,
+      linkEvent: null,
     };
 
     function renderDate() {
@@ -570,7 +632,7 @@
 
     async function loadAll() {
       const [nodesRes, tasksRes, eventsRes] = await Promise.all([
-        db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date").not("status", "eq", "archived"),
+        db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date,event_id").not("status", "eq", "archived"),
         db.from("tasks").select("id,title,status,priority,due_date,project").in("status", ["pending", "in_progress"]),
         db.from("events").select("id,title,event_date,start_time,end_time,event_type,status,location,url").neq("status", "cancelled").gte("event_date", addDays(todayEt(), -7)),
       ]);
@@ -665,10 +727,18 @@
               <div class="due-title"><span class="deadline-tag">${esc(e.title)}</span></div>
               <div class="due-meta">Deadline</div>
             </div>
+            <button class="ev-link${state.nodes.some(n => n.event_id === e.id) ? " linked" : ""}" data-ev-link="${esc(e.id)}" title="Link event to a task">${linkSvg()}</button>
           </li>`).join("");
       }
 
       el.innerHTML = `<ul class="due-list">${html}</ul>`;
+
+      el.querySelectorAll("[data-ev-link]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleLink(btn.dataset.evLink);
+        });
+      });
     }
 
     function dueItemHtml(it, isOverdue) {
@@ -693,6 +763,7 @@
     function tableEvent(ev) {
       const time = ev.start_time ? fmtTimeHm(ev.start_time) : null;
       return {
+        id: ev.id,
         date: ev.event_date,
         time,
         tm: ev.start_time ? timeToMin(fmtTimeHm(ev.start_time)) : null,
@@ -734,10 +805,12 @@
         const items = evts.map(ev => {
           const timeStr = ev.time || "All day";
           const loc = ev.location ? `<div class="cal-event-loc">${esc(ev.location)}</div>` : "";
+          const link = ev.id ? `<button class="ev-link${state.nodes.some(n => n.event_id === ev.id) ? " linked" : ""}" data-ev-link="${esc(ev.id)}" title="Link event to a task">${linkSvg()}</button>` : "";
           return `<div class="cal-event">
             <span class="cal-event-dot" style="background:${esc(ev.color)}"></span>
             <span class="cal-event-time${ev.time ? "" : " all-day"}">${esc(timeStr)}</span>
             <span class="cal-event-title">${esc(ev.title)}</span>
+            ${link}
           </div>${loc}`;
         }).join("");
         return `<li class="cal-day">
@@ -745,6 +818,13 @@
           ${items}
         </li>`;
       }).join("") + "</ul>";
+
+      el.querySelectorAll("[data-ev-link]").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleLink(btn.dataset.evLink);
+        });
+      });
     }
 
     /* ── Work board ───────────────────────────────── */
@@ -781,11 +861,16 @@
         dueHtml = `<span class="task-due ${due ? due.cls : ""}" data-due-chip="${esc(n.id)}">${due ? esc(due.label) : "add"}</span>`;
       }
 
-      return `<li class="task-row ${cls}" style="--depth:${depth}">
+      const linkBtn = n.event_id
+        ? `<button class="task-link" data-unlink="${esc(n.id)}" title="Linked to event — click to unlink">${linkSvg()}</button>`
+        : "";
+
+      return `<li class="task-row ${cls}" style="--depth:${depth}" data-node-link="${esc(n.id)}">
         <div class="task-check ${isDone ? "done" : ""}" data-toggle="${esc(n.id)}">${checkSvg()}</div>
         <span class="task-title">${esc(n.title)}</span>
         <button class="task-sub" data-sub="${esc(n.id)}" title="Add subtask">+</button>
         ${dueHtml}
+        ${linkBtn}
         <button class="task-del" data-del="${esc(n.id)}" title="Delete">\u00d7</button>
       </li>
       <li class="child-add-row hidden" style="--depth:${depth}" data-child-row="${esc(n.id)}">
@@ -832,6 +917,26 @@
       }).join("") + '</div>';
 
       const boardEl = document.querySelector("#board .board");
+      boardEl.classList.toggle("link-mode", !!state.linkEvent);
+
+      if (state.linkEvent) {
+        boardEl.querySelectorAll("[data-node-link]").forEach(row => {
+          row.classList.add("link-target");
+        });
+      }
+      boardEl.querySelectorAll("[data-node-link]").forEach(el => {
+        el.addEventListener("click", (e) => {
+          if (!state.linkEvent) return;
+          e.stopPropagation();
+          linkTaskToEvent(el.dataset.nodeLink);
+        });
+      });
+      boardEl.querySelectorAll("[data-unlink]").forEach(el => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          unlinkTask(el.dataset.unlink);
+        });
+      });
       boardEl.querySelectorAll("[data-toggle]").forEach(el => {
         el.addEventListener("click", () => toggleNode(el.dataset.toggle));
       });
@@ -1024,6 +1129,87 @@
       }
     }
 
+    /* ── Event ⇄ task linking ─────────────────────── */
+
+    function linkSvg() {
+      return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 9a3 3 0 0 0 4.24 0l2-2A3 3 0 0 0 9.24 2.76l-1 1"/><path d="M9 7a3 3 0 0 0-4.24 0l-2 2A3 3 0 0 0 6.76 12.24l1-1"/></svg>`;
+    }
+
+    function eventForId(id) {
+      if (!id) return null;
+      const ev = state.events.find(e => e.id === id);
+      return ev || { title: "Event" };
+    }
+
+    function linkEventTitle(id) {
+      const ev = eventForId(id);
+      const time = ev.start_time ? fmtTimeHm(ev.start_time) : "";
+      return `${ev.title}${time ? " · " + time : ""}`;
+    }
+
+    function toggleLink(eventId) {
+      const already = state.nodes.some(n => n.event_id === eventId);
+      if (already) {
+        state.linkEvent = null;
+      } else if (state.linkEvent && state.linkEvent.id === eventId) {
+        state.linkEvent = null;
+      } else {
+        state.linkEvent = eventForId(eventId);
+      }
+      renderLinkBar();
+      renderBoard();
+    }
+
+    function renderLinkBar() {
+      const bar = document.getElementById("linkBar");
+      const ev = state.linkEvent;
+      if (!ev) {
+        bar.classList.add("hidden");
+        return;
+      }
+      document.getElementById("linkBarTitle").textContent = linkEventTitle(ev.id);
+      bar.classList.remove("hidden");
+    }
+
+    async function linkTaskToEvent(nodeId) {
+      const ev = state.linkEvent;
+      const n = state.nodes.find(x => x.id === nodeId);
+      if (!ev || !n) return;
+      const patch = { event_id: ev.id, updated_at: new Date().toISOString() };
+      if (ev.event_date && ev.event_type === "deadline" && !n.due_date) {
+        patch.due_date = ev.event_date;
+      }
+      n.event_id = ev.id;
+      if (patch.due_date) n.due_date = patch.due_date;
+      state.linkEvent = null;
+      renderLinkBar();
+      renderBoard();
+      try {
+        await db.from("nodes").update(patch).eq("id", nodeId);
+        renderCalendar();
+        renderDue();
+      } catch (e) {
+        n.event_id = null;
+        if (patch.due_date) n.due_date = null;
+        renderBoard();
+        console.error("Link failed:", e);
+      }
+    }
+
+    async function unlinkTask(nodeId) {
+      const n = state.nodes.find(x => x.id === nodeId);
+      if (!n || !n.event_id) return;
+      n.event_id = null;
+      renderBoard();
+      renderCalendar();
+      renderDue();
+      try {
+        await db.from("nodes").update({ event_id: null, updated_at: new Date().toISOString() }).eq("id", nodeId);
+      } catch (e) {
+        console.error("Unlink failed:", e);
+      }
+    }
+
     /* ── Wiring ───────────────────────────────────── */
 
     function render() {
@@ -1079,6 +1265,20 @@
     document.getElementById("logoutBtn").addEventListener("click", async () => {
       await db.auth.signOut();
       showLogin();
+    });
+
+    document.getElementById("linkBarCancel").addEventListener("click", () => {
+      state.linkEvent = null;
+      renderLinkBar();
+      renderBoard();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && state.linkEvent) {
+        state.linkEvent = null;
+        renderLinkBar();
+        renderBoard();
+      }
     });
 
     document.getElementById("calTabs").addEventListener("click", (e) => {
