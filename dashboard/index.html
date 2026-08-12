@@ -344,6 +344,7 @@
     .task-due.add-due:hover { color: #fff; border-color: #0a84ff; }
 
     .due-input {
+      width: 110px;
       padding: 3px 6px;
       border: 1px solid #0a84ff;
       border-radius: 4px;
@@ -353,10 +354,8 @@
       font-family: inherit;
       outline: none;
       flex-shrink: 0;
-      cursor: pointer;
     }
-    .due-month { width: 78px; }
-    .due-day { width: 56px; }
+    .due-input.due-error { border-color: #ff453a; }
 
     .task-sub {
       background: none; border: none; color: #444;
@@ -941,11 +940,8 @@
 
       let dueHtml;
       if (state.dueEditorId === n.id) {
-        const [y, m, d] = (n.due_date || todayEt()).split("-").map(Number);
-        const months = MONTH_NAMES.map((name, i) => `<option value="${i + 1}"${i + 1 === m ? " selected" : ""}>${name}</option>`).join("");
-        const days = Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}"${i + 1 === d ? " selected" : ""}>${i + 1}</option>`).join("");
-        dueHtml = `<select class="due-input due-month" data-due-month="${esc(n.id)}">${months}</select>
-          <select class="due-input due-day" data-due-day="${esc(n.id)}">${days}</select>`;
+        const existing = n.due_date ? formatDueText(n.due_date) : "";
+        dueHtml = `<input class="due-input due-text" data-due-input="${esc(n.id)}" value="${esc(existing)}" placeholder="MM/DD or Sep 5" />`;
       } else {
         dueHtml = `<span class="task-due ${due ? due.cls : "add-due"}" data-due-chip="${esc(n.id)}">${due ? esc(due.label) : "📅"}</span>`;
       }
@@ -1038,16 +1034,23 @@
           e.stopPropagation();
           state.dueEditorId = el.dataset.dueChip;
           renderBoard();
-          const select = boardEl.querySelector("[data-due-month]");
-          if (select) select.focus();
+          const input = boardEl.querySelector("[data-due-input]");
+          if (input) { input.focus(); input.select(); }
         });
       });
-      boardEl.querySelectorAll("[data-due-month], [data-due-day]").forEach(el => {
-        const nodeId = el.dataset.dueMonth || el.dataset.dueDay;
-        el.addEventListener("change", () => setDueFromSelects(nodeId));
+      boardEl.querySelectorAll("[data-due-input]").forEach(el => {
         el.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") { state.dueEditorId = null; renderBoard(); }
+          if (e.key === "Enter") {
+            const due = parseDueText(el.value);
+            if (due) { setNodeDue(el.dataset.dueInput, due); }
+            else if (!el.value.trim()) { setNodeDue(el.dataset.dueInput, null); }
+            else { el.classList.add("due-error"); }
+          } else if (e.key === "Escape") {
+            state.dueEditorId = null;
+            renderBoard();
+          }
         });
+        el.addEventListener("input", () => el.classList.remove("due-error"));
       });
       boardEl.querySelectorAll("[data-child-input]").forEach(el => {
         el.addEventListener("keydown", (e) => {
@@ -1077,8 +1080,8 @@
       });
 
       if (state.dueEditorId) {
-        const select = boardEl.querySelector("[data-due-month]");
-        if (select) select.focus();
+        const input = boardEl.querySelector("[data-due-input]");
+        if (input) { input.focus(); input.select(); }
       }
     }
 
@@ -1162,21 +1165,46 @@
       }
     }
 
-    function setDueFromSelects(id) {
-      const n = state.nodes.find(x => x.id === id);
-      if (!n) return;
-      const month = Number(boardElValue(id, "due-month"));
-      const day = Number(boardElValue(id, "due-day"));
-      const baseYear = n.due_date ? Number(n.due_date.slice(0, 4)) : Number(todayEt().slice(0, 4));
-      const daysInMonth = new Date(baseYear, month, 0).getDate();
-      const d = Math.min(day || 1, daysInMonth);
-      const due = `${baseYear}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      setNodeDue(id, due);
+    function formatDueText(dateStr) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      const name = MONTH_NAMES[m - 1];
+      const s = `${name[0]}${name.slice(1).toLowerCase()} ${d}`;
+      return y === 2026 ? s : `${s} ${y}`;
     }
 
-    function boardElValue(id, key) {
-      const el = document.querySelector(`[data-${key}="${id}"]`);
-      return el ? el.value : null;
+    function parseDueText(text) {
+      const s = text.trim();
+      if (!s) return null;
+      let month = null, day = null, year = null;
+      let m = s.match(/^(\d{1,2})[/.-](\d{1,2})(?:[/.-](\d{2,4}))?$/);
+      if (m) {
+        month = Number(m[1]); day = Number(m[2]); year = m[3] ? Number(m[3]) : null;
+      } else {
+        m = s.match(/^([A-Za-z]{3,9})\s+(\d{1,2})(?:\s+(\d{2,4}))?$/);
+        if (m) {
+          const idx = MONTH_NAMES.findIndex(n => n.toLowerCase().startsWith(m[1].toLowerCase()));
+          if (idx < 0) return null;
+          month = idx + 1; day = Number(m[2]); year = m[3] ? Number(m[3]) : null;
+        } else {
+          m = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{2,4}))?$/);
+          if (m) {
+            const idx = MONTH_NAMES.findIndex(n => n.toLowerCase().startsWith(m[2].toLowerCase()));
+            if (idx < 0) return null;
+            day = Number(m[1]); month = idx + 1; year = m[3] ? Number(m[3]) : null;
+          } else {
+            return null;
+          }
+        }
+      }
+      if (month < 1 || month > 12 || day < 1) return null;
+      if (year !== null) {
+        if (year < 100) year += 2000;
+        else if (year > 9999) return null;
+      }
+      year = year || 2026;
+      const daysInMonth = new Date(year, month, 0).getDate();
+      if (day > daysInMonth) return null;
+      return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     }
 
     async function deleteNode(id) {
