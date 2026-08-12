@@ -201,6 +201,11 @@
 
     /* ── Work board ──────────────────────────────────── */
     .board-actions { display: flex; align-items: center; gap: 12px; }
+    .show-archived {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: #666; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .show-archived input { accent-color: #0a84ff; cursor: pointer; }
 
     .new-box-btn {
       background: none;
@@ -298,30 +303,6 @@
     .box.archived .box-title { color: #8a8a8a; }
     .box.archived .box-meta { color: #555; }
     .box.archived .task-title { color: #7a7a7a; }
-
-    .archived-block {
-      break-inside: avoid;
-      margin-top: 4px;
-    }
-    .archived-toggle {
-      background: none;
-      border: 1px dashed #333;
-      color: #777;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      font-family: inherit;
-    }
-    .archived-toggle:hover { color: #aaa; border-color: #444; }
-    .archived-chev { font-size: 10px; }
 
     .box-tasks { list-style: none; }
 
@@ -541,8 +522,7 @@
     body.light-mode .box.archived { background: #f2f3f5; border-color: #d8dade; }
     body.light-mode .box.archived .box-title { color: #9a9a9a; }
     body.light-mode .box.archived .task-title { color: #999; }
-    body.light-mode .archived-toggle { color: #999; border-color: #d0d2d6; }
-    body.light-mode .archived-toggle:hover { color: #555; border-color: #bbb; }
+    body.light-mode .show-archived { color: #777; }
     body.light-mode .task-row { border-bottom-color: #f0f1f3; }
     body.light-mode .task-title { color: #111; }
     body.light-mode .task-row.done .task-title { color: #aaa; }
@@ -636,6 +616,7 @@
         <div class="widget-header">
           <h2>Work</h2>
           <div class="board-actions">
+            <label class="show-archived"><input type="checkbox" id="showArchivedToggle"> archived</label>
             <button class="new-box-btn" id="newBoxBtn">+ New box</button>
           </div>
         </div>
@@ -1017,13 +998,14 @@
         const children = state.nodes.filter(c => c.parent_id === root.id);
         const visible = archived ? children : children.filter(c => c.status !== "done" && c.status !== "archived");
         const actionBtn = archived
-          ? `<button class="box-btn del" data-box-del="${esc(root.id)}" title="Delete box">\u00d7</button>`
-          : `<button class="box-btn arch" data-box-archive="${esc(root.id)}" title="Archive project">${archiveSvg()}</button>`;
+          ? `<button class="box-btn arch" data-box-unarchive="${esc(root.id)}" title="Move back to live">${archiveSvg()}</button>
+             <button class="box-btn del" data-box-del="${esc(root.id)}" title="Delete box">\u00d7</button>`
+          : `<button class="box-btn active" data-box-add="${esc(root.id)}" title="Add task">+</button>
+             <button class="box-btn arch" data-box-archive="${esc(root.id)}" title="Archive project">${archiveSvg()}</button>`;
         return `<section class="box${archived ? " archived" : ""}">
           <div class="box-header">
             <span class="box-title" title="${esc(root.title)}">${esc(root.title)}</span>
             <span class="box-meta">${meta}</span>
-            <button class="box-btn active" data-box-add="${esc(root.id)}" title="Add task">+</button>
             ${actionBtn}
           </div>
           <div class="box-add-row hidden" data-box-row="${esc(root.id)}">
@@ -1036,11 +1018,8 @@
       };
 
       let archivedBlock = "";
-      if (archivedRoots.length) {
-        archivedBlock = `<div class="archived-block">
-          <button class="archived-toggle" data-archived-toggle>Archived (${archivedRoots.length})<span class="archived-chev">${state.showArchived ? "▾" : "▸"}</span></button>
-          ${state.showArchived ? `<div class="archived-boxes">${archivedRoots.map(r => boxHtml(r, true)).join("")}</div>` : ""}
-        </div>`;
+      if (archivedRoots.length && state.showArchived) {
+        archivedBlock = `<div class="archived-boxes">${archivedRoots.map(r => boxHtml(r, true)).join("")}</div>`;
       }
 
       el.innerHTML = '<div class="board">' + liveRoots.map(root => boxHtml(root, false)).join("") + archivedBlock + '</div>';
@@ -1129,13 +1108,14 @@
           archiveBox(el.dataset.boxArchive);
         });
       });
-      boardEl.querySelectorAll("[data-archived-toggle]").forEach(el => {
+      boardEl.querySelectorAll("[data-box-unarchive]").forEach(el => {
         el.addEventListener("click", (e) => {
           e.stopPropagation();
-          state.showArchived = !state.showArchived;
-          renderBoard();
+          unarchiveBox(el.dataset.boxUnarchive);
         });
       });
+      const showArchivedToggle = document.getElementById("showArchivedToggle");
+      if (showArchivedToggle) showArchivedToggle.checked = state.showArchived;
       boardEl.querySelectorAll("[data-box-input]").forEach(el => {
         el.addEventListener("keydown", (e) => {
           if (e.key === "Enter") { addNode(el.dataset.boxInput, el.value); el.value = ""; }
@@ -1290,21 +1270,33 @@
       }
     }
 
-    async function archiveBox(id) {
-      const n = state.nodes.find(x => x.id === id);
-      if (!n) return;
+    async function setSubtreeStatus(id, status) {
       const ids = subtreeIds(id);
+      for (const i of ids) {
+        const node = state.nodes.find(x => x.id === i);
+        if (node) node.status = status;
+        await db.from("nodes").update({ status, updated_at: new Date().toISOString() }).eq("id", i);
+      }
+    }
+
+    async function archiveBox(id) {
       try {
-        for (const i of ids) {
-          const node = state.nodes.find(x => x.id === i);
-          if (node) node.status = "archived";
-          await db.from("nodes").update({ status: "archived", updated_at: new Date().toISOString() }).eq("id", i);
-        }
+        await setSubtreeStatus(id, "archived");
         state.showArchived = true;
         renderBoard();
         renderDue();
       } catch (e) {
         console.error("Archive failed:", e);
+      }
+    }
+
+    async function unarchiveBox(id) {
+      try {
+        await setSubtreeStatus(id, "ready");
+        renderBoard();
+        renderDue();
+      } catch (e) {
+        console.error("Unarchive failed:", e);
       }
     }
 
@@ -1466,6 +1458,11 @@
       state.viewDays = Number(btn.dataset.days);
       document.querySelectorAll("#calTabs button").forEach(b => b.classList.toggle("active", b === btn));
       renderCalendar();
+    });
+
+    document.getElementById("showArchivedToggle").addEventListener("change", (e) => {
+      state.showArchived = e.target.checked;
+      renderBoard();
     });
 
     document.getElementById("newBoxBtn").addEventListener("click", () => {
