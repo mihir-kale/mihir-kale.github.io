@@ -201,11 +201,6 @@
 
     /* ── Work board ──────────────────────────────────── */
     .board-actions { display: flex; align-items: center; gap: 12px; }
-    .show-done {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; color: #666; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .show-done input { accent-color: #0a84ff; cursor: pointer; }
 
     .new-box-btn {
       background: none;
@@ -293,7 +288,40 @@
     .box:hover .box-btn { opacity: 1; }
     .box-btn:hover { color: #fff; border-color: #fff; }
     .box-btn.del:hover { color: #ff453a; border-color: #ff453a; }
+    .box-btn.arch:hover { color: #30d158; border-color: #30d158; }
     .box-btn.active { opacity: 1; color: #0a84ff; border-color: #0a84ff; }
+
+    .box.archived {
+      background: #0f0f0f;
+      border-color: #262626;
+    }
+    .box.archived .box-title { color: #8a8a8a; }
+    .box.archived .box-meta { color: #555; }
+    .box.archived .task-title { color: #7a7a7a; }
+
+    .archived-block {
+      break-inside: avoid;
+      margin-top: 4px;
+    }
+    .archived-toggle {
+      background: none;
+      border: 1px dashed #333;
+      color: #777;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-family: inherit;
+    }
+    .archived-toggle:hover { color: #aaa; border-color: #444; }
+    .archived-chev { font-size: 10px; }
 
     .box-tasks { list-style: none; }
 
@@ -502,7 +530,6 @@
     body.light-mode .cal-event-time.all-day { color: #999; }
     body.light-mode .cal-event-title { color: #111; }
     body.light-mode .cal-event-loc { color: #777; }
-    body.light-mode .show-done { color: #777; }
     body.light-mode .inline-input { background: #fff; border-color: #ccc; color: #111; }
     body.light-mode .inline-input::placeholder { color: #999; }
     body.light-mode .box { background: #fff; border-color: #e3e4e8; }
@@ -511,6 +538,11 @@
     body.light-mode .box-meta { color: #999; }
     body.light-mode .box-btn { border-color: #ccc; color: #777; }
     body.light-mode .box-btn:hover { color: #111; border-color: #111; }
+    body.light-mode .box.archived { background: #f2f3f5; border-color: #d8dade; }
+    body.light-mode .box.archived .box-title { color: #9a9a9a; }
+    body.light-mode .box.archived .task-title { color: #999; }
+    body.light-mode .archived-toggle { color: #999; border-color: #d0d2d6; }
+    body.light-mode .archived-toggle:hover { color: #555; border-color: #bbb; }
     body.light-mode .task-row { border-bottom-color: #f0f1f3; }
     body.light-mode .task-title { color: #111; }
     body.light-mode .task-row.done .task-title { color: #aaa; }
@@ -604,7 +636,6 @@
         <div class="widget-header">
           <h2>Work</h2>
           <div class="board-actions">
-            <label class="show-done"><input type="checkbox" id="showDoneToggle"> completed</label>
             <button class="new-box-btn" id="newBoxBtn">+ New box</button>
           </div>
         </div>
@@ -685,13 +716,17 @@
       return '<svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg>';
     }
 
+    function archiveSvg() {
+      return '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2.5" width="12" height="3" rx="1"/><path d="M3.5 5.5v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-7"/><path d="M6.5 8.5h3"/></svg>';
+    }
+
     let state = {
       nodes: [],
       tasks: [],
       events: [],
       ics: [],
       viewDays: 1,
-      showDone: false,
+      showArchived: false,
       dueEditorId: null,
       pickEvent: null,
     };
@@ -716,7 +751,7 @@
 
     async function loadAll() {
       const [nodesRes, tasksRes, eventsRes] = await Promise.all([
-        db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date").not("status", "eq", "archived"),
+        db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date"),
         db.from("tasks").select("id,title,status,priority,due_date,project").in("status", ["pending", "in_progress"]),
         db.from("events").select("id,title,event_date,start_time,end_time,event_type,status,location,url").neq("status", "cancelled").gte("event_date", addDays(todayEt(), -7)),
       ]);
@@ -958,55 +993,72 @@
       </li>`;
     }
 
-    function boardRowsHtml(node, depth, showDone) {
+    function boardRowsHtml(node, depth, showAll) {
       let html = taskRowHtml(node, depth);
       const children = state.nodes.filter(c => c.parent_id === node.id);
-      const visible = showDone ? children : children.filter(c => c.status !== "done");
-      visible.forEach(c => { html += boardRowsHtml(c, depth + 1, showDone); });
+      const visible = showAll ? children : children.filter(c => c.status !== "done" && c.status !== "archived");
+      visible.forEach(c => { html += boardRowsHtml(c, depth + 1, showAll); });
       return html;
     }
 
     function renderBoard() {
       const el = document.getElementById("board");
-      const roots = state.nodes.filter(n => !n.parent_id);
+      const liveRoots = state.nodes.filter(n => !n.parent_id && n.status !== "archived");
+      const archivedRoots = state.nodes.filter(n => !n.parent_id && n.status === "archived");
 
-      if (!roots.length) {
+      if (!liveRoots.length && !archivedRoots.length) {
         el.innerHTML = '<div class="empty-state">No boxes yet — add a project area.</div>';
         return;
       }
 
-      el.innerHTML = '<div class="board">' + roots.map(root => {
+      const boxHtml = (root, archived) => {
         const stats = subtreeStats(root.id);
         const meta = `${stats.open} open${stats.done ? ` · ${stats.done} done` : ""}`;
         const children = state.nodes.filter(c => c.parent_id === root.id);
-        const visible = state.showDone ? children : children.filter(c => c.status !== "done");
-        return `<section class="box">
+        const visible = archived ? children : children.filter(c => c.status !== "done" && c.status !== "archived");
+        const actionBtn = archived
+          ? `<button class="box-btn del" data-box-del="${esc(root.id)}" title="Delete box">\u00d7</button>`
+          : `<button class="box-btn arch" data-box-archive="${esc(root.id)}" title="Archive project">${archiveSvg()}</button>`;
+        return `<section class="box${archived ? " archived" : ""}">
           <div class="box-header">
             <span class="box-title" title="${esc(root.title)}">${esc(root.title)}</span>
             <span class="box-meta">${meta}</span>
             <button class="box-btn active" data-box-add="${esc(root.id)}" title="Add task">+</button>
-            <button class="box-btn del" data-box-del="${esc(root.id)}" title="Delete box">\u00d7</button>
+            ${actionBtn}
           </div>
           <div class="box-add-row hidden" data-box-row="${esc(root.id)}">
             <input class="inline-input" placeholder="New task" data-box-input="${esc(root.id)}" />
           </div>
           <ul class="box-tasks">
-            ${visible.map(c => boardRowsHtml(c, 0, state.showDone)).join("")}
+            ${visible.map(c => boardRowsHtml(c, 0, archived)).join("")}
           </ul>
         </section>`;
-      }).join("") + '</div>';
+      };
+
+      let archivedBlock = "";
+      if (archivedRoots.length) {
+        archivedBlock = `<div class="archived-block">
+          <button class="archived-toggle" data-archived-toggle>Archived (${archivedRoots.length})<span class="archived-chev">${state.showArchived ? "▾" : "▸"}</span></button>
+          ${state.showArchived ? `<div class="archived-boxes">${archivedRoots.map(r => boxHtml(r, true)).join("")}</div>` : ""}
+        </div>`;
+      }
+
+      el.innerHTML = '<div class="board">' + liveRoots.map(root => boxHtml(root, false)).join("") + archivedBlock + '</div>';
 
       const boardEl = document.querySelector("#board .board");
       boardEl.classList.toggle("pick-mode", !!state.pickEvent);
+      const archivedIds = new Set(state.nodes.filter(n => n.status === "archived").map(n => n.id));
 
       if (state.pickEvent) {
         boardEl.querySelectorAll("[data-pick-target]").forEach(row => {
+          if (archivedIds.has(row.dataset.pickTarget)) return;
           row.classList.add("link-target");
         });
       }
       boardEl.querySelectorAll("[data-pick-target]").forEach(el => {
         el.addEventListener("click", (e) => {
           if (!state.pickEvent) return;
+          if (archivedIds.has(el.dataset.pickTarget)) return;
           e.stopPropagation();
           copyEventToTask(el.dataset.pickTarget);
         });
@@ -1069,6 +1121,19 @@
         el.addEventListener("click", (e) => {
           e.stopPropagation();
           deleteNode(el.dataset.boxDel);
+        });
+      });
+      boardEl.querySelectorAll("[data-box-archive]").forEach(el => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          archiveBox(el.dataset.boxArchive);
+        });
+      });
+      boardEl.querySelectorAll("[data-archived-toggle]").forEach(el => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          state.showArchived = !state.showArchived;
+          renderBoard();
         });
       });
       boardEl.querySelectorAll("[data-box-input]").forEach(el => {
@@ -1222,6 +1287,24 @@
         renderDue();
       } catch (e) {
         console.error("Delete failed:", e);
+      }
+    }
+
+    async function archiveBox(id) {
+      const n = state.nodes.find(x => x.id === id);
+      if (!n) return;
+      const ids = subtreeIds(id);
+      try {
+        for (const i of ids) {
+          const node = state.nodes.find(x => x.id === i);
+          if (node) node.status = "archived";
+          await db.from("nodes").update({ status: "archived", updated_at: new Date().toISOString() }).eq("id", i);
+        }
+        state.showArchived = true;
+        renderBoard();
+        renderDue();
+      } catch (e) {
+        console.error("Archive failed:", e);
       }
     }
 
@@ -1383,11 +1466,6 @@
       state.viewDays = Number(btn.dataset.days);
       document.querySelectorAll("#calTabs button").forEach(b => b.classList.toggle("active", b === btn));
       renderCalendar();
-    });
-
-    document.getElementById("showDoneToggle").addEventListener("change", (e) => {
-      state.showDone = e.target.checked;
-      renderBoard();
     });
 
     document.getElementById("newBoxBtn").addEventListener("click", () => {
