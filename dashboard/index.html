@@ -337,6 +337,11 @@
     .task-due:hover { border-color: #0a84ff; color: #0a84ff; }
     .task-due.overdue { color: #ff453a; border-color: #ff453a55; }
     .task-due.today { color: #ff9f0a; border-color: #ff9f0a55; }
+    .task-due.soon { color: #ff453a; border-color: #ff453a55; }
+    .task-due.later { color: #0a84ff; border-color: #0a84ff55; }
+    .task-due.add-due { opacity: 0; color: #fff; }
+    .task-row:hover .task-due.add-due { opacity: 1; }
+    .task-due.add-due:hover { color: #fff; border-color: #0a84ff; }
 
     .due-input {
       width: 120px;
@@ -580,10 +585,7 @@
       const diff = Math.round((new Date(due + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000);
       if (diff < 0) return { label: Math.abs(diff) + "d ago", cls: "overdue" };
       if (diff === 0) return { label: "Today", cls: "today" };
-      if (diff === 1) return { label: "Tmr", cls: "" };
-      const [y, m, d] = due.split("-").map(Number);
-      const label = `${MONTH_NAMES[m - 1]} ${d}` + (y !== Number(today.slice(0, 4)) ? " " + y : "");
-      return { label, cls: "" };
+      return { label: diff + "d", cls: diff < 3 ? "soon" : "later" };
     }
 
     function checkSvg() {
@@ -847,7 +849,7 @@
       if (state.dueEditorId === n.id) {
         dueHtml = `<input type="date" class="due-input" value="${esc(n.due_date || "")}" data-due-input="${esc(n.id)}">`;
       } else {
-        dueHtml = `<span class="task-due ${due ? due.cls : ""}" data-due-chip="${esc(n.id)}">${due ? esc(due.label) : "add"}</span>`;
+        dueHtml = `<span class="task-due ${due ? due.cls : "add-due"}" data-due-chip="${esc(n.id)}">${due ? esc(due.label) : "📅"}</span>`;
       }
 
       return `<li class="task-row ${cls}" style="--depth:${depth}" data-pick-target="${esc(n.id)}">
