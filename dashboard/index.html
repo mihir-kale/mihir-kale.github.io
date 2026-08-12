@@ -369,7 +369,7 @@
 
     .child-add-row, .box-add-row { padding: 4px 2px 2px calc(var(--depth, 0) * 16px + 26px); }
 
-    /* ── Event ⇄ task linking ──────────────────────── */
+    /* ── Event → task deadline copy ────────────────── */
     .link-bar {
       display: flex;
       align-items: center;
@@ -405,26 +405,15 @@
     }
     .cal-event:hover .ev-link, .due-item:hover .ev-link { opacity: 1; }
     .ev-link:hover { color: #fff; }
-    .ev-link.linked { opacity: 1; color: #0a84ff; }
-    .ev-link.linked:hover { color: #fff; }
     .ev-link svg { width: 12px; height: 12px; }
 
-    .task-link {
-      background: none; border: none; color: #0a84ff;
-      cursor: pointer; padding: 0 2px; flex-shrink: 0;
-      display: flex; align-items: center;
-      opacity: .7; transition: all .2s;
-    }
-    .task-link:hover { opacity: 1; color: #ff453a; }
-    .task-link svg { width: 11px; height: 11px; }
-
-    .board.link-mode .task-row { cursor: pointer; }
-    .board.link-mode .task-row.link-target {
+    .board.pick-mode .task-row { cursor: pointer; }
+    .board.pick-mode .task-row.link-target {
       border-radius: 6px;
       box-shadow: inset 0 0 0 1px #0a84ff88;
       transition: background .15s;
     }
-    .board.link-mode .task-row.link-target:hover { background: #0a84ff22; }
+    .board.pick-mode .task-row.link-target:hover { background: #0a84ff22; }
 
     /* ── Auth ────────────────────────────────────────── */
     #authGate { display: none; }
@@ -609,7 +598,7 @@
       viewDays: 1,
       showDone: false,
       dueEditorId: null,
-      linkEvent: null,
+      pickEvent: null,
     };
 
     function renderDate() {
@@ -632,7 +621,7 @@
 
     async function loadAll() {
       const [nodesRes, tasksRes, eventsRes] = await Promise.all([
-        db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date,event_id").not("status", "eq", "archived"),
+        db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date").not("status", "eq", "archived"),
         db.from("tasks").select("id,title,status,priority,due_date,project").in("status", ["pending", "in_progress"]),
         db.from("events").select("id,title,event_date,start_time,end_time,event_type,status,location,url").neq("status", "cancelled").gte("event_date", addDays(todayEt(), -7)),
       ]);
@@ -727,7 +716,7 @@
               <div class="due-title"><span class="deadline-tag">${esc(e.title)}</span></div>
               <div class="due-meta">Deadline</div>
             </div>
-            <button class="ev-link${state.nodes.some(n => n.event_id === e.id) ? " linked" : ""}" data-ev-link="${esc(e.id)}" title="Link event to a task">${linkSvg()}</button>
+            <button class="ev-link" data-ev-link data-pick-title="${esc(e.title)}" data-pick-date="${esc(e.event_date)}" title="Copy deadline to a task">${linkSvg()}</button>
           </li>`).join("");
       }
 
@@ -736,7 +725,7 @@
       el.querySelectorAll("[data-ev-link]").forEach(btn => {
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          toggleLink(btn.dataset.evLink);
+          togglePick(unesc(btn.dataset.pickTitle), btn.dataset.pickDate);
         });
       });
     }
@@ -805,7 +794,7 @@
         const items = evts.map(ev => {
           const timeStr = ev.time || "All day";
           const loc = ev.location ? `<div class="cal-event-loc">${esc(ev.location)}</div>` : "";
-          const link = ev.id ? `<button class="ev-link${state.nodes.some(n => n.event_id === ev.id) ? " linked" : ""}" data-ev-link="${esc(ev.id)}" title="Link event to a task">${linkSvg()}</button>` : "";
+          const link = `<button class="ev-link" data-ev-link data-pick-title="${esc(ev.title)}" data-pick-date="${esc(ev.date)}" title="Copy deadline to a task">${linkSvg()}</button>`;
           return `<div class="cal-event">
             <span class="cal-event-dot" style="background:${esc(ev.color)}"></span>
             <span class="cal-event-time${ev.time ? "" : " all-day"}">${esc(timeStr)}</span>
@@ -822,7 +811,7 @@
       el.querySelectorAll("[data-ev-link]").forEach(btn => {
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          toggleLink(btn.dataset.evLink);
+          togglePick(unesc(btn.dataset.pickTitle), btn.dataset.pickDate);
         });
       });
     }
@@ -861,16 +850,11 @@
         dueHtml = `<span class="task-due ${due ? due.cls : ""}" data-due-chip="${esc(n.id)}">${due ? esc(due.label) : "add"}</span>`;
       }
 
-      const linkBtn = n.event_id
-        ? `<button class="task-link" data-unlink="${esc(n.id)}" title="Linked to event — click to unlink">${linkSvg()}</button>`
-        : "";
-
-      return `<li class="task-row ${cls}" style="--depth:${depth}" data-node-link="${esc(n.id)}">
+      return `<li class="task-row ${cls}" style="--depth:${depth}" data-pick-target="${esc(n.id)}">
         <div class="task-check ${isDone ? "done" : ""}" data-toggle="${esc(n.id)}">${checkSvg()}</div>
         <span class="task-title">${esc(n.title)}</span>
         <button class="task-sub" data-sub="${esc(n.id)}" title="Add subtask">+</button>
         ${dueHtml}
-        ${linkBtn}
         <button class="task-del" data-del="${esc(n.id)}" title="Delete">\u00d7</button>
       </li>
       <li class="child-add-row hidden" style="--depth:${depth}" data-child-row="${esc(n.id)}">
@@ -917,24 +901,18 @@
       }).join("") + '</div>';
 
       const boardEl = document.querySelector("#board .board");
-      boardEl.classList.toggle("link-mode", !!state.linkEvent);
+      boardEl.classList.toggle("pick-mode", !!state.pickEvent);
 
-      if (state.linkEvent) {
-        boardEl.querySelectorAll("[data-node-link]").forEach(row => {
+      if (state.pickEvent) {
+        boardEl.querySelectorAll("[data-pick-target]").forEach(row => {
           row.classList.add("link-target");
         });
       }
-      boardEl.querySelectorAll("[data-node-link]").forEach(el => {
+      boardEl.querySelectorAll("[data-pick-target]").forEach(el => {
         el.addEventListener("click", (e) => {
-          if (!state.linkEvent) return;
+          if (!state.pickEvent) return;
           e.stopPropagation();
-          linkTaskToEvent(el.dataset.nodeLink);
-        });
-      });
-      boardEl.querySelectorAll("[data-unlink]").forEach(el => {
-        el.addEventListener("click", (e) => {
-          e.stopPropagation();
-          unlinkTask(el.dataset.unlink);
+          copyEventToTask(el.dataset.pickTarget);
         });
       });
       boardEl.querySelectorAll("[data-toggle]").forEach(el => {
@@ -1129,84 +1107,53 @@
       }
     }
 
-    /* ── Event ⇄ task linking ─────────────────────── */
+    /* ── Event → task deadline copy ───────────────── */
+
+    function unesc(s) {
+      return String(s).replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&");
+    }
 
     function linkSvg() {
       return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 9a3 3 0 0 0 4.24 0l2-2A3 3 0 0 0 9.24 2.76l-1 1"/><path d="M9 7a3 3 0 0 0-4.24 0l-2 2A3 3 0 0 0 6.76 12.24l1-1"/></svg>`;
     }
 
-    function eventForId(id) {
-      if (!id) return null;
-      const ev = state.events.find(e => e.id === id);
-      return ev || { title: "Event" };
-    }
-
-    function linkEventTitle(id) {
-      const ev = eventForId(id);
-      const time = ev.start_time ? fmtTimeHm(ev.start_time) : "";
-      return `${ev.title}${time ? " · " + time : ""}`;
-    }
-
-    function toggleLink(eventId) {
-      const already = state.nodes.some(n => n.event_id === eventId);
-      if (already) {
-        state.linkEvent = null;
-      } else if (state.linkEvent && state.linkEvent.id === eventId) {
-        state.linkEvent = null;
+    function togglePick(title, date) {
+      if (state.pickEvent && state.pickEvent.date === date && state.pickEvent.title === title) {
+        state.pickEvent = null;
       } else {
-        state.linkEvent = eventForId(eventId);
+        state.pickEvent = { title, date };
       }
-      renderLinkBar();
+      renderPickBar();
       renderBoard();
     }
 
-    function renderLinkBar() {
+    function renderPickBar() {
       const bar = document.getElementById("linkBar");
-      const ev = state.linkEvent;
+      const ev = state.pickEvent;
       if (!ev) {
         bar.classList.add("hidden");
         return;
       }
-      document.getElementById("linkBarTitle").textContent = linkEventTitle(ev.id);
+      document.getElementById("linkBarTitle").textContent = `${ev.title} — ${ev.date}`;
       bar.classList.remove("hidden");
     }
 
-    async function linkTaskToEvent(nodeId) {
-      const ev = state.linkEvent;
+    async function copyEventToTask(nodeId) {
+      const ev = state.pickEvent;
       const n = state.nodes.find(x => x.id === nodeId);
       if (!ev || !n) return;
-      const patch = { event_id: ev.id, updated_at: new Date().toISOString() };
-      if (ev.event_date && ev.event_type === "deadline" && !n.due_date) {
-        patch.due_date = ev.event_date;
-      }
-      n.event_id = ev.id;
-      if (patch.due_date) n.due_date = patch.due_date;
-      state.linkEvent = null;
-      renderLinkBar();
+      const patch = { due_date: ev.date, updated_at: new Date().toISOString() };
+      n.due_date = ev.date;
+      state.pickEvent = null;
+      renderPickBar();
       renderBoard();
       try {
         await db.from("nodes").update(patch).eq("id", nodeId);
-        renderCalendar();
         renderDue();
       } catch (e) {
-        n.event_id = null;
-        if (patch.due_date) n.due_date = null;
+        n.due_date = null;
         renderBoard();
-        console.error("Link failed:", e);
-      }
-    }
-
-    async function unlinkTask(nodeId) {
-      const n = state.nodes.find(x => x.id === nodeId);
-      if (!n || !n.event_id) return;
-      n.event_id = null;
-      renderBoard();
-      renderCalendar();
-      renderDue();
-      try {
-        await db.from("nodes").update({ event_id: null, updated_at: new Date().toISOString() }).eq("id", nodeId);
-      } catch (e) {
-        console.error("Unlink failed:", e);
+        console.error("Copy deadline failed:", e);
       }
     }
 
@@ -1268,15 +1215,15 @@
     });
 
     document.getElementById("linkBarCancel").addEventListener("click", () => {
-      state.linkEvent = null;
-      renderLinkBar();
+      state.pickEvent = null;
+      renderPickBar();
       renderBoard();
     });
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && state.linkEvent) {
-        state.linkEvent = null;
-        renderLinkBar();
+      if (e.key === "Escape" && state.pickEvent) {
+        state.pickEvent = null;
+        renderPickBar();
         renderBoard();
       }
     });
