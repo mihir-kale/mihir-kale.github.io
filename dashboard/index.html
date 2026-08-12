@@ -344,7 +344,6 @@
     .task-due.add-due:hover { color: #fff; border-color: #0a84ff; }
 
     .due-input {
-      width: 120px;
       padding: 3px 6px;
       border: 1px solid #0a84ff;
       border-radius: 4px;
@@ -354,7 +353,10 @@
       font-family: inherit;
       outline: none;
       flex-shrink: 0;
+      cursor: pointer;
     }
+    .due-month { width: 78px; }
+    .due-day { width: 56px; }
 
     .task-sub {
       background: none; border: none; color: #444;
@@ -939,7 +941,11 @@
 
       let dueHtml;
       if (state.dueEditorId === n.id) {
-        dueHtml = `<input type="date" class="due-input" value="${esc(n.due_date || "")}" data-due-input="${esc(n.id)}">`;
+        const [y, m, d] = (n.due_date || todayEt()).split("-").map(Number);
+        const months = MONTH_NAMES.map((name, i) => `<option value="${i + 1}"${i + 1 === m ? " selected" : ""}>${name}</option>`).join("");
+        const days = Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}"${i + 1 === d ? " selected" : ""}>${i + 1}</option>`).join("");
+        dueHtml = `<select class="due-input due-month" data-due-month="${esc(n.id)}">${months}</select>
+          <select class="due-input due-day" data-due-day="${esc(n.id)}">${days}</select>`;
       } else {
         dueHtml = `<span class="task-due ${due ? due.cls : "add-due"}" data-due-chip="${esc(n.id)}">${due ? esc(due.label) : "📅"}</span>`;
       }
@@ -1032,12 +1038,14 @@
           e.stopPropagation();
           state.dueEditorId = el.dataset.dueChip;
           renderBoard();
-          const input = boardEl.querySelector("[data-due-input]");
-          if (input) { input.focus(); input.select(); }
+          const select = boardEl.querySelector("[data-due-month]");
+          if (select) select.focus();
         });
       });
-      boardEl.querySelectorAll("[data-due-input]").forEach(el => {
-        el.addEventListener("change", () => setNodeDue(el.dataset.dueInput, el.value || null));
+      boardEl.querySelectorAll("[data-due-month], [data-due-day]").forEach(el => {
+        const nodeId = el.dataset.dueMonth || el.dataset.dueDay;
+        const key = el.dataset.dueMonth ? "due-month" : "due-day";
+        el.addEventListener("change", () => setDueFromSelects(nodeId, key));
         el.addEventListener("keydown", (e) => {
           if (e.key === "Escape") { state.dueEditorId = null; renderBoard(); }
         });
@@ -1070,8 +1078,8 @@
       });
 
       if (state.dueEditorId) {
-        const input = boardEl.querySelector("[data-due-input]");
-        if (input) { input.focus(); input.select(); }
+        const select = boardEl.querySelector("[data-due-month]");
+        if (select) select.focus();
       }
     }
 
@@ -1141,11 +1149,11 @@
       }
     }
 
-    async function setNodeDue(id, due) {
+    async function setNodeDue(id, due, keepOpen) {
       const n = state.nodes.find(x => x.id === id);
       if (!n) return;
       n.due_date = due;
-      state.dueEditorId = null;
+      if (!keepOpen) state.dueEditorId = null;
       renderBoard();
       renderDue();
       try {
@@ -1153,6 +1161,27 @@
       } catch (e) {
         console.error("Due update failed:", e);
       }
+    }
+
+    function setDueFromSelects(id, changedKey) {
+      const n = state.nodes.find(x => x.id === id);
+      if (!n) return;
+      const month = Number(boardElValue(id, "due-month"));
+      const day = Number(boardElValue(id, "due-day"));
+      const baseYear = n.due_date ? Number(n.due_date.slice(0, 4)) : Number(todayEt().slice(0, 4));
+      const daysInMonth = new Date(baseYear, month, 0).getDate();
+      const d = Math.min(day || 1, daysInMonth);
+      const due = `${baseYear}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      setNodeDue(id, due, changedKey === "due-month");
+      if (changedKey === "due-month") {
+        const daySel = document.querySelector(`[data-due-day="${id}"]`);
+        if (daySel) daySel.focus();
+      }
+    }
+
+    function boardElValue(id, key) {
+      const el = document.querySelector(`[data-${key}="${id}"]`);
+      return el ? el.value : null;
     }
 
     async function deleteNode(id) {
