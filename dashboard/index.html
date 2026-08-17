@@ -17,7 +17,7 @@
     body {
       font-family: "Inter", -apple-system, sans-serif;
       font-weight: 400;
-      background: #000;
+      background: #070707;
       color: #fff;
       padding: 20px;
       max-width: 1600px;
@@ -424,6 +424,37 @@
     }
     .board.pick-mode .task-row.link-target:hover { background: #0a84ff22; }
 
+    /* ── Microcycle widget ───────────────────────────── */
+    .micro-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .micro-desc {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .micro-tasks { list-style: none; }
+    .micro-task {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .micro-task:last-child { border-bottom: none; }
+    .micro-task-text { font-size: 13px; color: #ccc; flex: 1; }
+    .micro-task-date { font-size: 11px; color: #555; }
+    .micro-link {
+      font-size: 11px;
+      color: #0a84ff;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .micro-link:hover { opacity: .7; }
+
     /* ── Auth ────────────────────────────────────────── */
     #authGate { display: none; }
     #loginForm { display: none; max-width: 320px; margin: 120px auto; }
@@ -604,6 +635,14 @@
           </div>
           <div id="calendarContainer" class="loading">Loading...</div>
         </section>
+
+        <section class="widget" id="microWidget">
+          <div class="widget-header">
+            <h2>Microcycle</h2>
+            <a href="/goals/" class="micro-link">Goals →</a>
+          </div>
+          <div id="microContainer" class="loading">Loading...</div>
+        </section>
       </div>
 
       <section class="widget">
@@ -690,6 +729,9 @@
       nodes: [],
       tasks: [],
       ics: [],
+      goals: [],
+      goalTasks: [],
+      microGoal: null,
       viewDays: 1,
       showArchived: false,
       dueEditorId: null,
@@ -715,15 +757,22 @@
     /* ── Data loading ─────────────────────────────── */
 
     async function loadAll() {
-      const [nodesRes, tasksRes] = await Promise.all([
+      const [nodesRes, tasksRes, goalsRes, goalTasksRes] = await Promise.all([
         db.from("nodes").select("id,title,parent_id,path,status,priority,order_index,due_date"),
         db.from("tasks").select("id,title,status,priority,due_date,project").in("status", ["pending", "in_progress"]),
+        db.from("goals").select("*").eq("status", "active"),
+        db.from("goal_tasks").select("*").eq("status", "pending"),
       ]);
       if (nodesRes.error) throw nodesRes.error;
       if (tasksRes.error) throw tasksRes.error;
+      if (goalsRes.error) throw goalsRes.error;
+      if (goalTasksRes.error) throw goalTasksRes.error;
 
       state.nodes = sortNodes(nodesRes.data || []);
       state.tasks = tasksRes.data || [];
+      state.goals = goalsRes.data || [];
+      state.goalTasks = goalTasksRes.data || [];
+      state.microGoal = state.goals.find(g => g.cycle_type === "micro");
 
       let ics = [];
       try {
@@ -765,8 +814,9 @@
 
       const dueNodes = state.nodes.filter(n => n.status !== "done" && n.status !== "archived" && n.due_date && n.due_date <= today);
       const dueTasks = state.tasks.filter(t => t.status !== "done" && t.due_date && t.due_date <= today);
+      const dueGoalTasks = state.goalTasks.filter(t => t.day_date && t.day_date <= today);
 
-      const total = dueNodes.length + dueTasks.length;
+      const total = dueNodes.length + dueTasks.length + dueGoalTasks.length;
       document.getElementById("dueCount").textContent = total ? `${total} item${total > 1 ? "s" : ""}` : "";
 
       if (!total) {
@@ -783,6 +833,9 @@
       });
       dueTasks.forEach(t => {
         items.push({ key: "task", id: t.id, due: t.due_date, title: t.title, meta: t.project || "Inbox" });
+      });
+      dueGoalTasks.forEach(t => {
+        items.push({ key: "goal_task", id: t.id, due: t.day_date, title: t.description, meta: "Goal" });
       });
       items.forEach(it => {
         if (it.due < today) overdue.push(it);
@@ -1251,6 +1304,16 @@
         try {
           await db.from("tasks").update({ status: next, updated_at: new Date().toISOString() }).eq("id", id);
         } catch (e) { console.error(e); }
+      } else if (kind === "goal_task") {
+        const t = state.goalTasks.find(x => x.id === id);
+        if (!t) return;
+        const next = t.status === "done" ? "pending" : "done";
+        t.status = next;
+        state.goalTasks = state.goalTasks.filter(x => x.id !== id || next !== "done");
+        renderDue();
+        try {
+          await db.from("goal_tasks").update({ status: next, updated_at: new Date().toISOString() }).eq("id", id);
+        } catch (e) { console.error(e); }
       }
     }
 
@@ -1304,11 +1367,59 @@
       }
     }
 
+    /* ── Microcycle widget ─────────────────────────── */
+
+    function renderMicrocycle() {
+      const el = document.getElementById("microContainer");
+      const goal = state.microGoal;
+
+      if (!goal) {
+        el.innerHTML = '<div class="empty-state">No active microcycle goal</div>';
+        return;
+      }
+
+      const today = todayEt();
+      const todayTasks = state.goalTasks.filter(t => t.goal_id === goal.id && t.day_date === today);
+
+      let html = `<div class="micro-title">${esc(goal.title)}</div>`;
+      if (goal.description) {
+        html += `<div class="micro-desc">${esc(goal.description)}</div>`;
+      }
+
+      if (todayTasks.length) {
+        html += '<ul class="micro-tasks">';
+        todayTasks.forEach(t => {
+          html += `<li class="micro-task">
+            <div class="task-check" data-toggle-gtask="${esc(t.id)}">${checkSvg()}</div>
+            <span class="micro-task-text">${esc(t.description)}</span>
+          </li>`;
+        });
+        html += '</ul>';
+      } else {
+        html += '<div class="empty-state">No tasks allocated for today</div>';
+      }
+
+      el.innerHTML = html;
+
+      el.querySelectorAll("[data-toggle-gtask]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const t = state.goalTasks.find(x => x.id === btn.dataset.toggleGtask);
+          if (!t) return;
+          t.status = "done";
+          state.goalTasks = state.goalTasks.filter(x => x.id !== btn.dataset.toggleGtask);
+          renderMicrocycle();
+          renderDue();
+          db.from("goal_tasks").update({ status: "done", updated_at: new Date().toISOString() }).eq("id", btn.dataset.toggleGtask).then(() => {});
+        });
+      });
+    }
+
     /* ── Wiring ───────────────────────────────────── */
 
     function render() {
       renderDue();
       renderCalendar();
+      renderMicrocycle();
       renderBoard();
     }
 

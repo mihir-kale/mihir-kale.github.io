@@ -21,20 +21,24 @@ Personal dashboard + task planner deployed as a GitHub Pages site.
 
 ## Dashboard Layout
 
-Single auth-gated page with three modules (all dark theme, Eastern Time):
+Single auth-gated page with four modules (all dark theme, Eastern Time):
 
 | Module | Source | Notes |
 |---|---|---|
-| Due | `nodes` + `tasks` + `events` | Overdue/today buckets from open tasks and deadline events; checkbox toggles done |
+| Due | `nodes` + `tasks` + `goal_tasks` | Overdue/today buckets from open tasks, deadline events, and goal allocations; checkbox toggles done |
 | Calendar | `events` table + Outlook ICS (via `calendar-proxy` edge function) | Scrollable next-N-days list; 1D/3D/7D toggle (default 1D), merged and de-duped client-side |
+| Microcycle | `goals` + `goal_tasks` | Shows current microcycle goal and today's allocated tasks; links to /goals/ |
 | Work | `nodes` table | Board of boxes per project area (top-level nodes) with arbitrarily nested tasks, per-task deadlines, add/delete/due-date editing |
 
 The old widgets (Applications, Training, Nutrition, Read, Listen, Pomodoro) were
 removed in the rebuild and are not coming back.
 
+The `/goals/` page provides cycle management (macro/meso/micro) with a 14-day allocation table for the current microcycle. Daily allocations sync to the dashboard Due section and Microcycle widget.
+
 ## Key Files
 
 - `dashboard/index.html` — Dashboard app (all CSS/JS inline)
+- `goals/index.html` — Goals app (cycle management + daily allocations)
 - `tracker/index.html` — Vite/React task planner app (auth-gated)
 - `tracker/assets/index-CY4Ktyp3.js` — Compiled tracker bundle (do not edit directly)
 - `scripts/fetch_rss.py` — Fetches RSS feeds, writes `dashboard/data/read-feeds.json`
@@ -74,6 +78,8 @@ The rebuilt dashboard (tasks + calendar only) does not read training tables. No 
 | `planned_meals` | Daily meal calorie budgets |
 | `nutrition` | Logged food intake |
 | `daily_logs` | Daily task completion stats |
+| `goals` | Macro/meso/micro cycle goals |
+| `goal_tasks` | Daily allocations within a microcycle |
 
 ## Scripts & CI
 
@@ -254,5 +260,31 @@ The `people`, `events`, and `tasks` tables are the core CRM. They are managed by
 | `project` | text | Label for grouping, matches `projects.name` |
 | `person_id` | text | FK → people |
 | `event_id` | text | FK → events |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
+#### goals
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | text (21-char PK) | |
+| `title` | text | Required |
+| `description` | text | Qualitative goal description |
+| `cycle_type` | text | `micro` (2wk), `meso` (6wk), `macro` (12wk) |
+| `start_date` | date | Required |
+| `end_date` | date | Required |
+| `status` | text | `active`, `completed`, `archived` |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
+#### goal_tasks
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | text (21-char PK) | |
+| `goal_id` | text | FK → goals (CASCADE delete) |
+| `day_date` | date | Which day this allocation is for |
+| `description` | text | What to do that day |
+| `status` | text | `pending`, `done` |
 | `created_at` | timestamptz | |
 | `updated_at` | timestamptz | |

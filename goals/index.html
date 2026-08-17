@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", -apple-system, sans-serif;
+      font-weight: 400;
+      background: #070707;
+      color: #fff;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 24px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+
+    .back-link {
+      font-size: 12px;
+      color: #0a84ff;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .back-link:hover { opacity: .7; }
+
+    .logout-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #888;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .logout-btn:hover { color: #fff; border-color: #fff; }
+
+    /* ── Cycle sections ───────────────────────────── */
+    .cycle-section {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+
+    .cycle-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .cycle-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #0a84ff;
+    }
+
+    .cycle-label.meso { color: #30d158; }
+    .cycle-label.macro { color: #ff9f0a; }
+
+    .cycle-dates {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .cycle-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .cycle-desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    .cycle-edit-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .cycle-edit-btn:hover { color: #fff; border-color: #fff; }
+
+    .empty-cycle {
+      padding: 16px 0;
+      color: #555;
+      font-size: 13px;
+    }
+
+    .add-cycle-btn {
+      background: none;
+      border: 1px solid #0a84ff;
+      color: #0a84ff;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .add-cycle-btn:hover { background: #0a84ff; color: #000; }
+
+    /* ── Edit form ────────────────────────────────── */
+    .edit-form {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+    }
+    .edit-form.open { display: block; }
+
+    .edit-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .edit-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    .edit-input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+    .edit-input:focus { border-color: #0a84ff; }
+    .edit-input::placeholder { color: #555; }
+
+    .edit-textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+    }
+    .edit-textarea:focus { border-color: #0a84ff; }
+
+    .edit-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .save-btn {
+      background: #0a84ff;
+      border: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .save-btn:hover { opacity: .85; }
+
+    .cancel-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .cancel-btn:hover { color: #fff; border-color: #fff; }
+
+    .delete-btn {
+      background: none;
+      border: 1px solid #ff453a55;
+      color: #ff453a;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: auto;
+      transition: all .2s;
+    }
+    .delete-btn:hover { background: #ff453a; color: #fff; }
+
+    /* ── Allocation table ─────────────────────────── */
+    .alloc-section {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .alloc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .alloc-table th {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid #222;
+    }
+
+    .alloc-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #1a1a1a;
+      vertical-align: top;
+    }
+
+    .alloc-day {
+      font-size: 12px;
+      font-weight: 500;
+      color: #fff;
+      white-space: nowrap;
+      width: 90px;
+    }
+
+    .alloc-day.today {
+      color: #0a84ff;
+    }
+
+    .alloc-date {
+      font-size: 11px;
+      color: #555;
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .alloc-items {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 28px;
+    }
+
+    .alloc-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .alloc-text {
+      flex: 1;
+      font-size: 13px;
+      color: #ccc;
+      padding: 3px 6px;
+      border-radius: 4px;
+      cursor: default;
+    }
+
+    .alloc-text:hover { background: #1a1a1a; }
+
+    .alloc-del {
+      background: none;
+      border: none;
+      color: #444;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0 2px;
+      opacity: 0;
+      transition: all .2s;
+    }
+    .alloc-item:hover .alloc-del { opacity: 1; }
+    .alloc-del:hover { color: #ff453a; }
+
+    .alloc-input-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .alloc-input {
+      flex: 1;
+      padding: 3px 6px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+    }
+    .alloc-input:focus { border-color: #0a84ff; }
+    .alloc-input::placeholder { color: #555; }
+
+    .alloc-add {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+    .alloc-add:hover { color: #fff; border-color: #0a84ff; }
+
+    .no-goal-msg {
+      padding: 20px 0;
+      color: #555;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* ── Auth ──────────────────────────────────────── */
+    #loginForm { display: none; max-width: 320px; margin: 120px auto; }
+    #loginForm h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 24px; }
+    .login-field { margin-bottom: 12px; }
+    .login-field input {
+      width: 100%;
+      padding: 10px 12px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .login-field input:focus { border-color: #0a84ff; }
+    .login-field input::placeholder { color: #555; }
+    .login-btn {
+      width: 100%;
+      padding: 10px;
+      background: #0a84ff;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: opacity .2s;
+    }
+    .login-btn:hover { opacity: .85; }
+    .login-error { color: #ff453a; font-size: 12px; margin-top: 8px; display: none; }
+
+    /* ── Theme toggle ──────────────────────────────── */
+    #themeToggle {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 100;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      background: #111;
+      color: #888;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      opacity: .55;
+      transition: opacity .2s, color .2s, border-color .2s, background .2s;
+    }
+    #themeToggle:hover { opacity: 1; color: #fff; border-color: #fff; }
+
+    body.light-mode { background: #f4f5f7; color: #111; }
+    body.light-mode .page-title { color: #111; }
+    body.light-mode .back-link { color: #0a84ff; }
+    body.light-mode .logout-btn { border-color: #ccc; color: #666; }
+    body.light-mode .logout-btn:hover { color: #111; border-color: #111; }
+    body.light-mode .cycle-section, body.light-mode .alloc-section { background: #fff; border-color: #e3e4e8; }
+    body.light-mode .cycle-title { color: #111; }
+    body.light-mode .cycle-desc { color: #666; }
+    body.light-mode .cycle-dates { color: #999; }
+    body.light-mode .cycle-edit-btn { border-color: #ccc; color: #777; }
+    body.light-mode .cycle-edit-btn:hover { color: #111; border-color: #111; }
+    body.light-mode .edit-form { background: #f5f6f8; border-color: #e3e4e8; }
+    body.light-mode .edit-input { background: #fff; border-color: #ccc; color: #111; }
+    body.light-mode .edit-textarea { background: #fff; border-color: #ccc; color: #111; }
+    body.light-mode .cancel-btn { border-color: #ccc; color: #777; }
+    body.light-mode .cancel-btn:hover { color: #111; border-color: #111; }
+    body.light-mode .alloc-table th { color: #999; border-bottom-color: #e3e4e8; }
+    body.light-mode .alloc-table td { border-bottom-color: #f0f1f3; }
+    body.light-mode .alloc-day { color: #111; }
+    body.light-mode .alloc-text { color: #333; }
+    body.light-mode .alloc-text:hover { background: #f0f1f3; }
+    body.light-mode .alloc-input { background: #fff; border-color: #ccc; color: #111; }
+    body.light-mode .alloc-add { border-color: #ccc; color: #777; }
+    body.light-mode #themeToggle { background: #fff; border-color: #ccc; color: #666; }
+    body.light-mode #themeToggle:hover { color: #111; border-color: #111; }
+  </style>
+</head>
+<body>
+
+  <div id="loginForm">
+    <h2>Goals</h2>
+    <form id="authForm">
+      <div class="login-field">
+        <input type="email" id="authEmail" placeholder="Email" required />
+      </div>
+      <div class="login-field">
+        <input type="password" id="authPass" placeholder="Password" required />
+      </div>
+      <button type="submit" class="login-btn">Sign in</button>
+      <div class="login-error" id="authError"></div>
+    </form>
+  </div>
+
+  <div id="authGate">
+    <div class="header-row">
+      <div class="page-title">Goals</div>
+      <div class="header-actions">
+        <a href="/dashboard/" class="back-link">← Dashboard</a>
+        <button class="logout-btn" id="logoutBtn">Sign out</button>
+      </div>
+    </div>
+
+    <!-- Macro cycle -->
+    <div class="cycle-section">
+      <div class="cycle-header">
+        <span class="cycle-label macro">Macro Cycle (12 weeks)</span>
+        <span class="cycle-dates" id="macroDates"></span>
+      </div>
+      <div id="macroContent"><div class="empty-cycle">No macro goal set</div></div>
+      <div class="edit-form" id="macroForm">
+        <div class="edit-row">
+          <span class="edit-label">Title</span>
+          <input class="edit-input" id="macroTitle" placeholder="e.g., Launch side project" />
+        </div>
+        <textarea class="edit-textarea" id="macroDesc" placeholder="Qualitative goal description..."></textarea>
+        <div class="edit-row">
+          <span class="edit-label">Start</span>
+          <input class="edit-input" id="macroStart" type="date" />
+          <span class="edit-label" style="width:auto">End</span>
+          <input class="edit-input" id="macroEnd" type="date" />
+        </div>
+        <div class="edit-actions">
+          <button class="save-btn" id="macroSave">Save</button>
+          <button class="cancel-btn" id="macroCancel">Cancel</button>
+          <button class="delete-btn hidden" id="macroDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meso cycle -->
+    <div class="cycle-section">
+      <div class="cycle-header">
+        <span class="cycle-label meso">Meso Cycle (6 weeks)</span>
+        <span class="cycle-dates" id="mesoDates"></span>
+      </div>
+      <div id="mesoContent"><div class="empty-cycle">No meso goal set</div></div>
+      <div class="edit-form" id="mesoForm">
+        <div class="edit-row">
+          <span class="edit-label">Title</span>
+          <input class="edit-input" id="mesoTitle" placeholder="e.g., Build MVP" />
+        </div>
+        <textarea class="edit-textarea" id="mesoDesc" placeholder="Qualitative goal description..."></textarea>
+        <div class="edit-row">
+          <span class="edit-label">Start</span>
+          <input class="edit-input" id="mesoStart" type="date" />
+          <span class="edit-label" style="width:auto">End</span>
+          <input class="edit-input" id="mesoEnd" type="date" />
+        </div>
+        <div class="edit-actions">
+          <button class="save-btn" id="mesoSave">Save</button>
+          <button class="cancel-btn" id="mesoCancel">Cancel</button>
+          <button class="delete-btn hidden" id="mesoDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Micro cycle -->
+    <div class="cycle-section">
+      <div class="cycle-header">
+        <span class="cycle-label">Micro Cycle (2 weeks)</span>
+        <span class="cycle-dates" id="microDates"></span>
+      </div>
+      <div id="microContent"><div class="empty-cycle">No micro goal set</div></div>
+      <div class="edit-form" id="microForm">
+        <div class="edit-row">
+          <span class="edit-label">Title</span>
+          <input class="edit-input" id="microTitle" placeholder="e.g., Sprint 1: Foundation" />
+        </div>
+        <textarea class="edit-textarea" id="microDesc" placeholder="Qualitative goal description..."></textarea>
+        <div class="edit-row">
+          <span class="edit-label">Start</span>
+          <input class="edit-input" id="microStart" type="date" />
+          <span class="edit-label" style="width:auto">End</span>
+          <input class="edit-input" id="microEnd" type="date" />
+        </div>
+        <div class="edit-actions">
+          <button class="save-btn" id="microSave">Save</button>
+          <button class="cancel-btn" id="microCancel">Cancel</button>
+          <button class="delete-btn hidden" id="microDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14-day allocation table -->
+    <div class="alloc-section">
+      <div class="cycle-header">
+        <span class="cycle-label">Daily Allocations</span>
+        <span class="cycle-dates" id="allocDates"></span>
+      </div>
+      <div id="allocContent"><div class="no-goal-msg">Set a micro cycle goal to start allocating tasks</div></div>
+    </div>
+  </div>
+
+  <button id="themeToggle" title="Toggle color scheme">◐</button>
+
+  <script>
+    const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const TZ = "America/New_York";
+
+    const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const DAY_NAMES_FULL = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+    const MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+    function esc(s) {
+      if (s === null || s === undefined) return "";
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function todayEt() {
+      return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
+    }
+
+    function generateId() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const values = crypto.getRandomValues(new Uint8Array(21));
+      return values.reduce((acc, x) => acc + chars[x & 63], "");
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T12:00:00");
+      return `${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
+    }
+
+    function formatDateFull(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T12:00:00");
+      return `${DAY_NAMES[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
+    }
+
+    function addDays(dateStr, days) {
+      const d = new Date(dateStr + "T12:00:00");
+      d.setDate(d.getDate() + days);
+      return d.toLocaleDateString("en-CA", { timeZone: TZ });
+    }
+
+    let state = {
+      goals: [],
+      goalTasks: [],
+      microGoal: null,
+    };
+
+    /* ── Data loading ─────────────────────────────── */
+
+    async function loadAll() {
+      const [goalsRes, tasksRes] = await Promise.all([
+        db.from("goals").select("*").order("created_at", { ascending: false }),
+        db.from("goal_tasks").select("*").order("day_date", { ascending: true }),
+      ]);
+      if (goalsRes.error) throw goalsRes.error;
+      if (tasksRes.error) throw tasksRes.error;
+
+      state.goals = goalsRes.data || [];
+      state.goalTasks = tasksRes.data || [];
+
+      state.microGoal = state.goals.find(g => g.cycle_type === "micro" && g.status === "active");
+    }
+
+    /* ── Rendering ────────────────────────────────── */
+
+    function renderAll() {
+      renderCycle("macro");
+      renderCycle("meso");
+      renderCycle("micro");
+      renderAllocations();
+    }
+
+    function renderCycle(type) {
+      const goal = state.goals.find(g => g.cycle_type === type && g.status === "active");
+      const contentEl = document.getElementById(`${type}Content`);
+      const datesEl = document.getElementById(`${type}Dates`);
+      const form = document.getElementById(`${type}Form`);
+      const deleteBtn = document.getElementById(`${type}Delete`);
+
+      if (goal) {
+        datesEl.textContent = `${formatDate(goal.start_date)} → ${formatDate(goal.end_date)}`;
+        contentEl.innerHTML = `
+          <div class="cycle-title">${esc(goal.title)}</div>
+          ${goal.description ? `<div class="cycle-desc">${esc(goal.description)}</div>` : ""}
+          <button class="cycle-edit-btn" data-edit-cycle="${type}">Edit</button>
+        `;
+        deleteBtn.classList.remove("hidden");
+
+        contentEl.querySelector(`[data-edit-cycle="${type}"]`).addEventListener("click", () => {
+          openEditForm(type, goal);
+        });
+      } else {
+        datesEl.textContent = "";
+        contentEl.innerHTML = `
+          <div class="empty-cycle">No ${type} goal set</div>
+          <button class="add-cycle-btn" data-add-cycle="${type}">+ Add ${type} goal</button>
+        `;
+        deleteBtn.classList.add("hidden");
+
+        contentEl.querySelector(`[data-add-cycle="${type}"]`).addEventListener("click", () => {
+          openEditForm(type, null);
+        });
+      }
+
+      form.classList.remove("open");
+    }
+
+    function openEditForm(type, goal) {
+      const form = document.getElementById(`${type}Form`);
+      const titleEl = document.getElementById(`${type}Title`);
+      const descEl = document.getElementById(`${type}Desc`);
+      const startEl = document.getElementById(`${type}Start`);
+      const endEl = document.getElementById(`${type}End`);
+
+      if (goal) {
+        titleEl.value = goal.title;
+        descEl.value = goal.description || "";
+        startEl.value = goal.start_date;
+        endEl.value = goal.end_date;
+      } else {
+        titleEl.value = "";
+        descEl.value = "";
+        const today = todayEt();
+        startEl.value = today;
+        if (type === "micro") endEl.value = addDays(today, 13);
+        else if (type === "meso") endEl.value = addDays(today, 41);
+        else endEl.value = addDays(today, 83);
+      }
+
+      form.classList.add("open");
+      titleEl.focus();
+    }
+
+    function renderAllocations() {
+      const el = document.getElementById("allocContent");
+      const datesEl = document.getElementById("allocDates");
+
+      if (!state.microGoal) {
+        el.innerHTML = '<div class="no-goal-msg">Set a micro cycle goal to start allocating tasks</div>';
+        datesEl.textContent = "";
+        return;
+      }
+
+      const today = todayEt();
+      const startDate = state.microGoal.start_date;
+      const endDate = state.microGoal.end_date;
+
+      datesEl.textContent = `${formatDate(startDate)} → ${formatDate(endDate)}`;
+
+      const days = [];
+      let d = new Date(startDate + "T12:00:00");
+      const end = new Date(endDate + "T12:00:00");
+      while (d <= end) {
+        const dateStr = d.toLocaleDateString("en-CA", { timeZone: TZ });
+        days.push({
+          date: dateStr,
+          dayName: DAY_NAMES[d.getDay()],
+          dayNum: d.getDate(),
+          month: MONTH_NAMES[d.getMonth()],
+          isToday: dateStr === today,
+        });
+        d.setDate(d.getDate() + 1);
+      }
+
+      let html = `<table class="alloc-table">
+        <thead><tr>
+          <th>Day</th>
+          <th>Date</th>
+          <th>Allocations</th>
+        </tr></thead>
+        <tbody>`;
+
+      days.forEach(day => {
+        const tasks = state.goalTasks.filter(t => t.goal_id === state.microGoal.id && t.day_date === day.date);
+
+        let itemsHtml = tasks.map(t => `
+          <div class="alloc-item">
+            <span class="alloc-text">${esc(t.description)}</span>
+            <button class="alloc-del" data-del-task="${esc(t.id)}" title="Delete">×</button>
+          </div>
+        `).join("");
+
+        itemsHtml += `
+          <div class="alloc-input-row">
+            <input class="alloc-input" placeholder="Add task..." data-add-task="${esc(day.date)}" />
+            <button class="alloc-add" data-add-btn="${esc(day.date)}">+</button>
+          </div>
+        `;
+
+        html += `<tr>
+          <td class="alloc-day${day.isToday ? " today" : ""}">${day.dayName}</td>
+          <td class="alloc-date">${day.month} ${day.dayNum}</td>
+          <td><div class="alloc-items">${itemsHtml}</div></td>
+        </tr>`;
+      });
+
+      html += "</tbody></table>";
+      el.innerHTML = html;
+
+      el.querySelectorAll("[data-add-task]").forEach(input => {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && input.value.trim()) {
+            addGoalTask(input.dataset.addTask, input.value.trim());
+            input.value = "";
+          }
+        });
+      });
+
+      el.querySelectorAll("[data-add-btn]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const input = el.querySelector(`[data-add-task="${btn.dataset.addBtn}"]`);
+          if (input && input.value.trim()) {
+            addGoalTask(btn.dataset.addBtn, input.value.trim());
+            input.value = "";
+          }
+        });
+      });
+
+      el.querySelectorAll("[data-del-task]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          deleteGoalTask(btn.dataset.delTask);
+        });
+      });
+    }
+
+    /* ── Mutations ────────────────────────────────── */
+
+    async function saveGoal(type, existingId) {
+      const title = document.getElementById(`${type}Title`).value.trim();
+      const desc = document.getElementById(`${type}Desc`).value.trim();
+      const start = document.getElementById(`${type}Start`).value;
+      const end = document.getElementById(`${type}End`).value;
+
+      if (!title || !start || !end) return;
+
+      const now = new Date().toISOString();
+
+      if (existingId) {
+        const patch = { title, description: desc, start_date: start, end_date: end, updated_at: now };
+        await db.from("goals").update(patch).eq("id", existingId);
+        const g = state.goals.find(x => x.id === existingId);
+        if (g) Object.assign(g, patch);
+      } else {
+        const id = generateId();
+        const goal = {
+          id, title, description: desc, cycle_type: type,
+          start_date: start, end_date: end, status: "active",
+          created_at: now, updated_at: now,
+        };
+        await db.from("goals").insert(goal);
+        state.goals.push(goal);
+      }
+
+      renderAll();
+    }
+
+    async function deleteGoal(type) {
+      const goal = state.goals.find(g => g.cycle_type === type && g.status === "active");
+      if (!goal) return;
+      if (!confirm(`Delete ${type} goal "${goal.title}"?`)) return;
+
+      await db.from("goals").delete().eq("id", goal.id);
+      state.goals = state.goals.filter(g => g.id !== goal.id);
+      state.goalTasks = state.goalTasks.filter(t => t.goal_id !== goal.id);
+      renderAll();
+    }
+
+    async function addGoalTask(date, description) {
+      const id = generateId();
+      const now = new Date().toISOString();
+      const task = {
+        id, goal_id: state.microGoal.id, day_date: date,
+        description, status: "pending",
+        created_at: now, updated_at: now,
+      };
+      state.goalTasks.push(task);
+      renderAllocations();
+      try {
+        await db.from("goal_tasks").insert(task);
+      } catch (e) {
+        state.goalTasks = state.goalTasks.filter(t => t.id !== id);
+        renderAllocations();
+        console.error("Add goal task failed:", e);
+      }
+    }
+
+    async function deleteGoalTask(id) {
+      state.goalTasks = state.goalTasks.filter(t => t.id !== id);
+      renderAllocations();
+      try {
+        await db.from("goal_tasks").delete().eq("id", id);
+      } catch (e) {
+        console.error("Delete goal task failed:", e);
+      }
+    }
+
+    /* ── Wiring ───────────────────────────────────── */
+
+    function showGoals() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("authGate").style.display = "block";
+      refresh();
+    }
+
+    function showLogin() {
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("authGate").style.display = "none";
+    }
+
+    async function refresh() {
+      try {
+        await loadAll();
+        renderAll();
+      } catch (e) {
+        console.error("Refresh failed:", e);
+      }
+    }
+
+    document.getElementById("authForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("authEmail").value;
+      const pass = document.getElementById("authPass").value;
+      const errEl = document.getElementById("authError");
+      errEl.style.display = "none";
+      const { error } = await db.auth.signInWithPassword({ email, password: pass });
+      if (error) {
+        errEl.textContent = error.message;
+        errEl.style.display = "block";
+      } else {
+        showGoals();
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await db.auth.signOut();
+      showLogin();
+    });
+
+    ["macro", "meso", "micro"].forEach(type => {
+      document.getElementById(`${type}Save`).addEventListener("click", () => {
+        const goal = state.goals.find(g => g.cycle_type === type && g.status === "active");
+        saveGoal(type, goal ? goal.id : null);
+      });
+      document.getElementById(`${type}Cancel`).addEventListener("click", () => {
+        document.getElementById(`${type}Form`).classList.remove("open");
+      });
+      document.getElementById(`${type}Delete`).addEventListener("click", () => {
+        deleteGoal(type);
+      });
+    });
+
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+      localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+    });
+
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-mode");
+    }
+
+    db.auth.getSession().then(({ data: { session } }) => {
+      if (session) showGoals();
+      else showLogin();
+    });
+  </script>
+</body>
+</html>
