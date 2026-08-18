@@ -168,7 +168,8 @@
 
     <div class="cycle-section">
       <div class="cycle-header">
-        <span class="cycle-label macro">Macro Cycle (Fiscal Quarter)</span>
+        <span class="cycle-label macro">Macro Cycle</span>
+        <span class="cycle-dates" id="macroDates"></span>
       </div>
       <div id="macroContent"></div>
       <button class="add-cycle-btn" data-add-cycle="macro">+ Add macro goal</button>
@@ -183,6 +184,7 @@
     <div class="cycle-section">
       <div class="cycle-header">
         <span class="cycle-label meso">Meso Cycle (4 weeks)</span>
+        <span class="cycle-dates" id="mesoDates"></span>
       </div>
       <div id="mesoContent"></div>
       <button class="add-cycle-btn" data-add-cycle="meso">+ Add meso goal</button>
@@ -197,6 +199,7 @@
     <div class="cycle-section">
       <div class="cycle-header">
         <span class="cycle-label">Weekly Goals</span>
+        <span class="cycle-dates" id="microDates"></span>
       </div>
       <div id="microContent"></div>
       <button class="add-cycle-btn" data-add-cycle="micro">+ Add weekly goal</button>
@@ -263,15 +266,29 @@
     function renderCycle(type) {
       var goals = state.goals.filter(function(g) { return g.cycle_type === type && g.status === "active"; });
       var el = document.getElementById(type + "Content");
+      var datesEl = document.getElementById(type + "Dates");
+
+      if (type === "macro") {
+        datesEl.textContent = getQuarterStart() + " \u2192 " + getQuarterEnd();
+      } else if (type === "meso") {
+        var today = todayEt();
+        var monday = getMonday(today);
+        var mesoEnd = addDays(monday, 27);
+        datesEl.textContent = monday + " \u2192 " + mesoEnd;
+      } else {
+        var today = todayEt();
+        var monday = getMonday(today);
+        var weekEnd = addDays(monday, 4);
+        datesEl.textContent = monday + " \u2192 " + weekEnd;
+      }
 
       if (!goals.length) {
         el.innerHTML = '<div class="empty-cycle">No ' + type + ' goals yet</div>';
       } else {
         el.innerHTML = goals.map(function(g) {
-          return '<div class="goal-item">' +
+          return             '<div class="goal-item">' +
             '<div class="goal-item-header">' +
-              '<div><div class="goal-item-title">' + esc(g.title) + '</div>' +
-              '<div class="goal-item-dates">' + formatDate(g.start_date) + ' \u2192 ' + formatDate(g.end_date) + '</div></div>' +
+              '<div class="goal-item-title">' + esc(g.title) + '</div>' +
               '<div class="goal-item-actions">' +
                 '<button class="goal-item-btn" data-edit-goal="' + esc(g.id) + '">Edit</button>' +
                 '<button class="goal-item-btn del" data-del-goal="' + esc(g.id) + '">&times;</button>' +
