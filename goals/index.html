@@ -319,9 +319,9 @@
           var borderClass = color ? ' color-border' : '';
           var borderColor = color ? ' style="border-left-color:' + esc(color) + '"' : '';
           var assignBtn = "";
-          if (type === "meso") {
+          if (type === "meso" && !g.parent_id) {
             assignBtn = '<button class="goal-item-btn assign" data-assign-macro="' + esc(g.id) + '">Link</button>';
-          } else if (type === "micro") {
+          } else if (type === "micro" && !g.parent_id) {
             assignBtn = '<button class="goal-item-btn assign" data-assign-meso="' + esc(g.id) + '">Link</button>';
           }
           return '<div class="goal-item' + borderClass + '"' + borderColor + '>' +
