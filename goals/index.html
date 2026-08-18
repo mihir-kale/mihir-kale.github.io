@@ -537,6 +537,14 @@
         btn.addEventListener("click", function(e) { e.stopPropagation(); copyGoalTask(btn.dataset.copy); });
       });
 
+      el.querySelectorAll(".time-cell").forEach(function(cell) {
+        cell.addEventListener("click", function(e) {
+          if (e.target.closest(".cell-task") || e.target.closest(".time-cell-add")) return;
+          var input = cell.querySelector("[data-cell-input]");
+          if (input) input.focus();
+        });
+      });
+
       el.querySelectorAll(".cell-task").forEach(function(taskEl) {
         taskEl.addEventListener("dragstart", function(e) {
           dragState.taskId = taskEl.dataset.taskId;
