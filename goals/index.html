@@ -274,11 +274,13 @@
         var today = todayEt();
         var monday = getMonday(today);
         var mesoEnd = addDays(monday, 27);
+        var qEnd = getQuarterEnd();
+        if (mesoEnd > qEnd) mesoEnd = qEnd;
         datesEl.textContent = formatDate(mesoEnd);
       } else {
         var today = todayEt();
         var monday = getMonday(today);
-        var weekEnd = addDays(monday, 4);
+        var weekEnd = addDays(monday, 6);
         datesEl.textContent = formatDate(weekEnd);
       }
 
@@ -350,7 +352,9 @@
           document.getElementById(type + "End").value = getQuarterEnd();
         } else if (type === "meso") {
           document.getElementById(type + "Start").value = monday;
-          document.getElementById(type + "End").value = addDays(monday, 27);
+          var mesoEnd = addDays(monday, 27);
+          if (mesoEnd > getQuarterEnd()) mesoEnd = getQuarterEnd();
+          document.getElementById(type + "End").value = mesoEnd;
         } else {
           document.getElementById(type + "Start").value = monday;
           document.getElementById(type + "End").value = addDays(monday, 4);
