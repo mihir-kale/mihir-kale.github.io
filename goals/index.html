@@ -39,15 +39,23 @@
     .add-cycle-btn { background: none; border: 1px solid #0a84ff; color: #0a84ff; font-family: inherit; font-size: 11px; font-weight: 500; padding: 5px 14px; border-radius: 6px; cursor: pointer; transition: all .2s; margin-top: 8px; }
     .add-cycle-btn:hover { background: #0a84ff; color: #000; }
 
-    .goal-item { padding: 10px 12px; background: #141414; border: 1px solid #1e1e1e; border-radius: 8px; margin-bottom: 8px; }
+    .goal-item { padding: 10px 12px; background: #141414; border: 1px solid #1e1e1e; border-radius: 8px; margin-bottom: 8px; transition: border-color .2s; }
+    .goal-item.color-border { border-left: 3px solid; }
     .goal-item-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .goal-item-title { font-size: 14px; font-weight: 500; color: #fff; }
     .goal-item-dates { font-size: 11px; color: #555; }
     .goal-item-desc { font-size: 12px; color: #777; margin-top: 4px; line-height: 1.4; }
-    .goal-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .goal-item-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
     .goal-item-btn { background: none; border: 1px solid #333; color: #666; font-family: inherit; font-size: 10px; padding: 2px 8px; border-radius: 4px; cursor: pointer; transition: all .15s; }
     .goal-item-btn:hover { color: #fff; border-color: #fff; }
     .goal-item-btn.del:hover { color: #ff453a; border-color: #ff453a; }
+    .goal-item-btn.assign { border-color: #30d158; color: #30d158; }
+    .goal-item-btn.assign:hover { background: #30d158; color: #000; }
+    .color-swatch { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #333; cursor: pointer; transition: border-color .15s; flex-shrink: 0; }
+    .color-swatch:hover { border-color: #fff; }
+    .color-picker-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .color-opt { width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: all .15s; }
+    .color-opt:hover, .color-opt.active { border-color: #fff; transform: scale(1.15); }
 
     .edit-form { display: none; margin-top: 10px; padding: 12px; background: #1a1a1a; border-radius: 8px; border: 1px solid #2a2a2a; }
     .edit-form.open { display: block; }
@@ -177,6 +185,7 @@
         <div class="edit-row"><span class="edit-label">Title</span><input class="edit-input" id="macroTitle" placeholder="e.g., Launch side project" /></div>
         <textarea class="edit-textarea" id="macroDesc" placeholder="Qualitative goal description..."></textarea>
         <div class="edit-row"><span class="edit-label">Start</span><input class="edit-input" id="macroStart" type="date" /><span class="edit-label" style="width:auto">End</span><input class="edit-input" id="macroEnd" type="date" /></div>
+        <div class="edit-row"><span class="edit-label">Color</span><div class="color-picker-row" id="macroColorPicker"></div></div>
         <div class="edit-actions"><button class="save-btn" id="macroSave">Save</button><button class="cancel-btn" id="macroCancel">Cancel</button></div>
       </div>
     </div>
@@ -234,6 +243,7 @@
     var TZ = "America/New_York";
     var DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     var MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    var GOAL_COLORS = ["#0a84ff", "#30d158", "#ff9f0a", "#ff453a", "#bf5af2", "#64d2ff", "#ffd60a", "#ff6482"];
 
     function esc(s) { return s === null || s === undefined ? "" : String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
     function todayEt() { return new Date().toLocaleDateString("en-CA", { timeZone: TZ }); }
@@ -241,6 +251,23 @@
     function formatDate(s) { if (!s) return ""; var d = new Date(s + "T12:00:00"); return MONTH_NAMES[d.getMonth()] + " " + d.getDate(); }
     function addDays(s, n) { var d = new Date(s + "T12:00:00"); d.setDate(d.getDate() + n); return d.toLocaleDateString("en-CA", { timeZone: TZ }); }
     function getMonday(s) { var d = new Date(s + "T12:00:00"); var day = d.getDay(); d.setDate(d.getDate() - day + (day === 0 ? -6 : 1)); return d.toLocaleDateString("en-CA", { timeZone: TZ }); }
+
+    function getColor(g) {
+      if (g.color) return g.color;
+      if (g.cycle_type === "meso" && g.parent_id) {
+        var macro = state.goals.find(function(x) { return x.id === g.parent_id; });
+        if (macro && macro.color) return macro.color;
+      }
+      if (g.cycle_type === "micro" && g.parent_id) {
+        var meso = state.goals.find(function(x) { return x.id === g.parent_id; });
+        if (meso && meso.color) return meso.color;
+        if (meso && meso.parent_id) {
+          var macro2 = state.goals.find(function(x) { return x.id === meso.parent_id; });
+          if (macro2 && macro2.color) return macro2.color;
+        }
+      }
+      return null;
+    }
 
     var state = { goals: [], goalTasks: [], weekOffset: 0, editingId: null, editingType: null };
     var dragState = { taskId: null, fromDate: null };
@@ -288,10 +315,20 @@
         el.innerHTML = '<div class="empty-cycle">No ' + type + ' goals yet</div>';
       } else {
         el.innerHTML = goals.map(function(g) {
-          return             '<div class="goal-item">' +
+          var color = getColor(g);
+          var borderClass = color ? ' color-border' : '';
+          var borderColor = color ? ' style="border-left-color:' + esc(color) + '"' : '';
+          var assignBtn = "";
+          if (type === "meso") {
+            assignBtn = '<button class="goal-item-btn assign" data-assign-macro="' + esc(g.id) + '">Link</button>';
+          } else if (type === "micro") {
+            assignBtn = '<button class="goal-item-btn assign" data-assign-meso="' + esc(g.id) + '">Link</button>';
+          }
+          return '<div class="goal-item' + borderClass + '"' + borderColor + '>' +
             '<div class="goal-item-header">' +
               '<div class="goal-item-title">' + esc(g.title) + '</div>' +
               '<div class="goal-item-actions">' +
+                assignBtn +
                 '<button class="goal-item-btn" data-edit-goal="' + esc(g.id) + '">Edit</button>' +
                 '<button class="goal-item-btn del" data-del-goal="' + esc(g.id) + '">&times;</button>' +
               '</div>' +
@@ -309,6 +346,16 @@
         el.querySelectorAll("[data-del-goal]").forEach(function(btn) {
           btn.addEventListener("click", function() {
             deleteGoal(btn.dataset.delGoal);
+          });
+        });
+        el.querySelectorAll("[data-assign-macro]").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            assignToParent(btn.dataset.assignMacro, "macro");
+          });
+        });
+        el.querySelectorAll("[data-assign-meso]").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            assignToParent(btn.dataset.assignMeso, "meso");
           });
         });
       }
@@ -360,6 +407,20 @@
           document.getElementById(type + "End").value = addDays(monday, 4);
         }
         state.editingId = null;
+      }
+      if (type === "macro") {
+        var picker = document.getElementById("macroColorPicker");
+        var selectedColor = goal ? (goal.color || GOAL_COLORS[0]) : GOAL_COLORS[0];
+        picker.innerHTML = GOAL_COLORS.map(function(c) {
+          var active = c === selectedColor ? ' active' : '';
+          return '<div class="color-opt' + active + '" data-color="' + c + '" style="background:' + c + '"></div>';
+        }).join("");
+        picker.querySelectorAll(".color-opt").forEach(function(opt) {
+          opt.addEventListener("click", function() {
+            picker.querySelectorAll(".color-opt").forEach(function(o) { o.classList.remove("active"); });
+            opt.classList.add("active");
+          });
+        });
       }
       state.editingType = type;
       form.classList.add("open");
@@ -486,14 +547,22 @@
       if (!title || !start || !end) return;
       var now = new Date().toISOString();
 
+      var color = null;
+      if (type === "macro") {
+        var activeOpt = document.querySelector("#macroColorPicker .color-opt.active");
+        color = activeOpt ? activeOpt.dataset.color : GOAL_COLORS[0];
+      }
+
       if (state.editingId) {
         var patch = { title: title, description: desc, start_date: start, end_date: end, updated_at: now };
+        if (type === "macro") patch.color = color;
         await db.from("goals").update(patch).eq("id", state.editingId);
         var g = state.goals.find(function(x) { return x.id === state.editingId; });
         if (g) Object.assign(g, patch);
       } else {
         var id = generateId();
         var goal = { id: id, title: title, description: desc, cycle_type: type, start_date: start, end_date: end, status: "active", created_at: now, updated_at: now };
+        if (type === "macro") goal.color = color;
         await db.from("goals").insert(goal);
         state.goals.push(goal);
       }
@@ -508,6 +577,22 @@
       await db.from("goals").delete().eq("id", id);
       state.goals = state.goals.filter(function(x) { return x.id !== id; });
       state.goalTasks = state.goalTasks.filter(function(t) { return t.goal_id !== id; });
+      renderAll();
+    }
+
+    async function assignToParent(childId, parentType) {
+      var parents = state.goals.filter(function(g) { return g.cycle_type === parentType && g.status === "active"; });
+      if (!parents.length) return;
+      var options = parents.map(function(g, i) { return (i + 1) + ". " + g.title; }).join("\n");
+      var choice = prompt("Link to which " + parentType + " goal?\n\n" + options + "\n\nEnter number:");
+      if (!choice) return;
+      var idx = parseInt(choice, 10) - 1;
+      if (idx < 0 || idx >= parents.length) return;
+      var parentId = parents[idx].id;
+      var now = new Date().toISOString();
+      await db.from("goals").update({ parent_id: parentId, updated_at: now }).eq("id", childId);
+      var child = state.goals.find(function(g) { return g.id === childId; });
+      if (child) child.parent_id = parentId;
       renderAll();
     }
 
