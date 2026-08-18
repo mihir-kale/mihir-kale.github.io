@@ -21,14 +21,7 @@
       margin: 0 auto;
       -webkit-font-smoothing: antialiased;
     }
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 24px;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; gap: 12px; flex-wrap: wrap; }
     .page-title { font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
     .header-actions { display: flex; align-items: center; gap: 12px; }
     .back-link { font-size: 12px; color: #0a84ff; text-decoration: none; transition: opacity .2s; }
@@ -42,30 +35,34 @@
     .cycle-label.meso { color: #30d158; }
     .cycle-label.macro { color: #ff9f0a; }
     .cycle-dates { font-size: 11px; color: #666; }
-    .cycle-title { font-size: 16px; font-weight: 500; color: #fff; margin-bottom: 6px; }
-    .cycle-desc { font-size: 13px; color: #888; line-height: 1.5; }
-    .cycle-edit-btn { background: none; border: 1px solid #333; color: #666; font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 6px; cursor: pointer; transition: all .2s; }
-    .cycle-edit-btn:hover { color: #fff; border-color: #fff; }
-    .empty-cycle { padding: 16px 0; color: #555; font-size: 13px; }
-    .add-cycle-btn { background: none; border: 1px solid #0a84ff; color: #0a84ff; font-family: inherit; font-size: 11px; font-weight: 500; padding: 5px 14px; border-radius: 6px; cursor: pointer; transition: all .2s; }
+    .empty-cycle { padding: 8px 0; color: #555; font-size: 13px; }
+    .add-cycle-btn { background: none; border: 1px solid #0a84ff; color: #0a84ff; font-family: inherit; font-size: 11px; font-weight: 500; padding: 5px 14px; border-radius: 6px; cursor: pointer; transition: all .2s; margin-top: 8px; }
     .add-cycle-btn:hover { background: #0a84ff; color: #000; }
 
-    .edit-form { display: none; margin-top: 12px; padding: 14px; background: #1a1a1a; border-radius: 8px; border: 1px solid #2a2a2a; }
+    .goal-item { padding: 10px 12px; background: #141414; border: 1px solid #1e1e1e; border-radius: 8px; margin-bottom: 8px; }
+    .goal-item-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .goal-item-title { font-size: 14px; font-weight: 500; color: #fff; }
+    .goal-item-dates { font-size: 11px; color: #555; }
+    .goal-item-desc { font-size: 12px; color: #777; margin-top: 4px; line-height: 1.4; }
+    .goal-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .goal-item-btn { background: none; border: 1px solid #333; color: #666; font-family: inherit; font-size: 10px; padding: 2px 8px; border-radius: 4px; cursor: pointer; transition: all .15s; }
+    .goal-item-btn:hover { color: #fff; border-color: #fff; }
+    .goal-item-btn.del:hover { color: #ff453a; border-color: #ff453a; }
+
+    .edit-form { display: none; margin-top: 10px; padding: 12px; background: #1a1a1a; border-radius: 8px; border: 1px solid #2a2a2a; }
     .edit-form.open { display: block; }
-    .edit-row { display: flex; gap: 12px; margin-bottom: 10px; align-items: center; }
-    .edit-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; width: 70px; flex-shrink: 0; }
-    .edit-input { flex: 1; padding: 6px 10px; border: 1px solid #333; border-radius: 6px; background: #111; color: #fff; font-size: 13px; font-family: inherit; outline: none; }
+    .edit-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; }
+    .edit-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; width: 50px; flex-shrink: 0; }
+    .edit-input { flex: 1; padding: 5px 8px; border: 1px solid #333; border-radius: 6px; background: #111; color: #fff; font-size: 12px; font-family: inherit; outline: none; }
     .edit-input:focus { border-color: #0a84ff; }
     .edit-input::placeholder { color: #555; }
-    .edit-textarea { width: 100%; padding: 8px 10px; border: 1px solid #333; border-radius: 6px; background: #111; color: #fff; font-size: 13px; font-family: inherit; outline: none; resize: vertical; min-height: 60px; }
+    .edit-textarea { width: 100%; padding: 6px 8px; border: 1px solid #333; border-radius: 6px; background: #111; color: #fff; font-size: 12px; font-family: inherit; outline: none; resize: vertical; min-height: 50px; }
     .edit-textarea:focus { border-color: #0a84ff; }
-    .edit-actions { display: flex; gap: 8px; margin-top: 10px; }
-    .save-btn { background: #0a84ff; border: none; color: #fff; font-family: inherit; font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 6px; cursor: pointer; transition: opacity .2s; }
+    .edit-actions { display: flex; gap: 6px; margin-top: 8px; }
+    .save-btn { background: #0a84ff; border: none; color: #fff; font-family: inherit; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 6px; cursor: pointer; transition: opacity .2s; }
     .save-btn:hover { opacity: .85; }
-    .cancel-btn { background: none; border: 1px solid #333; color: #666; font-family: inherit; font-size: 12px; padding: 5px 14px; border-radius: 6px; cursor: pointer; transition: all .2s; }
+    .cancel-btn { background: none; border: 1px solid #333; color: #666; font-family: inherit; font-size: 11px; padding: 4px 12px; border-radius: 6px; cursor: pointer; transition: all .2s; }
     .cancel-btn:hover { color: #fff; border-color: #fff; }
-    .delete-btn { background: none; border: 1px solid #ff453a55; color: #ff453a; font-family: inherit; font-size: 12px; padding: 5px 14px; border-radius: 6px; cursor: pointer; margin-left: auto; transition: all .2s; }
-    .delete-btn:hover { background: #ff453a; color: #fff; }
 
     .week-section { background: #111; border: 1px solid #222; border-radius: 12px; padding: 18px 20px; }
     .week-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
@@ -118,11 +115,11 @@
     body.light-mode .logout-btn { border-color: #ccc; color: #666; }
     body.light-mode .logout-btn:hover { color: #111; border-color: #111; }
     body.light-mode .cycle-section, body.light-mode .week-section { background: #fff; border-color: #e3e4e8; }
-    body.light-mode .cycle-title { color: #111; }
-    body.light-mode .cycle-desc { color: #666; }
     body.light-mode .cycle-dates { color: #999; }
-    body.light-mode .cycle-edit-btn { border-color: #ccc; color: #777; }
-    body.light-mode .cycle-edit-btn:hover { color: #111; border-color: #111; }
+    body.light-mode .goal-item { background: #f5f6f8; border-color: #e3e4e8; }
+    body.light-mode .goal-item-title { color: #111; }
+    body.light-mode .goal-item-dates { color: #999; }
+    body.light-mode .goal-item-desc { color: #666; }
     body.light-mode .edit-form { background: #f5f6f8; border-color: #e3e4e8; }
     body.light-mode .edit-input { background: #fff; border-color: #ccc; color: #111; }
     body.light-mode .edit-textarea { background: #fff; border-color: #ccc; color: #111; }
@@ -145,12 +142,8 @@
     body.light-mode #themeToggle { background: #fff; border-color: #ccc; color: #666; }
     body.light-mode #themeToggle:hover { color: #111; border-color: #111; }
 
-    @media (max-width: 900px) {
-      .week-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 600px) {
-      .week-grid { grid-template-columns: repeat(2, 1fr); }
-    }
+    @media (max-width: 900px) { .week-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .week-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
 <body>
@@ -176,42 +169,42 @@
     <div class="cycle-section">
       <div class="cycle-header">
         <span class="cycle-label macro">Macro Cycle (12 weeks)</span>
-        <span class="cycle-dates" id="macroDates"></span>
       </div>
-      <div id="macroContent"><div class="empty-cycle">No macro goal set</div></div>
+      <div id="macroContent"></div>
+      <button class="add-cycle-btn" data-add-cycle="macro">+ Add macro goal</button>
       <div class="edit-form" id="macroForm">
         <div class="edit-row"><span class="edit-label">Title</span><input class="edit-input" id="macroTitle" placeholder="e.g., Launch side project" /></div>
         <textarea class="edit-textarea" id="macroDesc" placeholder="Qualitative goal description..."></textarea>
         <div class="edit-row"><span class="edit-label">Start</span><input class="edit-input" id="macroStart" type="date" /><span class="edit-label" style="width:auto">End</span><input class="edit-input" id="macroEnd" type="date" /></div>
-        <div class="edit-actions"><button class="save-btn" id="macroSave">Save</button><button class="cancel-btn" id="macroCancel">Cancel</button><button class="delete-btn hidden" id="macroDelete">Delete</button></div>
+        <div class="edit-actions"><button class="save-btn" id="macroSave">Save</button><button class="cancel-btn" id="macroCancel">Cancel</button></div>
       </div>
     </div>
 
     <div class="cycle-section">
       <div class="cycle-header">
         <span class="cycle-label meso">Meso Cycle (6 weeks)</span>
-        <span class="cycle-dates" id="mesoDates"></span>
       </div>
-      <div id="mesoContent"><div class="empty-cycle">No meso goal set</div></div>
+      <div id="mesoContent"></div>
+      <button class="add-cycle-btn" data-add-cycle="meso">+ Add meso goal</button>
       <div class="edit-form" id="mesoForm">
         <div class="edit-row"><span class="edit-label">Title</span><input class="edit-input" id="mesoTitle" placeholder="e.g., Build MVP" /></div>
         <textarea class="edit-textarea" id="mesoDesc" placeholder="Qualitative goal description..."></textarea>
         <div class="edit-row"><span class="edit-label">Start</span><input class="edit-input" id="mesoStart" type="date" /><span class="edit-label" style="width:auto">End</span><input class="edit-input" id="mesoEnd" type="date" /></div>
-        <div class="edit-actions"><button class="save-btn" id="mesoSave">Save</button><button class="cancel-btn" id="mesoCancel">Cancel</button><button class="delete-btn hidden" id="mesoDelete">Delete</button></div>
+        <div class="edit-actions"><button class="save-btn" id="mesoSave">Save</button><button class="cancel-btn" id="mesoCancel">Cancel</button></div>
       </div>
     </div>
 
     <div class="cycle-section">
       <div class="cycle-header">
-        <span class="cycle-label">Weekly Goal</span>
-        <span class="cycle-dates" id="microDates"></span>
+        <span class="cycle-label">Weekly Goals</span>
       </div>
-      <div id="microContent"><div class="empty-cycle">No weekly goal set</div></div>
+      <div id="microContent"></div>
+      <button class="add-cycle-btn" data-add-cycle="micro">+ Add weekly goal</button>
       <div class="edit-form" id="microForm">
         <div class="edit-row"><span class="edit-label">Title</span><input class="edit-input" id="microTitle" placeholder="e.g., Sprint 1: Foundation" /></div>
         <textarea class="edit-textarea" id="microDesc" placeholder="Qualitative goal description..."></textarea>
         <div class="edit-row"><span class="edit-label">Start</span><input class="edit-input" id="microStart" type="date" /><span class="edit-label" style="width:auto">End</span><input class="edit-input" id="microEnd" type="date" /></div>
-        <div class="edit-actions"><button class="save-btn" id="microSave">Save</button><button class="cancel-btn" id="microCancel">Cancel</button><button class="delete-btn hidden" id="microDelete">Delete</button></div>
+        <div class="edit-actions"><button class="save-btn" id="microSave">Save</button><button class="cancel-btn" id="microCancel">Cancel</button></div>
       </div>
     </div>
 
@@ -222,65 +215,42 @@
           <button class="week-nav-btn" id="weekPrev">&larr;</button>
           <span class="week-label" id="weekLabel"></span>
           <button class="week-nav-btn" id="weekNext">&rarr;</button>
-          <button class="cycle-edit-btn" id="weekToday">Today</button>
+          <button class="goal-item-btn" id="weekToday">Today</button>
         </div>
       </div>
-      <div id="weekContent"><div class="no-goal-msg">Set a weekly goal to start planning</div></div>
+      <div id="weekContent"><div class="no-goal-msg">Add a weekly goal to start planning</div></div>
     </div>
   </div>
 
   <button id="themeToggle" title="Toggle color scheme">&#9680;</button>
 
   <script>
-    const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const TZ = "America/New_York";
-    const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    const DAY_NAMES_FULL = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
-    const MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    var SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
+    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo";
+    var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var TZ = "America/New_York";
+    var DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    var MONTH_NAMES = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-    function esc(s) {
-      if (s === null || s === undefined) return "";
-      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-    }
+    function esc(s) { return s === null || s === undefined ? "" : String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
     function todayEt() { return new Date().toLocaleDateString("en-CA", { timeZone: TZ }); }
-    function generateId() {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      const values = crypto.getRandomValues(new Uint8Array(21));
-      return values.reduce((acc, x) => acc + chars[x & 63], "");
-    }
-    function formatDate(dateStr) {
-      if (!dateStr) return "";
-      const d = new Date(dateStr + "T12:00:00");
-      return MONTH_NAMES[d.getMonth()] + " " + d.getDate();
-    }
-    function addDays(dateStr, days) {
-      const d = new Date(dateStr + "T12:00:00");
-      d.setDate(d.getDate() + days);
-      return d.toLocaleDateString("en-CA", { timeZone: TZ });
-    }
-    function getMonday(dateStr) {
-      const d = new Date(dateStr + "T12:00:00");
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      d.setDate(diff);
-      return d.toLocaleDateString("en-CA", { timeZone: TZ });
-    }
+    function generateId() { var c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; var v = crypto.getRandomValues(new Uint8Array(21)); return v.reduce(function(a, x) { return a + c[x & 63]; }, ""); }
+    function formatDate(s) { if (!s) return ""; var d = new Date(s + "T12:00:00"); return MONTH_NAMES[d.getMonth()] + " " + d.getDate(); }
+    function addDays(s, n) { var d = new Date(s + "T12:00:00"); d.setDate(d.getDate() + n); return d.toLocaleDateString("en-CA", { timeZone: TZ }); }
+    function getMonday(s) { var d = new Date(s + "T12:00:00"); var day = d.getDay(); d.setDate(d.getDate() - day + (day === 0 ? -6 : 1)); return d.toLocaleDateString("en-CA", { timeZone: TZ }); }
 
-    let state = { goals: [], goalTasks: [], microGoal: null, weekOffset: 0 };
-    let dragState = { taskId: null, fromDate: null };
+    var state = { goals: [], goalTasks: [], weekOffset: 0, editingId: null, editingType: null };
+    var dragState = { taskId: null, fromDate: null };
 
     async function loadAll() {
-      const [goalsRes, tasksRes] = await Promise.all([
+      var r = await Promise.all([
         db.from("goals").select("*").order("created_at", { ascending: false }),
         db.from("goal_tasks").select("*").order("day_date", { ascending: true }),
       ]);
-      if (goalsRes.error) throw goalsRes.error;
-      if (tasksRes.error) throw tasksRes.error;
-      state.goals = goalsRes.data || [];
-      state.goalTasks = tasksRes.data || [];
-      state.microGoal = state.goals.find(g => g.cycle_type === "micro" && g.status === "active");
+      if (r[0].error) throw r[0].error;
+      if (r[1].error) throw r[1].error;
+      state.goals = r[0].data || [];
+      state.goalTasks = r[1].data || [];
     }
 
     function renderAll() {
@@ -291,59 +261,68 @@
     }
 
     function renderCycle(type) {
-      const goal = state.goals.find(g => g.cycle_type === type && g.status === "active");
-      const contentEl = document.getElementById(type + "Content");
-      const datesEl = document.getElementById(type + "Dates");
-      const form = document.getElementById(type + "Form");
-      const deleteBtn = document.getElementById(type + "Delete");
+      var goals = state.goals.filter(function(g) { return g.cycle_type === type && g.status === "active"; });
+      var el = document.getElementById(type + "Content");
 
-      if (goal) {
-        datesEl.textContent = formatDate(goal.start_date) + " \u2192 " + formatDate(goal.end_date);
-        contentEl.innerHTML = '<div class="cycle-title">' + esc(goal.title) + '</div>' +
-          (goal.description ? '<div class="cycle-desc">' + esc(goal.description) + '</div>' : '') +
-          '<button class="cycle-edit-btn" data-edit-cycle="' + type + '">Edit</button>';
-        deleteBtn.classList.remove("hidden");
-        contentEl.querySelector("[data-edit-cycle=\"" + type + "\"]").addEventListener("click", function() { openEditForm(type, goal); });
+      if (!goals.length) {
+        el.innerHTML = '<div class="empty-cycle">No ' + type + ' goals yet</div>';
       } else {
-        datesEl.textContent = "";
-        contentEl.innerHTML = '<div class="empty-cycle">No ' + type + ' goal set</div>' +
-          '<button class="add-cycle-btn" data-add-cycle="' + type + '">+ Add ' + type + ' goal</button>';
-        deleteBtn.classList.add("hidden");
-        contentEl.querySelector("[data-add-cycle=\"" + type + "\"]").addEventListener("click", function() { openEditForm(type, null); });
+        el.innerHTML = goals.map(function(g) {
+          return '<div class="goal-item">' +
+            '<div class="goal-item-header">' +
+              '<div><div class="goal-item-title">' + esc(g.title) + '</div>' +
+              '<div class="goal-item-dates">' + formatDate(g.start_date) + ' \u2192 ' + formatDate(g.end_date) + '</div></div>' +
+              '<div class="goal-item-actions">' +
+                '<button class="goal-item-btn" data-edit-goal="' + esc(g.id) + '">Edit</button>' +
+                '<button class="goal-item-btn del" data-del-goal="' + esc(g.id) + '">&times;</button>' +
+              '</div>' +
+            '</div>' +
+            (g.description ? '<div class="goal-item-desc">' + esc(g.description) + '</div>' : '') +
+          '</div>';
+        }).join("");
+
+        el.querySelectorAll("[data-edit-goal]").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            var g = state.goals.find(function(x) { return x.id === btn.dataset.editGoal; });
+            if (g) openEditForm(type, g);
+          });
+        });
+        el.querySelectorAll("[data-del-goal]").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            deleteGoal(btn.dataset.delGoal);
+          });
+        });
       }
-      form.classList.remove("open");
+      document.getElementById(type + "Form").classList.remove("open");
     }
 
     function openEditForm(type, goal) {
       var form = document.getElementById(type + "Form");
-      var titleEl = document.getElementById(type + "Title");
-      var descEl = document.getElementById(type + "Desc");
-      var startEl = document.getElementById(type + "Start");
-      var endEl = document.getElementById(type + "End");
-
+      document.getElementById(type + "Title").value = goal ? goal.title : "";
+      document.getElementById(type + "Desc").value = goal ? (goal.description || "") : "";
       if (goal) {
-        titleEl.value = goal.title;
-        descEl.value = goal.description || "";
-        startEl.value = goal.start_date;
-        endEl.value = goal.end_date;
+        document.getElementById(type + "Start").value = goal.start_date;
+        document.getElementById(type + "End").value = goal.end_date;
+        state.editingId = goal.id;
       } else {
-        titleEl.value = "";
-        descEl.value = "";
         var today = todayEt();
         var monday = getMonday(today);
-        startEl.value = monday;
-        endEl.value = addDays(monday, 4);
+        document.getElementById(type + "Start").value = monday;
+        document.getElementById(type + "End").value = addDays(monday, 4);
+        state.editingId = null;
       }
+      state.editingType = type;
       form.classList.add("open");
-      titleEl.focus();
+      document.getElementById(type + "Title").focus();
     }
 
     function renderWeek() {
       var el = document.getElementById("weekContent");
       var labelEl = document.getElementById("weekLabel");
+      var weekGoals = state.goals.filter(function(g) { return g.cycle_type === "micro" && g.status === "active"; });
 
-      if (!state.microGoal) {
-        el.innerHTML = '<div class="no-goal-msg">Set a weekly goal to start planning</div>';
+      if (!weekGoals.length) {
+        el.innerHTML = '<div class="no-goal-msg">Add a weekly goal to start planning</div>';
         labelEl.textContent = "";
         return;
       }
@@ -352,41 +331,42 @@
       var monday = getMonday(today);
       var weekStart = addDays(monday, state.weekOffset * 7);
       var weekEnd = addDays(weekStart, 4);
-
       labelEl.textContent = formatDate(weekStart) + " \u2192 " + formatDate(weekEnd);
 
+      var weekGoalIds = weekGoals.map(function(g) { return g.id; });
       var days = [];
       for (var i = 0; i < 5; i++) {
         var date = addDays(weekStart, i);
         var d = new Date(date + "T12:00:00");
-        days.push({
-          date: date,
-          dayName: DAY_NAMES[d.getDay()],
-          dayNum: d.getDate(),
-          month: MONTH_NAMES[d.getMonth()],
-          isToday: date === today,
-        });
+        days.push({ date: date, dayName: DAY_NAMES[d.getDay()], dayNum: d.getDate(), isToday: date === today });
       }
 
       var html = '<div class="week-grid">';
       days.forEach(function(day) {
         var tasks = state.goalTasks.filter(function(t) {
-          return t.goal_id === state.microGoal.id && t.day_date === day.date;
+          return weekGoalIds.indexOf(t.goal_id) !== -1 && t.day_date === day.date;
         });
 
         var tasksHtml = tasks.map(function(t) {
+          var gName = weekGoals.find(function(g) { return g.id === t.goal_id; });
+          var tag = weekGoals.length > 1 ? '<span style="font-size:9px;color:#0a84ff;margin-right:2px">' + esc(gName ? gName.title.substring(0, 8) : "") + ':</span>' : '';
           return '<div class="day-task" draggable="true" data-task-id="' + esc(t.id) + '" data-task-date="' + esc(day.date) + '">' +
-            '<span class="day-task-text">' + esc(t.description) + '</span>' +
+            tag + '<span class="day-task-text">' + esc(t.description) + '</span>' +
             '<button class="day-task-btn copy" data-copy="' + esc(t.id) + '" title="Copy">&rarr;</button>' +
             '<button class="day-task-btn del" data-del-task="' + esc(t.id) + '" title="Delete">&times;</button>' +
           '</div>';
         }).join("");
 
+        var goalSelect = weekGoals.length > 1 ?
+          '<select class="day-add-input" data-goal-select="' + esc(day.date) + '" style="flex:0 0 auto;width:auto;padding:2px 4px;font-size:10px">' +
+          weekGoals.map(function(g) { return '<option value="' + esc(g.id) + '">' + esc(g.title.substring(0, 12)) + '</option>'; }).join("") +
+          '</select>' : '';
+
         html += '<div class="day-col' + (day.isToday ? ' today' : '') + '" data-day="' + esc(day.date) + '">' +
           '<div class="day-col-header">' + day.dayName + '</div>' +
           '<div class="day-col-date">' + day.dayNum + '</div>' +
           '<div class="day-tasks">' + tasksHtml + '</div>' +
-          '<div class="day-add-row">' +
+          '<div class="day-add-row">' + goalSelect +
             '<input class="day-add-input" placeholder="Add..." data-add-input="' + esc(day.date) + '" />' +
             '<button class="day-add-btn" data-add-btn="' + esc(day.date) + '">+</button>' +
           '</div>' +
@@ -398,38 +378,32 @@
       el.querySelectorAll("[data-add-input]").forEach(function(input) {
         input.addEventListener("keydown", function(e) {
           if (e.key === "Enter" && input.value.trim()) {
-            addGoalTask(input.dataset.addInput, input.value.trim());
+            var date = input.dataset.addInput;
+            var goalId = weekGoals.length > 1 ? (el.querySelector("[data-goal-select=\"" + date + "\"]") || {}).value : weekGoals[0].id;
+            if (goalId) addGoalTask(goalId, date, input.value.trim());
             input.value = "";
           }
         });
       });
-
       el.querySelectorAll("[data-add-btn]").forEach(function(btn) {
         btn.addEventListener("click", function() {
-          var input = el.querySelector("[data-add-input=\"" + btn.dataset.addBtn + "\"]");
+          var date = btn.dataset.addBtn;
+          var input = el.querySelector("[data-add-input=\"" + date + "\"]");
           if (input && input.value.trim()) {
-            addGoalTask(btn.dataset.addBtn, input.value.trim());
+            var goalId = weekGoals.length > 1 ? (el.querySelector("[data-goal-select=\"" + date + "\"]") || {}).value : weekGoals[0].id;
+            if (goalId) addGoalTask(goalId, date, input.value.trim());
             input.value = "";
           }
         });
       });
-
       el.querySelectorAll("[data-del-task]").forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
-          e.stopPropagation();
-          deleteGoalTask(btn.dataset.delTask);
-        });
+        btn.addEventListener("click", function(e) { e.stopPropagation(); deleteGoalTask(btn.dataset.delTask); });
       });
-
       el.querySelectorAll("[data-copy]").forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
-          e.stopPropagation();
-          copyGoalTask(btn.dataset.copy);
-        });
+        btn.addEventListener("click", function(e) { e.stopPropagation(); copyGoalTask(btn.dataset.copy); });
       });
 
-      var taskEls = el.querySelectorAll(".day-task");
-      taskEls.forEach(function(taskEl) {
+      el.querySelectorAll(".day-task").forEach(function(taskEl) {
         taskEl.addEventListener("dragstart", function(e) {
           dragState.taskId = taskEl.dataset.taskId;
           dragState.fromDate = taskEl.dataset.taskDate;
@@ -440,43 +414,32 @@
         taskEl.addEventListener("dragend", function() {
           taskEl.classList.remove("dragging");
           dragState = { taskId: null, fromDate: null };
-          el.querySelectorAll(".day-col").forEach(function(col) { col.classList.remove("drag-over"); });
+          el.querySelectorAll(".day-col").forEach(function(c) { c.classList.remove("drag-over"); });
         });
       });
-
       el.querySelectorAll(".day-col").forEach(function(col) {
-        col.addEventListener("dragover", function(e) {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = "move";
-          col.classList.add("drag-over");
-        });
-        col.addEventListener("dragleave", function() {
-          col.classList.remove("drag-over");
-        });
+        col.addEventListener("dragover", function(e) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; col.classList.add("drag-over"); });
+        col.addEventListener("dragleave", function() { col.classList.remove("drag-over"); });
         col.addEventListener("drop", function(e) {
-          e.preventDefault();
-          col.classList.remove("drag-over");
+          e.preventDefault(); col.classList.remove("drag-over");
           var taskId = e.dataTransfer.getData("text/plain");
-          var toDate = col.dataset.day;
-          if (taskId && toDate) {
-            moveGoalTask(taskId, toDate);
-          }
+          if (taskId) moveGoalTask(taskId, col.dataset.day);
         });
       });
     }
 
-    async function saveGoal(type, existingId) {
+    async function saveGoal(type) {
       var title = document.getElementById(type + "Title").value.trim();
       var desc = document.getElementById(type + "Desc").value.trim();
       var start = document.getElementById(type + "Start").value;
       var end = document.getElementById(type + "End").value;
       if (!title || !start || !end) return;
-
       var now = new Date().toISOString();
-      if (existingId) {
+
+      if (state.editingId) {
         var patch = { title: title, description: desc, start_date: start, end_date: end, updated_at: now };
-        await db.from("goals").update(patch).eq("id", existingId);
-        var g = state.goals.find(function(x) { return x.id === existingId; });
+        await db.from("goals").update(patch).eq("id", state.editingId);
+        var g = state.goals.find(function(x) { return x.id === state.editingId; });
         if (g) Object.assign(g, patch);
       } else {
         var id = generateId();
@@ -484,40 +447,36 @@
         await db.from("goals").insert(goal);
         state.goals.push(goal);
       }
-      if (type === "micro") {
-        state.microGoal = state.goals.find(function(g) { return g.cycle_type === "micro" && g.status === "active"; });
-      }
+      state.editingId = null;
       renderAll();
     }
 
-    async function deleteGoal(type) {
-      var goal = state.goals.find(function(g) { return g.cycle_type === type && g.status === "active"; });
-      if (!goal) return;
-      if (!confirm("Delete " + type + ' goal "' + goal.title + '"?')) return;
-      await db.from("goals").delete().eq("id", goal.id);
-      state.goals = state.goals.filter(function(g) { return g.id !== goal.id; });
-      state.goalTasks = state.goalTasks.filter(function(t) { return t.goal_id !== goal.id; });
-      if (type === "micro") state.microGoal = null;
+    async function deleteGoal(id) {
+      var g = state.goals.find(function(x) { return x.id === id; });
+      if (!g) return;
+      if (!confirm('Delete goal "' + g.title + '"?')) return;
+      await db.from("goals").delete().eq("id", id);
+      state.goals = state.goals.filter(function(x) { return x.id !== id; });
+      state.goalTasks = state.goalTasks.filter(function(t) { return t.goal_id !== id; });
       renderAll();
     }
 
-    async function addGoalTask(date, description) {
+    async function addGoalTask(goalId, date, description) {
       var id = generateId();
       var now = new Date().toISOString();
-      var task = { id: id, goal_id: state.microGoal.id, day_date: date, description: description, status: "pending", created_at: now, updated_at: now };
+      var task = { id: id, goal_id: goalId, day_date: date, description: description, status: "pending", created_at: now, updated_at: now };
       state.goalTasks.push(task);
       renderWeek();
       try { await db.from("goal_tasks").insert(task); } catch (e) {
         state.goalTasks = state.goalTasks.filter(function(t) { return t.id !== id; });
         renderWeek();
-        console.error("Add failed:", e);
       }
     }
 
     async function deleteGoalTask(id) {
       state.goalTasks = state.goalTasks.filter(function(t) { return t.id !== id; });
       renderWeek();
-      try { await db.from("goal_tasks").delete().eq("id", id); } catch (e) { console.error("Delete failed:", e); }
+      try { await db.from("goal_tasks").delete().eq("id", id); } catch (e) {}
     }
 
     async function copyGoalTask(id) {
@@ -532,7 +491,6 @@
       try { await db.from("goal_tasks").insert(task); } catch (e) {
         state.goalTasks = state.goalTasks.filter(function(t) { return t.id !== newId; });
         renderWeek();
-        console.error("Copy failed:", e);
       }
     }
 
@@ -541,48 +499,28 @@
       if (!task || task.day_date === newDate) return;
       task.day_date = newDate;
       renderWeek();
-      try { await db.from("goal_tasks").update({ day_date: newDate, updated_at: new Date().toISOString() }).eq("id", id); } catch (e) {
-        console.error("Move failed:", e);
-      }
+      try { await db.from("goal_tasks").update({ day_date: newDate, updated_at: new Date().toISOString() }).eq("id", id); } catch (e) {}
     }
 
-    function showGoals() {
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("authGate").style.display = "block";
-      refresh();
-    }
-    function showLogin() {
-      document.getElementById("loginForm").style.display = "block";
-      document.getElementById("authGate").style.display = "none";
-    }
-    async function refresh() {
-      try { await loadAll(); renderAll(); } catch (e) { console.error("Refresh failed:", e); }
-    }
+    function showGoals() { document.getElementById("loginForm").style.display = "none"; document.getElementById("authGate").style.display = "block"; refresh(); }
+    function showLogin() { document.getElementById("loginForm").style.display = "block"; document.getElementById("authGate").style.display = "none"; }
+    async function refresh() { try { await loadAll(); renderAll(); } catch (e) { console.error("Refresh failed:", e); } }
 
     document.getElementById("authForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      var email = document.getElementById("authEmail").value;
-      var pass = document.getElementById("authPass").value;
       var errEl = document.getElementById("authError");
       errEl.style.display = "none";
-      var result = await db.auth.signInWithPassword({ email: email, password: pass });
-      if (result.error) { errEl.textContent = result.error.message; errEl.style.display = "block"; }
-      else { showGoals(); }
+      var r = await db.auth.signInWithPassword({ email: document.getElementById("authEmail").value, password: document.getElementById("authPass").value });
+      if (r.error) { errEl.textContent = r.error.message; errEl.style.display = "block"; } else { showGoals(); }
     });
-
     document.getElementById("logoutBtn").addEventListener("click", async function() { await db.auth.signOut(); showLogin(); });
 
+    document.querySelectorAll("[data-add-cycle]").forEach(function(btn) {
+      btn.addEventListener("click", function() { state.editingId = null; openEditForm(btn.dataset.addCycle, null); });
+    });
     ["macro", "meso", "micro"].forEach(function(type) {
-      document.getElementById(type + "Save").addEventListener("click", function() {
-        var goal = state.goals.find(function(g) { return g.cycle_type === type && g.status === "active"; });
-        saveGoal(type, goal ? goal.id : null);
-      });
-      document.getElementById(type + "Cancel").addEventListener("click", function() {
-        document.getElementById(type + "Form").classList.remove("open");
-      });
-      document.getElementById(type + "Delete").addEventListener("click", function() {
-        deleteGoal(type);
-      });
+      document.getElementById(type + "Save").addEventListener("click", function() { saveGoal(type); });
+      document.getElementById(type + "Cancel").addEventListener("click", function() { document.getElementById(type + "Form").classList.remove("open"); state.editingId = null; });
     });
 
     document.getElementById("weekPrev").addEventListener("click", function() { state.weekOffset--; renderWeek(); });
@@ -595,9 +533,7 @@
     });
     if (localStorage.getItem("theme") === "light") document.body.classList.add("light-mode");
 
-    db.auth.getSession().then(function(result) {
-      if (result.data.session) showGoals(); else showLogin();
-    });
+    db.auth.getSession().then(function(r) { if (r.data.session) showGoals(); else showLogin(); });
   </script>
 </body>
 </html>
