@@ -77,32 +77,32 @@
     .week-nav-btn { background: none; border: 1px solid #333; color: #666; font-size: 14px; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
     .week-nav-btn:hover { color: #fff; border-color: #fff; }
     .week-label { font-size: 12px; color: #888; }
-    .week-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .day-col { background: #141414; border: 1px solid #1e1e1e; border-radius: 8px; padding: 10px; min-height: 140px; transition: background .15s, border-color .15s; }
-    .day-col.today { border-color: #0a84ff55; background: #0a84ff08; }
-    .day-col.drag-over { border-color: #0a84ff; background: #0a84ff14; }
-    .day-col-header { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 4px; }
-    .day-col.today .day-col-header { color: #0a84ff; }
-    .day-col-date { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 10px; }
-    .day-col.today .day-col-date { color: #0a84ff; }
-    .day-tasks { display: flex; flex-direction: column; gap: 4px; min-height: 40px; }
-    .day-task { display: flex; align-items: center; gap: 4px; padding: 4px 6px; background: #1a1a1a; border: 1px solid #222; border-radius: 4px; cursor: grab; transition: all .15s; }
-    .day-task:active { cursor: grabbing; }
-    .day-task:hover { border-color: #333; background: #1e1e1e; }
-    .day-task.dragging { opacity: 0.4; border-color: #0a84ff; }
-    .day-task-text { flex: 1; font-size: 12px; color: #ccc; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .day-task-btn { background: none; border: none; color: #444; font-size: 11px; cursor: pointer; padding: 0 2px; opacity: 0; transition: all .15s; flex-shrink: 0; }
-    .day-task:hover .day-task-btn { opacity: 1; }
-    .day-task-btn:hover { color: #fff; }
-    .day-task-btn.copy:hover { color: #0a84ff; }
-    .day-task-btn.del:hover { color: #ff453a; }
-    .day-add-row { display: flex; gap: 4px; margin-top: 6px; }
-    .day-add-input { flex: 1; padding: 3px 6px; border: 1px solid #2a2a2a; border-radius: 4px; background: #111; color: #fff; font-size: 11px; font-family: inherit; outline: none; }
-    .day-add-input:focus { border-color: #0a84ff; }
-    .day-add-input::placeholder { color: #444; }
-    .day-add-btn { background: none; border: 1px solid #2a2a2a; color: #555; font-size: 11px; padding: 2px 6px; border-radius: 4px; cursor: pointer; transition: all .15s; }
-    .day-add-btn:hover { color: #fff; border-color: #0a84ff; }
-    .no-goal-msg { padding: 20px 0; color: #555; font-size: 13px; text-align: center; }
+    .time-grid { display: grid; grid-template-columns: 48px repeat(5, 1fr); border: 1px solid #1e1e1e; border-radius: 8px; overflow: hidden; max-height: 520px; overflow-y: auto; }
+    .time-grid-header { position: sticky; top: 0; z-index: 2; display: contents; }
+    .time-grid-header > div { background: #1a1a1a; border-bottom: 1px solid #222; padding: 6px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #555; text-align: center; }
+    .time-grid-header > div:first-child { color: #333; }
+    .time-grid-header > div.today-header { color: #0a84ff; }
+    .time-label { background: #141414; border-bottom: 1px solid #1e1e1e; border-right: 1px solid #1e1e1e; padding: 2px 4px; font-size: 9px; color: #555; text-align: right; height: 36px; display: flex; align-items: flex-start; justify-content: flex-end; }
+    .time-cell { background: #111; border-bottom: 1px solid #1e1e1e; border-right: 1px solid #1e1e1e; padding: 2px 3px; min-height: 36px; cursor: pointer; transition: background .1s; position: relative; }
+    .time-cell:hover { background: #1a1a1a; }
+    .time-cell.drag-over { background: #0a84ff14; }
+    .time-cell.today-col { background: #0a84ff05; }
+    .time-cell .cell-tasks { display: flex; flex-direction: column; gap: 2px; }
+    .time-cell .cell-task { display: flex; align-items: center; gap: 2px; padding: 2px 4px; background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 3px; font-size: 10px; color: #ccc; cursor: grab; transition: all .1s; }
+    .time-cell .cell-task:hover { border-color: #444; background: #252525; }
+    .time-cell .cell-task.dragging { opacity: 0.4; }
+    .time-cell .cell-task-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .time-cell .cell-task-btn { background: none; border: none; color: #444; font-size: 9px; cursor: pointer; padding: 0 1px; opacity: 0; transition: all .1s; flex-shrink: 0; }
+    .time-cell .cell-task:hover .cell-task-btn { opacity: 1; }
+    .time-cell .cell-task-btn:hover { color: #fff; }
+    .time-cell .cell-task-btn.copy:hover { color: #0a84ff; }
+    .time-cell .cell-task-btn.del:hover { color: #ff453a; }
+    .time-cell-add { display: none; gap: 2px; margin-top: 2px; }
+    .time-cell:focus-within .time-cell-add { display: flex; }
+    .time-cell-add input { flex: 1; padding: 2px 4px; border: 1px solid #2a2a2a; border-radius: 3px; background: #111; color: #fff; font-size: 10px; font-family: inherit; outline: none; }
+    .time-cell-add input:focus { border-color: #0a84ff; }
+    .time-cell-add button { background: none; border: 1px solid #2a2a2a; color: #555; font-size: 9px; padding: 1px 4px; border-radius: 3px; cursor: pointer; }
+    .time-cell-add button:hover { color: #fff; border-color: #0a84ff; }
 
     #loginForm { display: none; max-width: 320px; margin: 120px auto; }
     #loginForm h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 24px; }
@@ -441,7 +441,7 @@
       var today = todayEt();
       var monday = getMonday(today);
       var weekStart = addDays(monday, state.weekOffset * 7);
-      var weekEnd = addDays(weekStart, 4);
+      var weekEnd = addDays(monday, 6);
       labelEl.textContent = formatDate(weekStart) + " \u2192 " + formatDate(weekEnd);
 
       var weekGoalIds = weekGoals.map(function(g) { return g.id; });
@@ -452,57 +452,80 @@
         days.push({ date: date, dayName: DAY_NAMES[d.getDay()], dayNum: d.getDate(), isToday: date === today });
       }
 
-      var html = '<div class="week-grid">';
+      var hours = [];
+      for (var h = 6; h <= 22; h++) {
+        hours.push({ h: h, label: h === 0 ? "12a" : h < 12 ? h + "a" : h === 12 ? "12p" : (h - 12) + "p" });
+      }
+
+      var html = '<div class="time-grid">';
+      html += '<div class="time-grid-header"><div></div>';
       days.forEach(function(day) {
-        var tasks = state.goalTasks.filter(function(t) {
-          return weekGoalIds.indexOf(t.goal_id) !== -1 && t.day_date === day.date;
-        });
+        var cls = day.isToday ? ' today-header' : '';
+        html += '<div class="' + cls + '">' + day.dayName + ' ' + day.dayNum + '</div>';
+      });
+      html += '</div>';
 
-        var tasksHtml = tasks.map(function(t) {
-          var gName = weekGoals.find(function(g) { return g.id === t.goal_id; });
-          var tag = weekGoals.length > 1 ? '<span style="font-size:9px;color:#0a84ff;margin-right:2px">' + esc(gName ? gName.title.substring(0, 8) : "") + ':</span>' : '';
-          return '<div class="day-task" draggable="true" data-task-id="' + esc(t.id) + '" data-task-date="' + esc(day.date) + '">' +
-            tag + '<span class="day-task-text">' + esc(t.description) + '</span>' +
-            '<button class="day-task-btn copy" data-copy="' + esc(t.id) + '" title="Copy">&rarr;</button>' +
-            '<button class="day-task-btn del" data-del-task="' + esc(t.id) + '" title="Delete">&times;</button>' +
+      hours.forEach(function(hour) {
+        html += '<div class="time-label">' + hour.label + '</div>';
+        days.forEach(function(day) {
+          var timeStr = (hour.h < 10 ? "0" : "") + hour.h + ":00";
+          var cellTasks = state.goalTasks.filter(function(t) {
+            return weekGoalIds.indexOf(t.goal_id) !== -1 && t.day_date === day.date && t.start_time === timeStr;
+          });
+          var todayCls = day.isToday ? ' today-col' : '';
+
+          var tasksHtml = cellTasks.map(function(t) {
+            var gName = weekGoals.find(function(g) { return g.id === t.goal_id; });
+            var tag = weekGoals.length > 1 ? '<span style="font-size:8px;color:#0a84ff">' + esc(gName ? gName.title.substring(0, 6) : "") + ':</span>' : '';
+            return '<div class="cell-task" draggable="true" data-task-id="' + esc(t.id) + '" data-task-date="' + esc(day.date) + '" data-task-time="' + esc(timeStr) + '">' +
+              tag + '<span class="cell-task-text">' + esc(t.description) + '</span>' +
+              '<button class="cell-task-btn copy" data-copy="' + esc(t.id) + '" title="Copy">&rarr;</button>' +
+              '<button class="cell-task-btn del" data-del-task="' + esc(t.id) + '" title="Delete">&times;</button>' +
+            '</div>';
+          }).join("");
+
+          html += '<div class="time-cell' + todayCls + '" data-day="' + esc(day.date) + '" data-time="' + esc(timeStr) + '">' +
+            '<div class="cell-tasks">' + tasksHtml + '</div>' +
+            '<div class="time-cell-add">' +
+              '<input placeholder="..." data-cell-input="' + esc(day.date) + '-' + esc(timeStr) + '" />' +
+              '<button data-cell-add="' + esc(day.date) + '-' + esc(timeStr) + '">+</button>' +
+            '</div>' +
           '</div>';
-        }).join("");
-
-        var goalSelect = weekGoals.length > 1 ?
-          '<select class="day-add-input" data-goal-select="' + esc(day.date) + '" style="flex:0 0 auto;width:auto;padding:2px 4px;font-size:10px">' +
-          weekGoals.map(function(g) { return '<option value="' + esc(g.id) + '">' + esc(g.title.substring(0, 12)) + '</option>'; }).join("") +
-          '</select>' : '';
-
-        html += '<div class="day-col' + (day.isToday ? ' today' : '') + '" data-day="' + esc(day.date) + '">' +
-          '<div class="day-col-header">' + day.dayName + '</div>' +
-          '<div class="day-col-date">' + day.dayNum + '</div>' +
-          '<div class="day-tasks">' + tasksHtml + '</div>' +
-          '<div class="day-add-row">' + goalSelect +
-            '<input class="day-add-input" placeholder="Add..." data-add-input="' + esc(day.date) + '" />' +
-            '<button class="day-add-btn" data-add-btn="' + esc(day.date) + '">+</button>' +
-          '</div>' +
-        '</div>';
+        });
       });
       html += '</div>';
       el.innerHTML = html;
 
-      el.querySelectorAll("[data-add-input]").forEach(function(input) {
+      el.querySelectorAll("[data-cell-input]").forEach(function(input) {
         input.addEventListener("keydown", function(e) {
           if (e.key === "Enter" && input.value.trim()) {
-            var date = input.dataset.addInput;
-            var goalId = weekGoals.length > 1 ? (el.querySelector("[data-goal-select=\"" + date + "\"]") || {}).value : weekGoals[0].id;
-            if (goalId) addGoalTask(goalId, date, input.value.trim());
+            var parts = input.dataset.cellInput.split("-");
+            var date = parts[0];
+            var time = parts[1];
+            var goalId = weekGoals[0].id;
+            if (weekGoals.length > 1) {
+              var select = input.closest(".time-cell").querySelector("[data-goal-select]");
+              if (select) goalId = select.value;
+            }
+            addGoalTask(goalId, date, input.value.trim(), time);
             input.value = "";
           }
         });
       });
-      el.querySelectorAll("[data-add-btn]").forEach(function(btn) {
+      el.querySelectorAll("[data-cell-add]").forEach(function(btn) {
         btn.addEventListener("click", function() {
-          var date = btn.dataset.addBtn;
-          var input = el.querySelector("[data-add-input=\"" + date + "\"]");
+          var key = btn.dataset.cellAdd;
+          var parts = key.split("-");
+          var date = parts[0];
+          var time = parts[1];
+          var input = el.querySelector('[data-cell-input="' + key + '"]');
           if (input && input.value.trim()) {
-            var goalId = weekGoals.length > 1 ? (el.querySelector("[data-goal-select=\"" + date + "\"]") || {}).value : weekGoals[0].id;
-            if (goalId) addGoalTask(goalId, date, input.value.trim());
+            var goalId = weekGoals[0].id;
+            if (weekGoals.length > 1) {
+              var select = btn.closest(".time-cell").querySelector("[data-goal-select]");
+              if (select) goalId = select.value;
+            }
+            addGoalTask(goalId, date, input.value.trim(), time);
             input.value = "";
           }
         });
@@ -514,7 +537,7 @@
         btn.addEventListener("click", function(e) { e.stopPropagation(); copyGoalTask(btn.dataset.copy); });
       });
 
-      el.querySelectorAll(".day-task").forEach(function(taskEl) {
+      el.querySelectorAll(".cell-task").forEach(function(taskEl) {
         taskEl.addEventListener("dragstart", function(e) {
           dragState.taskId = taskEl.dataset.taskId;
           dragState.fromDate = taskEl.dataset.taskDate;
@@ -525,16 +548,16 @@
         taskEl.addEventListener("dragend", function() {
           taskEl.classList.remove("dragging");
           dragState = { taskId: null, fromDate: null };
-          el.querySelectorAll(".day-col").forEach(function(c) { c.classList.remove("drag-over"); });
+          el.querySelectorAll(".time-cell").forEach(function(c) { c.classList.remove("drag-over"); });
         });
       });
-      el.querySelectorAll(".day-col").forEach(function(col) {
-        col.addEventListener("dragover", function(e) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; col.classList.add("drag-over"); });
-        col.addEventListener("dragleave", function() { col.classList.remove("drag-over"); });
-        col.addEventListener("drop", function(e) {
-          e.preventDefault(); col.classList.remove("drag-over");
+      el.querySelectorAll(".time-cell").forEach(function(cell) {
+        cell.addEventListener("dragover", function(e) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; cell.classList.add("drag-over"); });
+        cell.addEventListener("dragleave", function() { cell.classList.remove("drag-over"); });
+        cell.addEventListener("drop", function(e) {
+          e.preventDefault(); cell.classList.remove("drag-over");
           var taskId = e.dataTransfer.getData("text/plain");
-          if (taskId) moveGoalTask(taskId, col.dataset.day);
+          if (taskId) moveGoalTask(taskId, cell.dataset.day, cell.dataset.time);
         });
       });
     }
@@ -615,10 +638,11 @@
       });
     }
 
-    async function addGoalTask(goalId, date, description) {
+    async function addGoalTask(goalId, date, description, startTime) {
       var id = generateId();
       var now = new Date().toISOString();
       var task = { id: id, goal_id: goalId, day_date: date, description: description, status: "pending", created_at: now, updated_at: now };
+      if (startTime) task.start_time = startTime;
       state.goalTasks.push(task);
       renderWeek();
       try { await db.from("goal_tasks").insert(task); } catch (e) {
@@ -640,6 +664,7 @@
       var newId = generateId();
       var now = new Date().toISOString();
       var task = { id: newId, goal_id: orig.goal_id, day_date: newDate, description: orig.description, status: "pending", created_at: now, updated_at: now };
+      if (orig.start_time) task.start_time = orig.start_time;
       state.goalTasks.push(task);
       renderWeek();
       try { await db.from("goal_tasks").insert(task); } catch (e) {
@@ -648,12 +673,14 @@
       }
     }
 
-    async function moveGoalTask(id, newDate) {
+    async function moveGoalTask(id, newDate, newTime) {
       var task = state.goalTasks.find(function(t) { return t.id === id; });
-      if (!task || task.day_date === newDate) return;
+      if (!task) return;
+      if (task.day_date === newDate && task.start_time === newTime) return;
       task.day_date = newDate;
+      if (newTime) task.start_time = newTime;
       renderWeek();
-      try { await db.from("goal_tasks").update({ day_date: newDate, updated_at: new Date().toISOString() }).eq("id", id); } catch (e) {}
+      try { await db.from("goal_tasks").update({ day_date: newDate, start_time: newTime, updated_at: new Date().toISOString() }).eq("id", id); } catch (e) {}
     }
 
     function showGoals() { document.getElementById("loginForm").style.display = "none"; document.getElementById("authGate").style.display = "block"; refresh(); }
