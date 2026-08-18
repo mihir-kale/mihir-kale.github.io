@@ -72,7 +72,7 @@
     .week-nav-btn { background: none; border: 1px solid #333; color: #666; font-size: 14px; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
     .week-nav-btn:hover { color: #fff; border-color: #fff; }
     .week-label { font-size: 12px; color: #888; }
-    .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .week-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
     .day-col { background: #141414; border: 1px solid #1e1e1e; border-radius: 8px; padding: 10px; min-height: 140px; transition: background .15s, border-color .15s; }
     .day-col.today { border-color: #0a84ff55; background: #0a84ff08; }
     .day-col.drag-over { border-color: #0a84ff; background: #0a84ff14; }
@@ -146,7 +146,7 @@
     body.light-mode #themeToggle:hover { color: #111; border-color: #111; }
 
     @media (max-width: 900px) {
-      .week-grid { grid-template-columns: repeat(4, 1fr); }
+      .week-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 600px) {
       .week-grid { grid-template-columns: repeat(2, 1fr); }
@@ -332,7 +332,7 @@
         var today = todayEt();
         var monday = getMonday(today);
         startEl.value = monday;
-        endEl.value = addDays(monday, 6);
+        endEl.value = addDays(monday, 4);
       }
       form.classList.add("open");
       titleEl.focus();
@@ -351,12 +351,12 @@
       var today = todayEt();
       var monday = getMonday(today);
       var weekStart = addDays(monday, state.weekOffset * 7);
-      var weekEnd = addDays(weekStart, 6);
+      var weekEnd = addDays(weekStart, 4);
 
       labelEl.textContent = formatDate(weekStart) + " \u2192 " + formatDate(weekEnd);
 
       var days = [];
-      for (var i = 0; i < 7; i++) {
+      for (var i = 0; i < 5; i++) {
         var date = addDays(weekStart, i);
         var d = new Date(date + "T12:00:00");
         days.push({
