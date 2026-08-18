@@ -504,10 +504,6 @@
             var date = parts[0];
             var time = parts[1];
             var goalId = weekGoals[0].id;
-            if (weekGoals.length > 1) {
-              var select = input.closest(".time-cell").querySelector("[data-goal-select]");
-              if (select) goalId = select.value;
-            }
             addGoalTask(goalId, date, input.value.trim(), time);
             input.value = "";
           }
@@ -519,13 +515,9 @@
           var parts = key.split("-");
           var date = parts[0];
           var time = parts[1];
-          var input = el.querySelector('[data-cell-input="' + key + '"]');
+          var input = btn.parentElement.querySelector("input");
           if (input && input.value.trim()) {
             var goalId = weekGoals[0].id;
-            if (weekGoals.length > 1) {
-              var select = btn.closest(".time-cell").querySelector("[data-goal-select]");
-              if (select) goalId = select.value;
-            }
             addGoalTask(goalId, date, input.value.trim(), time);
             input.value = "";
           }
