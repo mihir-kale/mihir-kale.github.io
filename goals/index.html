@@ -269,17 +269,17 @@
       var datesEl = document.getElementById(type + "Dates");
 
       if (type === "macro") {
-        datesEl.textContent = getQuarterStart() + " \u2192 " + getQuarterEnd();
+        datesEl.textContent = formatDate(getQuarterEnd());
       } else if (type === "meso") {
         var today = todayEt();
         var monday = getMonday(today);
         var mesoEnd = addDays(monday, 27);
-        datesEl.textContent = monday + " \u2192 " + mesoEnd;
+        datesEl.textContent = formatDate(mesoEnd);
       } else {
         var today = todayEt();
         var monday = getMonday(today);
         var weekEnd = addDays(monday, 4);
-        datesEl.textContent = monday + " \u2192 " + weekEnd;
+        datesEl.textContent = formatDate(weekEnd);
       }
 
       if (!goals.length) {
