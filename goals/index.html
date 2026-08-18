@@ -583,17 +583,36 @@
     async function assignToParent(childId, parentType) {
       var parents = state.goals.filter(function(g) { return g.cycle_type === parentType && g.status === "active"; });
       if (!parents.length) return;
-      var options = parents.map(function(g, i) { return (i + 1) + ". " + g.title; }).join("\n");
-      var choice = prompt("Link to which " + parentType + " goal?\n\n" + options + "\n\nEnter number:");
-      if (!choice) return;
-      var idx = parseInt(choice, 10) - 1;
-      if (idx < 0 || idx >= parents.length) return;
-      var parentId = parents[idx].id;
-      var now = new Date().toISOString();
-      await db.from("goals").update({ parent_id: parentId, updated_at: now }).eq("id", childId);
       var child = state.goals.find(function(g) { return g.id === childId; });
-      if (child) child.parent_id = parentId;
-      renderAll();
+      if (!child) return;
+      var currentParentId = child.parent_id || "";
+
+      var btn = document.querySelector('[data-assign-' + (parentType === "macro" ? 'macro' : 'meso') + '="' + childId + '"]');
+      if (!btn) return;
+
+      var select = document.createElement("select");
+      select.className = "day-add-input";
+      select.style.cssText = "flex:0 0 auto;width:auto;padding:2px 4px;font-size:10px";
+      select.innerHTML = '<option value="">None</option>' +
+        parents.map(function(g) {
+          var sel = g.id === currentParentId ? ' selected' : '';
+          return '<option value="' + esc(g.id) + '"' + sel + '>' + esc(g.title.substring(0, 20)) + '</option>';
+        }).join("");
+
+      btn.replaceWith(select);
+      select.focus();
+
+      select.addEventListener("change", async function() {
+        var parentId = select.value || null;
+        var now = new Date().toISOString();
+        await db.from("goals").update({ parent_id: parentId, updated_at: now }).eq("id", childId);
+        child.parent_id = parentId;
+        renderAll();
+      });
+
+      select.addEventListener("blur", function() {
+        renderAll();
+      });
     }
 
     async function addGoalTask(goalId, date, description) {
