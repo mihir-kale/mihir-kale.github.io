@@ -168,7 +168,7 @@
 
     <div class="cycle-section">
       <div class="cycle-header">
-        <span class="cycle-label macro">Macro Cycle (12 weeks)</span>
+        <span class="cycle-label macro">Macro Cycle (Fiscal Quarter)</span>
       </div>
       <div id="macroContent"></div>
       <button class="add-cycle-btn" data-add-cycle="macro">+ Add macro goal</button>
@@ -182,7 +182,7 @@
 
     <div class="cycle-section">
       <div class="cycle-header">
-        <span class="cycle-label meso">Meso Cycle (6 weeks)</span>
+        <span class="cycle-label meso">Meso Cycle (4 weeks)</span>
       </div>
       <div id="mesoContent"></div>
       <button class="add-cycle-btn" data-add-cycle="meso">+ Add meso goal</button>
@@ -296,6 +296,26 @@
       document.getElementById(type + "Form").classList.remove("open");
     }
 
+    function getQuarterEnd() {
+      var today = new Date();
+      var y = today.getFullYear();
+      var m = today.getMonth();
+      if (m < 3) return y + "-03-31";
+      if (m < 6) return y + "-06-30";
+      if (m < 9) return y + "-09-30";
+      return y + "-12-31";
+    }
+
+    function getQuarterStart() {
+      var today = new Date();
+      var y = today.getFullYear();
+      var m = today.getMonth();
+      if (m < 3) return (y - 1) + "-10-01";
+      if (m < 6) return y + "-01-01";
+      if (m < 9) return y + "-04-01";
+      return y + "-07-01";
+    }
+
     function openEditForm(type, goal) {
       var form = document.getElementById(type + "Form");
       document.getElementById(type + "Title").value = goal ? goal.title : "";
@@ -307,8 +327,17 @@
       } else {
         var today = todayEt();
         var monday = getMonday(today);
-        document.getElementById(type + "Start").value = monday;
-        document.getElementById(type + "End").value = addDays(monday, 4);
+        if (type === "macro") {
+          var qStart = getQuarterStart();
+          document.getElementById(type + "Start").value = qStart;
+          document.getElementById(type + "End").value = getQuarterEnd();
+        } else if (type === "meso") {
+          document.getElementById(type + "Start").value = monday;
+          document.getElementById(type + "End").value = addDays(monday, 27);
+        } else {
+          document.getElementById(type + "Start").value = monday;
+          document.getElementById(type + "End").value = addDays(monday, 4);
+        }
         state.editingId = null;
       }
       state.editingType = type;
