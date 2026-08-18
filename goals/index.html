@@ -825,6 +825,10 @@
         state.goals.push(goal);
       }
 
+      if (type === "micro") {
+        state.microGoal = state.goals.find(g => g.cycle_type === "micro" && g.status === "active");
+      }
+
       renderAll();
     }
 
@@ -836,6 +840,7 @@
       await db.from("goals").delete().eq("id", goal.id);
       state.goals = state.goals.filter(g => g.id !== goal.id);
       state.goalTasks = state.goalTasks.filter(t => t.goal_id !== goal.id);
+      if (type === "micro") state.microGoal = null;
       renderAll();
     }
 
