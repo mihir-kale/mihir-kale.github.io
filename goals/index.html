@@ -71,6 +71,8 @@
     .save-btn:hover { opacity: .85; }
     .cancel-btn { background: none; border: 1px solid #333; color: #666; font-family: inherit; font-size: 11px; padding: 4px 12px; border-radius: 6px; cursor: pointer; transition: all .2s; }
     .cancel-btn:hover { color: #fff; border-color: #fff; }
+    .del-btn { background: none; border: 1px solid #333; color: #ff453a; font-family: inherit; font-size: 11px; padding: 4px 12px; border-radius: 6px; cursor: pointer; transition: all .2s; margin-left: auto; }
+    .del-btn:hover { background: #ff453a; color: #fff; border-color: #ff453a; }
 
     .week-section { background: #111; border: 1px solid #222; border-radius: 12px; padding: 18px 20px; }
     .week-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
@@ -186,7 +188,7 @@
         <textarea class="edit-textarea" id="macroDesc" placeholder="Qualitative goal description..."></textarea>
         <div class="edit-row"><span class="edit-label">Start</span><input class="edit-input" id="macroStart" type="date" /><span class="edit-label" style="width:auto">End</span><input class="edit-input" id="macroEnd" type="date" /></div>
         <div class="edit-row"><span class="edit-label">Color</span><div class="color-picker-row" id="macroColorPicker"></div></div>
-        <div class="edit-actions"><button class="save-btn" id="macroSave">Save</button><button class="cancel-btn" id="macroCancel">Cancel</button></div>
+        <div class="edit-actions"><button class="save-btn" id="macroSave">Save</button><button class="cancel-btn" id="macroCancel">Cancel</button><button class="del-btn" id="macroDel">Delete</button></div>
       </div>
     </div>
 
@@ -201,7 +203,7 @@
         <div class="edit-row"><span class="edit-label">Title</span><input class="edit-input" id="mesoTitle" placeholder="e.g., Build MVP" /></div>
         <textarea class="edit-textarea" id="mesoDesc" placeholder="Qualitative goal description..."></textarea>
         <div class="edit-row"><span class="edit-label">Start</span><input class="edit-input" id="mesoStart" type="date" /><span class="edit-label" style="width:auto">End</span><input class="edit-input" id="mesoEnd" type="date" /></div>
-        <div class="edit-actions"><button class="save-btn" id="mesoSave">Save</button><button class="cancel-btn" id="mesoCancel">Cancel</button></div>
+        <div class="edit-actions"><button class="save-btn" id="mesoSave">Save</button><button class="cancel-btn" id="mesoCancel">Cancel</button><button class="del-btn" id="mesoDel">Delete</button></div>
       </div>
     </div>
 
@@ -216,7 +218,7 @@
         <div class="edit-row"><span class="edit-label">Title</span><input class="edit-input" id="microTitle" placeholder="e.g., Sprint 1: Foundation" /></div>
         <textarea class="edit-textarea" id="microDesc" placeholder="Qualitative goal description..."></textarea>
         <div class="edit-row"><span class="edit-label">Start</span><input class="edit-input" id="microStart" type="date" /><span class="edit-label" style="width:auto">End</span><input class="edit-input" id="microEnd" type="date" /></div>
-        <div class="edit-actions"><button class="save-btn" id="microSave">Save</button><button class="cancel-btn" id="microCancel">Cancel</button></div>
+        <div class="edit-actions"><button class="save-btn" id="microSave">Save</button><button class="cancel-btn" id="microCancel">Cancel</button><button class="del-btn" id="microDel">Delete</button></div>
       </div>
     </div>
 
@@ -330,7 +332,6 @@
               '<div class="goal-item-actions">' +
                 assignBtn +
                 '<button class="goal-item-btn" data-edit-goal="' + esc(g.id) + '">Edit</button>' +
-                '<button class="goal-item-btn del" data-del-goal="' + esc(g.id) + '">&times;</button>' +
               '</div>' +
             '</div>' +
             (g.description ? '<div class="goal-item-desc">' + esc(g.description) + '</div>' : '') +
@@ -341,11 +342,6 @@
           btn.addEventListener("click", function() {
             var g = state.goals.find(function(x) { return x.id === btn.dataset.editGoal; });
             if (g) openEditForm(type, g);
-          });
-        });
-        el.querySelectorAll("[data-del-goal]").forEach(function(btn) {
-          btn.addEventListener("click", function() {
-            deleteGoal(btn.dataset.delGoal);
           });
         });
         el.querySelectorAll("[data-assign-macro]").forEach(function(btn) {
@@ -421,6 +417,11 @@
             opt.classList.add("active");
           });
         });
+      }
+      var delBtn = document.getElementById(type + "Del");
+      delBtn.style.display = goal ? "block" : "none";
+      if (goal) {
+        delBtn.onclick = function() { deleteGoal(goal.id); };
       }
       state.editingType = type;
       form.classList.add("open");
