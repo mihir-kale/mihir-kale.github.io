@@ -221,19 +221,6 @@
         <div class="edit-actions"><button class="save-btn" id="microSave">Save</button><button class="cancel-btn" id="microCancel">Cancel</button><button class="del-btn" id="microDel">Delete</button></div>
       </div>
     </div>
-
-    <div class="week-section">
-      <div class="cycle-header">
-        <span class="cycle-label">Weekly Planner</span>
-        <div class="week-nav">
-          <button class="week-nav-btn" id="weekPrev">&larr;</button>
-          <span class="week-label" id="weekLabel"></span>
-          <button class="week-nav-btn" id="weekNext">&rarr;</button>
-          <button class="goal-item-btn" id="weekToday">Today</button>
-        </div>
-      </div>
-      <div id="weekContent"><div class="no-goal-msg">Add a weekly goal to start planning</div></div>
-    </div>
   </div>
 
   <button id="themeToggle" title="Toggle color scheme">&#9680;</button>
@@ -271,8 +258,7 @@
       return null;
     }
 
-    var state = { goals: [], goalTasks: [], weekOffset: 0, editingId: null, editingType: null };
-    var dragState = { taskId: null, fromDate: null };
+    var state = { goals: [], goalTasks: [], editingId: null, editingType: null };
 
     async function loadAll() {
       var r = await Promise.all([
@@ -289,7 +275,6 @@
       renderCycle("macro");
       renderCycle("meso");
       renderCycle("micro");
-      renderWeek();
     }
 
     function renderCycle(type) {
@@ -426,141 +411,6 @@
       state.editingType = type;
       form.classList.add("open");
       document.getElementById(type + "Title").focus();
-    }
-
-    function renderWeek() {
-      var el = document.getElementById("weekContent");
-      var labelEl = document.getElementById("weekLabel");
-      var weekGoals = state.goals.filter(function(g) { return g.cycle_type === "micro" && g.status === "active"; });
-
-      if (!weekGoals.length) {
-        el.innerHTML = '<div class="no-goal-msg">Add a weekly goal to start planning</div>';
-        labelEl.textContent = "";
-        return;
-      }
-
-      var today = todayEt();
-      var monday = getMonday(today);
-      var weekStart = addDays(monday, state.weekOffset * 7);
-      var weekEnd = addDays(monday, 6);
-      labelEl.textContent = formatDate(weekStart) + " \u2192 " + formatDate(weekEnd);
-
-      var weekGoalIds = weekGoals.map(function(g) { return g.id; });
-      var days = [];
-      for (var i = 0; i < 5; i++) {
-        var date = addDays(weekStart, i);
-        var d = new Date(date + "T12:00:00");
-        days.push({ date: date, dayName: DAY_NAMES[d.getDay()], dayNum: d.getDate(), isToday: date === today });
-      }
-
-      var hours = [];
-      for (var h = 6; h <= 22; h++) {
-        hours.push({ h: h, label: h === 0 ? "12a" : h < 12 ? h + "a" : h === 12 ? "12p" : (h - 12) + "p" });
-      }
-
-      var html = '<div class="time-grid">';
-      html += '<div class="time-grid-header"><div></div>';
-      days.forEach(function(day) {
-        var cls = day.isToday ? ' today-header' : '';
-        html += '<div class="' + cls + '">' + day.dayName + ' ' + day.dayNum + '</div>';
-      });
-      html += '</div>';
-
-      hours.forEach(function(hour) {
-        html += '<div class="time-label">' + hour.label + '</div>';
-        days.forEach(function(day) {
-          var timeStr = (hour.h < 10 ? "0" : "") + hour.h + ":00";
-          var cellTasks = state.goalTasks.filter(function(t) {
-            return weekGoalIds.indexOf(t.goal_id) !== -1 && t.day_date === day.date && t.start_time === timeStr;
-          });
-          var todayCls = day.isToday ? ' today-col' : '';
-
-          var tasksHtml = cellTasks.map(function(t) {
-            var gName = weekGoals.find(function(g) { return g.id === t.goal_id; });
-            var tag = weekGoals.length > 1 ? '<span style="font-size:8px;color:#0a84ff">' + esc(gName ? gName.title.substring(0, 6) : "") + ':</span>' : '';
-            return '<div class="cell-task" draggable="true" data-task-id="' + esc(t.id) + '" data-task-date="' + esc(day.date) + '" data-task-time="' + esc(timeStr) + '">' +
-              tag + '<span class="cell-task-text">' + esc(t.description) + '</span>' +
-              '<button class="cell-task-btn copy" data-copy="' + esc(t.id) + '" title="Copy">&rarr;</button>' +
-              '<button class="cell-task-btn del" data-del-task="' + esc(t.id) + '" title="Delete">&times;</button>' +
-            '</div>';
-          }).join("");
-
-          html += '<div class="time-cell' + todayCls + '" data-day="' + esc(day.date) + '" data-time="' + esc(timeStr) + '">' +
-            '<div class="cell-tasks">' + tasksHtml + '</div>' +
-            '<div class="time-cell-add">' +
-              '<input placeholder="..." data-cell-input="' + esc(day.date) + '-' + esc(timeStr) + '" />' +
-              '<button data-cell-add="' + esc(day.date) + '-' + esc(timeStr) + '">+</button>' +
-            '</div>' +
-          '</div>';
-        });
-      });
-      html += '</div>';
-      el.innerHTML = html;
-
-      el.querySelectorAll("[data-cell-input]").forEach(function(input) {
-        input.addEventListener("keydown", function(e) {
-          if (e.key === "Enter" && input.value.trim()) {
-            var parts = input.dataset.cellInput.split("-");
-            var date = parts[0];
-            var time = parts[1];
-            var goalId = weekGoals[0].id;
-            addGoalTask(goalId, date, input.value.trim(), time);
-            input.value = "";
-          }
-        });
-      });
-      el.querySelectorAll("[data-cell-add]").forEach(function(btn) {
-        btn.addEventListener("click", function() {
-          var key = btn.dataset.cellAdd;
-          var parts = key.split("-");
-          var date = parts[0];
-          var time = parts[1];
-          var input = btn.parentElement.querySelector("input");
-          if (input && input.value.trim()) {
-            var goalId = weekGoals[0].id;
-            addGoalTask(goalId, date, input.value.trim(), time);
-            input.value = "";
-          }
-        });
-      });
-      el.querySelectorAll("[data-del-task]").forEach(function(btn) {
-        btn.addEventListener("click", function(e) { e.stopPropagation(); deleteGoalTask(btn.dataset.delTask); });
-      });
-      el.querySelectorAll("[data-copy]").forEach(function(btn) {
-        btn.addEventListener("click", function(e) { e.stopPropagation(); copyGoalTask(btn.dataset.copy); });
-      });
-
-      el.querySelectorAll(".time-cell").forEach(function(cell) {
-        cell.addEventListener("click", function(e) {
-          if (e.target.closest(".cell-task") || e.target.closest(".time-cell-add")) return;
-          var input = cell.querySelector("[data-cell-input]");
-          if (input) input.focus();
-        });
-      });
-
-      el.querySelectorAll(".cell-task").forEach(function(taskEl) {
-        taskEl.addEventListener("dragstart", function(e) {
-          dragState.taskId = taskEl.dataset.taskId;
-          dragState.fromDate = taskEl.dataset.taskDate;
-          taskEl.classList.add("dragging");
-          e.dataTransfer.effectAllowed = "move";
-          e.dataTransfer.setData("text/plain", taskEl.dataset.taskId);
-        });
-        taskEl.addEventListener("dragend", function() {
-          taskEl.classList.remove("dragging");
-          dragState = { taskId: null, fromDate: null };
-          el.querySelectorAll(".time-cell").forEach(function(c) { c.classList.remove("drag-over"); });
-        });
-      });
-      el.querySelectorAll(".time-cell").forEach(function(cell) {
-        cell.addEventListener("dragover", function(e) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; cell.classList.add("drag-over"); });
-        cell.addEventListener("dragleave", function() { cell.classList.remove("drag-over"); });
-        cell.addEventListener("drop", function(e) {
-          e.preventDefault(); cell.classList.remove("drag-over");
-          var taskId = e.dataTransfer.getData("text/plain");
-          if (taskId) moveGoalTask(taskId, cell.dataset.day, cell.dataset.time);
-        });
-      });
     }
 
     async function saveGoal(type) {
@@ -704,10 +554,6 @@
       document.getElementById(type + "Save").addEventListener("click", function() { saveGoal(type); });
       document.getElementById(type + "Cancel").addEventListener("click", function() { document.getElementById(type + "Form").classList.remove("open"); state.editingId = null; });
     });
-
-    document.getElementById("weekPrev").addEventListener("click", function() { state.weekOffset--; renderWeek(); });
-    document.getElementById("weekNext").addEventListener("click", function() { state.weekOffset++; renderWeek(); });
-    document.getElementById("weekToday").addEventListener("click", function() { state.weekOffset = 0; renderWeek(); });
 
     document.getElementById("themeToggle").addEventListener("click", function() {
       document.body.classList.toggle("light-mode");

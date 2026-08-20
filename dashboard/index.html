@@ -58,6 +58,53 @@
     }
     .logout-btn:hover { color: #fff; border-color: #fff; }
 
+    .view-toggle {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .view-toggle:hover, .view-toggle.active { color: #fff; border-color: #0a84ff; }
+
+    .week-view { position: fixed; inset: 0; background: #0a0a0a; z-index: 50; display: flex; flex-direction: column; }
+    .week-view.hidden { display: none; }
+    .week-view-header { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #222; }
+    .week-view-header .week-label { font-size: 14px; color: #fff; font-weight: 500; }
+    .week-view-header .view-toggle { margin-left: auto; }
+
+    .week-calendar { flex: 1; display: grid; grid-template-columns: 56px repeat(5, 1fr); overflow: hidden; }
+    .wc-header { position: sticky; top: 0; z-index: 2; background: #111; border-bottom: 1px solid #222; padding: 8px 4px; text-align: center; }
+    .wc-header.time-col { background: #111; }
+    .wc-header .wc-day { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #555; }
+    .wc-header .wc-date { font-size: 18px; font-weight: 500; color: #fff; margin-top: 2px; }
+    .wc-header.today .wc-day { color: #0a84ff; }
+    .wc-header.today .wc-date { color: #0a84ff; background: #0a84ff22; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; }
+
+    .wc-body { flex: 1; display: grid; grid-template-columns: 56px repeat(5, 1fr); overflow-y: auto; position: relative; }
+    .wc-time-label { background: #0a0a0a; border-right: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; padding: 2px 6px 0 0; font-size: 10px; color: #555; text-align: right; height: 48px; }
+    .wc-cell { border-right: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; height: 48px; position: relative; cursor: pointer; transition: background .1s; }
+    .wc-cell:hover { background: #ffffff06; }
+    .wc-cell.today-col { background: #0a84ff05; }
+    .wc-cell .wc-event { position: absolute; left: 2px; right: 2px; background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 4px; padding: 3px 6px; font-size: 10px; color: #ccc; overflow: hidden; cursor: grab; z-index: 1; }
+    .wc-cell .wc-event:hover { border-color: #444; background: #252525; }
+    .wc-cell .wc-event .wc-ev-time { font-size: 9px; color: #888; }
+    .wc-cell .wc-event .wc-ev-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wc-cell .wc-event.dragging { opacity: 0.4; }
+    .wc-cell .wc-add { display: none; position: absolute; bottom: 2px; left: 2px; right: 2px; }
+    .wc-cell:focus-within .wc-add { display: flex; gap: 2px; }
+    .wc-cell .wc-add input { flex: 1; padding: 2px 4px; border: 1px solid #2a2a2a; border-radius: 3px; background: #111; color: #fff; font-size: 10px; font-family: inherit; outline: none; }
+    .wc-cell .wc-add input:focus { border-color: #0a84ff; }
+    .wc-cell .wc-add button { background: none; border: 1px solid #2a2a2a; color: #555; font-size: 9px; padding: 1px 4px; border-radius: 3px; cursor: pointer; }
+    .wc-cell .wc-add button:hover { color: #fff; border-color: #0a84ff; }
+
+    .wc-now-line { position: absolute; left: 0; right: 0; height: 2px; background: #ff453a; z-index: 3; pointer-events: none; }
+    .wc-now-dot { position: absolute; left: -4px; top: -3px; width: 8px; height: 8px; background: #ff453a; border-radius: 50%; }
+
     .layout {
       display: grid;
       grid-template-columns: minmax(320px, 380px) 1fr;
@@ -578,9 +625,21 @@
     <div class="header-row">
       <div class="date-header" id="dateHeader"></div>
       <div class="header-actions">
+        <button class="view-toggle" id="weekViewToggle" title="Weekly calendar view">Week</button>
         <span class="last-updated" id="lastUpdated"></span>
         <button class="logout-btn" id="logoutBtn">Sign out</button>
       </div>
+    </div>
+
+    <div id="weekView" class="week-view hidden">
+      <div class="week-view-header">
+        <button class="week-nav-btn" id="weekPrev">&larr;</button>
+        <span class="week-label" id="weekLabel"></span>
+        <button class="week-nav-btn" id="weekNext">&rarr;</button>
+        <button class="week-nav-btn" id="weekToday">Today</button>
+        <button class="view-toggle active" id="weekViewClose">Dashboard</button>
+      </div>
+      <div id="weekCalendar" class="week-calendar"></div>
     </div>
 
     <div class="layout">
@@ -646,6 +705,12 @@
 
     function todayEt() {
       return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
+    }
+
+    function formatDateFull(s) {
+      if (!s) return "";
+      const d = new Date(s + "T12:00:00");
+      return `${MONTH_NAMES[d.getMonth()]} ${d.getDate()}`;
     }
 
     function generateId() {
@@ -1307,6 +1372,185 @@
       bar.classList.remove("hidden");
     }
 
+    /* ── Weekly calendar view ────────────────────── */
+    let weekOffset = 0;
+
+    function getMonday(s) {
+      const d = new Date(s + "T12:00:00");
+      const day = d.getDay();
+      d.setDate(d.getDate() - day + (day === 0 ? -6 : 1));
+      return d.toLocaleDateString("en-CA", { timeZone: TZ });
+    }
+
+    function addDays(s, n) {
+      const d = new Date(s + "T12:00:00");
+      d.setDate(d.getDate() + n);
+      return d.toLocaleDateString("en-CA", { timeZone: TZ });
+    }
+
+    function renderWeekView() {
+      const el = document.getElementById("weekCalendar");
+      const labelEl = document.getElementById("weekLabel");
+      const today = todayEt();
+      const monday = getMonday(today);
+      const weekStart = addDays(monday, weekOffset * 7);
+
+      const days = [];
+      for (let i = 0; i < 5; i++) {
+        const date = addDays(weekStart, i);
+        const d = new Date(date + "T12:00:00");
+        days.push({ date, dayName: DAY_NAMES[d.getDay()], dayNum: d.getDate(), isToday: date === today });
+      }
+
+      const weekEnd = addDays(weekStart, 4);
+      labelEl.textContent = `${formatDateFull(weekStart)} — ${formatDateFull(weekEnd)}`;
+
+      const weekGoalIds = (state.goals || []).filter(g => g.cycle_type === "micro" && g.status === "active").map(g => g.id);
+
+      const hours = [];
+      for (let h = 6; h <= 22; h++) hours.push(h);
+
+      let html = '<div class="wc-header time-col"></div>';
+      days.forEach(day => {
+        html += `<div class="wc-header${day.isToday ? ' today' : ''}"><div class="wc-day">${day.dayName}</div><div class="wc-date">${day.dayNum}</div></div>`;
+      });
+
+      html += '<div class="wc-body">';
+      hours.forEach(h => {
+        const label = h === 0 ? "12a" : h < 12 ? h + "a" : h === 12 ? "12p" : (h - 12) + "p";
+        html += `<div class="wc-time-label">${label}</div>`;
+        days.forEach(day => {
+          const timeStr = (h < 10 ? "0" : "") + h + ":00";
+          const cellTasks = (state.goalTasks || []).filter(t =>
+            weekGoalIds.includes(t.goal_id) && t.day_date === day.date && t.start_time === timeStr
+          );
+          const todayCls = day.isToday ? ' today-col' : '';
+
+          const tasksHtml = cellTasks.map(t => {
+            const g = (state.goals || []).find(x => x.id === t.goal_id);
+            const color = g && g.color ? g.color : '#0a84ff';
+            return `<div class="wc-event" draggable="true" data-wc-task="${esc(t.id)}" data-wc-date="${esc(day.date)}" data-wc-time="${esc(timeStr)}" style="border-left:3px solid ${esc(color)}">
+              <div class="wc-ev-time">${esc(timeStr)}</div>
+              <div class="wc-ev-title">${esc(t.description)}</div>
+            </div>`;
+          }).join("");
+
+          html += `<div class="wc-cell${todayCls}" data-wc-day="${esc(day.date)}" data-wc-time="${esc(timeStr)}">
+            ${tasksHtml}
+            <div class="wc-add"><input placeholder="..." data-wc-input="${esc(day.date)}-${esc(timeStr)}" /><button data-wc-add="${esc(day.date)}-${esc(timeStr)}">+</button></div>
+          </div>`;
+        });
+      });
+
+      const now = new Date();
+      const nowH = now.getHours();
+      const nowM = now.getMinutes();
+      if (nowH >= 6 && nowH <= 22) {
+        const todayIdx = days.findIndex(d => d.isToday);
+        if (todayIdx !== -1) {
+          const topPx = (nowH - 6) * 48 + (nowM / 60) * 48;
+          const leftPx = 56 + todayIdx * (100 / 6) + '%';
+          html += `<div class="wc-now-line" style="top:${topPx}px;left:56px;right:0"><div class="wc-now-dot"></div></div>`;
+        }
+      }
+
+      html += '</div>';
+      el.innerHTML = html;
+
+      el.querySelectorAll("[data-wc-input]").forEach(input => {
+        input.addEventListener("keydown", e => {
+          if (e.key === "Enter" && input.value.trim()) {
+            const parts = input.dataset.wcInput.split("-");
+            const date = parts[0];
+            const time = parts[1];
+            const goalId = weekGoalIds[0];
+            if (goalId) addDashboardGoalTask(goalId, date, input.value.trim(), time);
+            input.value = "";
+          }
+        });
+      });
+
+      el.querySelectorAll("[data-wc-add]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.wcAdd;
+          const parts = key.split("-");
+          const date = parts[0];
+          const time = parts[1];
+          const input = btn.parentElement.querySelector("input");
+          if (input && input.value.trim()) {
+            const goalId = weekGoalIds[0];
+            if (goalId) addDashboardGoalTask(goalId, date, input.value.trim(), time);
+            input.value = "";
+          }
+        });
+      });
+
+      el.querySelectorAll("[data-wc-task]").forEach(taskEl => {
+        taskEl.addEventListener("dragstart", e => {
+          e.dataTransfer.setData("text/plain", taskEl.dataset.wcTask);
+          e.dataTransfer.effectAllowed = "move";
+          taskEl.classList.add("dragging");
+        });
+        taskEl.addEventListener("dragend", () => taskEl.classList.remove("dragging"));
+      });
+
+      el.querySelectorAll(".wc-cell").forEach(cell => {
+        cell.addEventListener("click", e => {
+          if (e.target.closest(".wc-event") || e.target.closest(".wc-add")) return;
+          const input = cell.querySelector("[data-wc-input]");
+          if (input) input.focus();
+        });
+        cell.addEventListener("dragover", e => { e.preventDefault(); cell.style.background = "#0a84ff14"; });
+        cell.addEventListener("dragleave", () => { cell.style.background = ""; });
+        cell.addEventListener("drop", e => {
+          e.preventDefault();
+          cell.style.background = "";
+          const taskId = e.dataTransfer.getData("text/plain");
+          if (taskId) moveGoalTask(taskId, cell.dataset.wcDay, cell.dataset.wcTime);
+        });
+      });
+    }
+
+    async function addDashboardGoalTask(goalId, date, description, startTime) {
+      const id = generateId();
+      const now = new Date().toISOString();
+      const task = { id, goal_id: goalId, day_date: date, description, status: "pending", start_time: startTime, created_at: now, updated_at: now };
+      state.goalTasks.push(task);
+      renderWeekView();
+      try { await db.from("goal_tasks").insert(task); } catch (e) {
+        state.goalTasks = state.goalTasks.filter(t => t.id !== id);
+        renderWeekView();
+      }
+    }
+
+    async function moveGoalTask(id, newDate, newTime) {
+      const task = state.goalTasks.find(t => t.id === id);
+      if (!task) return;
+      task.day_date = newDate;
+      if (newTime) task.start_time = newTime;
+      renderWeekView();
+      try { await db.from("goal_tasks").update({ day_date: newDate, start_time: newTime, updated_at: new Date().toISOString() }).eq("id", id); } catch (e) {}
+    }
+
+    async function deleteGoalTask(id) {
+      state.goalTasks = state.goalTasks.filter(t => t.id !== id);
+      renderWeekView();
+      try { await db.from("goal_tasks").delete().eq("id", id); } catch (e) {}
+    }
+
+    function toggleWeekView(show) {
+      const wv = document.getElementById("weekView");
+      const layout = document.querySelector(".layout");
+      if (show) {
+        wv.classList.remove("hidden");
+        layout.style.display = "none";
+        renderWeekView();
+      } else {
+        wv.classList.add("hidden");
+        layout.style.display = "";
+      }
+    }
+
     async function copyEventToTask(nodeId) {
       const ev = state.pickEvent;
       const n = state.nodes.find(x => x.id === nodeId);
@@ -1433,6 +1677,12 @@
       const box = e.target.closest("[data-toggle-due]");
       if (box) toggleDueItem(box.dataset.toggleDue, box.dataset.id);
     });
+
+    document.getElementById("weekViewToggle").addEventListener("click", () => toggleWeekView(true));
+    document.getElementById("weekViewClose").addEventListener("click", () => toggleWeekView(false));
+    document.getElementById("weekPrev").addEventListener("click", () => { weekOffset--; renderWeekView(); });
+    document.getElementById("weekNext").addEventListener("click", () => { weekOffset++; renderWeekView(); });
+    document.getElementById("weekToday").addEventListener("click", () => { weekOffset = 0; renderWeekView(); });
 
     function applyTheme(light) {
       document.body.classList.toggle("light-mode", light);
