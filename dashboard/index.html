@@ -1388,6 +1388,8 @@
       return d.toLocaleDateString("en-CA", { timeZone: TZ });
     }
 
+    let showCalendarEvents = true;
+
     function renderWeekView() {
       const el = document.getElementById("weekCalendar");
       const labelEl = document.getElementById("weekLabel");
@@ -1410,7 +1412,8 @@
       const hours = [];
       for (let h = 6; h <= 22; h++) hours.push(h);
 
-      let html = '<div class="wc-header time-col"></div>';
+      const calBtnCls = showCalendarEvents ? ' active' : '';
+      let html = `<div class="wc-header time-col"><button class="view-toggle${calBtnCls}" id="wcCalToggle" style="font-size:9px;padding:2px 6px">Cal</button></div>`;
       days.forEach(day => {
         html += `<div class="wc-header${day.isToday ? ' today' : ''}"><div class="wc-day">${day.dayName}</div><div class="wc-date">${day.dayNum}</div></div>`;
       });
@@ -1426,7 +1429,7 @@
           );
           const todayCls = day.isToday ? ' today-col' : '';
 
-          const tasksHtml = cellTasks.map(t => {
+          let tasksHtml = cellTasks.map(t => {
             const g = (state.goals || []).find(x => x.id === t.goal_id);
             const color = g && g.color ? g.color : '#0a84ff';
             return `<div class="wc-event" draggable="true" data-wc-task="${esc(t.id)}" data-wc-date="${esc(day.date)}" data-wc-time="${esc(timeStr)}" style="border-left:3px solid ${esc(color)}">
@@ -1434,6 +1437,23 @@
               <div class="wc-ev-title">${esc(t.description)}</div>
             </div>`;
           }).join("");
+
+          if (showCalendarEvents) {
+            const dayEvents = (state.ics || []).filter(ev => {
+              const evDate = ev.allDay ? ev.start.slice(0, 10) : new Date(ev.start).toLocaleDateString("en-CA", { timeZone: TZ });
+              if (evDate !== day.date) return false;
+              if (ev.allDay) return h === 6;
+              const evH = new Date(ev.start).getHours();
+              return evH === h;
+            });
+            tasksHtml += dayEvents.map(ev => {
+              const time = ev.allDay ? "All day" : new Date(ev.start).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: TZ });
+              return `<div class="wc-event wc-cal-event" style="border-left:3px solid ${esc(ev.color || '#666')};opacity:0.7">
+                <div class="wc-ev-time">${esc(time)}</div>
+                <div class="wc-ev-title">${esc(ev.title)}</div>
+              </div>`;
+            }).join("");
+          }
 
           html += `<div class="wc-cell${todayCls}" data-wc-day="${esc(day.date)}" data-wc-time="${esc(timeStr)}">
             ${tasksHtml}
@@ -1509,6 +1529,14 @@
           if (taskId) moveGoalTask(taskId, cell.dataset.wcDay, cell.dataset.wcTime);
         });
       });
+
+      const calToggle = document.getElementById("wcCalToggle");
+      if (calToggle) {
+        calToggle.addEventListener("click", () => {
+          showCalendarEvents = !showCalendarEvents;
+          renderWeekView();
+        });
+      }
     }
 
     async function addDashboardGoalTask(goalId, date, description, startTime) {
