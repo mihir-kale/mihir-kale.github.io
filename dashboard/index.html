@@ -733,11 +733,17 @@
     /* ── Data Loading ────────────────────────── */
 
     async function loadAll() {
+      const { data: { session } } = await db.auth.getSession();
+      const token = session?.access_token || "";
+
       const [actRes, icsRes] = await Promise.all([
         db.from("actionables").select("*"),
         fetch(SUPABASE_URL + "/functions/v1/calendar-proxy", {
-          headers: { apikey: SUPABASE_ANON_KEY }
-        }).then(r => r.json()).catch(() => ({ events: [] })),
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${token}`,
+          }
+        }).then(r => r.ok ? r.json() : { events: [] }).catch(() => ({ events: [] })),
       ]);
       if (actRes.error) throw actRes.error;
       state.actionables = actRes.data || [];
@@ -1126,7 +1132,7 @@
       loadAll().then(() => {
         render();
         setupDropZones();
-      });
+      }).catch(e => console.error("loadAll failed:", e));
     }
 
     /* ── Event Listeners ─────────────────────── */
@@ -1220,7 +1226,7 @@
     /* ── Auto-refresh ────────────────────────── */
     setInterval(() => {
       if (!document.getElementById("authGate").classList.contains("hidden")) {
-        loadAll().then(() => { render(); setupDropZones(); });
+        loadAll().then(() => { render(); setupDropZones(); }).catch(e => console.error("refresh failed:", e));
       }
     }, 60000);
 
