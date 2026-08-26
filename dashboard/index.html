@@ -743,11 +743,13 @@
             apikey: SUPABASE_ANON_KEY,
             Authorization: `Bearer ${token}`,
           }
-        }).then(r => r.ok ? r.json() : { events: [] }).catch(() => ({ events: [] })),
+        }).then(r => r.ok ? r.json() : { events: [] }).catch(e => { console.error("Calendar fetch error:", e); return { events: [] }; }),
       ]);
       if (actRes.error) throw actRes.error;
       state.actionables = actRes.data || [];
-      state.calendar = (icsRes.events || []).map(e => ({
+      const rawEvents = icsRes.events || [];
+      console.log(`Calendar: ${rawEvents.length} events loaded`);
+      state.calendar = rawEvents.map(e => ({
         id: "cal_" + btoa(e.title + e.start).replace(/[^a-zA-Z0-9]/g,"").slice(0,21),
         title: e.title,
         date: parseIsoToDate(e.start),
@@ -756,6 +758,7 @@
         completed: false,
         source: "calendar",
       }));
+      console.log(`Calendar: ${state.calendar.filter(c => c.date === todayEt()).length} events for today`);
     }
 
     /* ── Render ──────────────────────────────── */
