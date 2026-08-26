@@ -21,19 +21,14 @@ Personal dashboard + task planner deployed as a GitHub Pages site.
 
 ## Dashboard Layout
 
-Single auth-gated page with four modules (all dark theme, Eastern Time):
+Single auth-gated page with two panels (all dark theme, Eastern Time):
 
-| Module | Source | Notes |
+| Panel | Source | Notes |
 |---|---|---|
-| Due | `nodes` + `tasks` + `goal_tasks` | Overdue/today buckets from open tasks, deadline events, and goal allocations; checkbox toggles done |
-| Calendar | `events` table + Outlook ICS (via `calendar-proxy` edge function) | Scrollable next-N-days list; 1D/3D/7D toggle (default 1D), merged and de-duped client-side |
-| Microcycle | `goals` + `goal_tasks` | Shows current microcycle goal and today's allocated tasks; links to /goals/ |
-| Work | `nodes` table | Board of boxes per project area (top-level nodes) with arbitrarily nested tasks, per-task deadlines, add/delete/due-date editing |
+| Timeline (left) | `actionables` + Outlook ICS (via `calendar-proxy` edge function) | 6 AM – 10 PM day view; blocks positioned by time; drag to move/resize; click to edit; calendar events auto-populate as read-only blocks |
+| Backlog (right) | `actionables` table | Unscheduled actionables with filter tabs (All/Scheduled/Pending); drag to timeline to schedule; + button to add new |
 
-The old widgets (Applications, Training, Nutrition, Read, Listen, Pomodoro) were
-removed in the rebuild and are not coming back.
-
-The `/goals/` page provides cycle management (macro/meso/micro) with a 14-day allocation table for the current microcycle. Daily allocations sync to the dashboard Due section and Microcycle widget.
+The dashboard is built around one concept: **actionables** (title + time block + completed). No goals, no cycles, no taxonomy. Calendar events from the `calendar-proxy` edge function auto-appear on the timeline as reference blocks.
 
 ## Key Files
 
@@ -58,12 +53,13 @@ The rebuilt dashboard (tasks + calendar only) does not read training tables. No 
 - Project ID: `heyrtjzntnicqsfemcmi`
 - URL: `https://heyrtjzntnicqsfemcmi.supabase.co`
 - Anon key is in `dashboard/index.html` and `tracker/index.html` (RLS-protected)
-- RLS: all personal-data tables are `authenticated`-only (see `supabase/migrations/20260802100000_secure_rls.sql`). The anon key can read nothing. Sign in is required; `enable_signup = false` recommended.
+- RLS: all personal-data tables are `authenticated`-only (see `supabase/migrations/20260802100000_secure_rls.sql` and `supabase/migrations/20260826000000_actionables.sql`). The anon key can read nothing. Sign in is required; `enable_signup = false` recommended.
 
 ### Tables
 
 | Table | Purpose |
 |---|---|
+| `actionables` | Core dashboard items: title + time block + completed |
 | `nodes` | Task tree (tracker) |
 | `people` | Contacts with outreach lifecycle |
 | `events` | Phone screens, meetings, deadlines |
@@ -128,8 +124,6 @@ Edit `input/content.json`, then run `render.py`. Output filename is derived from
 - All dates use Eastern Time (`America/New_York`) via `todayEt()` helper
 - Node IDs are random 21-char strings via `crypto.getRandomValues`
 - Dashboard uses `esc()` for XSS protection on all innerHTML interpolations
-- `fetchWithRetry(url, retries)` with exponential backoff for JSON fetches
-- Nutrition date check piggybacks on 30-second Spotify interval (now only checks nutrition)
 - Dashboard and tracker are both auth-gated (Supabase email/password); all Supabase tables require `authenticated` role
 - After editing `dashboard/index.html`, commit and push — GitHub Pages auto-deploys on push to `main`
 
