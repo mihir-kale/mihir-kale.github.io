@@ -1203,7 +1203,8 @@
 
     function renderCollection() {
       const col = document.getElementById('collection');
-      let items = state.actionables.slice();
+      const calItems = state.calendar.map(c => ({ ...c, _isCal: true }));
+      let items = [...state.actionables.map(a => ({ ...a, _isCal: false })), ...calItems];
 
       if (state.search) {
         const q = state.search.toLowerCase();
@@ -1219,14 +1220,19 @@
         items = items.filter(a => !a.completed);
       }
 
-      items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+      items.sort((a, b) => {
+        if (a._isCal && !b._isCal) return 1;
+        if (!a._isCal && b._isCal) return -1;
+        return (a.sort_order || 0) - (b.sort_order || 0);
+      });
 
       col.innerHTML = items.map(a => renderCard(a)).join('');
 
       col.querySelectorAll('.card').forEach(el => {
         const id = el.dataset.id;
-        setupCardDrag(el, id);
-        setupCardDrop(el, id);
+        if (el.dataset.source !== 'calendar') {
+          setupCardDrag(el, id);
+        }
       });
 
       col.querySelectorAll('.card-check').forEach(btn => {
@@ -1241,7 +1247,12 @@
         el.addEventListener('input', () => autoResize(el));
         el.addEventListener('blur', () => saveNotes(el.dataset.id, el.value));
       });
-      col.querySelectorAll('.time-chip, .add-time-btn').forEach(btn => {
+      col.querySelectorAll('.time-chip').forEach(btn => {
+        if (btn.closest('.card')?.dataset.source !== 'calendar') {
+          btn.addEventListener('click', e => { e.stopPropagation(); openTimeEditor(btn.dataset.id, btn); });
+        }
+      });
+      col.querySelectorAll('.add-time-btn').forEach(btn => {
         btn.addEventListener('click', e => { e.stopPropagation(); openTimeEditor(btn.dataset.id, btn); });
       });
       col.querySelectorAll('.add-tag-btn').forEach(btn => {
@@ -1255,16 +1266,19 @@
     function renderCard(a) {
       const done = a.completed ? ' completed-card' : '';
       const hideDone = !state.showDone && a.completed ? ' hidden-completed' : '';
+      const isCal = a.source === 'calendar';
       const aTags = state.tagActionables.filter(t => t.actionable_id === a.id).map(t => state.tags.find(tg => tg.id === t.tag_id)).filter(Boolean);
       const timeChip = a.date
-        ? `<button class="time-chip" data-id="${a.id}">${fmtDateChip(a.date)}, ${fmtTimeRange(a.start_time, a.end_time)}</button>`
+        ? isCal
+          ? `<span class="time-chip" style="cursor:default">${fmtDateChip(a.date)}, ${fmtTimeRange(a.start_time, a.end_time)}</span>`
+          : `<button class="time-chip" data-id="${a.id}">${fmtDateChip(a.date)}, ${fmtTimeRange(a.start_time, a.end_time)}</button>`
         : `<button class="add-time-btn" data-id="${a.id}">+ Add time</button>`;
       const tagsHtml = aTags.map(t =>
         `<span class="tag-chip" style="background:${esc(t.color)}18;color:${esc(t.color)}"><span class="tag-dot" style="background:${esc(t.color)}"></span>${esc(t.name)}</span>`
       ).join('');
-      const sourceHtml = a.source === 'calendar' ? '<span class="card-source">Calendar</span>' : '';
+      const sourceHtml = isCal ? '<span class="card-source">Calendar</span>' : '';
 
-      return `<div class="card${done}${hideDone}" data-id="${a.id}" draggable="true">
+      return `<div class="card${done}${hideDone}" data-id="${a.id}" data-source="${a.source || 'manual'}" ${isCal ? '' : 'draggable="true"'}>
         <button class="card-menu-btn" data-id="${a.id}" title="More actions">&#8942;</button>
         <div class="card-top">
           <button class="card-check${a.completed?' checked':''}" data-id="${a.id}">${checkSvg()}</button>
