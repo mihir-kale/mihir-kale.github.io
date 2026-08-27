@@ -13,52 +13,69 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f3ef;
+      --card-bg: #fffdf9;
+      --text: #2d2a26;
+      --text-secondary: #7a756e;
+      --text-muted: #a8a19a;
+      --border: #e8e4de;
+      --border-hover: #d4cfc7;
+      --accent: #5b7a6b;
+      --accent-hover: #4a6659;
+      --danger: #c45c4a;
+      --shadow: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.03);
+      --shadow-hover: 0 4px 12px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+      --radius: 14px;
+      --radius-sm: 8px;
+      --timeline-w: 340px;
+      --hour-px: 64;
+    }
+
     body {
       font-family: 'Inter', -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
-      background: #070707;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-    }
-    body.light-mode {
-      background: #f4f5f7;
-      color: #111;
+      overflow: hidden;
     }
 
-    /* ── Login ─────────────────────────────── */
+    /* ── Login ──────────────────────────────── */
     #loginForm {
       max-width: 320px;
-      margin: 120px auto;
+      margin: 140px auto;
       padding: 0 20px;
     }
     #loginForm h2 {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 2px;
+      color: var(--text-muted);
       margin-bottom: 24px;
-      color: #888;
     }
-    .login-field { margin-bottom: 12px; }
+    .login-field { margin-bottom: 10px; }
     .login-field input {
       width: 100%;
       padding: 10px 12px;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 8px;
-      color: #fff;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
       font-size: 13px;
       font-family: inherit;
       outline: none;
       transition: border-color .2s;
     }
-    .login-field input:focus { border-color: #0a84ff; }
+    .login-field input:focus { border-color: var(--accent); }
     .login-btn {
       width: 100%;
       padding: 10px;
-      background: #0a84ff;
+      background: var(--accent);
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       color: #fff;
       font-size: 13px;
       font-family: inherit;
@@ -68,33 +85,38 @@
     }
     .login-btn:hover { opacity: .85; }
     .login-error {
-      margin-top: 12px;
-      color: #ff453a;
+      margin-top: 10px;
+      color: var(--danger);
       font-size: 12px;
       min-height: 18px;
     }
-    body.light-mode #loginForm h2 { color: #555; }
-    body.light-mode .login-field input { background: #fff; border-color: #e3e4e8; color: #111; }
 
-    /* ── Header ─────────────────────────────── */
+    /* ── Auth Gate Layout ───────────────────── */
+    #authGate {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #authGate.hidden { display: none; }
+
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 24px;
-      border-bottom: 1px solid #1a1a1a;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--bg);
+      z-index: 10;
     }
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .day-nav {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .day-nav-btn {
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .day-nav { display: flex; align-items: center; gap: 6px; }
+    .nav-btn {
       background: none;
-      border: 1px solid #222;
+      border: 1px solid var(--border);
       border-radius: 6px;
-      color: #888;
+      color: var(--text-muted);
       width: 28px;
       height: 28px;
       display: flex;
@@ -104,160 +126,192 @@
       font-size: 13px;
       transition: all .15s;
     }
-    .day-nav-btn:hover { border-color: #fff; color: #fff; }
-    .day-label {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      min-width: 200px;
-      text-align: center;
-    }
+    .nav-btn:hover { border-color: var(--text-secondary); color: var(--text); }
     .today-btn {
       background: none;
-      border: 1px solid #222;
+      border: 1px solid var(--border);
       border-radius: 6px;
-      color: #888;
+      color: var(--text-muted);
       padding: 4px 10px;
       font-size: 11px;
       font-family: inherit;
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: .5px;
       cursor: pointer;
       transition: all .15s;
     }
-    .today-btn:hover { border-color: #0a84ff; color: #0a84ff; }
+    .today-btn:hover { border-color: var(--accent); color: var(--accent); }
     .today-btn.hidden { display: none; }
-    .header-right { display: flex; align-items: center; gap: 12px; }
+    .day-label {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .5px;
+      color: var(--text);
+      min-width: 160px;
+      text-align: center;
+    }
+    .collapse-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all .15s;
+    }
+    .collapse-btn:hover { border-color: var(--text-secondary); color: var(--text); }
     .logout-btn {
       background: none;
-      border: 1px solid #222;
+      border: 1px solid var(--border);
       border-radius: 6px;
-      color: #555;
+      color: var(--text-muted);
       padding: 5px 12px;
       font-size: 11px;
       font-family: inherit;
       cursor: pointer;
       transition: all .15s;
     }
-    .logout-btn:hover { border-color: #ff453a; color: #ff453a; }
-    body.light-mode .header { border-bottom-color: #e3e4e8; }
-    body.light-mode .day-nav-btn { border-color: #e3e4e8; color: #888; }
-    body.light-mode .day-nav-btn:hover { border-color: #111; color: #111; }
-    body.light-mode .today-btn { border-color: #e3e4e8; color: #888; }
-    body.light-mode .today-btn:hover { border-color: #0a84ff; color: #0a84ff; }
-    body.light-mode .logout-btn { border-color: #e3e4e8; color: #888; }
+    .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
-    /* ── Layout ─────────────────────────────── */
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(300px, 420px) 1fr;
-      height: calc(100vh - 57px);
-    }
-    @media (max-width: 900px) {
-      .layout { grid-template-columns: 1fr; grid-template-rows: 50vh 1fr; }
+    /* ── Main Workspace ─────────────────────── */
+    .workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
     }
 
     /* ── Timeline Panel ─────────────────────── */
     .timeline-panel {
-      border-right: 1px solid #1a1a1a;
+      width: var(--timeline-w);
+      min-width: var(--timeline-w);
+      border-right: 1px solid var(--border);
       overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
+      background: var(--bg);
+      transition: width .25s ease, min-width .25s ease, opacity .2s;
     }
-    body.light-mode .timeline-panel { border-right-color: #e3e4e8; }
-    .timeline-hours { position: relative; }
+    .timeline-panel.collapsed {
+      width: 0;
+      min-width: 0;
+      opacity: 0;
+      border-right: none;
+      overflow: hidden;
+    }
+    .timeline-hours { position: relative; padding-bottom: 40px; }
     .hour-slot {
       position: relative;
-      height: 60px;
-      border-bottom: 1px solid #1a1a1a;
+      height: calc(var(--hour-px) * 1px);
+      border-bottom: 1px solid var(--border);
     }
-    body.light-mode .hour-slot { border-bottom-color: #eceef1; }
     .hour-label {
       position: absolute;
-      top: -7px;
-      left: 12px;
+      top: -8px;
+      left: 10px;
       font-size: 10px;
       font-weight: 500;
-      color: #444;
-      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      letter-spacing: .3px;
       font-variant-numeric: tabular-nums;
       user-select: none;
       z-index: 2;
-      background: #070707;
+      background: var(--bg);
       padding: 0 4px;
     }
-    body.light-mode .hour-label { background: #f4f5f7; color: #999; }
     .hour-slot:first-child .hour-label { top: 2px; }
+
+    /* ── All-Day Strip ──────────────────────── */
+    .allday-strip {
+      border-bottom: 1px solid var(--border);
+      padding: 8px 10px 8px 48px;
+      min-height: 36px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .allday-strip:empty { display: none; }
+    .allday-chip {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: rgba(91,122,107,.08);
+      color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
 
     /* ── Now Indicator ──────────────────────── */
     .now-line {
       position: absolute;
-      left: 0;
+      left: 36px;
       right: 0;
       height: 2px;
-      background: #ff453a;
+      background: var(--danger);
       z-index: 10;
       pointer-events: none;
     }
     .now-line::before {
       content: '';
       position: absolute;
-      left: 6px;
+      left: -4px;
       top: -4px;
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background: #ff453a;
+      background: var(--danger);
     }
 
     /* ── Timeline Blocks ────────────────────── */
     .time-block {
       position: absolute;
-      left: 48px;
+      left: 44px;
       right: 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       padding: 4px 8px;
       overflow: hidden;
       cursor: grab;
       z-index: 5;
       transition: box-shadow .15s;
       user-select: none;
-    }
-    .time-block:hover { box-shadow: 0 2px 12px rgba(0,0,0,.4); }
-    .time-block.dragging { opacity: .5; cursor: grabbing; }
-    .time-block.manual {
-      background: rgba(10, 132, 255, .2);
-      border: 1px solid rgba(10, 132, 255, .4);
-    }
-    .time-block.calendar-block {
-      background: rgba(148, 130, 220, .15);
-      border: 1px solid rgba(148, 130, 220, .35);
-    }
-    .time-block.completed {
-      opacity: .4;
-    }
-    .time-block.completed .block-title {
-      text-decoration: line-through;
-    }
-    .block-title {
       font-size: 11px;
       font-weight: 500;
-      line-height: 1.3;
+    }
+    .time-block:hover { box-shadow: var(--shadow-hover); }
+    .time-block.dragging { opacity: .5; cursor: grabbing; }
+    .time-block.manual {
+      background: rgba(91,122,107,.12);
+      border: 1px solid rgba(91,122,107,.25);
+      color: var(--accent);
+    }
+    .time-block.cal {
+      background: rgba(160,140,200,.1);
+      border: 1px solid rgba(160,140,200,.25);
+      color: #7a6a9a;
+    }
+    .time-block.completed { opacity: .35; }
+    .time-block .block-title {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      line-height: 1.3;
     }
-    .block-time {
+    .time-block .block-time {
       font-size: 9px;
-      color: #888;
-      margin-top: 1px;
+      opacity: .6;
       font-variant-numeric: tabular-nums;
     }
     .block-handle {
       position: absolute;
-      left: 0;
-      right: 0;
+      left: 0; right: 0;
       height: 6px;
       cursor: ns-resize;
       z-index: 6;
@@ -266,288 +320,595 @@
     .block-handle-bottom { bottom: 0; }
     .block-check {
       position: absolute;
-      top: 4px;
-      right: 6px;
-      width: 14px;
-      height: 14px;
+      top: 4px; right: 6px;
+      width: 14px; height: 14px;
       border-radius: 50%;
-      border: 1.5px solid #555;
-      background: none;
+      border: 1.5px solid var(--border-hover);
+      background: var(--card-bg);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all .15s;
       z-index: 7;
       padding: 0;
+      transition: all .15s;
     }
-    .block-check:hover { border-color: #0a84ff; }
-    .block-check.checked {
-      background: #0a84ff;
-      border-color: #0a84ff;
-    }
+    .block-check:hover { border-color: var(--accent); }
+    .block-check.checked { background: var(--accent); border-color: var(--accent); }
     .block-check svg { width: 8px; height: 8px; display: none; }
     .block-check.checked svg { display: block; }
-    body.light-mode .time-block.manual { background: rgba(10, 132, 255, .1); border-color: rgba(10, 132, 255, .3); }
-    body.light-mode .time-block.calendar-block { background: rgba(148, 130, 220, .08); border-color: rgba(148, 130, 220, .25); }
 
-    /* ── Drop Zone Indicator ────────────────── */
-    .hour-slot.drag-over {
-      background: rgba(10, 132, 255, .06);
-    }
+    .hour-slot.drag-over { background: rgba(91,122,107,.04); }
 
-    /* ── Backlog Panel ──────────────────────── */
-    .backlog-panel {
+    /* ── Main Panel ─────────────────────────── */
+    .main-panel {
+      flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      min-width: 0;
     }
-    .backlog-header {
-      padding: 14px 20px 0;
+
+    /* ── Toolbar ────────────────────────────── */
+    .toolbar {
+      padding: 14px 24px 10px;
       flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      z-index: 5;
     }
-    .backlog-header h2 {
-      font-size: 11px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #555;
-      margin-bottom: 10px;
-    }
-    .filter-tabs {
-      display: flex;
-      gap: 4px;
-    }
-    .filter-tab {
-      background: none;
-      border: 1px solid #222;
-      border-radius: 6px;
-      color: #555;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-family: inherit;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .filter-tab:hover { border-color: #888; color: #888; }
-    .filter-tab.active { border-color: #0a84ff; color: #0a84ff; }
-    body.light-mode .filter-tab { border-color: #e3e4e8; color: #999; }
-    body.light-mode .filter-tab.active { border-color: #0a84ff; color: #0a84ff; }
-    .backlog-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px 20px 20px;
-    }
-    .backlog-item {
+    .toolbar-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 8px;
-      margin-bottom: 6px;
-      cursor: grab;
-      transition: all .15s;
-      user-select: none;
     }
-    .backlog-item:hover { border-color: #444; }
-    .backlog-item.dragging { opacity: .4; }
-    body.light-mode .backlog-item { background: #fff; border-color: #e3e4e8; }
-    body.light-mode .backlog-item:hover { border-color: #ccc; }
-    .backlog-item-dot {
-      width: 6px;
-      height: 6px;
+    .quick-add {
+      flex: 1;
+      padding: 9px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .quick-add:focus { border-color: var(--accent); }
+    .quick-add::placeholder { color: var(--text-muted); }
+    .search-input {
+      width: 180px;
+      padding: 9px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--text-muted); }
+    .toolbar-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      padding: 7px 10px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .toolbar-btn:hover { border-color: var(--text-secondary); color: var(--text); }
+    .toolbar-btn.active { border-color: var(--accent); color: var(--accent); }
+    .tag-filter-btn { position: relative; }
+    .tag-filter-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: absolute;
+      top: -2px; right: -2px;
+      display: none;
+    }
+    .tag-filter-dot.visible { display: block; }
+
+    /* ── Actionable Collection ──────────────── */
+    .collection {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 24px 60px;
+    }
+    .collection:empty::after {
+      content: 'No actionables yet';
+      display: block;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 60px 0;
+    }
+
+    /* ── Actionable Card ────────────────────── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px 12px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s, border-color .2s, opacity .3s;
+      position: relative;
+    }
+    .card:hover { box-shadow: var(--shadow-hover); border-color: var(--border-hover); }
+    .card.completed-card { opacity: .45; }
+    .card.dragging { opacity: .4; }
+    .card.hidden-completed { display: none; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .card-check {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-hover);
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      padding: 0;
+      transition: all .15s;
+    }
+    .card-check:hover { border-color: var(--accent); }
+    .card-check.checked { background: var(--accent); border-color: var(--accent); }
+    .card-check svg { width: 10px; height: 10px; display: none; }
+    .card-check.checked svg { display: block; }
+
+    .card-body { flex: 1; min-width: 0; }
+    .card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+      outline: none;
+      border: none;
+      background: none;
+      width: 100%;
+      font-family: inherit;
+      resize: none;
+      overflow: hidden;
+      padding: 0;
+    }
+    .card-title:focus { outline: none; }
+    .card.completed-card .card-title { text-decoration: line-through; color: var(--text-muted); }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    /* ── Tag Chips ──────────────────────────── */
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 500;
+      cursor: default;
+      white-space: nowrap;
+    }
+    .tag-chip .tag-dot {
+      width: 5px; height: 5px;
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .backlog-item-dot.manual { background: #0a84ff; }
-    .backlog-item-dot.calendar { background: #9482dc; }
-    .backlog-item-title {
-      font-size: 13px;
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .backlog-item-time {
-      font-size: 10px;
-      color: #555;
-      flex-shrink: 0;
-      font-variant-numeric: tabular-nums;
-    }
-    .backlog-item-delete {
-      background: none;
-      border: none;
-      color: #333;
-      cursor: pointer;
-      padding: 2px;
-      display: flex;
+    .add-tag-btn {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      opacity: 0;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-size: 10px;
+      color: var(--text-muted);
+      border: 1px dashed var(--border);
+      cursor: pointer;
       transition: all .15s;
+      background: none;
+      font-family: inherit;
     }
-    .backlog-item:hover .backlog-item-delete { opacity: 1; }
-    .backlog-item-delete:hover { color: #ff453a; }
+    .add-tag-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ── Add Actionable ─────────────────────── */
-    .add-row {
-      padding: 0 20px 12px;
+    /* ── Time Chip ──────────────────────────── */
+    .time-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      background: rgba(91,122,107,.08);
+      cursor: pointer;
+      transition: all .15s;
+      border: none;
+      font-family: inherit;
+    }
+    .time-chip:hover { background: rgba(91,122,107,.14); }
+    .time-chip svg { width: 10px; height: 10px; }
+    .add-time-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 10px;
+      color: var(--text-muted);
+      border: 1px dashed var(--border);
+      cursor: pointer;
+      transition: all .15s;
+      background: none;
+      font-family: inherit;
+    }
+    .add-time-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Notes ──────────────────────────────── */
+    .card-notes {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .card-notes a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-color: rgba(91,122,107,.3);
+    }
+    .card-notes a:hover { text-decoration-color: var(--accent); }
+    .notes-input {
+      width: 100%;
+      border: none;
+      background: none;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      resize: none;
+      outline: none;
+      padding: 0;
+      min-height: 18px;
+      overflow: hidden;
+    }
+    .notes-input::placeholder { color: var(--text-muted); }
+
+    /* ── Card Overflow Menu ─────────────────── */
+    .card-menu-btn {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity .15s, background .15s;
+      z-index: 3;
+    }
+    .card:hover .card-menu-btn { opacity: 1; }
+    .card-menu-btn:hover { background: rgba(0,0,0,.04); }
+    .card-source {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      opacity: .6;
+    }
+    .card-drag-handle {
+      cursor: grab;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity .15s;
+      padding: 4px;
       flex-shrink: 0;
     }
-    .add-btn {
-      width: 100%;
-      padding: 8px;
-      background: none;
-      border: 1px dashed #333;
-      border-radius: 8px;
-      color: #555;
-      font-size: 12px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .add-btn:hover { border-color: #0a84ff; color: #0a84ff; }
-    body.light-mode .add-btn { border-color: #ddd; color: #999; }
-    body.light-mode .add-btn:hover { border-color: #0a84ff; color: #0a84ff; }
-    .add-input-row {
-      display: flex;
-      gap: 6px;
-    }
-    .add-input-row input {
-      flex: 1;
-      padding: 8px 10px;
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 13px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color .2s;
-    }
-    .add-input-row input:focus { border-color: #0a84ff; }
-    .add-input-row button {
-      padding: 8px 12px;
-      background: #0a84ff;
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 12px;
-      font-family: inherit;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    body.light-mode .add-input-row input { background: #fff; border-color: #e3e4e8; color: #111; }
+    .card:hover .card-drag-handle { opacity: .6; }
+    .card-drag-handle:active { cursor: grabbing; }
 
-    /* ── Block Editor Modal ─────────────────── */
-    .modal-overlay {
+    /* ── Popover / Dropdown ─────────────────── */
+    .popover-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.6);
-      z-index: 100;
+      z-index: 50;
+    }
+    .dropdown {
+      position: absolute;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      padding: 8px;
+      z-index: 60;
+      min-width: 200px;
+    }
+    .dropdown.hidden { display: none; }
+    .dropdown-input {
+      width: 100%;
+      padding: 7px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 6px;
+    }
+    .dropdown-input:focus { border-color: var(--accent); }
+    .dropdown-item {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background .1s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      color: var(--text);
     }
-    .modal-overlay.hidden { display: none; }
-    .modal {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
-      padding: 20px;
-      width: 320px;
-      max-width: 90vw;
+    .dropdown-item:hover { background: rgba(0,0,0,.03); }
+    .dropdown-item.selected { background: rgba(91,122,107,.08); }
+    .dropdown-item .item-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
-    body.light-mode .modal { background: #fff; border-color: #e3e4e8; }
-    .modal h3 {
-      font-size: 13px;
+    .dropdown-item .item-check {
+      margin-left: auto;
+      color: var(--accent);
+      font-size: 14px;
+      display: none;
+    }
+    .dropdown-item.selected .item-check { display: block; }
+    .dropdown-sep {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+    .dropdown-action {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      color: var(--accent);
+      transition: background .1s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
       font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #555;
-      margin-bottom: 14px;
     }
-    .modal-field {
-      margin-bottom: 10px;
+    .dropdown-action:hover { background: rgba(91,122,107,.06); }
+    .dropdown-action.danger { color: var(--danger); }
+    .dropdown-action.danger:hover { background: rgba(196,92,74,.06); }
+
+    /* ── Time Editor ────────────────────────── */
+    .time-editor {
+      padding: 12px;
+      min-width: 240px;
     }
-    .modal-field label {
-      display: block;
+    .time-editor-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .time-editor-row label {
       font-size: 10px;
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #555;
-      margin-bottom: 4px;
+      letter-spacing: .5px;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+      display: block;
     }
-    .modal-field input {
+    .time-editor-field { flex: 1; }
+    .time-editor-field input,
+    .time-editor-field select {
       width: 100%;
-      padding: 8px 10px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      padding: 7px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: 6px;
-      color: #fff;
-      font-size: 13px;
+      color: var(--text);
+      font-size: 12px;
       font-family: inherit;
       outline: none;
-      transition: border-color .2s;
     }
-    .modal-field input:focus { border-color: #0a84ff; }
-    body.light-mode .modal-field input { background: #f4f5f7; border-color: #e3e4e8; color: #111; }
-    .modal-actions {
+    .time-editor-field input:focus,
+    .time-editor-field select:focus { border-color: var(--accent); }
+    .time-editor-actions {
       display: flex;
-      gap: 8px;
-      margin-top: 16px;
+      gap: 6px;
+      margin-top: 10px;
     }
-    .modal-actions button {
+    .time-editor-actions button {
       flex: 1;
-      padding: 8px;
+      padding: 7px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-family: inherit;
       font-weight: 500;
       cursor: pointer;
       border: none;
       transition: opacity .15s;
     }
-    .modal-actions button:hover { opacity: .85; }
-    .modal-save { background: #0a84ff; color: #fff; }
-    .modal-delete { background: #ff453a; color: #fff; }
-    .modal-cancel { background: #222; color: #888; border: 1px solid #333; }
-    body.light-mode .modal-cancel { background: #f0f0f0; border-color: #ddd; color: #555; }
+    .time-editor-actions button:hover { opacity: .85; }
+    .te-save { background: var(--accent); color: #fff; }
+    .te-remove { background: none; border: 1px solid var(--border) !important; color: var(--danger); }
+    .te-cancel { background: none; border: 1px solid var(--border) !important; color: var(--text-muted); }
 
-    /* ── Theme Toggle ───────────────────────── */
-    #themeToggle {
+    /* ── Tag Management Popover ─────────────── */
+    .tag-manager {
       position: fixed;
-      bottom: 16px;
-      right: 16px;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      color: #555;
-      font-size: 16px;
-      cursor: pointer;
+      top: 60px;
+      right: 20px;
+      width: 280px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 40px rgba(0,0,0,.1);
+      z-index: 100;
+      padding: 16px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+    .tag-manager.hidden { display: none; }
+    .tag-manager h3 {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .tm-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      z-index: 50;
-      transition: all .2s;
+      gap: 8px;
+      padding: 6px 0;
     }
-    #themeToggle:hover { border-color: #555; color: #fff; }
-    body.light-mode #themeToggle { background: #fff; border-color: #e3e4e8; color: #999; }
+    .tm-color {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .15s;
+    }
+    .tm-color:hover { border-color: var(--text-muted); }
+    .tm-color.selected { border-color: var(--text); }
+    .tm-name {
+      flex: 1;
+      font-size: 12px;
+      border: none;
+      background: none;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      padding: 2px 0;
+    }
+    .tm-count {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .tm-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity .15s, color .15s;
+    }
+    .tm-row:hover .tm-delete { opacity: 1; }
+    .tm-delete:hover { color: var(--danger); }
+    .tm-add {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .tm-add input {
+      flex: 1;
+      padding: 7px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+    }
+    .tm-add input:focus { border-color: var(--accent); }
+    .tm-add button {
+      padding: 7px 12px;
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* ── Responsive ─────────────────────────── */
+    @media (max-width: 900px) {
+      .workspace { flex-direction: column; }
+      .timeline-panel {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .timeline-panel.collapsed { max-height: 0; }
+    }
 
     /* ── Scrollbar ──────────────────────────── */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #333; }
-    body.light-mode ::-webkit-scrollbar-thumb { background: #ddd; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+    /* ── Focus visible ──────────────────────── */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     .hidden { display: none !important; }
+
+    /* ── Color Palette for Tags ─────────────── */
+    .color-grid {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .color-swatch {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .15s, transform .1s;
+    }
+    .color-swatch:hover { transform: scale(1.15); }
+    .color-swatch.selected { border-color: var(--text); }
   </style>
 </head>
 <body>
@@ -569,10 +930,11 @@
   <div id="authGate" class="hidden">
     <div class="header">
       <div class="header-left">
+        <button class="collapse-btn" id="collapseToggle" title="Toggle timeline">&#9776;</button>
         <div class="day-nav">
-          <button class="day-nav-btn" id="prevDay">&larr;</button>
+          <button class="nav-btn" id="prevDay">&larr;</button>
           <span class="day-label" id="dayLabel"></span>
-          <button class="day-nav-btn" id="nextDay">&rarr;</button>
+          <button class="nav-btn" id="nextDay">&rarr;</button>
         </div>
         <button class="today-btn hidden" id="todayBtn">Today</button>
       </div>
@@ -581,56 +943,31 @@
       </div>
     </div>
 
-    <div class="layout">
+    <div class="workspace">
       <div class="timeline-panel" id="timelinePanel">
+        <div class="allday-strip" id="alldayStrip"></div>
         <div class="timeline-hours" id="timelineHours"></div>
       </div>
 
-      <div class="backlog-panel">
-        <div class="backlog-header">
-          <h2>Actionables</h2>
-          <div class="filter-tabs">
-            <button class="filter-tab active" data-filter="all">All</button>
-            <button class="filter-tab" data-filter="scheduled">Scheduled</button>
-            <button class="filter-tab" data-filter="pending">Pending</button>
+      <div class="main-panel">
+        <div class="toolbar">
+          <div class="toolbar-row">
+            <input type="text" class="quick-add" id="quickAdd" placeholder="Add an actionable..." />
+            <input type="text" class="search-input" id="searchInput" placeholder="Search..." />
+            <button class="toolbar-btn tag-filter-btn" id="tagFilterBtn">
+              Tags
+              <span class="tag-filter-dot" id="tagFilterDot"></span>
+            </button>
+            <button class="toolbar-btn" id="showDoneBtn">Show done</button>
+            <button class="toolbar-btn" id="manageTagsBtn">Manage tags</button>
           </div>
         </div>
-        <div class="add-row" id="addRow">
-          <button class="add-btn" id="addBtn">+ New actionable</button>
-          <div class="add-input-row hidden" id="addInputRow">
-            <input type="text" id="addInput" placeholder="What needs doing?" />
-            <button id="addSubmit">Add</button>
-          </div>
-        </div>
-        <div class="backlog-list" id="backlogList"></div>
+        <div class="collection" id="collection"></div>
       </div>
     </div>
   </div>
 
-  <div class="modal-overlay hidden" id="modalOverlay">
-    <div class="modal">
-      <h3>Edit Actionable</h3>
-      <div class="modal-field">
-        <label>Title</label>
-        <input type="text" id="modalTitle" />
-      </div>
-      <div class="modal-field">
-        <label>Start Time (HH:MM)</label>
-        <input type="time" id="modalStart" />
-      </div>
-      <div class="modal-field">
-        <label>End Time (HH:MM)</label>
-        <input type="time" id="modalEnd" />
-      </div>
-      <div class="modal-actions">
-        <button class="modal-save" id="modalSave">Save</button>
-        <button class="modal-delete" id="modalDelete">Delete</button>
-        <button class="modal-cancel" id="modalCancel">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <button id="themeToggle" title="Toggle color scheme">&#9681;</button>
+  <div id="tagManager" class="tag-manager hidden"></div>
 
   <script>
     const SUPABASE_URL = "https://heyrtjzntnicqsfemcmi.supabase.co";
@@ -638,419 +975,473 @@
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const TZ = "America/New_York";
 
-    const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const DAY_NAMES_FULL = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-
+    const MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const DAY_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    const DAY_FULL = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const HOUR_START = 6;
     const HOUR_END = 22;
-    const HOUR_PX = 60;
+    const HOUR_PX = 64;
+
+    const TAG_COLORS = [
+      '#6b7280','#9ca3af','#d1d5db','#78716c',
+      '#5b7a6b','#3d8b6e','#2563eb','#6366f1',
+      '#8b5cf6','#a855f7','#c026d3','#db2777',
+      '#e11d48','#f43f5e','#f97316','#eab308',
+      '#84cc16','#10b981','#14b8a6','#06b6d4',
+    ];
 
     let state = {
       actionables: [],
+      tags: [],
+      tagActionables: [],
       calendar: [],
       selectedDate: todayEt(),
-      filter: "all",
-      editingId: null,
+      search: '',
+      tagFilter: [],
+      showDone: false,
+      timelineOpen: true,
+      tagManagerOpen: false,
+      openDropdown: null,
+      openTimeEditor: null,
+      editingTitle: null,
+      dragId: null,
     };
 
     /* ── Helpers ─────────────────────────────── */
-
     function esc(s) {
-      if (s === null || s === undefined) return "";
-      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+      if (s == null) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
-
     function todayEt() {
-      return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
+      return new Date().toLocaleDateString('en-CA', { timeZone: TZ });
     }
-
     function generateId() {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      const values = crypto.getRandomValues(new Uint8Array(21));
-      return values.reduce((acc, x) => acc + chars[x & 63], "");
+      const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      return crypto.getRandomValues(new Uint8Array(21)).reduce((a,x) => a + c[x & 63], '');
     }
-
-    function addDays(dateStr, days) {
-      const d = new Date(dateStr + "T12:00:00");
-      d.setDate(d.getDate() + days);
-      return d.toLocaleDateString("en-CA", { timeZone: TZ });
+    function addDays(d, n) {
+      const dt = new Date(d + 'T12:00:00');
+      dt.setDate(dt.getDate() + n);
+      return dt.toLocaleDateString('en-CA', { timeZone: TZ });
     }
-
-    function formatDateLabel(dateStr) {
-      const d = new Date(dateStr + "T12:00:00");
-      const day = d.getDate();
-      const suffix = (n) => {
-        if (n > 3 && n < 21) return "th";
-        switch (n % 10) {
-          case 1: return "st"; case 2: return "nd"; case 3: return "rd"; default: return "th";
-        }
-      };
-      return `${DAY_NAMES_FULL[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${day}${suffix(day)}`;
+    function formatDateLabel(d) {
+      const dt = new Date(d + 'T12:00:00');
+      const day = dt.getDate();
+      const sfx = n => { if (n > 3 && n < 21) return 'th'; return ['','st','nd','rd','th','th','th','th','th','th','th'][n%10]; };
+      return `${DAY_FULL[dt.getDay()]}, ${MONTH_SHORT[dt.getMonth()]} ${day}${sfx(day)}`;
     }
-
-    function timeToMinutes(t) {
+    function fmtTime12(t) {
+      if (!t) return '';
+      const [h,m] = t.split(':').map(Number);
+      const ap = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      return m === 0 ? `${h12} ${ap}` : `${h12}:${String(m).padStart(2,'0')} ${ap}`;
+    }
+    function fmtTimeRange(s, e) {
+      if (!s) return '';
+      if (!e) return fmtTime12(s);
+      return `${fmtTime12(s)}\u2013${fmtTime12(e)}`;
+    }
+    function fmtDateChip(d) {
+      if (!d) return '';
+      const dt = new Date(d + 'T12:00:00');
+      return `${DAY_SHORT[dt.getDay()]}, ${MONTH_SHORT[dt.getMonth()]} ${dt.getDate()}`;
+    }
+    function parseIsoToDate(iso) {
+      return new Date(iso).toLocaleDateString('en-CA', { timeZone: TZ });
+    }
+    function parseIsoToTime(iso) {
+      const d = new Date(iso);
+      const h = d.toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false });
+      const m = d.toLocaleString('en-US', { timeZone: TZ, minute: '2-digit' });
+      return `${String(+h).padStart(2,'0')}:${m}`;
+    }
+    function timeToMin(t) {
       if (!t) return null;
-      const [h, m] = t.split(":").map(Number);
+      const [h,m] = t.split(':').map(Number);
       return h * 60 + m;
     }
-
-    function minutesToTime(mins) {
-      const h = Math.floor(mins / 60);
-      const m = mins % 60;
-      return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+    function minToTime(m) {
+      return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
     }
-
-    function formatTimeRange(start, end) {
-      if (!start || !end) return "";
-      const fmt = (t) => {
-        const [h, m] = t.split(":").map(Number);
-        const ampm = h >= 12 ? "PM" : "AM";
-        const h12 = h % 12 || 12;
-        return m === 0 ? `${h12} ${ampm}` : `${h12}:${String(m).padStart(2,"0")} ${ampm}`;
-      };
-      return `${fmt(start)} – ${fmt(end)}`;
-    }
-
-    function parseIsoToTime(isoStr) {
-      const d = new Date(isoStr);
-      const h = d.toLocaleString("en-US", { timeZone: TZ, hour: "numeric", hour12: false });
-      const m = d.toLocaleString("en-US", { timeZone: TZ, minute: "2-digit" });
-      return `${String(+h).padStart(2,"0")}:${m}`;
-    }
-
-    function parseIsoToDate(isoStr) {
-      return new Date(isoStr).toLocaleDateString("en-CA", { timeZone: TZ });
-    }
-
     function checkSvg() {
       return '<svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg>';
     }
-
-    function trashSvg() {
-      return '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5h10M5.5 4.5V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.5M6.5 7v4M9.5 7v4M4.5 4.5l.5 8.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1l.5-8.5"/></svg>';
+    function linkify(text) {
+      if (!text) return '';
+      return esc(text).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    }
+    function getTagColors(id) {
+      const ta = state.tagActionables.filter(t => t.tag_id === id);
+      return ta.length;
     }
 
     /* ── Data Loading ────────────────────────── */
-
     async function loadAll() {
       const { data: { session } } = await db.auth.getSession();
-      const token = session?.access_token || "";
+      const token = session?.access_token || '';
 
-      const [actRes, icsRes] = await Promise.all([
-        db.from("actionables").select("*"),
-        fetch(SUPABASE_URL + "/functions/v1/calendar-proxy", {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${token}`,
-          }
-        }).then(r => r.ok ? r.json() : { events: [] }).catch(e => { console.error("Calendar fetch error:", e); return { events: [] }; }),
+      const [actRes, tagsRes, taRes, icsRes] = await Promise.all([
+        db.from('actionables').select('*'),
+        db.from('tags').select('*'),
+        db.from('tag_actionables').select('*'),
+        fetch(SUPABASE_URL + '/functions/v1/calendar-proxy', {
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
+        }).then(r => r.ok ? r.json() : { events: [] }).catch(() => ({ events: [] })),
       ]);
-      if (actRes.error) throw actRes.error;
+      if (actRes.error) console.error('actionables error:', actRes.error);
+      if (tagsRes.error) console.error('tags error:', tagsRes.error);
+      if (taRes.error) console.error('tag_actionables error:', taRes.error);
+
       state.actionables = actRes.data || [];
-      const rawEvents = icsRes.events || [];
-      console.log(`Calendar: ${rawEvents.length} events loaded`);
-      state.calendar = rawEvents.map(e => ({
-        id: "cal_" + btoa(e.title + e.start).replace(/[^a-zA-Z0-9]/g,"").slice(0,21),
-        title: e.title,
-        date: parseIsoToDate(e.start),
-        start_time: parseIsoToTime(e.start),
-        end_time: null,
-        completed: false,
-        source: "calendar",
-      }));
-      console.log(`Calendar: ${state.calendar.filter(c => c.date === todayEt()).length} events for today`);
+      state.tags = tagsRes.data || [];
+      state.tagActionables = taRes.data || [];
+
+      const raw = icsRes.events || [];
+      const calMap = new Map();
+      raw.forEach(e => {
+        const key = (e.uid || e.title + '|' + e.start);
+        if (calMap.has(key)) return;
+        calMap.set(key, {
+          id: 'cal_' + btoa(key).replace(/[^a-zA-Z0-9]/g,'').slice(0,21),
+          title: e.title,
+          date: parseIsoToDate(e.start),
+          start_time: parseIsoToTime(e.start),
+          end_time: e.end ? parseIsoToTime(e.end) : null,
+          completed: false,
+          source: 'calendar',
+          source_event_id: e.uid || null,
+          notes: '',
+          sort_order: 0,
+          allDay: e.allDay || false,
+        });
+      });
+      state.calendar = [...calMap.values()];
     }
 
     /* ── Render ──────────────────────────────── */
-
     function renderHeader() {
-      document.getElementById("dayLabel").textContent = formatDateLabel(state.selectedDate);
-      const today = todayEt();
-      document.getElementById("todayBtn").classList.toggle("hidden", state.selectedDate === today);
+      document.getElementById('dayLabel').textContent = formatDateLabel(state.selectedDate);
+      document.getElementById('todayBtn').classList.toggle('hidden', state.selectedDate === todayEt());
     }
 
     function renderTimeline() {
-      const container = document.getElementById("timelineHours");
+      const c = document.getElementById('timelineHours');
       const date = state.selectedDate;
+      const allBlocks = getAllBlocksForDate(date);
 
-      const dayActionables = state.actionables.filter(a => a.date === date);
-      const dayCal = state.calendar.filter(c => c.date === date);
-      const allBlocks = [...dayActionables, ...dayCal];
-
-      let html = "";
+      let html = '';
       for (let h = HOUR_START; h <= HOUR_END; h++) {
-        const label = h === 0 ? "12 AM" : h < 12 ? `${h} AM` : h === 12 ? "12 PM" : `${h-12} PM`;
-        html += `<div class="hour-slot" data-hour="${h}">
-          <span class="hour-label">${label}</span>
-        </div>`;
+        const lbl = h === 0 ? '12 AM' : h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h-12} PM`;
+        html += `<div class="hour-slot" data-hour="${h}"><span class="hour-label">${lbl}</span></div>`;
       }
-      container.innerHTML = html;
+      c.innerHTML = html;
 
-      allBlocks.forEach(block => {
-        if (!block.start_time) return;
-        const startMin = timeToMinutes(block.start_time);
-        const endMin = block.end_time ? timeToMinutes(block.end_time) : startMin + 60;
-        if (startMin < HOUR_START * 60 || startMin >= HOUR_END * 60) return;
-
-        const top = (startMin - HOUR_START * 60) * (HOUR_PX / 60);
-        const height = Math.max((endMin - startMin) * (HOUR_PX / 60), 20);
-        const src = block.source === "calendar" ? "calendar-block" : "manual";
-        const comp = block.completed ? " completed" : "";
-
-        const slot = container.querySelector(`[data-hour="${Math.floor(startMin / 60)}"]`);
+      allBlocks.forEach(b => {
+        if (b.allDay || !b.start_time) return;
+        const sMin = timeToMin(b.start_time);
+        const eMin = b.end_time ? timeToMin(b.end_time) : sMin + 30;
+        if (sMin < HOUR_START * 60 || sMin >= HOUR_END * 60) return;
+        const top = (sMin - HOUR_START * 60) * (HOUR_PX / 60);
+        const h = Math.max((eMin - sMin) * (HOUR_PX / 60), 18);
+        const src = b.source === 'calendar' ? 'cal' : 'manual';
+        const comp = b.completed ? ' completed' : '';
+        const slot = c.querySelector(`[data-hour="${Math.floor(sMin/60)}"]`);
         if (!slot) return;
-
-        const blockEl = document.createElement("div");
-        blockEl.className = `time-block ${src}${comp}`;
-        blockEl.dataset.id = block.id;
-        blockEl.dataset.source = block.source || "manual";
-        blockEl.draggable = block.source !== "calendar";
-        blockEl.style.top = top + "px";
-        blockEl.style.height = height + "px";
-
-        const canEdit = block.source !== "calendar";
-        const checkClass = block.completed ? " checked" : "";
-
-        blockEl.innerHTML = `
+        const el = document.createElement('div');
+        el.className = `time-block ${src}${comp}`;
+        el.dataset.id = b.id;
+        el.dataset.source = b.source || 'manual';
+        el.draggable = true;
+        el.style.top = top + 'px';
+        el.style.height = h + 'px';
+        const canEdit = b.source !== 'calendar';
+        el.innerHTML = `
           <div class="block-handle block-handle-top"></div>
           <div class="block-handle block-handle-bottom"></div>
-          ${canEdit ? `<button class="block-check${checkClass}" data-id="${block.id}">${checkSvg()}</button>` : ""}
-          <div class="block-title">${esc(block.title)}</div>
-          <div class="block-time">${formatTimeRange(block.start_time, block.end_time)}</div>
-        `;
-
+          ${canEdit ? `<button class="block-check${b.completed?' checked':''}" data-id="${b.id}">${checkSvg()}</button>` : ''}
+          <div class="block-title">${esc(b.title)}</div>
+          <div class="block-time">${fmtTimeRange(b.start_time, b.end_time)}</div>`;
         if (canEdit) {
-          blockEl.addEventListener("dblclick", () => openModal(block.id));
-          blockEl.querySelector(".block-check").addEventListener("click", (e) => {
-            e.stopPropagation();
-            toggleComplete(block.id);
-          });
-          setupBlockDrag(blockEl);
-          setupBlockResize(blockEl);
+          el.querySelector('.block-check').addEventListener('click', e => { e.stopPropagation(); toggleComplete(b.id); });
+          el.addEventListener('dblclick', () => scrollToCard(b.id));
         }
-
-        slot.appendChild(blockEl);
+        setupBlockDrag(el);
+        setupBlockResize(el);
+        slot.appendChild(el);
       });
 
+      renderAlldayStrip(date);
       renderNowLine();
     }
 
+    function renderAlldayStrip(date) {
+      const strip = document.getElementById('alldayStrip');
+      const allDay = state.calendar.filter(c => c.date === date && c.allDay);
+      strip.innerHTML = allDay.map(e => `<div class="allday-chip">${esc(e.title)}</div>`).join('');
+    }
+
     function renderNowLine() {
-      document.querySelectorAll(".now-line").forEach(el => el.remove());
+      document.querySelectorAll('.now-line').forEach(el => el.remove());
       if (state.selectedDate !== todayEt()) return;
-
       const now = new Date();
-      const h = now.getHours();
-      const m = now.getMinutes();
+      const h = now.getHours(), m = now.getMinutes();
       if (h < HOUR_START || h > HOUR_END) return;
-
       const slot = document.querySelector(`[data-hour="${h}"]`);
       if (!slot) return;
-
-      const line = document.createElement("div");
-      line.className = "now-line";
-      line.style.top = (m * HOUR_PX / 60) + "px";
+      const line = document.createElement('div');
+      line.className = 'now-line';
+      line.style.top = (m * HOUR_PX / 60) + 'px';
       slot.appendChild(line);
     }
 
-    function renderBacklog() {
-      const list = document.getElementById("backlogList");
-      let items = state.actionables.filter(a => !a.date);
+    function getAllBlocksForDate(date) {
+      const acts = state.actionables.filter(a => a.date === date);
+      const cal = state.calendar.filter(c => c.date === date);
+      return [...acts, ...cal];
+    }
 
-      if (state.filter === "scheduled") items = items.filter(a => a.start_time);
-      else if (state.filter === "pending") items = items.filter(a => !a.start_time);
+    function renderCollection() {
+      const col = document.getElementById('collection');
+      let items = state.actionables.slice();
 
-      if (items.length === 0) {
-        list.innerHTML = `<div style="text-align:center;color:#333;font-size:12px;padding:40px 0;">No actionables</div>`;
-        return;
+      if (state.search) {
+        const q = state.search.toLowerCase();
+        items = items.filter(a => a.title.toLowerCase().includes(q) || (a.notes || '').toLowerCase().includes(q));
+      }
+      if (state.tagFilter.length > 0) {
+        items = items.filter(a => {
+          const aTags = state.tagActionables.filter(t => t.actionable_id === a.id).map(t => t.tag_id);
+          return state.tagFilter.some(f => aTags.includes(f));
+        });
+      }
+      if (!state.showDone) {
+        items = items.filter(a => !a.completed);
       }
 
-      list.innerHTML = items.map(a => `
-        <div class="backlog-item" draggable="true" data-id="${a.id}">
-          <div class="backlog-item-dot ${a.source || "manual"}"></div>
-          <span class="backlog-item-title">${esc(a.title)}</span>
-          ${a.start_time ? `<span class="backlog-item-time">${esc(a.start_time)}</span>` : ""}
-          <button class="backlog-item-delete" data-id="${a.id}">${trashSvg()}</button>
+      items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+
+      col.innerHTML = items.map(a => renderCard(a)).join('');
+
+      col.querySelectorAll('.card').forEach(el => {
+        const id = el.dataset.id;
+        setupCardDrag(el, id);
+        setupCardDrop(el, id);
+      });
+
+      col.querySelectorAll('.card-check').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); toggleComplete(btn.dataset.id); });
+      });
+      col.querySelectorAll('.card-title').forEach(el => {
+        el.addEventListener('blur', () => saveTitle(el.dataset.id, el.value));
+        el.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); }});
+      });
+      col.querySelectorAll('.notes-input').forEach(el => {
+        autoResize(el);
+        el.addEventListener('input', () => autoResize(el));
+        el.addEventListener('blur', () => saveNotes(el.dataset.id, el.value));
+      });
+      col.querySelectorAll('.time-chip, .add-time-btn').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); openTimeEditor(btn.dataset.id, btn); });
+      });
+      col.querySelectorAll('.add-tag-btn').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); openTagDropdown(btn.dataset.id, btn); });
+      });
+      col.querySelectorAll('.card-menu-btn').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); openCardMenu(btn.dataset.id, btn); });
+      });
+    }
+
+    function renderCard(a) {
+      const done = a.completed ? ' completed-card' : '';
+      const hideDone = !state.showDone && a.completed ? ' hidden-completed' : '';
+      const aTags = state.tagActionables.filter(t => t.actionable_id === a.id).map(t => state.tags.find(tg => tg.id === t.tag_id)).filter(Boolean);
+      const timeChip = a.date
+        ? `<button class="time-chip" data-id="${a.id}">${fmtDateChip(a.date)}, ${fmtTimeRange(a.start_time, a.end_time)}</button>`
+        : `<button class="add-time-btn" data-id="${a.id}">+ Add time</button>`;
+      const tagsHtml = aTags.map(t =>
+        `<span class="tag-chip" style="background:${esc(t.color)}18;color:${esc(t.color)}"><span class="tag-dot" style="background:${esc(t.color)}"></span>${esc(t.name)}</span>`
+      ).join('');
+      const sourceHtml = a.source === 'calendar' ? '<span class="card-source">Calendar</span>' : '';
+
+      return `<div class="card${done}${hideDone}" data-id="${a.id}" draggable="true">
+        <button class="card-menu-btn" data-id="${a.id}" title="More actions">&#8942;</button>
+        <div class="card-top">
+          <button class="card-check${a.completed?' checked':''}" data-id="${a.id}">${checkSvg()}</button>
+          <div class="card-body">
+            <textarea class="card-title" data-id="${a.id}" rows="1" ${a.source==='calendar'?'readonly':''}>${esc(a.title)}</textarea>
+            <div class="card-meta">
+              ${tagsHtml}
+              <button class="add-tag-btn" data-id="${a.id}">+ Tag</button>
+              ${timeChip}
+              ${sourceHtml}
+            </div>
+            <textarea class="notes-input" data-id="${a.id}" placeholder="Add notes...">${esc(a.notes || '')}</textarea>
+          </div>
         </div>
-      `).join("");
-
-      list.querySelectorAll(".backlog-item").forEach(el => {
-        el.addEventListener("dragstart", (e) => {
-          e.dataTransfer.setData("text/plain", el.dataset.id);
-          e.dataTransfer.effectAllowed = "move";
-          el.classList.add("dragging");
-        });
-        el.addEventListener("dragend", () => el.classList.remove("dragging"));
-      });
-
-      list.querySelectorAll(".backlog-item-delete").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          deleteActionable(btn.dataset.id);
-        });
-      });
+      </div>`;
     }
 
     function render() {
       renderHeader();
       renderTimeline();
-      renderBacklog();
+      renderCollection();
+      renderTagFilter();
     }
 
-    /* ── Drag & Drop: Backlog → Timeline ────── */
+    function renderTagFilter() {
+      const dot = document.getElementById('tagFilterDot');
+      dot.classList.toggle('visible', state.tagFilter.length > 0);
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+
+    function scrollToCard(id) {
+      const el = document.querySelector(`.card[data-id="${id}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    /* ── Drag & Drop: Card → Timeline ───────── */
+    function setupCardDrag(el, id) {
+      el.addEventListener('dragstart', e => {
+        state.dragId = id;
+        e.dataTransfer.setData('text/plain', id);
+        e.dataTransfer.effectAllowed = 'move';
+        el.classList.add('dragging');
+      });
+      el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+        state.dragId = null;
+        document.querySelectorAll('.hour-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+      });
+    }
+
+    function setupCardDrop(el, id) {
+      // Cards don't need drop zones — timeline does
+    }
 
     function setupDropZones() {
-      document.querySelectorAll(".hour-slot").forEach(slot => {
-        slot.addEventListener("dragover", (e) => {
+      document.querySelectorAll('.hour-slot').forEach(slot => {
+        slot.addEventListener('dragover', e => {
           e.preventDefault();
-          e.dataTransfer.dropEffect = "move";
-          slot.classList.add("drag-over");
+          e.dataTransfer.dropEffect = 'move';
+          slot.classList.add('drag-over');
         });
-        slot.addEventListener("dragleave", () => slot.classList.remove("drag-over"));
-        slot.addEventListener("drop", (e) => {
+        slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+        slot.addEventListener('drop', e => {
           e.preventDefault();
-          slot.classList.remove("drag-over");
-          const id = e.dataTransfer.getData("text/plain");
+          slot.classList.remove('drag-over');
+          const id = e.dataTransfer.getData('text/plain');
           if (!id) return;
-
           const rect = slot.getBoundingClientRect();
           const yInSlot = e.clientY - rect.top;
           const hour = +slot.dataset.hour;
           const totalMins = hour * 60 + Math.round(yInSlot / HOUR_PX * 60 / 15) * 15;
-          const clamped = Math.max(HOUR_START * 60, Math.min(totalMins, HOUR_END * 60 - 60));
-
-          scheduleActionable(id, state.selectedDate, minutesToTime(clamped), minutesToTime(clamped + 60));
+          const clamped = Math.max(HOUR_START * 60, Math.min(totalMins, HOUR_END * 60 - 30));
+          scheduleActionable(id, state.selectedDate, minToTime(clamped), minToTime(clamped + 30));
         });
       });
     }
 
-    /* ── Drag: Move block on timeline ───────── */
-
+    /* ── Timeline Block Drag ─────────────────── */
     function setupBlockDrag(blockEl) {
-      let startY, startTop, startMin, blockHeight;
-
-      blockEl.addEventListener("mousedown", (e) => {
-        if (e.target.closest(".block-check") || e.target.closest(".block-handle")) return;
+      let startY, startTop, height;
+      blockEl.addEventListener('mousedown', e => {
+        if (e.target.closest('.block-check') || e.target.closest('.block-handle')) return;
         e.preventDefault();
         startY = e.clientY;
         startTop = parseFloat(blockEl.style.top);
-        blockHeight = parseFloat(blockEl.style.height);
-        startMin = startTop / HOUR_PX * 60 + HOUR_START * 60;
-
-        const onMove = (e2) => {
-          const dy = e2.clientY - startY;
-          let newTop = Math.max(0, Math.min(startTop + dy, HOUR_END * 60 * HOUR_PX / 60 - blockHeight));
+        height = parseFloat(blockEl.style.height);
+        const onMove = e2 => {
+          let newTop = Math.max(0, Math.min(startTop + (e2.clientY - startY), HOUR_END * 60 * HOUR_PX / 60 - height));
           newTop = Math.round(newTop / (15 * HOUR_PX / 60)) * (15 * HOUR_PX / 60);
-          blockEl.style.top = newTop + "px";
-          blockEl.classList.add("dragging");
+          blockEl.style.top = newTop + 'px';
+          blockEl.classList.add('dragging');
         };
-
-        const onUp = (e2) => {
-          document.removeEventListener("mousemove", onMove);
-          document.removeEventListener("mouseup", onUp);
-          blockEl.classList.remove("dragging");
-
+        const onUp = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          blockEl.classList.remove('dragging');
           const finalTop = parseFloat(blockEl.style.top);
           const newStartMin = Math.round(finalTop / HOUR_PX * 60 + HOUR_START * 60);
-          const duration = blockHeight / HOUR_PX * 60;
-          const id = blockEl.dataset.id;
-          moveActionable(id, minutesToTime(newStartMin), minutesToTime(newStartMin + duration));
+          const dur = height / HOUR_PX * 60;
+          moveActionable(blockEl.dataset.id, minToTime(newStartMin), minToTime(newStartMin + dur));
         };
-
-        document.addEventListener("mousemove", onMove);
-        document.addEventListener("mouseup", onUp);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
       });
     }
 
-    /* ── Resize: drag block edges ────────────── */
-
     function setupBlockResize(blockEl) {
-      blockEl.querySelectorAll(".block-handle").forEach(handle => {
-        handle.addEventListener("mousedown", (e) => {
+      blockEl.querySelectorAll('.block-handle').forEach(handle => {
+        handle.addEventListener('mousedown', e => {
           e.preventDefault();
           e.stopPropagation();
-          const isTop = handle.classList.contains("block-handle-top");
+          const isTop = handle.classList.contains('block-handle-top');
           const startY = e.clientY;
           const origTop = parseFloat(blockEl.style.top);
-          const origHeight = parseFloat(blockEl.style.height);
-
-          const onMove = (e2) => {
+          const origH = parseFloat(blockEl.style.height);
+          const onMove = e2 => {
             const dy = e2.clientY - startY;
             if (isTop) {
               let newTop = Math.max(0, origTop + dy);
-              let newHeight = origHeight - (newTop - origTop);
-              newHeight = Math.max(newHeight, 15);
+              let newH = Math.max(15, origH - (newTop - origTop));
               newTop = Math.round(newTop / (15 * HOUR_PX / 60)) * (15 * HOUR_PX / 60);
-              blockEl.style.top = newTop + "px";
-              blockEl.style.height = newHeight + "px";
+              blockEl.style.top = newTop + 'px';
+              blockEl.style.height = newH + 'px';
             } else {
-              let newHeight = Math.max(15, origHeight + dy);
-              newHeight = Math.round(newHeight / (15 * HOUR_PX / 60)) * (15 * HOUR_PX / 60);
-              blockEl.style.height = newHeight + "px";
+              let newH = Math.max(15, origH + dy);
+              newH = Math.round(newH / (15 * HOUR_PX / 60)) * (15 * HOUR_PX / 60);
+              blockEl.style.height = newH + 'px';
             }
-            blockEl.classList.add("dragging");
+            blockEl.classList.add('dragging');
           };
-
           const onUp = () => {
-            document.removeEventListener("mousemove", onMove);
-            document.removeEventListener("mouseup", onUp);
-            blockEl.classList.remove("dragging");
-
-            const finalTop = parseFloat(blockEl.style.top);
-            const finalHeight = parseFloat(blockEl.style.height);
-            const newStartMin = Math.round(finalTop / HOUR_PX * 60 + HOUR_START * 60);
-            const newEndMin = Math.round((finalTop + finalHeight) / HOUR_PX * 60 + HOUR_START * 60);
-            const id = blockEl.dataset.id;
-            moveActionable(id, minutesToTime(newStartMin), minutesToTime(newEndMin));
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            blockEl.classList.remove('dragging');
+            const t = parseFloat(blockEl.style.top);
+            const h = parseFloat(blockEl.style.height);
+            moveActionable(blockEl.dataset.id, minToTime(Math.round(t / HOUR_PX * 60 + HOUR_START * 60)), minToTime(Math.round((t + h) / HOUR_PX * 60 + HOUR_START * 60)));
           };
-
-          document.addEventListener("mousemove", onMove);
-          document.addEventListener("mouseup", onUp);
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
         });
       });
     }
 
     /* ── Mutations ───────────────────────────── */
-
     async function addActionable(title) {
       const id = generateId();
-      const optimistic = { id, title, date: null, start_time: null, end_time: null, completed: false, source: "manual" };
-      state.actionables.push(optimistic);
-      render();
-      const res = await db.from("actionables").insert(optimistic);
-      if (res.error) {
-        state.actionables = state.actionables.filter(a => a.id !== id);
-        render();
-      }
+      const maxOrder = Math.max(0, ...state.actionables.map(a => a.sort_order || 0));
+      const item = { id, title, date: null, start_time: null, end_time: null, completed: false, source: 'manual', notes: '', sort_order: maxOrder + 1, created_at: new Date().toISOString() };
+      state.actionables.unshift(item);
+      renderCollection();
+      const res = await db.from('actionables').insert(item);
+      if (res.error) { state.actionables = state.actionables.filter(a => a.id !== id); renderCollection(); }
     }
 
-    async function scheduleActionable(id, date, startTime, endTime) {
+    async function scheduleActionable(id, date, start, end) {
       const item = state.actionables.find(a => a.id === id);
       if (!item) return;
       const prev = { date: item.date, start_time: item.start_time, end_time: item.end_time };
-      item.date = date;
-      item.start_time = startTime;
-      item.end_time = endTime;
+      item.date = date; item.start_time = start; item.end_time = end;
       render();
-      const res = await db.from("actionables").update({ date, start_time: startTime, end_time: endTime }).eq("id", id);
-      if (res.error) {
-        Object.assign(item, prev);
-        render();
-      }
+      const res = await db.from('actionables').update({ date, start_time: start, end_time: end }).eq('id', id);
+      if (res.error) { Object.assign(item, prev); render(); }
     }
 
-    async function moveActionable(id, startTime, endTime) {
+    async function moveActionable(id, start, end) {
       const item = state.actionables.find(a => a.id === id);
       if (!item) return;
       const prev = { start_time: item.start_time, end_time: item.end_time };
-      item.start_time = startTime;
-      item.end_time = endTime;
+      item.start_time = start; item.end_time = end;
       render();
-      const res = await db.from("actionables").update({ start_time: startTime, end_time: endTime }).eq("id", id);
-      if (res.error) {
-        Object.assign(item, prev);
-        render();
-      }
+      const res = await db.from('actionables').update({ start_time: start, end_time: end }).eq('id', id);
+      if (res.error) { Object.assign(item, prev); render(); }
     }
 
     async function toggleComplete(id) {
@@ -1059,23 +1450,36 @@
       const prev = item.completed;
       item.completed = !item.completed;
       render();
-      const res = await db.from("actionables").update({ completed: item.completed }).eq("id", id);
-      if (res.error) {
-        item.completed = prev;
-        render();
-      }
+      const res = await db.from('actionables').update({ completed: item.completed }).eq('id', id);
+      if (res.error) { item.completed = prev; render(); }
+    }
+
+    async function saveTitle(id, title) {
+      const item = state.actionables.find(a => a.id === id);
+      if (!item || item.title === title) return;
+      const prev = item.title;
+      item.title = title;
+      const res = await db.from('actionables').update({ title }).eq('id', id);
+      if (res.error) item.title = prev;
+    }
+
+    async function saveNotes(id, notes) {
+      const item = state.actionables.find(a => a.id === id);
+      if (!item || (item.notes || '') === notes) return;
+      const prev = item.notes;
+      item.notes = notes;
+      const res = await db.from('actionables').update({ notes }).eq('id', id);
+      if (res.error) item.notes = prev;
     }
 
     async function deleteActionable(id) {
       const idx = state.actionables.findIndex(a => a.id === id);
       if (idx === -1) return;
       const removed = state.actionables.splice(idx, 1)[0];
+      state.tagActionables = state.tagActionables.filter(t => t.actionable_id !== id);
       render();
-      const res = await db.from("actionables").delete().eq("id", id);
-      if (res.error) {
-        state.actionables.splice(idx, 0, removed);
-        render();
-      }
+      const res = await db.from('actionables').delete().eq('id', id);
+      if (res.error) { state.actionables.splice(idx, 0, removed); render(); }
     }
 
     async function updateActionable(id, fields) {
@@ -1084,158 +1488,404 @@
       const prev = {};
       for (const k in fields) { prev[k] = item[k]; item[k] = fields[k]; }
       render();
-      const res = await db.from("actionables").update(fields).eq("id", id);
-      if (res.error) {
-        Object.assign(item, prev);
+      const res = await db.from('actionables').update(fields).eq('id', id);
+      if (res.error) { Object.assign(item, prev); render(); }
+    }
+
+    /* ── Tag Mutations ───────────────────────── */
+    async function addTag(name, color) {
+      const id = generateId();
+      const tag = { id, name, color, created_at: new Date().toISOString() };
+      state.tags.push(tag);
+      render();
+      const res = await db.from('tags').insert(tag);
+      if (res.error) { state.tags = state.tags.filter(t => t.id !== id); render(); }
+      return tag;
+    }
+
+    async function updateTag(id, fields) {
+      const tag = state.tags.find(t => t.id === id);
+      if (!tag) return;
+      const prev = {}; for (const k in fields) { prev[k] = tag[k]; tag[k] = fields[k]; }
+      render();
+      const res = await db.from('tags').update(fields).eq('id', id);
+      if (res.error) { Object.assign(tag, prev); render(); }
+    }
+
+    async function deleteTag(id) {
+      state.tags = state.tags.filter(t => t.id !== id);
+      state.tagActionables = state.tagActionables.filter(t => t.tag_id !== id);
+      state.tagFilter = state.tagFilter.filter(f => f !== id);
+      render();
+      await db.from('tag_actionables').delete().eq('tag_id', id);
+      await db.from('tags').delete().eq('id', id);
+    }
+
+    async function toggleTagForActionable(actionableId, tagId) {
+      const existing = state.tagActionables.find(t => t.actionable_id === actionableId && t.tag_id === tagId);
+      if (existing) {
+        state.tagActionables = state.tagActionables.filter(t => !(t.actionable_id === actionableId && t.tag_id === tagId));
         render();
+        await db.from('tag_actionables').delete().eq('tag_id', tagId).eq('actionable_id', actionableId);
+      } else {
+        state.tagActionables.push({ tag_id: tagId, actionable_id: actionableId });
+        render();
+        await db.from('tag_actionables').insert({ tag_id: tagId, actionable_id: actionableId });
       }
     }
 
-    /* ── Modal ───────────────────────────────── */
-
-    function openModal(id) {
+    /* ── Time Editor ─────────────────────────── */
+    function openTimeEditor(id, anchor) {
+      closeAllPopovers();
       const item = state.actionables.find(a => a.id === id);
-      if (!item || item.source === "calendar") return;
-      state.editingId = id;
-      document.getElementById("modalTitle").value = item.title;
-      document.getElementById("modalStart").value = item.start_time || "";
-      document.getElementById("modalEnd").value = item.end_time || "";
-      document.getElementById("modalOverlay").classList.remove("hidden");
-      document.getElementById("modalTitle").focus();
+      if (!item) return;
+      state.openTimeEditor = id;
+
+      const dropdown = document.createElement('div');
+      dropdown.className = 'dropdown';
+      dropdown.id = 'timeEditorDropdown';
+
+      const dateVal = item.date || todayEt();
+      const startVal = item.start_time || '09:00';
+      const durMin = item.start_time && item.end_time ? timeToMin(item.end_time) - timeToMin(item.start_time) : 30;
+
+      dropdown.innerHTML = `
+        <div class="time-editor">
+          <div class="time-editor-row">
+            <div class="time-editor-field">
+              <label>Date</label>
+              <input type="date" id="teDate" value="${dateVal}" />
+            </div>
+          </div>
+          <div class="time-editor-row">
+            <div class="time-editor-field">
+              <label>Start</label>
+              <input type="time" id="teStart" value="${startVal}" />
+            </div>
+            <div class="time-editor-field">
+              <label>Duration</label>
+              <select id="teDur">
+                ${[15,30,45,60,90,120].map(d => `<option value="${d}" ${d===durMin?'selected':''}>${d} min</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <div class="time-editor-actions">
+            <button class="te-save" id="teSave">Save</button>
+            ${item.date ? '<button class="te-remove" id="teRemove">Remove</button>' : ''}
+            <button class="te-cancel" id="teCancel">Cancel</button>
+          </div>
+        </div>`;
+
+      document.body.appendChild(dropdown);
+      positionDropdown(dropdown, anchor);
+
+      document.getElementById('teSave').addEventListener('click', () => {
+        const d = document.getElementById('teDate').value;
+        const s = document.getElementById('teStart').value;
+        const dur = +document.getElementById('teDur').value;
+        const [sh, sm] = s.split(':').map(Number);
+        scheduleActionable(id, d, s, minToTime(sh * 60 + sm + dur));
+        closeAllPopovers();
+      });
+      document.getElementById('teRemove')?.addEventListener('click', () => {
+        scheduleActionable(id, null, null, null);
+        closeAllPopovers();
+      });
+      document.getElementById('teCancel').addEventListener('click', closeAllPopovers);
+
+      const overlay = document.createElement('div');
+      overlay.className = 'popover-overlay';
+      overlay.addEventListener('click', closeAllPopovers);
+      document.body.appendChild(overlay);
     }
 
-    function closeModal() {
-      state.editingId = null;
-      document.getElementById("modalOverlay").classList.add("hidden");
+    /* ── Tag Dropdown (on card) ──────────────── */
+    function openTagDropdown(actionableId, anchor) {
+      closeAllPopovers();
+      const item = state.actionables.find(a => a.id === actionableId);
+      if (!item) return;
+
+      const dropdown = document.createElement('div');
+      dropdown.className = 'dropdown';
+      dropdown.style.minWidth = '220px';
+
+      const myTags = state.tagActionables.filter(t => t.actionable_id === actionableId).map(t => t.tag_id);
+
+      let html = `<input type="text" class="dropdown-input" id="tagSearch" placeholder="Search tags..." />`;
+      state.tags.forEach(tag => {
+        const sel = myTags.includes(tag.id) ? ' selected' : '';
+        html += `<button class="dropdown-item${sel}" data-tag-id="${tag.id}">
+          <span class="item-dot" style="background:${esc(tag.color)}"></span>
+          ${esc(tag.name)}
+          <span class="item-check">&#10003;</span>
+        </button>`;
+      });
+      html += `<div class="dropdown-sep"></div>`;
+      html += `<button class="dropdown-action" id="ddNewTag">+ New tag</button>`;
+      html += `<button class="dropdown-action" id="ddManageTags">Manage tags</button>`;
+
+      dropdown.innerHTML = html;
+      document.body.appendChild(dropdown);
+      positionDropdown(dropdown, anchor);
+
+      dropdown.querySelectorAll('.dropdown-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          toggleTagForActionable(actionableId, btn.dataset.tagId);
+          btn.classList.toggle('selected');
+        });
+      });
+
+      document.getElementById('ddNewTag').addEventListener('click', async () => {
+        const name = prompt('Tag name:');
+        if (!name) return;
+        const color = TAG_COLORS[state.tags.length % TAG_COLORS.length];
+        const tag = await addTag(name, color);
+        toggleTagForActionable(actionableId, tag.id);
+        closeAllPopovers();
+      });
+
+      document.getElementById('ddManageTags').addEventListener('click', () => {
+        closeAllPopovers();
+        toggleTagManager();
+      });
+
+      document.getElementById('tagSearch').addEventListener('input', e => {
+        const q = e.target.value.toLowerCase();
+        dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+          item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
+
+      const overlay = document.createElement('div');
+      overlay.className = 'popover-overlay';
+      overlay.addEventListener('click', closeAllPopovers);
+      document.body.appendChild(overlay);
     }
 
-    /* ── Init ────────────────────────────────── */
+    /* ── Card Overflow Menu ──────────────────── */
+    function openCardMenu(id, anchor) {
+      closeAllPopovers();
+      const item = state.actionables.find(a => a.id === id);
+      if (!item) return;
 
-    document.getElementById("authForm").addEventListener("submit", async (e) => {
+      const dropdown = document.createElement('div');
+      dropdown.className = 'dropdown';
+      dropdown.innerHTML = `
+        <button class="dropdown-action" id="cmDuplicate">Duplicate</button>
+        <button class="dropdown-action danger" id="cmDelete">Delete</button>`;
+      document.body.appendChild(dropdown);
+      positionDropdown(dropdown, anchor);
+
+      document.getElementById('cmDuplicate').addEventListener('click', async () => {
+        await addActionable(item.title + ' (copy)');
+        closeAllPopovers();
+      });
+      document.getElementById('cmDelete').addEventListener('click', () => {
+        if (confirm('Delete "' + item.title + '"?')) deleteActionable(id);
+        closeAllPopovers();
+      });
+
+      const overlay = document.createElement('div');
+      overlay.className = 'popover-overlay';
+      overlay.addEventListener('click', closeAllPopovers);
+      document.body.appendChild(overlay);
+    }
+
+    /* ── Tag Manager ─────────────────────────── */
+    function toggleTagManager() {
+      state.tagManagerOpen = !state.tagManagerOpen;
+      document.getElementById('tagManager').classList.toggle('hidden', !state.tagManagerOpen);
+      if (state.tagManagerOpen) renderTagManager();
+    }
+
+    function renderTagManager() {
+      const el = document.getElementById('tagManager');
+      const counts = {};
+      state.tagActionables.forEach(ta => { counts[ta.tag_id] = (counts[ta.tag_id] || 0) + 1; });
+
+      let html = `<h3>Manage Tags</h3>`;
+      state.tags.forEach(tag => {
+        html += `<div class="tm-row" data-tag-id="${tag.id}">
+          <div class="tm-color" style="background:${esc(tag.color)}" data-tag-id="${tag.id}"></div>
+          <input class="tm-name" value="${esc(tag.name)}" data-tag-id="${tag.id}" />
+          <span class="tm-count">${counts[tag.id] || 0}</span>
+          <button class="tm-delete" data-tag-id="${tag.id}" title="Delete tag">&#10005;</button>
+        </div>`;
+      });
+
+      html += `<div class="tm-add">
+        <input type="text" id="tmNewName" placeholder="New tag..." />
+        <button id="tmAddBtn">Add</button>
+      </div>
+      <div class="color-grid" id="tmColorGrid"></div>`;
+
+      el.innerHTML = html;
+
+      el.querySelectorAll('.tm-name').forEach(inp => {
+        inp.addEventListener('change', () => updateTag(inp.dataset.tagId, { name: inp.value }));
+      });
+      el.querySelectorAll('.tm-color').forEach(c => {
+        c.addEventListener('click', () => {
+          const colors = TAG_COLORS;
+          const cur = c.style.background;
+          const idx = colors.findIndex(cl => cur.includes(cl));
+          const next = colors[(idx + 1) % colors.length];
+          updateTag(c.dataset.tagId, { color: next });
+          renderTagManager();
+        });
+      });
+      el.querySelectorAll('.tm-delete').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tag = state.tags.find(t => t.id === btn.dataset.tagId);
+          if (confirm('Delete tag "' + tag?.name + '"?')) {
+            deleteTag(btn.dataset.tagId);
+            renderTagManager();
+          }
+        });
+      });
+
+      document.getElementById('tmAddBtn').addEventListener('click', async () => {
+        const name = document.getElementById('tmNewName').value.trim();
+        if (!name) return;
+        const color = TAG_COLORS[state.tags.length % TAG_COLORS.length];
+        await addTag(name, color);
+        renderTagManager();
+      });
+      document.getElementById('tmNewName').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('tmAddBtn').click();
+      });
+
+      // Color picker for new tag
+      const grid = document.getElementById('tmColorGrid');
+      TAG_COLORS.forEach(c => {
+        const s = document.createElement('div');
+        s.className = 'color-swatch';
+        s.style.background = c;
+        grid.appendChild(s);
+      });
+    }
+
+    /* ── Dropdown Positioning ────────────────── */
+    function positionDropdown(el, anchor) {
+      const r = anchor.getBoundingClientRect();
+      let top = r.bottom + 4;
+      let left = r.left;
+      if (left + 220 > window.innerWidth) left = window.innerWidth - 230;
+      if (top + 300 > window.innerHeight) top = r.top - 10;
+      el.style.position = 'fixed';
+      el.style.top = top + 'px';
+      el.style.left = left + 'px';
+    }
+
+    function closeAllPopovers() {
+      document.querySelectorAll('.dropdown, .popover-overlay').forEach(el => el.remove());
+      state.openTimeEditor = null;
+      state.openDropdown = null;
+    }
+
+    /* ── Init & Event Listeners ──────────────── */
+    document.getElementById('authForm').addEventListener('submit', async e => {
       e.preventDefault();
-      const email = document.getElementById("authEmail").value;
-      const pass = document.getElementById("authPass").value;
-      const { error } = await db.auth.signInWithPassword({ email, password: pass });
-      if (error) {
-        document.getElementById("authError").textContent = error.message;
-        return;
-      }
+      const { error } = await db.auth.signInWithPassword({
+        email: document.getElementById('authEmail').value,
+        password: document.getElementById('authPass').value,
+      });
+      if (error) { document.getElementById('authError').textContent = error.message; return; }
       showDashboard();
     });
 
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
       await db.auth.signOut();
-      document.getElementById("authGate").classList.add("hidden");
-      document.getElementById("loginForm").style.display = "";
+      document.getElementById('authGate').classList.add('hidden');
+      document.getElementById('loginForm').style.display = '';
     });
 
     function showDashboard() {
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("authGate").classList.remove("hidden");
-      loadAll().then(() => {
-        render();
-        setupDropZones();
-      }).catch(e => console.error("loadAll failed:", e));
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('authGate').classList.remove('hidden');
+      loadAll().then(() => { render(); setupDropZones(); }).catch(e => console.error('loadAll failed:', e));
     }
 
-    /* ── Event Listeners ─────────────────────── */
+    document.getElementById('prevDay').addEventListener('click', () => { state.selectedDate = addDays(state.selectedDate, -1); render(); setupDropZones(); });
+    document.getElementById('nextDay').addEventListener('click', () => { state.selectedDate = addDays(state.selectedDate, 1); render(); setupDropZones(); });
+    document.getElementById('todayBtn').addEventListener('click', () => { state.selectedDate = todayEt(); render(); setupDropZones(); });
 
-    document.getElementById("prevDay").addEventListener("click", () => {
-      state.selectedDate = addDays(state.selectedDate, -1);
-      render();
-      setupDropZones();
+    document.getElementById('collapseToggle').addEventListener('click', () => {
+      state.timelineOpen = !state.timelineOpen;
+      document.getElementById('timelinePanel').classList.toggle('collapsed', !state.timelineOpen);
     });
 
-    document.getElementById("nextDay").addEventListener("click", () => {
-      state.selectedDate = addDays(state.selectedDate, 1);
-      render();
-      setupDropZones();
-    });
-
-    document.getElementById("todayBtn").addEventListener("click", () => {
-      state.selectedDate = todayEt();
-      render();
-      setupDropZones();
-    });
-
-    document.querySelectorAll(".filter-tab").forEach(tab => {
-      tab.addEventListener("click", () => {
-        document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-        state.filter = tab.dataset.filter;
-        renderBacklog();
-      });
-    });
-
-    document.getElementById("addBtn").addEventListener("click", () => {
-      document.getElementById("addBtn").classList.add("hidden");
-      document.getElementById("addInputRow").classList.remove("hidden");
-      document.getElementById("addInput").focus();
-    });
-
-    document.getElementById("addSubmit").addEventListener("click", () => {
-      const input = document.getElementById("addInput");
-      const val = input.value.trim();
-      if (val) {
-        addActionable(val);
-        input.value = "";
-      }
-    });
-
-    document.getElementById("addInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
+    document.getElementById('quickAdd').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
         const val = e.target.value.trim();
-        if (val) { addActionable(val); e.target.value = ""; }
-      }
-      if (e.key === "Escape") {
-        e.target.value = "";
-        document.getElementById("addBtn").classList.remove("hidden");
-        document.getElementById("addInputRow").classList.add("hidden");
+        if (val) { addActionable(val); e.target.value = ''; }
       }
     });
 
-    document.getElementById("addInput").addEventListener("blur", () => {
-      setTimeout(() => {
-        document.getElementById("addBtn").classList.remove("hidden");
-        document.getElementById("addInputRow").classList.add("hidden");
-      }, 150);
+    document.getElementById('searchInput').addEventListener('input', e => {
+      state.search = e.target.value;
+      renderCollection();
     });
 
-    document.getElementById("modalSave").addEventListener("click", () => {
-      if (!state.editingId) return;
-      const title = document.getElementById("modalTitle").value.trim();
-      const start = document.getElementById("modalStart").value || null;
-      const end = document.getElementById("modalEnd").value || null;
-      if (title) updateActionable(state.editingId, { title, start_time: start, end_time: end });
-      closeModal();
+    document.getElementById('showDoneBtn').addEventListener('click', () => {
+      state.showDone = !state.showDone;
+      document.getElementById('showDoneBtn').classList.toggle('active', state.showDone);
+      document.getElementById('showDoneBtn').textContent = state.showDone ? 'Hide done' : 'Show done';
+      renderCollection();
     });
 
-    document.getElementById("modalDelete").addEventListener("click", () => {
-      if (state.editingId) deleteActionable(state.editingId);
-      closeModal();
+    document.getElementById('tagFilterBtn').addEventListener('click', e => {
+      closeAllPopovers();
+      const dropdown = document.createElement('div');
+      dropdown.className = 'dropdown';
+      let html = '';
+      state.tags.forEach(tag => {
+        const sel = state.tagFilter.includes(tag.id) ? ' selected' : '';
+        html += `<button class="dropdown-item${sel}" data-tag-id="${tag.id}">
+          <span class="item-dot" style="background:${esc(tag.color)}"></span>
+          ${esc(tag.name)}
+          <span class="item-check">&#10003;</span>
+        </button>`;
+      });
+      if (state.tags.length === 0) html = '<div style="padding:8px;color:var(--text-muted);font-size:12px;">No tags yet</div>';
+      dropdown.innerHTML = html;
+      document.body.appendChild(dropdown);
+      positionDropdown(dropdown, e.currentTarget);
+
+      dropdown.querySelectorAll('.dropdown-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tagId = btn.dataset.tagId;
+          if (state.tagFilter.includes(tagId)) {
+            state.tagFilter = state.tagFilter.filter(f => f !== tagId);
+          } else {
+            state.tagFilter.push(tagId);
+          }
+          btn.classList.toggle('selected');
+          renderTagFilter();
+          renderCollection();
+        });
+      });
+
+      const overlay = document.createElement('div');
+      overlay.className = 'popover-overlay';
+      overlay.addEventListener('click', closeAllPopovers);
+      document.body.appendChild(overlay);
     });
 
-    document.getElementById("modalCancel").addEventListener("click", closeModal);
+    document.getElementById('manageTagsBtn').addEventListener('click', toggleTagManager);
 
-    document.getElementById("modalOverlay").addEventListener("click", (e) => {
-      if (e.target === e.currentTarget) closeModal();
-    });
-
-    document.getElementById("themeToggle").addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-      localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeAllPopovers(); if (state.tagManagerOpen) toggleTagManager(); }
     });
 
     /* ── Auto-refresh ────────────────────────── */
     setInterval(() => {
-      if (!document.getElementById("authGate").classList.contains("hidden")) {
-        loadAll().then(() => { render(); setupDropZones(); }).catch(e => console.error("refresh failed:", e));
+      if (!document.getElementById('authGate').classList.contains('hidden')) {
+        loadAll().then(() => { render(); setupDropZones(); }).catch(() => {});
       }
     }, 60000);
 
     /* ── Boot ────────────────────────────────── */
-    if (localStorage.getItem("theme") === "light") document.body.classList.add("light-mode");
-
     (async () => {
       const { data: { session } } = await db.auth.getSession();
       if (session) showDashboard();

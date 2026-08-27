@@ -21,14 +21,14 @@ Personal dashboard + task planner deployed as a GitHub Pages site.
 
 ## Dashboard Layout
 
-Single auth-gated page with two panels (all dark theme, Eastern Time):
+Single auth-gated page with two panels (warm off-white theme, Eastern Time):
 
 | Panel | Source | Notes |
 |---|---|---|
-| Timeline (left) | `actionables` + Outlook ICS (via `calendar-proxy` edge function) | 6 AM – 10 PM day view; blocks positioned by time; drag to move/resize; click to edit; calendar events auto-populate as read-only blocks |
-| Backlog (right) | `actionables` table | Unscheduled actionables with filter tabs (All/Scheduled/Pending); drag to timeline to schedule; + button to add new |
+| Timeline (left) | `actionables` + Outlook ICS (via `calendar-proxy` edge function) | 6 AM – 10 PM day view; collapsible; drag to move/resize blocks; calendar events auto-populate as read-only blocks; all-day strip |
+| Main (right) | `actionables` table | Flat collection of actionable cards; quick-add input; search; tag filtering; show/hide completed |
 
-The dashboard is built around one concept: **actionables** (title + time block + completed). No goals, no cycles, no taxonomy. Calendar events from the `calendar-proxy` edge function auto-appear on the timeline as reference blocks.
+The dashboard is built around one concept: **actionables** (title + time block + completed). No goals, no cycles, no taxonomy. Cards have optional notes, tags, and time blocks. Calendar events from the `calendar-proxy` edge function appear as the same kind of card with pre-built time blocks. Tag management via a floating popover panel.
 
 ## Key Files
 
@@ -53,13 +53,15 @@ The rebuilt dashboard (tasks + calendar only) does not read training tables. No 
 - Project ID: `heyrtjzntnicqsfemcmi`
 - URL: `https://heyrtjzntnicqsfemcmi.supabase.co`
 - Anon key is in `dashboard/index.html` and `tracker/index.html` (RLS-protected)
-- RLS: all personal-data tables are `authenticated`-only (see `supabase/migrations/20260802100000_secure_rls.sql` and `supabase/migrations/20260826000000_actionables.sql`). The anon key can read nothing. Sign in is required; `enable_signup = false` recommended.
+- RLS: all personal-data tables are `authenticated`-only (see `supabase/migrations/20260802100000_secure_rls.sql`, `supabase/migrations/20260826000000_actionables.sql`, and `supabase/migrations/20260826100000_tags.sql`). The anon key can read nothing. Sign in is required; `enable_signup = false` recommended.
 
 ### Tables
 
 | Table | Purpose |
 |---|---|
 | `actionables` | Core dashboard items: title + time block + completed |
+| `tags` | Tag definitions: name + color |
+| `tag_actionables` | Junction table linking actionables to tags |
 | `nodes` | Task tree (tracker) |
 | `people` | Contacts with outreach lifecycle |
 | `events` | Phone screens, meetings, deadlines |
