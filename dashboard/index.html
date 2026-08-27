@@ -1108,8 +1108,8 @@
           id: 'cal_' + btoa(key).replace(/[^a-zA-Z0-9]/g,'').slice(0,21),
           title: e.title,
           date: parseIsoToDate(e.start),
-          start_time: parseIsoToTime(e.start),
-          end_time: e.end ? parseIsoToTime(e.end) : null,
+          start_time: e.allDay ? null : parseIsoToTime(e.start),
+          end_time: e.allDay ? null : (e.end ? parseIsoToTime(e.end) : null),
           completed: false,
           source: 'calendar',
           source_event_id: e.uid || null,
@@ -1154,10 +1154,10 @@
         el.className = `time-block ${src}${comp}`;
         el.dataset.id = b.id;
         el.dataset.source = b.source || 'manual';
-        el.draggable = true;
+        const canEdit = b.source !== 'calendar';
+        el.draggable = canEdit;
         el.style.top = top + 'px';
         el.style.height = h + 'px';
-        const canEdit = b.source !== 'calendar';
         el.innerHTML = `
           <div class="block-handle block-handle-top"></div>
           <div class="block-handle block-handle-bottom"></div>
