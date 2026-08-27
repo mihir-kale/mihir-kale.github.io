@@ -959,6 +959,7 @@
               <span class="tag-filter-dot" id="tagFilterDot"></span>
             </button>
             <button class="toolbar-btn" id="showDoneBtn">Show done</button>
+            <button class="toolbar-btn" id="archiveBtn">Archive</button>
             <button class="toolbar-btn" id="manageTagsBtn">Manage tags</button>
           </div>
         </div>
@@ -999,6 +1000,7 @@
       search: '',
       tagFilter: [],
       showDone: false,
+      viewArchive: false,
       timelineOpen: true,
       tagManagerOpen: false,
       openDropdown: null,
@@ -1203,8 +1205,22 @@
 
     function renderCollection() {
       const col = document.getElementById('collection');
+      const today = todayEt();
       const calItems = state.calendar.map(c => ({ ...c, _isCal: true }));
-      let items = [...state.actionables.map(a => ({ ...a, _isCal: false })), ...calItems];
+      const allItems = [...state.actionables.map(a => ({ ...a, _isCal: false })), ...calItems];
+
+      let items;
+      if (state.viewArchive) {
+        items = allItems.filter(a => {
+          if (a._isCal) return a.date < today;
+          return a.archived;
+        });
+      } else {
+        items = allItems.filter(a => {
+          if (a._isCal) return a.date >= today;
+          return !a.archived;
+        });
+      }
 
       if (state.search) {
         const q = state.search.toLowerCase();
@@ -1506,6 +1522,16 @@
       if (res.error) { Object.assign(item, prev); render(); }
     }
 
+    async function archiveActionable(id) {
+      const item = state.actionables.find(a => a.id === id);
+      if (!item) return;
+      const prev = item.archived;
+      item.archived = !item.archived;
+      render();
+      const res = await db.from('actionables').update({ archived: item.archived }).eq('id', id);
+      if (res.error) { item.archived = prev; render(); }
+    }
+
     /* ── Tag Mutations ───────────────────────── */
     async function addTag(name, color) {
       const id = generateId();
@@ -1682,16 +1708,22 @@
       const item = state.actionables.find(a => a.id === id);
       if (!item) return;
 
+      const archiveLabel = item.archived ? 'Unarchive' : 'Archive';
       const dropdown = document.createElement('div');
       dropdown.className = 'dropdown';
       dropdown.innerHTML = `
         <button class="dropdown-action" id="cmDuplicate">Duplicate</button>
+        <button class="dropdown-action" id="cmArchive">${archiveLabel}</button>
         <button class="dropdown-action danger" id="cmDelete">Delete</button>`;
       document.body.appendChild(dropdown);
       positionDropdown(dropdown, anchor);
 
       document.getElementById('cmDuplicate').addEventListener('click', async () => {
         await addActionable(item.title + ' (copy)');
+        closeAllPopovers();
+      });
+      document.getElementById('cmArchive').addEventListener('click', () => {
+        archiveActionable(id);
         closeAllPopovers();
       });
       document.getElementById('cmDelete').addEventListener('click', () => {
@@ -1845,6 +1877,13 @@
       state.showDone = !state.showDone;
       document.getElementById('showDoneBtn').classList.toggle('active', state.showDone);
       document.getElementById('showDoneBtn').textContent = state.showDone ? 'Hide done' : 'Show done';
+      renderCollection();
+    });
+
+    document.getElementById('archiveBtn').addEventListener('click', () => {
+      state.viewArchive = !state.viewArchive;
+      document.getElementById('archiveBtn').classList.toggle('active', state.viewArchive);
+      document.getElementById('archiveBtn').textContent = state.viewArchive ? 'Back to active' : 'Archive';
       renderCollection();
     });
 
