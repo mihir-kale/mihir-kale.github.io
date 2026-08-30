@@ -1,0 +1,258 @@
+[
+  {
+    "id": "phm-2021",
+    "mediaType": "book",
+    "title": "Project Hail Mary",
+    "creator": "Andy Weir",
+    "year": 2021,
+    "status": "finished",
+    "rating": 5,
+    "consumed": "2026-07-12",
+    "notes": "A junior-high science teacher wakes up light-years from home with amnesia and humanity's fate on his shoulders. Problem-solving sci-fi at its most fun.",
+    "tags": [
+      "sci-fi"
+    ],
+    "url": "https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "spotlight": true
+  },
+  {
+    "id": "gk-m-a-a-d-city",
+    "mediaType": "album",
+    "title": "good kid, m.A.A.d city",
+    "creator": "Kendrick Lamar",
+    "year": 2012,
+    "status": "finished",
+    "rating": 5,
+    "consumed": "2026-08-03",
+    "notes": "A concept album disguised as a mixtape: one long night in Compton, sequenced like a film. Short film, bonus disc, and all.",
+    "tags": [
+      "hip-hop"
+    ],
+    "url": "https://music.apple.com/us/album/good-kid-m-a-a-d-city/1440840692",
+    "spotlight": true
+  },
+  {
+    "id": "west-wing",
+    "mediaType": "tv",
+    "title": "The West Wing",
+    "creator": "Aaron Sorkin",
+    "year": 1999,
+    "status": "finished",
+    "rating": 5,
+    "consumed": "2026-06-28",
+    "notes": "Sorkin's walk-and-talks remain the most flattering — and most instructive — portrait of public service ever filmed.",
+    "tags": [
+      "politics",
+      "drama"
+    ],
+    "url": "https://en.wikipedia.org/wiki/The_West_Wing",
+    "spotlight": true
+  },
+  {
+    "id": "i-pencil",
+    "mediaType": "article",
+    "title": "I, Pencil",
+    "creator": "Leonard Read",
+    "year": 1958,
+    "status": "finished",
+    "rating": 5,
+    "consumed": "2026-05-19",
+    "notes": "A pencil explains its own creation and dismantles central planning in four pages. A classic, and absurdly short.",
+    "tags": [
+      "economics",
+      "classic"
+    ],
+    "url": "https://en.wikipedia.org/wiki/I,_Pencil",
+    "spotlight": true
+  },
+  {
+    "id": "loonshots",
+    "mediaType": "book",
+    "title": "Loonshots",
+    "creator": "Safi Bahcall",
+    "year": 2019,
+    "status": "finished",
+    "rating": 4,
+    "consumed": "2026-04-30",
+    "notes": "Why sane teams dismiss the crazy ideas that change everything — and how phase transitions in organizations mirror them in physics.",
+    "tags": [
+      "business",
+      "innovation"
+    ],
+    "url": "https://en.wikipedia.org/wiki/Loonshots"
+  },
+  {
+    "id": "diplomacy",
+    "mediaType": "book",
+    "title": "Diplomacy",
+    "creator": "Henry Kissinger",
+    "year": 1994,
+    "status": "finished",
+    "rating": 4.5,
+    "consumed": "2026-04-02",
+    "notes": "A sweeping tour of statecraft from Richelieu to the Cold War. Heavy, but worth every page.",
+    "tags": [
+      "history",
+      "foreign-policy"
+    ],
+    "url": "https://en.wikipedia.org/wiki/Diplomacy_(Kissinger_book)"
+  },
+  {
+    "id": "federalist-papers",
+    "mediaType": "book",
+    "title": "The Federalist Papers",
+    "creator": "Hamilton, Madison & Jay",
+    "year": 1788,
+    "status": "finished",
+    "rating": 4.5,
+    "consumed": "2025-11-14",
+    "notes": "Hamilton, Madison, and Jay sell the Constitution in real time.",
+    "tags": [
+      "founding",
+      "politics",
+      "classic"
+    ],
+    "url": "https://en.wikipedia.org/wiki/The_Federalist_Papers"
+  },
+  {
+    "id": "basic-economics",
+    "mediaType": "book",
+    "title": "Basic Economics",
+    "creator": "Thomas Sowell",
+    "year": 2000,
+    "status": "in-progress",
+    "rating": null,
+    "consumed": null,
+    "notes": "Prices, incentives, and trade-offs with zero equations and endless common sense. Working through it slowly.",
+    "tags": [
+      "economics"
+    ],
+    "url": "https://en.wikipedia.org/wiki/Basic_Economics"
+  },
+  {
+    "id": "theory-money-credit",
+    "mediaType": "book",
+    "title": "The Theory of Money and Credit",
+    "creator": "Ludwig von Mises",
+    "year": 1912,
+    "status": "backlog",
+    "rating": null,
+    "consumed": null,
+    "notes": "Mises integrates money into economic theory and predicts the perils of inflation a century early. On the stack.",
+    "tags": [
+      "economics"
+    ],
+    "url": "https://en.wikipedia.org/wiki/The_Theory_of_Money_and_Credit"
+  },
+  {
+    "id": "man-high-castle",
+    "mediaType": "tv",
+    "title": "The Man in the High Castle",
+    "creator": "Frank Spotnitz",
+    "year": 2015,
+    "status": "finished",
+    "rating": 4,
+    "consumed": "2026-02-09",
+    "notes": "The Axis won. A prestige series that makes authoritarianism feel mundane — and resistance feel costly.",
+    "tags": [
+      "alternative-history",
+      "drama"
+    ]
+  },
+  {
+    "id": "why-we-disagree",
+    "mediaType": "book",
+    "title": "Why We Disagree About Inequality",
+    "creator": "Ilana Redstone",
+    "year": 2024,
+    "status": "finished",
+    "rating": 4,
+    "consumed": "2026-01-20",
+    "notes": "Dueling definitions of fairness keep both sides talking past each other — and how to finally have the conversation.",
+    "tags": [
+      "politics",
+      "culture"
+    ],
+    "url": ""
+  },
+  {
+    "id": "conversations-tyler-acemoglu",
+    "mediaType": "podcast",
+    "title": "Conversations with Tyler",
+    "creator": "Daron Acemoglu",
+    "year": 2026,
+    "status": "finished",
+    "rating": 4.5,
+    "consumed": "2026-08-16",
+    "notes": "Acemoglu asks whether liberalism's crisis was an inside job — and implicates the educated elite.",
+    "tags": [
+      "economics",
+      "long-form"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/daron-acemoglu-2/"
+  },
+  {
+    "id": "econtalk-southwood",
+    "mediaType": "podcast",
+    "title": "EconTalk",
+    "creator": "Ben Southwood",
+    "year": 2026,
+    "status": "finished",
+    "rating": 4,
+    "consumed": "2026-07-30",
+    "notes": "Southwood argues the Industrial Revolution really began in 1688, when England's Glorious Revolution smashed the vetocracy holding growth back.",
+    "tags": [
+      "economics",
+      "history"
+    ],
+    "url": "https://www.econtalk.org/the-hidden-cause-of-the-industrial-revolution-with-ben-southwood/"
+  },
+  {
+    "id": "fifth-column-politics",
+    "mediaType": "podcast",
+    "title": "The Fifth Column",
+    "creator": "Kmele, Matt & Michael",
+    "year": 2026,
+    "status": "finished",
+    "rating": 4,
+    "consumed": "2026-06-11",
+    "notes": "Irreverent, anti-war, allergic to tribalism.",
+    "tags": [
+      "politics",
+      "media"
+    ],
+    "url": "https://www.wethefifth.com/p/the-politics-of-pretending-episode"
+  },
+  {
+    "id": "silver-2026-midterms",
+    "mediaType": "article",
+    "title": "The 2026 Midterm Forecast",
+    "creator": "Nate Silver",
+    "year": 2026,
+    "status": "finished",
+    "rating": 4,
+    "consumed": "2026-08-02",
+    "notes": "Polls, fundamentals, and probabilities for a Congress worth watching.",
+    "tags": [
+      "elections",
+      "data"
+    ],
+    "url": "https://www.natesilver.net/p/nate-silver-2026-midterm-election-polls-model"
+  },
+  {
+    "id": "illmatic",
+    "mediaType": "album",
+    "title": "Illmatic",
+    "creator": "Nas",
+    "year": 1994,
+    "status": "finished",
+    "rating": 5,
+    "consumed": "2026-05-21",
+    "notes": "Ten tracks, a decade of Queensbridge compressed into forty minutes. Still the reference point.",
+    "tags": [
+      "hip-hop",
+      "classic"
+    ],
+    "url": "https://music.apple.com/us/album/illmatic/1440775704"
+  }
+]
