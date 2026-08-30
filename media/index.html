@@ -3,82 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Commonplace — mihir kale</title>
-  <meta name="description" content="A personal media commonplace book: books, films, series, albums, articles, and podcasts I've consumed — a small curated display, and the full archive beneath.">
+  <title>the commonplace — mihir</title>
+  <meta name="description" content="A mood board of books, films, series, albums, articles, and podcasts I've consumed.">
   <meta name="tmdb-api-key" content="475a2ebafc31a860c0a98e7280853eb0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23f7f3ea'/><rect x='5' y='5' width='54' height='54' fill='none' stroke='%23232019'/><text x='32' y='43' font-family='Georgia,serif' font-size='26' text-anchor='middle' fill='%23232019'>MK</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23f3f2ec'/><path d='M0 8h64M0 16h64M0 24h64M0 32h64M0 40h64M0 48h64M0 56h64M8 0v64M16 0v64M24 0v64M32 0v64M40 0v64M48 0v64M56 0v64' stroke='%23b9c3d8'/><text x='32' y='41' font-family='Menlo,monospace' font-size='24' text-anchor='middle' fill='%2316161d'>MK</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <header class="masthead">
-    <div class="container">
-      <p class="overline">mihir kale</p>
-      <h1 class="masthead-title">The Common<span class="amp">place</span></h1>
-      <p class="standfirst">Books, films, albums, essays, and episodes. A catalogue of what I&rsquo;ve been consuming &mdash; with a few favorites out front and the full archive beneath.</p>
-    </div>
+  <header class="topbar">
+    <p class="brand">MK<span class="brand-kicker">/commonplace</span></p>
+    <nav class="filters" id="filters" aria-label="Filter the board by media type"></nav>
+    <label class="search">
+      <span class="search-glyph" aria-hidden="true">&gt;</span>
+      <input id="search" type="search" placeholder="search" autocomplete="off">
+    </label>
   </header>
 
-  <div class="container">
-    <div class="dateline">
-      <span>A personal media commonplace</span>
-      <span id="archived-date"></span>
-    </div>
+  <main id="board" class="board" aria-label="Curated media mood board"></main>
 
-    <section id="shelf-section" aria-labelledby="shelf-heading">
-      <div class="section-head">
-        <p class="overline">the display</p>
-        <h2 id="shelf-heading">On the shelf</h2>
-        <p class="section-note">
-          Just a small set is spotlighted here &mdash; covers load from Google Books, Open Library, TMDB, and iTunes only for these. Click a cover to jump to its entry.
-          <span class="count" id="shelf-count" hidden></span>
-        </p>
-      </div>
-      <ul id="shelf" class="shelf"></ul>
-    </section>
+  <noscript>
+    <p class="notice">This board needs JavaScript. Enable it and reload.</p>
+  </noscript>
 
-    <section aria-labelledby="archive-heading">
-      <div class="section-head">
-        <p class="overline">the catalogue</p>
-        <h2 id="archive-heading">The full archive</h2>
-        <p class="section-note">Every entry as a plain notecard &mdash; no covers, no waiting. <span class="count" id="archive-count">0 entries</span></p>
-      </div>
-
-      <div class="controls">
-        <nav class="filters" id="filters" aria-label="Filter the archive by media type"></nav>
-        <div class="toolbar">
-          <label class="field search-box">
-            <input id="search" type="search" placeholder="Search the archive&hellip;" autocomplete="off">
-          </label>
-          <label class="field sort-box">
-            <span class="field-label">Sort</span>
-            <select id="sort">
-              <option value="recent">Recently consumed</option>
-              <option value="rated">Top rated</option>
-              <option value="alpha">Alphabetical</option>
-            </select>
-          </label>
-        </div>
-        <nav class="chips" id="chips" aria-label="Filter the archive by tag"></nav>
-      </div>
-
-      <main id="grid" class="board"></main>
-
-      <noscript>
-        <p class="notice">This page needs JavaScript to load its catalogue. Please enable JavaScript and reload.</p>
-      </noscript>
-    </section>
-  </div>
-
-  <footer class="colophon">
-    <div class="container">
-      <p class="colophon-submit">Somewhere a keeper of commonplace books is smiling.</p>
-      <p class="fine">Set in Newsreader &middot; Covers via Google Books, Open Library, TMDB &amp; iTunes &middot; Archive curated by hand &middot; Hosted on GitHub Pages</p>
-      <p class="fine">&copy; <span id="colophon-year"></span> mihir kale</p>
-    </div>
+  <footer class="foot">
+    <span><span id="total-count">0</span> entries</span>
+    <span>covers · google books · open library · tmdb · itunes</span>
   </footer>
 
   <script type="module" src="js/app.js"></script>
