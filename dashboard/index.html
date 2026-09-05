@@ -811,14 +811,19 @@
         } catch (e) { /* feed sync failure is non-fatal */ }
       }
 
-      // Read everything (feed + manual blocks) from the table. Before the
-      // migration exists, fall back to the proxy's raw events.
-      try {
-        const { data, error } = await client.from('calendar_events')
-          .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
-        if (error) throw error;
-        events = (data || []).map(rowToEvent);
-      } catch (e) {
+      // Signed-in: read everything (feed + manual blocks) from the table.
+      // Anonymous (gate-unlocked): render the live proxy feed directly — anon
+      // can't run the sync RPC, so the table would otherwise be empty.
+      if (authed) {
+        try {
+          const { data, error } = await client.from('calendar_events')
+            .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
+          if (error) throw error;
+          events = (data || []).map(rowToEvent);
+        } catch (e) {
+          events = (body?.events || []).map(proxyToEvent);
+        }
+      } else {
         events = (body?.events || []).map(proxyToEvent);
       }
 
