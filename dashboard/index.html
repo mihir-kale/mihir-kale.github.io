@@ -269,6 +269,9 @@
     }
     .blk .b-title { font-weight: 700; color: var(--text); }
     .blk .b-time { color: var(--low); }
+    .blk.editable { cursor: pointer; }
+    .blk.editable:hover { box-shadow: var(--shadow); }
+    .blk.feed { border-left-style: dashed; opacity: 0.85; }
     .tl-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--low); font-size: 11px; font-style: italic; }
     .tl-later { display: flex; flex-direction: column; gap: 10px; }
     .later-row { border: 1px solid var(--border); background: var(--panel); }
@@ -307,6 +310,9 @@
     .badge.p-m { color: var(--accent); border-color: var(--accent); }
     .badge.p-h { color: var(--done); border-color: var(--done); }
     .badge.p-u { color: var(--warn); border-color: var(--warn); }
+    .card.editable { cursor: pointer; }
+    .card.editable:hover { border-color: var(--accent-dim); box-shadow: var(--shadow); }
+    .card.feed { opacity: 0.85; }
     .card-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
     .card-actions button {
       border: 1px solid var(--border); background: transparent;
@@ -352,6 +358,10 @@
     .btn-danger { background: var(--warn) !important; color: var(--on-warn) !important; border-color: var(--warn) !important; }
     .status-pills { display: flex; gap: 6px; flex-wrap: wrap; }
     .status-pills .tag { width: auto; }
+    .swatch { display: inline-block; width: 22px; height: 22px; border: 2px solid var(--border); cursor: pointer; }
+    .swatch.active { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .field .check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .field input[type="checkbox"] { width: auto; accent-color: var(--accent); }
 
     @media (max-width: 900px) {
       .panels { grid-template-columns: 1fr; }
@@ -407,6 +417,7 @@
           <div class="panel-head">
             <span class="dot" style="background:var(--done)"></span>
             Calendar
+            <button class="panel-action" id="newBlockBtn" style="margin-left:0">+ Block</button>
             <span class="last-updated" id="calUpdated"></span>
             <button class="panel-action" id="refreshCalBtn">&#8635; Refresh</button>
           </div>
@@ -460,6 +471,46 @@
     </div>
   </div>
 
+  <!-- Calendar block modal (time-blocking; feed events are read-only) -->
+  <div class="overlay" id="calOverlay">
+    <div class="modal">
+      <h2 id="calModalTitle">New Block</h2>
+      <input type="hidden" id="cId" />
+      <div class="field">
+        <label>Title <span class="req">*</span></label>
+        <input id="cTitle" placeholder="What's this block for?" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Date <span class="req">*</span></label>
+        <input id="cDate" type="date" />
+      </div>
+      <div class="field">
+        <label>Start</label>
+        <input id="cStart" type="time" />
+      </div>
+      <div class="field">
+        <label>End</label>
+        <input id="cEnd" type="time" />
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" id="cAllDay" /> All day</label>
+      </div>
+      <div class="field">
+        <label>Color</label>
+        <div class="status-pills" id="cColorPills"></div>
+      </div>
+      <div class="field">
+        <label>Location <span class="hint">(optional)</span></label>
+        <input id="cLocation" placeholder="Where?" autocomplete="off" />
+      </div>
+      <div class="modal-actions">
+        <button id="calDeleteBtn" class="btn-danger hidden">Delete</button>
+        <button id="calCancelBtn">Cancel</button>
+        <button id="calSaveBtn" class="btn-primary">Save Block</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ============================================================
     // CONFIG — edit these
@@ -469,6 +520,11 @@
     const TZ = 'America/New_York';
     // Client-side unlock password (OS is hidden when there is no stored session).
     const OS_PASSWORD = 'Senec@Hills65';
+    // Calendar feed sources (mirrors calendar-proxy's CALENDARS). Used to persist
+    // feed events into calendar_events via sync_calendar_feed and to skip pruning
+    // a feed that failed to fetch.
+    const FEED_CALENDARS = ['Outlook', 'Google'];
+    const BLOCK_COLORS = ['var(--accent)', '#0a84ff', '#ff9f0a', '#ff453a', '#30d158', '#bf5af2'];
     // ============================================================
     // END CONFIG
     // ============================================================
@@ -488,6 +544,8 @@
     let calMode = 'today';
     let editingId = null;
     let modalPriority = 'medium';
+    let editingCalId = null;
+    let calColor = BLOCK_COLORS[0];
 
     const $ = (id) => document.getElementById(id);
 
@@ -507,10 +565,12 @@
       return new Date(iso).toLocaleDateString('en-CA', { timeZone: TZ });
     }
     function isoToTimeStr(iso) {
-      const d = new Date(iso);
-      const h = d.toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false });
-      const m = d.toLocaleString('en-US', { timeZone: TZ, minute: '2-digit' });
-      return `${String(+h).padStart(2, '0')}:${m}`;
+      const parts = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false })
+        .formatToParts(new Date(iso));
+      let h = parts.find(p => p.type === 'hour').value;
+      const m = parts.find(p => p.type === 'minute').value;
+      if (h === '24') h = '00';
+      return `${h.padStart(2, '0')}:${m.padStart(2, '0')}`;
     }
     function fmtTime12(t) {
       if (!t) return '';
@@ -674,33 +734,99 @@
     }
 
     // ---------- Calendar ----------
+    function normDate(iso) {
+      return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : isoToDateStr(iso);
+    }
+    function feedRow(ev) {
+      const date = normDate(ev.start);
+      const startTime = (ev.allDay || !ev.start) ? null : isoToTimeStr(ev.start);
+      const endTime = (ev.allDay || !ev.end) ? null : isoToTimeStr(ev.end);
+      return {
+        external_id: [ev.calendar || '', date, startTime || 'allday', ev.title || ''].join('|'),
+        title: ev.title || 'Untitled',
+        date,
+        start_time: startTime,
+        end_time: endTime,
+        all_day: !!ev.allDay,
+        calendar: ev.calendar || '',
+        color: ev.color || '',
+        location: ev.location || '',
+      };
+    }
+    function rowToEvent(row) {
+      return {
+        id: row.id,
+        title: row.title || 'Untitled',
+        date: row.date,
+        start_time: row.start_time || null,
+        end_time: row.end_time || null,
+        allDay: !!row.all_day,
+        location: row.location || '',
+        calendar: row.calendar || '',
+        color: row.color || 'var(--border)',
+        source: row.source || 'manual',
+      };
+    }
+    function proxyToEvent(ev) {
+      return {
+        title: ev.title || 'Untitled',
+        date: normDate(ev.start),
+        start_time: (ev.allDay || !ev.start) ? null : isoToTimeStr(ev.start),
+        end_time: (ev.allDay || !ev.end) ? null : isoToTimeStr(ev.end),
+        allDay: !!ev.allDay,
+        location: ev.location || '',
+        calendar: ev.calendar || '',
+        color: ev.color || 'var(--border)',
+        source: 'feed',
+      };
+    }
+
     async function loadCalendar() {
       const { data: { session } } = await client.auth.getSession();
       const token = session?.access_token || '';
+      let body = null;
+      let feedErr = null;
       try {
         const r = await fetch(SUPABASE_URL + '/functions/v1/calendar-proxy', {
-          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}`, }
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
         });
         if (!r.ok) throw new Error('calendar proxy HTTP ' + r.status);
-        const body = await r.json();
-        events = (body.events || []).map(ev => ({
-          title: ev.title || 'Untitled',
-          date: ev.start ? isoToDateStr(ev.start) : null,
-          start_time: (ev.allDay || !ev.start) ? null : isoToTimeStr(ev.start),
-          end_time: (ev.allDay || !ev.end) ? null : isoToTimeStr(ev.end),
-          allDay: !!ev.allDay,
-          location: ev.location || '',
-          calendar: ev.calendar || '',
-          color: ev.color || 'var(--border)',
-        }));
+        body = await r.json();
         $('calUpdated').textContent = body.last_updated
-          ? 'fetched ' + new Date(body.last_updated).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' })
+          ? 'synced ' + new Date(body.last_updated).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' })
           : '';
-        renderEvents();
-        hideError();
       } catch (e) {
-        setError('Failed to load calendar: ' + e.message);
+        feedErr = e;
+        $('calUpdated').textContent = 'feed offline';
       }
+
+      // Persist feed events into calendar_events (signed-in users only). Feed
+      // rows that vanished from a successfully-fetched feed are pruned here.
+      if (authed && body && Array.isArray(body.events)) {
+        const errored = new Set((body.errors || []).map(err => err.calendar));
+        const fetched = FEED_CALENDARS.filter(c => !errored.has(c));
+        try {
+          await client.rpc('sync_calendar_feed', {
+            p_payload: { calendars: fetched, rows: (body.events || []).map(feedRow) },
+          });
+        } catch (e) { /* feed sync failure is non-fatal */ }
+      }
+
+      // Read everything (feed + manual blocks) from the table. Before the
+      // migration exists, fall back to the proxy's raw events.
+      try {
+        const { data, error } = await client.from('calendar_events')
+          .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
+        if (error) throw error;
+        events = (data || []).map(rowToEvent);
+      } catch (e) {
+        events = (body?.events || []).map(proxyToEvent);
+      }
+
+      renderEvents();
+      if (feedErr && events.length) { setError('Calendar feed offline — showing saved blocks.'); return; }
+      if (feedErr && !events.length) { setError('Failed to load calendar: ' + feedErr.message); return; }
+      hideError();
     }
 
     function renderCalTags() {
@@ -745,7 +871,10 @@
       const pxPerMin = PX_PER_HOUR / 60;
       const top = (s - minStart) * pxPerMin;
       const height = Math.max((e - s) * pxPerMin, 16);
-      return `<div class="blk" style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
+      const feed = ev.source === 'feed';
+      const extra = feed ? ' feed' : ' editable';
+      const did = feed ? '' : ` data-id="${escapeHtml(ev.id)}"`;
+      return `<div class="blk${extra}"${did} style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
         `<div class="b-title">${escapeHtml(ev.title)}</div>` +
         `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div>` +
         `</div>`;
@@ -756,7 +885,10 @@
       const timed = evs.filter(e => !e.allDay && e.start_time);
       let h = `<div class="tl-rail"><div class="tl-head">${titleHtml}<span class="tl-n">${evs.length || ''}</span></div>`;
       for (const e of allDay) {
-        h += `<div class="blk allday" style="border-left-color:${e.color}">` +
+        const feed = e.source === 'feed';
+        const extra = feed ? ' feed' : ' editable';
+        const did = feed ? '' : ` data-id="${escapeHtml(e.id)}"`;
+        h += `<div class="blk allday${extra}"${did} style="border-left-color:${e.color}">` +
           `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span></div>`;
       }
       h += `<div class="tl-body"><div class="tl-ticks" style="height:${gridH}px">`;
@@ -813,11 +945,25 @@
           ? tlColumn(fmtDayHead('TODAY', today), dayEvs)
           : '<div class="empty">No events today</div>';
       }
+      attachEditable();
+    }
+
+    function attachEditable() {
+      const tl = $('calTimeline');
+      tl.querySelectorAll('.blk.editable, .card.editable').forEach(el => {
+        el.onclick = () => {
+          const ev = events.find(e => e.id === el.dataset.id);
+          if (ev) openCalModal(ev);
+        };
+      });
     }
 
     function renderEventCardHtml(ev) {
       const timeLine = ev.allDay ? 'All day' : fmtRange(ev.start_time, ev.end_time);
-      return `<div class="card" style="border-left-color:${ev.color}">` +
+      const feed = ev.source === 'feed';
+      const extra = feed ? ' feed' : ' editable';
+      const did = feed ? '' : ` data-id="${escapeHtml(ev.id)}"`;
+      return `<div class="card${extra}"${did} style="border-left-color:${ev.color}">` +
         `<div class="title">${escapeHtml(ev.title)}</div>` +
         `<div class="meta">` +
           `<div class="row">` +
@@ -837,6 +983,78 @@
       card.style.borderLeftColor = ev.color;
       card.innerHTML = renderEventCardHtml(ev);
       return card;
+    }
+
+    // ---------- Calendar blocks ----------
+    function renderColorPills() {
+      $('cColorPills').innerHTML = BLOCK_COLORS.map(c =>
+        `<span class="swatch${calColor === c ? ' active' : ''}" data-color="${escapeHtml(c)}" style="background:${escapeHtml(c)}"></span>`).join('');
+      $('cColorPills').querySelectorAll('.swatch').forEach(s => {
+        s.onclick = () => { calColor = s.dataset.color; renderColorPills(); };
+      });
+    }
+
+    function openCalModal(ev) {
+      editingCalId = ev ? ev.id : null;
+      $('calModalTitle').textContent = ev ? 'Edit Block' : 'New Block';
+      $('cId').value = ev ? ev.id : '';
+      $('cTitle').value = ev ? ev.title : '';
+      $('cDate').value = ev ? (ev.date || todayEt()) : todayEt();
+      $('cStart').value = ev ? (ev.start_time || '09:00') : '09:00';
+      $('cEnd').value = ev ? (ev.end_time || '10:00') : '10:00';
+      $('cLocation').value = ev ? (ev.location || '') : '';
+      $('cAllDay').checked = ev ? !!ev.allDay : false;
+      $('cStart').disabled = $('cAllDay').checked;
+      $('cEnd').disabled = $('cAllDay').checked;
+      calColor = ev && ev.color && BLOCK_COLORS.includes(ev.color) ? ev.color : BLOCK_COLORS[0];
+      renderColorPills();
+      $('calDeleteBtn').classList.toggle('hidden', !editingCalId);
+      $('calOverlay').classList.add('open');
+    }
+
+    async function saveCalBlock() {
+      const title = $('cTitle').value.trim();
+      if (!title) { $('cTitle').focus(); return; }
+      const date = $('cDate').value || todayEt();
+      const allDay = $('cAllDay').checked;
+      const start = allDay ? null : ($('cStart').value || null);
+      const end = allDay ? null : ($('cEnd').value || null);
+      if (start && end && end <= start) { setError('End time must be after start time.'); return; }
+      const rec = {
+        title,
+        date,
+        start_time: start,
+        end_time: end,
+        all_day: allDay,
+        color: calColor,
+        location: $('cLocation').value.trim(),
+        source: 'manual',
+      };
+      try {
+        if (editingCalId) {
+          const { error } = await client.from('calendar_events').update(rec).eq('id', editingCalId);
+          if (error) throw error;
+        } else {
+          const { error } = await client.from('calendar_events').insert(rec);
+          if (error) throw error;
+        }
+        $('calOverlay').classList.remove('open');
+        await loadCalendar();
+      } catch (e) {
+        setError('Failed to save block: ' + e.message);
+      }
+    }
+
+    async function deleteCalBlock() {
+      if (!editingCalId) return;
+      try {
+        const { error } = await client.from('calendar_events').delete().eq('id', editingCalId);
+        if (error) throw error;
+        $('calOverlay').classList.remove('open');
+        await loadCalendar();
+      } catch (e) {
+        setError('Failed to delete block: ' + e.message);
+      }
     }
 
     // ---------- Modal ----------
@@ -945,7 +1163,16 @@
 
     $('newTaskBtn').onclick = () => openEdit(null);
     $('refreshTasksBtn').onclick = loadTasks;
+    $('newBlockBtn').onclick = () => openCalModal(null);
     $('refreshCalBtn').onclick = loadCalendar;
+    $('calCancelBtn').onclick = () => $('calOverlay').classList.remove('open');
+    $('calSaveBtn').onclick = saveCalBlock;
+    $('calDeleteBtn').onclick = deleteCalBlock;
+    $('cAllDay').onchange = () => {
+      const all = $('cAllDay').checked;
+      $('cStart').disabled = all;
+      $('cEnd').disabled = all;
+    };
     $('cancelBtn').onclick = () => $('overlay').classList.remove('open');
     $('saveBtn').onclick = save;
     $('deleteBtn').onclick = remove;
