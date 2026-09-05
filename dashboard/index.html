@@ -284,6 +284,9 @@
     .card.task { cursor: grab; }
     .card.task:active { cursor: grabbing; }
     .cal-timeline.drag-over { outline: 2px dashed var(--accent-dim); outline-offset: -2px; }
+    .col-body.drag-over { outline: 2px dashed var(--accent-dim); outline-offset: -2px; }
+    .blk { cursor: grab; }
+    .blk.editable:active, .blk.feed:active, .card.editable:active, .card.feed:active { cursor: grabbing; }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -905,7 +908,7 @@
       const height = Math.max((e - s) * pxPerMin, 16);
       const feed = ev.source === 'feed';
       const extra = feed ? ' feed' : ' editable';
-      const did = feed ? '' : ` data-id="${escapeHtml(ev.id)}"`;
+      const did = feed ? ` data-ext="${escapeHtml(ev.external_id || '')}"` : ` data-id="${escapeHtml(ev.id)}"`;
       return `<div class="blk${extra}"${did} style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
         `<div class="b-title">${escapeHtml(ev.title)}</div>` +
         `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div>` +
@@ -919,7 +922,7 @@
       for (const e of allDay) {
         const feed = e.source === 'feed';
         const extra = feed ? ' feed' : ' editable';
-        const did = feed ? '' : ` data-id="${escapeHtml(e.id)}"`;
+        const did = feed ? ` data-ext="${escapeHtml(e.external_id || '')}"` : ` data-id="${escapeHtml(e.id)}"`;
         h += `<div class="blk allday${extra}"${did} style="border-left-color:${e.color}">` +
           `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span></div>`;
       }
@@ -995,14 +998,50 @@
           const ev = events.find(e => e.id === el.dataset.id);
           if (ev) openCalModal(ev);
         };
+        makeCalDraggable(el);
       });
+      tl.querySelectorAll('.blk.feed, .card.feed').forEach(makeCalDraggable);
+    }
+
+    function eventDurMin(ev) {
+      if (ev.allDay) return null;
+      const s = toMin(ev.start_time);
+      const e = toMin(ev.end_time);
+      if (s == null) return null;
+      return Math.max((e != null && e > s) ? (e - s) : 60, 60);
+    }
+
+    function findEventForEl(el) {
+      if (el.dataset.id) { const m = events.find(x => x.id === el.dataset.id); if (m) return m; }
+      const ext = el.dataset.ext || '';
+      if (ext) { const m = events.find(x => x.source === 'feed' && x.external_id === ext); if (m) return m; }
+      const tEl = el.querySelector('.b-title, .title');
+      const t = tEl && (tEl.textContent || tEl.innerHTML || '');
+      return events.find(x => x.source === 'feed' && x.title === t) || null;
+    }
+
+    function makeCalDraggable(el) {
+      el.draggable = true;
+      el.ondragstart = (e) => {
+        e.stopPropagation();
+        const ev = findEventForEl(el);
+        if (!ev) return;
+        e.dataTransfer.setData('application/x-cal-event', JSON.stringify({
+          id: ev.id || null,
+          external_id: ev.external_id || null,
+          source: ev.source,
+          title: ev.title,
+          durMin: eventDurMin(ev),
+        }));
+        e.dataTransfer.effectAllowed = ev.source === 'feed' ? 'copy' : 'move';
+      };
     }
 
     function renderEventCardHtml(ev) {
       const timeLine = ev.allDay ? 'All day' : fmtRange(ev.start_time, ev.end_time);
       const feed = ev.source === 'feed';
       const extra = feed ? ' feed' : ' editable';
-      const did = feed ? '' : ` data-id="${escapeHtml(ev.id)}"`;
+      const did = feed ? ` data-ext="${escapeHtml(ev.external_id || '')}"` : ` data-id="${escapeHtml(ev.id)}"`;
       return `<div class="card${extra}"${did} style="border-left-color:${ev.color}">` +
         `<div class="title">${escapeHtml(ev.title)}</div>` +
         `<div class="meta">` +
@@ -1103,28 +1142,66 @@
       const h = +new Date().toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false });
       return h + 1;
     }
+    function hourFromDrop(e) {
+      const tl = $('calTimeline');
+      const grid = tl.querySelector('.tl-grid');
+      const r = grid ? grid.getBoundingClientRect() : null;
+      if (!r || e.clientY < r.top || e.clientY > r.bottom) return null;
+      const relMin = ((e.clientY - r.top) / Math.max(r.height, 1)) * (TL_END - TL_START) * 60;
+      return Math.max(TL_START, Math.min(TL_END - 1, TL_START + Math.floor(relMin / 60)));
+    }
+
+    function fmtHM(min) {
+      return fmtHH(Math.floor(min / 60)) + ':' + String(min % 60).padStart(2, '0');
+    }
+
+    async function rescheduleEvent(payload, startH) {
+      const durMin = payload.durMin;
+      const startMin = startH * 60;
+      const endMin = Math.max(startMin + 60, Math.min(startMin + durMin, TL_END * 60));
+      const start = fmtHM(startMin);
+      const end = fmtHM(endMin);
+      try {
+        const { error } = await client.from('calendar_events')
+          .update({ start_time: start, end_time: end })
+          .eq('id', payload.id);
+        if (error) throw error;
+        await loadCalendar();
+        showNotice(`Moved "${payload.title}" to ${fmtTime12(start)}–${fmtTime12(end)}`);
+      } catch (err) {
+        setError('Could not reschedule: ' + err.message);
+      }
+    }
+
     async function dropTaskOnCalendar(e) {
       e.preventDefault();
       const tl = $('calTimeline');
       tl.classList.remove('drag-over');
+      // Calendar event dragged onto the timeline → reschedule it (manual blocks only).
+      const rawCal = e.dataTransfer.getData('application/x-cal-event');
+      if (rawCal) {
+        let payload;
+        try { payload = JSON.parse(rawCal); } catch (err) { return; }
+        if (!payload.id || payload.source !== 'manual' || !payload.durMin) return;
+        if (calMode !== 'today') return;
+        const h = hourFromDrop(e);
+        if (h == null) return;
+        await rescheduleEvent(payload, h);
+        return;
+      }
+
+      // Task dragged onto the calendar → create a 1-hour manual block.
       const id = e.dataTransfer.getData('text/plain');
       const t = tasks.find(x => x.id === id);
       if (!t) return;
 
       let startH;
       if (calMode === 'today') {
-        const grid = tl.querySelector('.tl-grid');
-        const r = grid ? grid.getBoundingClientRect() : null;
-        if (r && e.clientY >= r.top && e.clientY <= r.bottom) {
-          const relMin = ((e.clientY - r.top) / Math.max(r.height, 1)) * (TL_END - TL_START) * 60;
-          startH = TL_START + Math.floor(relMin / 60);
-        } else {
-          startH = nextHourH();
-        }
+        const h = hourFromDrop(e);
+        startH = (h != null) ? h : nextHourH();
       } else {
         startH = nextHourH();
       }
-      startH = Math.max(TL_START, Math.min(TL_END - 1, startH));
       const start = fmtHH(startH) + ':00';
       const end = fmtHH(startH + 1) + ':00';
 
@@ -1145,6 +1222,35 @@
         showNotice(`Blocked "${t.title}" ${fmtTime12(start)}–${fmtTime12(end)}`);
       } catch (err) {
         setError('Could not add block: ' + err.message);
+      }
+    }
+
+    async function calEventToTask(e) {
+      e.preventDefault();
+      const body = document.querySelector('#taskColumns [data-body="tasks"]');
+      body.classList.remove('drag-over');
+      const raw = e.dataTransfer.getData('application/x-cal-event');
+      if (!raw) return;
+      let payload;
+      try { payload = JSON.parse(raw); } catch (err) { return; }
+      const title = String(payload.title || 'Untitled').trim();
+      if (!title) return;
+      try {
+        const { error } = await client.from('tasks').insert({
+          id: nanoid(),
+          title: 'TODO: ' + title,
+          status: 'pending',
+          priority: 'medium',
+          project: null,
+          description: null,
+          source: 'manual',
+          created_at: new Date().toISOString(),
+        });
+        if (error) throw error;
+        await loadTasks();
+        showNotice(`Added task "TODO: ${title}"`);
+      } catch (err) {
+        setError('Could not create task: ' + err.message);
       }
     }
 
@@ -1268,11 +1374,18 @@
     $('saveBtn').onclick = save;
     $('deleteBtn').onclick = remove;
 
-    // Drag tasks from the tasks panel onto the calendar to create 1-hour blocks.
+    // Drag tasks from the tasks panel onto the calendar to create 1-hour blocks;
+    // drag calendar events onto the calendar to reschedule, or onto the tasks
+    // panel to create a "TODO:" task.
     const calTl = $('calTimeline');
     calTl.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; calTl.classList.add('drag-over'); };
     calTl.ondragleave = () => calTl.classList.remove('drag-over');
     calTl.ondrop = dropTaskOnCalendar;
+
+    const taskBody = document.querySelector('#taskColumns [data-body="tasks"]');
+    taskBody.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; taskBody.classList.add('drag-over'); };
+    taskBody.ondragleave = () => taskBody.classList.remove('drag-over');
+    taskBody.ondrop = calEventToTask;
 
     document.querySelectorAll('#priorityPills .tag').forEach(p => {
       p.onclick = () => { modalPriority = p.dataset.priority; setPriorityPill(); };
