@@ -221,7 +221,6 @@
     #taskColumns.show-completed { grid-template-columns: repeat(2, 1fr); }
     #taskColumns .column.completed-col { display: none; }
     #taskColumns.show-completed .column.completed-col { display: flex; }
-    #calColumns { grid-template-columns: repeat(3, 1fr); }
     .column {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -245,6 +244,54 @@
     .col-head .count { color: var(--accent); font-weight: 700; margin-left: auto; }
     .col-body { padding: 8px; overflow-y: auto; flex: 1 1 auto; }
     .empty { color: var(--muted); font-size: 12px; padding: 12px; text-align: center; font-style: italic; }
+
+    /* Calendar timeline */
+    .cal-timeline {
+      border: 1px solid var(--border);
+      border-top: none;
+      padding: 14px;
+      background: var(--panel);
+      max-height: calc(100vh - 300px);
+      overflow: auto;
+    }
+    .tl-week { display: flex; gap: 12px; align-items: flex-start; min-width: 0; }
+    .tl-rail { min-width: 0; }
+    .tl-week .tl-rail { flex: 1 1 0; min-width: 128px; }
+    .tl-head {
+      display: flex; align-items: baseline; gap: 8px;
+      padding: 0 0 10px 0; font-weight: 700; font-size: 12px;
+      letter-spacing: 1px; color: var(--accent); white-space: nowrap;
+    }
+    .tl-head .tl-date { color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: 0.5px; }
+    .tl-head .tl-n { margin-left: auto; color: var(--low); font-size: 10px; letter-spacing: 0; }
+    .blk.allday {
+      position: relative; margin-bottom: 6px; padding: 5px 8px;
+      border: 1px solid var(--border); border-left-width: 3px;
+      background: var(--card); font-size: 11px;
+      display: flex; align-items: center; gap: 8px; overflow: hidden;
+    }
+    .blk.allday .b-label { color: var(--low); font-size: 9px; letter-spacing: 1px; font-weight: 700; flex: none; }
+    .tl-body { display: flex; align-items: stretch; gap: 8px; }
+    .tl-ticks { position: relative; flex: none; width: 46px; color: var(--low); font-size: 10px; }
+    .tl-tick { position: absolute; right: 0; white-space: nowrap; }
+    .tl-grid { position: relative; flex: 1 1 auto; min-width: 0; }
+    .tl-hourline { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--border); }
+    .blk {
+      position: absolute; left: 4px; right: 4px; overflow: hidden;
+      padding: 3px 6px; box-sizing: border-box;
+      border-left: 3px solid var(--border);
+      background: var(--card);
+      font-size: 10px; line-height: 1.35; word-break: break-word;
+    }
+    .blk .b-title { font-weight: 700; color: var(--text); }
+    .blk .b-time { color: var(--low); }
+    .tl-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--low); font-size: 11px; font-style: italic; }
+    .tl-later { display: flex; flex-direction: column; gap: 10px; }
+    .later-row { border: 1px solid var(--border); background: var(--panel); }
+    .later-date { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--accent); font-weight: 700; font-size: 12px; letter-spacing: 1px; }
+    .later-cards { padding: 8px; }
+    .tl-count { color: var(--low); font-size: 10px; margin-left: 2px; }
+    .tag.active .tl-count { color: var(--on-accent); opacity: 0.75; }
 
     /* Cards */
     .card {
@@ -326,7 +373,6 @@
       .panels { grid-template-columns: 1fr; }
       .panel + .panel { margin-top: 14px; }
       #taskColumns.show-completed { grid-template-columns: 1fr; }
-      #calColumns { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -402,29 +448,7 @@
             <button class="panel-action" id="refreshCalBtn">&#8635; Refresh</button>
           </div>
           <div class="tagbar" id="calTagbar"></div>
-          <div class="columns" id="calColumns">
-            <div class="column" data-bucket="today">
-              <div class="col-head">
-                <span class="dot" style="background:var(--pending)"></span>
-                TODAY <span class="count" data-count="today"></span>
-              </div>
-              <div class="col-body" data-body="today"></div>
-            </div>
-            <div class="column" data-bucket="week">
-              <div class="col-head">
-                <span class="dot" style="background:var(--done)"></span>
-                THIS WEEK <span class="count" data-count="week"></span>
-              </div>
-              <div class="col-body" data-body="week"></div>
-            </div>
-            <div class="column" data-bucket="later">
-              <div class="col-head">
-                <span class="dot" style="background:var(--low)"></span>
-                LATER <span class="count" data-count="later"></span>
-              </div>
-              <div class="col-body" data-body="later"></div>
-            </div>
-          </div>
+          <div class="cal-timeline" id="calTimeline"><div class="empty">Loading calendar…</div></div>
         </section>
         </div>
       </div>
@@ -480,10 +504,6 @@
     const SUPABASE_URL = 'https://heyrtjzntnicqsfemcmi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo';
     const TZ = 'America/New_York';
-    const CAL_SOURCES = [
-      { name: 'Google',  color: 'var(--calendar-google)' },
-      { name: 'Outlook', color: 'var(--calendar-outlook)' },
-    ];
     // ============================================================
     // END CONFIG
     // ============================================================
@@ -491,13 +511,16 @@
     const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
     const PRIORITY_CLASS = { low: 'p-l', medium: 'p-m', high: 'p-h', urgent: 'p-u' };
 
+    // Calendar timeline clock: first/last hour line and pixels per hour.
+    const TL_START = 7, TL_END = 23, PX_PER_HOUR = 44;
+
     let client = null;
     let authed = false;
     let tasks = [];
     let events = [];
     let activeProject = 'ALL';
     let showCompleted = false;
-    let calFilter = 'ALL';
+    let calMode = 'today';
     let editingId = null;
     let modalPriority = 'medium';
 
@@ -725,44 +748,120 @@
     }
 
     function renderCalTags() {
+      const today = todayEt();
+      const weekEnd = addDaysLocal(today, 7);
+      const counts = { today: 0, week: 0, later: 0 };
+      for (const e of events) {
+        if (!e.date || e.date < today) continue;
+        if (e.date === today) counts.today++;
+        else if (e.date <= weekEnd) counts.week++;
+        else counts.later++;
+      }
       const bar = $('calTagbar');
       bar.innerHTML =
-        `<span class="label">Source:</span>` +
-        `<span class="tag${calFilter === 'ALL' ? ' active' : ''}" data-cal="ALL">All</span>` +
-        CAL_SOURCES.map(s => `<span class="tag${calFilter === s.name ? ' active' : ''}" data-cal="${s.name}"><i class="loc-dot" style="background:${s.color}"></i>${s.name}</span>`).join('');
+        `<span class="label">Scale:</span>` +
+        [['today', 'Today'], ['week', 'This Week'], ['later', 'Later']]
+          .map(([v, label]) =>
+            `<span class="tag${calMode === v ? ' active' : ''}" data-mode="${v}">${label}<span class="tl-count">${counts[v]}</span></span>`
+          ).join('');
       bar.querySelectorAll('.tag').forEach(ch => {
-        ch.onclick = () => { calFilter = ch.dataset.cal; renderCalTags(); renderEvents(); };
+        ch.onclick = () => { calMode = ch.dataset.mode; renderEvents(); };
       });
     }
 
-    function renderEvents() {
-      const today = todayEt();
-      const weekEnd = addDaysLocal(today, 7);
-      const buckets = { today: [], week: [], later: [] };
-      const filtered = calFilter === 'ALL' ? events : events.filter(e => e.calendar === calFilter);
-      for (const e of filtered) {
-        if (!e.date || e.date < today) continue;
-        if (e.date === today) buckets.today.push(e);
-        else if (e.date <= weekEnd) buckets.week.push(e);
-        else buckets.later.push(e);
+    function toMin(t) {
+      if (!t) return null;
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+    function fmtDayHead(tag, dateStr) {
+      const d = new Date(dateStr + 'T12:00:00');
+      const md = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+      return `${tag} <span class="tl-date">${md}</span>`;
+    }
+    function tlBlock(ev) {
+      const start = toMin(ev.start_time);
+      const end = toMin(ev.end_time);
+      const minStart = TL_START * 60, minEnd = TL_END * 60;
+      const s = Math.max(start, minStart);
+      const e = Math.min(end != null ? end : start + 60, minEnd);
+      if (e <= minStart || s >= minEnd) return null;
+      const pxPerMin = PX_PER_HOUR / 60;
+      const top = (s - minStart) * pxPerMin;
+      const height = Math.max((e - s) * pxPerMin, 16);
+      return `<div class="blk" style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
+        `<div class="b-title">${escapeHtml(ev.title)}</div>` +
+        `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div>` +
+        `</div>`;
+    }
+    function tlColumn(titleHtml, evs) {
+      const gridH = (TL_END - TL_START) * PX_PER_HOUR;
+      const allDay = evs.filter(e => e.allDay || !e.start_time);
+      const timed = evs.filter(e => !e.allDay && e.start_time);
+      let h = `<div class="tl-rail"><div class="tl-head">${titleHtml}<span class="tl-n">${evs.length || ''}</span></div>`;
+      for (const e of allDay) {
+        h += `<div class="blk allday" style="border-left-color:${e.color}">` +
+          `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span></div>`;
       }
-      for (const k of ['today', 'week', 'later']) {
-        const body = document.querySelector(`#calColumns [data-body="${k}"]`);
-        const countEl = document.querySelector(`#calColumns [data-count="${k}"]`);
-        countEl.textContent = buckets[k].length;
-        body.innerHTML = '';
-        if (!buckets[k].length) { body.innerHTML = '<div class="empty">No events</div>'; continue; }
-        buckets[k].sort((a, b) => (a.date || '').localeCompare(b.date || '') || (a.start_time || '').localeCompare(b.start_time || ''));
-        for (const e of buckets[k]) body.appendChild(renderEventCard(e));
+      h += `<div class="tl-body"><div class="tl-ticks" style="height:${gridH}px">`;
+      for (let k = TL_START; k <= TL_END; k++) {
+        const f = (k - TL_START) / (TL_END - TL_START);
+        const tr = f === 0 ? 'translateY(0)' : (f >= 1 ? 'translateY(-100%)' : 'translateY(-50%)');
+        h += `<span class="tl-tick" style="top:${(f * 100).toFixed(2)}%;transform:${tr}">${fmtTime12(k + ':00')}</span>`;
+      }
+      h += `</div><div class="tl-grid" style="height:${gridH}px">`;
+      for (let k = TL_START; k <= TL_END; k++) {
+        const f = (k - TL_START) / (TL_END - TL_START);
+        h += `<div class="tl-hourline" style="top:${(f * 100).toFixed(2)}%"></div>`;
+      }
+      const blkHtml = timed.map(e => tlBlock(e)).filter(Boolean).join('');
+      h += blkHtml || (allDay.length ? '' : '<div class="tl-empty">No events</div>');
+      h += `</div></div></div>`;
+      return h;
+    }
+
+    function renderEvents() {
+      renderCalTags();
+      const tl = $('calTimeline');
+      const today = todayEt();
+      if (calMode === 'week') {
+        const html = '<div class="tl-week">' + [0, 1, 2, 3, 4, 5, 6].map(i => {
+          const d = addDaysLocal(today, i);
+          const dayEvs = events.filter(e => e.date === d);
+          const wd = new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+          return tlColumn(fmtDayHead(i === 0 ? 'TODAY' : wd, d), dayEvs);
+        }).join('') + '</div>';
+        tl.innerHTML = events.some(e => e.date >= today && e.date <= addDaysLocal(today, 7))
+          ? html
+          : '<div class="empty">No events this week</div>';
+      } else if (calMode === 'later') {
+        const future = events.filter(e => e.date > today).sort((a, b) => a.date.localeCompare(b.date));
+        if (!future.length) { tl.innerHTML = '<div class="empty">No later events</div>'; return; }
+        const rows = [];
+        let cur = null;
+        for (const e of future) {
+          if (!cur || cur.date !== e.date) { cur = { date: e.date, evs: [] }; rows.push(cur); }
+          cur.evs.push(e);
+        }
+        let html = '<div class="tl-later">';
+        for (const r of rows) {
+          const wd = new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+          html += `<div class="later-row"><div class="later-date">${fmtDayHead(wd, r.date)}</div><div class="later-cards">`;
+          for (const e of r.evs) html += renderEventCardHtml(e);
+          html += `</div></div>`;
+        }
+        tl.innerHTML = html + '</div>';
+      } else {
+        const dayEvs = events.filter(e => e.date === today);
+        tl.innerHTML = dayEvs.length
+          ? tlColumn(fmtDayHead('TODAY', today), dayEvs)
+          : '<div class="empty">No events today</div>';
       }
     }
 
-    function renderEventCard(ev) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.style.borderLeftColor = ev.color;
+    function renderEventCardHtml(ev) {
       const timeLine = ev.allDay ? 'All day' : fmtRange(ev.start_time, ev.end_time);
-      card.innerHTML =
+      return `<div class="card" style="border-left-color:${ev.color}">` +
         `<div class="title">${escapeHtml(ev.title)}</div>` +
         `<div class="meta">` +
           `<div class="row">` +
@@ -772,7 +871,15 @@
           `<div class="row">${escapeHtml(timeLine)}</div>` +
           (ev.location ? `<div class="row">${escapeHtml(ev.location)}</div>` : '') +
         `</div>` +
-        `<div class="card-actions"><span class="due">${escapeHtml(formatDate(ev.date))}</span></div>`;
+        `<div class="card-actions"><span class="due">${escapeHtml(formatDate(ev.date))}</span></div>` +
+      `</div>`;
+    }
+
+    function renderEventCard(ev) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.borderLeftColor = ev.color;
+      card.innerHTML = renderEventCardHtml(ev);
       return card;
     }
 
