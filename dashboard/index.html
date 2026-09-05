@@ -635,7 +635,6 @@
 
     // ---------- Tasks ----------
     async function loadTasks() {
-      if (!authed) return;
       try {
         const { data, error } = await client.from('tasks').select('*').order('created_at', { ascending: true });
         if (error) throw error;
@@ -1149,8 +1148,8 @@
         $('authPass').value = '';
         $('loginForm').classList.remove('open');
         $('os').classList.remove('hidden');
-        loadCalendar();
-        showNotice('Unlocked — calendar is live. Tasks require a stored sign-in.');
+        Promise.all([loadTasks(), loadCalendar()]);
+        showNotice('Unlocked');
       } else {
         $('authError').textContent = 'Invalid password';
       }
@@ -1192,7 +1191,7 @@
           .subscribe();
       } catch (e) { /* noop */ }
       // Polling fallback
-      setInterval(() => { if (authed) loadTasks(); }, 60000);
+      setInterval(() => { loadTasks(); }, 60000);
       setInterval(() => { loadCalendar(); }, 300000);
     }
 
