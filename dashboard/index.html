@@ -193,20 +193,6 @@
     .tag:hover { color: var(--text); border-color: var(--accent); }
     .tag.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
     .tag .loc-dot { flex: none; width: 8px; height: 8px; }
-    .completed-toggle {
-      padding: 4px 10px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.1s ease;
-    }
-    .completed-toggle:hover { color: var(--text); border-color: var(--done); }
-    .completed-toggle.active { background: var(--done); border-color: var(--done); color: var(--on-complete); }
 
     /* Columns */
     .columns {
@@ -217,10 +203,8 @@
       padding: 14px;
       background: var(--panel);
     }
-    #taskColumns { grid-template-columns: 1fr; }
-    #taskColumns.show-completed { grid-template-columns: repeat(2, 1fr); }
-    #taskColumns .column.completed-col { display: none; }
-    #taskColumns.show-completed .column.completed-col { display: flex; }
+    #taskColumns { display: block; max-height: calc(100vh - 300px); overflow-y: auto; }
+    #taskColumns .col-body { overflow: visible; flex: none; }
     .column {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -372,7 +356,6 @@
     @media (max-width: 900px) {
       .panels { grid-template-columns: 1fr; }
       .panel + .panel { margin-top: 14px; }
-      #taskColumns.show-completed { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -415,20 +398,7 @@
           </div>
           <div class="tagbar" id="taskTagbar"></div>
           <div class="columns" id="taskColumns">
-            <div class="column" data-status="pending">
-              <div class="col-head">
-                <span class="dot" style="background:var(--pending)"></span>
-                PENDING <span class="count" data-count="pending"></span>
-              </div>
-              <div class="col-body" data-body="pending"></div>
-            </div>
-            <div class="column completed-col" data-status="done">
-              <div class="col-head">
-                <span class="dot" style="background:var(--done)"></span>
-                COMPLETED <span class="count" data-count="done"></span>
-              </div>
-              <div class="col-body" data-body="done"></div>
-            </div>
+            <div class="col-body" data-body="tasks"></div>
           </div>
         </section>
 
@@ -514,7 +484,7 @@
     let tasks = [];
     let events = [];
     let activeProject = 'ALL';
-    let showCompleted = false;
+    let taskView = 'pending';
     let calMode = 'today';
     let editingId = null;
     let modalPriority = 'medium';
@@ -624,36 +594,30 @@
 
     function renderTaskTags() {
       const projects = [...new Set(tasks.map(t => t.project).filter(Boolean))].sort();
+      const doneCount = filteredTasks(tasks.filter(t => t.status === 'done')).length;
       const bar = $('taskTagbar');
       bar.innerHTML =
-        `<span class="label">Filter:</span>` +
-        `<button class="completed-toggle${showCompleted ? ' active' : ''}" id="completedToggle">${showCompleted ? 'Hide Completed' : 'Show Completed'}</button>` +
+        `<span class="label">List:</span>` +
+        `<span class="tag${taskView === 'done' ? ' active' : ''}" data-toggle="done">Completed<span class="tl-count">${doneCount}</span></span>` +
         `<span class="tag${activeProject === 'ALL' ? ' active' : ''}" data-project="ALL">All</span>` +
         projects.map(p => `<span class="tag${activeProject === p ? ' active' : ''}" data-project="${escapeHtml(p)}">${escapeHtml(p)}</span>`).join('');
-      $('completedToggle').onclick = () => {
-        showCompleted = !showCompleted;
-        $('taskColumns').classList.toggle('show-completed', showCompleted);
-        renderTaskTags();
-      };
-      bar.querySelectorAll('.tag').forEach(ch => {
+      bar.querySelectorAll('.tag[data-toggle="done"]').forEach(ch => {
+        ch.onclick = () => { taskView = taskView === 'done' ? 'pending' : 'done'; renderTaskTags(); renderTasks(); };
+      });
+      bar.querySelectorAll('.tag[data-project]').forEach(ch => {
         ch.onclick = () => { activeProject = ch.dataset.project; renderTaskTags(); renderTasks(); };
       });
     }
 
     function renderTasks() {
       renderTaskTags();
-      const pending = filteredTasks(tasks.filter(t => t.status !== 'done'));
-      const donec = filteredTasks(tasks.filter(t => t.status === 'done'));
-      fillTaskColumn('pending', pending);
-      fillTaskColumn('done', donec);
-    }
-
-    function fillTaskColumn(status, list) {
-      const body = document.querySelector(`#taskColumns [data-body="${status}"]`);
-      const countEl = document.querySelector(`#taskColumns [data-count="${status}"]`);
-      countEl.textContent = list.length;
+      const list = filteredTasks(tasks.filter(t => taskView === 'done' ? t.status === 'done' : t.status !== 'done'));
+      const body = document.querySelector('#taskColumns [data-body="tasks"]');
       body.innerHTML = '';
-      if (!list.length) { body.innerHTML = '<div class="empty">No tasks</div>'; return; }
+      if (!list.length) {
+        body.innerHTML = taskView === 'done' ? '<div class="empty">Nothing completed</div>' : '<div class="empty">No active tasks</div>';
+        return;
+      }
       list.sort((a, b) => (a.due_date || '9999-12-31').localeCompare(b.due_date || '9999-12-31'));
       for (const t of list) body.appendChild(renderTaskCard(t));
     }
