@@ -377,23 +377,17 @@
   </style>
 </head>
 <body>
-  <!-- Login (overlay, only when signed out) -->
+  <!-- Password gate (shown only when signed out) -->
   <div class="overlay" id="loginForm">
     <div class="lbox">
       <h2>Personal OS</h2>
       <form id="authForm">
         <div class="login-field">
-          <input type="email" id="authEmail" placeholder="Email" autocomplete="email" required />
-        </div>
-        <div class="login-field">
           <input type="password" id="authPass" placeholder="Password" autocomplete="current-password" required />
         </div>
-        <button type="submit" class="login-btn">Sign in</button>
+        <button type="submit" class="login-btn">Unlock</button>
         <div class="login-error" id="authError"></div>
       </form>
-      <div class="modal-actions" style="margin-top:8px;padding:0">
-        <button id="loginCancelBtn" style="width:100%">Cancel</button>
-      </div>
     </div>
   </div>
 
@@ -403,7 +397,6 @@
       Personal OS
       <span class="who" id="whoAmI"></span>
       <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">light / dark</button>
-      <button id="signInBtn" class="hidden">Sign in</button>
       <button id="signOutBtn" class="hidden">Sign out</button>
     </header>
 
@@ -504,6 +497,8 @@
     const SUPABASE_URL = 'https://heyrtjzntnicqsfemcmi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXJ0anpudG5pY3FzZmVtY21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3OTU3NDksImV4cCI6MjA5OTM3MTc0OX0.MwivwC-MUgI7J4-bH5ahjuL8YLQYPsR1vzcRVlpoTNo';
     const TZ = 'America/New_York';
+    // Client-side unlock password (OS is hidden when there is no stored session).
+    const OS_PASSWORD = 'Senec@Hills65';
     // ============================================================
     // END CONFIG
     // ============================================================
@@ -587,27 +582,24 @@
       el.classList.remove('hidden');
     }
 
-    // Boot straight into the OS. If a session is stored (previous sign-in), it is
-    // reused silently so tasks load without prompting. Signed-out users still see
-    // the calendar (the edge function allows anon) and can sign in via the topbar.
+    // Boot into the OS: reuse any stored session silently. If there is no stored
+    // session, show the password gate instead (unlock is client-side only — the
+    // calendar still works for anonymous users; tasks require a session).
     async function applyAuthState() {
-      $('os').classList.remove('hidden');
       const { data: { session } } = await client.auth.getSession();
       const signedIn = !!session;
       const email = session?.user?.email || '';
       authed = signedIn;
+      $('loginForm').classList.toggle('open', !signedIn);
+      $('os').classList.toggle('hidden', !signedIn);
       $('whoAmI').textContent = email;
       $('whoAmI').classList.toggle('hidden', !email);
-      $('signInBtn').classList.toggle('hidden', signedIn);
       $('signOutBtn').classList.toggle('hidden', !signedIn);
       renderTaskTags();
       renderCalTags();
       if (signedIn) {
         hideError();
         await Promise.all([loadTasks(), loadCalendar()]);
-      } else {
-        await loadCalendar();
-        showNotice('Not signed in — calendar is live. Sign in for tasks.');
       }
     }
 
@@ -968,25 +960,18 @@
       localStorage.setItem('personalOSTheme', isDark ? 'light' : 'dark');
     };
 
-    $('authForm').addEventListener('submit', async (e) => {
+    $('authForm').addEventListener('submit', (e) => {
       e.preventDefault();
       $('authError').textContent = '';
-      const { error } = await client.auth.signInWithPassword({
-        email: $('authEmail').value,
-        password: $('authPass').value,
-      });
-      if (error) { $('authError').textContent = error.message; return; }
-      $('loginForm').classList.remove('open');
-      await applyAuthState();
-    });
-
-    $('signInBtn').onclick = () => {
-      $('authError').textContent = '';
-      $('loginForm').classList.add('open');
-    };
-    $('loginCancelBtn').onclick = () => $('loginForm').classList.remove('open');
-    $('loginForm').addEventListener('mousedown', (e) => {
-      if (e.target === $('loginForm')) $('loginForm').classList.remove('open');
+      if ($('authPass').value === OS_PASSWORD) {
+        $('authPass').value = '';
+        $('loginForm').classList.remove('open');
+        $('os').classList.remove('hidden');
+        loadCalendar();
+        showNotice('Unlocked — calendar is live. Tasks require a stored sign-in.');
+      } else {
+        $('authError').textContent = 'Invalid password';
+      }
     });
 
     $('signOutBtn').onclick = async () => {
