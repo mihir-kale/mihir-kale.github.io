@@ -281,6 +281,9 @@
     .tag.active .tl-count { color: var(--on-accent); opacity: 0.75; }
 
     /* Cards */
+    .card.task { cursor: grab; }
+    .card.task:active { cursor: grabbing; }
+    .cal-timeline.drag-over { outline: 2px dashed var(--accent-dim); outline-offset: -2px; }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -685,6 +688,11 @@
       const card = document.createElement('div');
       card.className = 'card task';
       card.dataset.status = t.status;
+      card.draggable = true;
+      card.ondragstart = (e) => {
+        e.dataTransfer.setData('text/plain', String(t.id));
+        e.dataTransfer.effectAllowed = 'copy';
+      };
       card.onclick = () => openEdit(t);
 
       const today = new Date();
@@ -755,6 +763,7 @@
     function rowToEvent(row) {
       return {
         id: row.id,
+        external_id: row.external_id || null,
         title: row.title || 'Untitled',
         date: row.date,
         start_time: row.start_time || null,
@@ -766,11 +775,15 @@
         source: row.source || 'manual',
       };
     }
+    // Same external_id keying as feedRow() so table feed rows and proxy rows dedupe.
     function proxyToEvent(ev) {
+      const date = normDate(ev.start);
+      const startTime = (ev.allDay || !ev.start) ? null : isoToTimeStr(ev.start);
       return {
+        external_id: [ev.calendar || '', date, startTime || 'allday', ev.title || ''].join('|'),
         title: ev.title || 'Untitled',
-        date: normDate(ev.start),
-        start_time: (ev.allDay || !ev.start) ? null : isoToTimeStr(ev.start),
+        date,
+        start_time: startTime,
         end_time: (ev.allDay || !ev.end) ? null : isoToTimeStr(ev.end),
         allDay: !!ev.allDay,
         location: ev.location || '',
@@ -812,8 +825,9 @@
       }
 
       // Signed-in: read everything (feed + manual blocks) from the table.
-      // Anonymous (gate-unlocked): render the live proxy feed directly — anon
-      // can't run the sync RPC, so the table would otherwise be empty.
+      // Anonymous (gate-unlocked): merge table rows (your manual blocks) with the
+      // live feed from the proxy, since anon can't run the sync RPC. Table feed
+      // rows are replaced by the fresher proxy feed row for the same external_id.
       if (authed) {
         try {
           const { data, error } = await client.from('calendar_events')
@@ -824,7 +838,21 @@
           events = (body?.events || []).map(proxyToEvent);
         }
       } else {
-        events = (body?.events || []).map(proxyToEvent);
+        let tableRows = [];
+        try {
+          const { data } = await client.from('calendar_events')
+            .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
+          tableRows = data || [];
+        } catch (e) { /* table missing/offline: fall through to feed only */ }
+        const feedEvt = (body?.events || []).map(proxyToEvent);
+        const feedById = new Map(feedEvt.filter(e => e.external_id).map(e => [e.external_id, e]));
+        const merged = [];
+        for (const r of tableRows) {
+          const ev = rowToEvent(r);
+          if (ev.source === 'feed' && ev.external_id && feedById.has(ev.external_id)) continue;
+          merged.push(ev);
+        }
+        events = merged.concat(feedEvt);
       }
 
       renderEvents();
@@ -1069,6 +1097,57 @@
       }
     }
 
+    // ---------- Drag task → calendar block ----------
+    function fmtHH(h) { return String(h).padStart(2, '0'); }
+    function nextHourH() {
+      const h = +new Date().toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false });
+      return h + 1;
+    }
+    async function dropTaskOnCalendar(e) {
+      e.preventDefault();
+      const tl = $('calTimeline');
+      tl.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      const t = tasks.find(x => x.id === id);
+      if (!t) return;
+
+      let startH;
+      if (calMode === 'today') {
+        const grid = tl.querySelector('.tl-grid');
+        const r = grid ? grid.getBoundingClientRect() : null;
+        if (r && e.clientY >= r.top && e.clientY <= r.bottom) {
+          const relMin = ((e.clientY - r.top) / Math.max(r.height, 1)) * (TL_END - TL_START) * 60;
+          startH = TL_START + Math.floor(relMin / 60);
+        } else {
+          startH = nextHourH();
+        }
+      } else {
+        startH = nextHourH();
+      }
+      startH = Math.max(TL_START, Math.min(TL_END - 1, startH));
+      const start = fmtHH(startH) + ':00';
+      const end = fmtHH(startH + 1) + ':00';
+
+      try {
+        const { error } = await client.from('calendar_events').insert({
+          title: t.title,
+          date: todayEt(),
+          start_time: start,
+          end_time: end,
+          all_day: false,
+          calendar: '',
+          color: BLOCK_COLORS[0],
+          location: '',
+          source: 'manual',
+        });
+        if (error) throw error;
+        await loadCalendar();
+        showNotice(`Blocked "${t.title}" ${fmtTime12(start)}–${fmtTime12(end)}`);
+      } catch (err) {
+        setError('Could not add block: ' + err.message);
+      }
+    }
+
     // ---------- Modal ----------
     function openEdit(t) {
       editingId = t ? t.id : null;
@@ -1188,6 +1267,12 @@
     $('cancelBtn').onclick = () => $('overlay').classList.remove('open');
     $('saveBtn').onclick = save;
     $('deleteBtn').onclick = remove;
+
+    // Drag tasks from the tasks panel onto the calendar to create 1-hour blocks.
+    const calTl = $('calTimeline');
+    calTl.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; calTl.classList.add('drag-over'); };
+    calTl.ondragleave = () => calTl.classList.remove('drag-over');
+    calTl.ondrop = dropTaskOnCalendar;
 
     document.querySelectorAll('#priorityPills .tag').forEach(p => {
       p.onclick = () => { modalPriority = p.dataset.priority; setPriorityPill(); };
