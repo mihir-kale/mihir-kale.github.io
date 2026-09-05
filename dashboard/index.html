@@ -912,37 +912,46 @@
       return h;
     }
 
+    function groupByDate(evs) {
+      const rows = [];
+      let cur = null;
+      for (const e of evs) {
+        if (!cur || cur.date !== e.date) { cur = { date: e.date, evs: [] }; rows.push(cur); }
+        cur.evs.push(e);
+      }
+      return rows;
+    }
+
+    // Simple scrolling list grouped by day — used by Week and Later. Cards
+    // show times inline (fmtRange) but aren't scaled onto a timeline.
+    function renderDateList(evs, emptyMsg) {
+      const rows = groupByDate(evs);
+      if (!rows.length) return `<div class="empty">${emptyMsg}</div>`;
+      const today = todayEt();
+      let html = '<div class="tl-later">';
+      for (const r of rows) {
+        const tag = r.date === today
+          ? 'TODAY'
+          : new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+        html += `<div class="later-row"><div class="later-date">${fmtDayHead(tag, r.date)}</div><div class="later-cards">`;
+        for (const e of r.evs) html += renderEventCardHtml(e);
+        html += `</div></div>`;
+      }
+      return html + '</div>';
+    }
+
     function renderEvents() {
       renderCalTags();
       const tl = $('calTimeline');
       const today = todayEt();
       if (calMode === 'week') {
-        const html = '<div class="tl-week">' + [0, 1, 2, 3, 4, 5, 6].map(i => {
-          const d = addDaysLocal(today, i);
-          const dayEvs = events.filter(e => e.date === d);
-          const wd = new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-          return tlColumn(fmtDayHead(i === 0 ? 'TODAY' : wd, d), dayEvs);
-        }).join('') + '</div>';
-        tl.innerHTML = events.some(e => e.date >= today && e.date <= addDaysLocal(today, 7))
-          ? html
-          : '<div class="empty">No events this week</div>';
+        const weekEnd = addDaysLocal(today, 6);
+        const key = e => e.date + '|' + (e.start_time || '');
+        const weekEvs = events.filter(e => e.date >= today && e.date <= weekEnd).sort((a, b) => key(a).localeCompare(key(b)));
+        tl.innerHTML = renderDateList(weekEvs, 'No events this week');
       } else if (calMode === 'later') {
         const future = events.filter(e => e.date > today).sort((a, b) => a.date.localeCompare(b.date));
-        if (!future.length) { tl.innerHTML = '<div class="empty">No later events</div>'; return; }
-        const rows = [];
-        let cur = null;
-        for (const e of future) {
-          if (!cur || cur.date !== e.date) { cur = { date: e.date, evs: [] }; rows.push(cur); }
-          cur.evs.push(e);
-        }
-        let html = '<div class="tl-later">';
-        for (const r of rows) {
-          const wd = new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
-          html += `<div class="later-row"><div class="later-date">${fmtDayHead(wd, r.date)}</div><div class="later-cards">`;
-          for (const e of r.evs) html += renderEventCardHtml(e);
-          html += `</div></div>`;
-        }
-        tl.innerHTML = html + '</div>';
+        tl.innerHTML = renderDateList(future, 'No later events');
       } else {
         const dayEvs = events.filter(e => e.date === today);
         tl.innerHTML = dayEvs.length
