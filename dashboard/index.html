@@ -1523,18 +1523,21 @@
       if (pubMode === 'week') {
         const ws = weekStartOf(pubAnchor);
         const weekEnd = addDaysLocal(ws, 6);
+        const expanded = expandRecurring(pubEvents, ws, weekEnd);
+        const weekEvs = expanded.filter(e => e.date >= ws && e.date <= weekEnd);
         let h = '<div class="tl-week">';
         for (let i = 0; i < 7; i++) {
           const d = addDaysLocal(ws, i);
           const tag = d === today ? 'TODAY' : new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-          const evs = pubEvents.filter(e => e.date === d);
+          const evs = weekEvs.filter(e => e.date === d);
           h += `<div class="tl-rail"><div class="tl-head">${fmtDayHead(tag, d)}<span class="tl-n">${evs.length || ''}</span></div>` +
             `<div class="tl-body">${i === 0 ? pubTicksHtml() : ''}${pubGridHtml(evs)}</div></div>`;
         }
         tl.innerHTML = h + '</div>';
       } else {
         const headTag = pubAnchor === today ? 'TODAY' : new Date(pubAnchor + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
-        const evs = pubEvents.filter(e => e.date === pubAnchor);
+        const expanded = expandRecurring(pubEvents, pubAnchor, pubAnchor);
+        const evs = expanded.filter(e => e.date === pubAnchor);
         tl.innerHTML = `<div class="tl-rail">` +
           `<div class="tl-head">${fmtDayHead(headTag, pubAnchor)}<span class="tl-n">${evs.length || ''}</span></div>` +
           `<div class="tl-body">${pubTicksHtml()}${pubGridHtml(evs)}</div></div>`;
@@ -1565,7 +1568,26 @@
       } else {
         pubErrEl.classList.add('hidden');
       }
-      pubEvents = (body?.events || []).map(proxyToEvent);
+      // Merge the live feed (public proxy) with manually placed time blocks.
+      // Manual rows come back stripped to date/time only via get_manual_busy(),
+      // so titles/locations stay private behind RLS.
+      let manual = [];
+      try {
+        const { data, error } = await client.rpc('get_manual_busy');
+        if (!error && Array.isArray(data)) {
+          manual = data.map(r => ({
+            title: 'Busy',
+            date: r.date,
+            start_time: r.start_time || null,
+            end_time: r.end_time || null,
+            allDay: !!r.all_day,
+            recur: r.recur || null,
+            source: 'manual',
+            color: '#000',
+          }));
+        }
+      } catch (e) { /* manual busy fetch is non-fatal */ }
+      pubEvents = manual.concat((body?.events || []).map(proxyToEvent));
       renderPubEvents();
     }
 
