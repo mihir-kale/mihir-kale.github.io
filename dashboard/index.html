@@ -409,6 +409,18 @@
         <div class="conn-error hidden" id="connError"></div>
 
         <div class="panels">
+        <!-- PROJECTS PANEL -->
+        <section class="panel">
+          <div class="panel-head">
+            <span class="dot" style="background:var(--accent)"></span>
+            Projects
+            <button class="panel-action" id="newProjectBtn" style="margin-left:0">+ New Project</button>
+          </div>
+          <div class="columns" id="projectColumns">
+            <div class="col-body" data-body="projects"></div>
+          </div>
+        </section>
+
         <!-- TASKS PANEL -->
         <section class="panel">
           <div class="panel-head">
@@ -420,18 +432,6 @@
           <div class="tagbar" id="taskTagbar"></div>
           <div class="columns" id="taskColumns">
             <div class="col-body" data-body="tasks"></div>
-          </div>
-        </section>
-
-        <!-- PROJECTS PANEL -->
-        <section class="panel">
-          <div class="panel-head">
-            <span class="dot" style="background:var(--accent)"></span>
-            Projects
-            <button class="panel-action" id="newProjectBtn" style="margin-left:0">+ New Project</button>
-          </div>
-          <div class="columns" id="projectColumns">
-            <div class="col-body" data-body="projects"></div>
           </div>
         </section>
 
