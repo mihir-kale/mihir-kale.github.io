@@ -134,7 +134,7 @@
     /* Panels */
     .panels {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 14px;
       align-items: start;
       margin-top: 14px;
@@ -205,6 +205,8 @@
     }
     #taskColumns { display: block; max-height: calc(100vh - 300px); overflow-y: auto; }
     #taskColumns .col-body { overflow: visible; flex: none; }
+    #projectColumns { display: block; max-height: calc(100vh - 300px); overflow-y: auto; }
+    #projectColumns .col-body { overflow: visible; flex: none; }
     .column {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -421,6 +423,18 @@
           </div>
         </section>
 
+        <!-- PROJECTS PANEL -->
+        <section class="panel">
+          <div class="panel-head">
+            <span class="dot" style="background:var(--accent)"></span>
+            Projects
+            <button class="panel-action" id="newProjectBtn" style="margin-left:0">+ New Project</button>
+          </div>
+          <div class="columns" id="projectColumns">
+            <div class="col-body" data-body="projects"></div>
+          </div>
+        </section>
+
         <!-- CALENDAR PANEL -->
         <section class="panel">
           <div class="panel-head">
@@ -460,10 +474,16 @@
           <span class="tag" data-priority="urgent">Urgent</span>
         </div>
       </div>
-      <div class="field">
+      <div class="field" id="fProjectField">
         <label>Project <span class="hint">(optional)</span></label>
         <input id="fProject" list="projectList" placeholder="e.g. Fall 2026" />
         <datalist id="projectList"></datalist>
+      </div>
+      <div class="field hidden" id="fProjectSelectField">
+        <label>Project</label>
+        <select id="fProjectSelect">
+          <option value="">&#8212; No project &#8212;</option>
+        </select>
       </div>
       <div class="field">
         <label>Description <span class="hint">(optional)</span></label>
@@ -547,11 +567,13 @@
     let client = null;
     let authed = false;
     let tasks = [];
+    let projects = [];
     let events = [];
     let activeProject = 'ALL';
     let taskView = 'pending';
     let calMode = 'today';
     let editingId = null;
+    let modalKind = 'task';
     let modalPriority = 'medium';
     let editingCalId = null;
     let calColor = BLOCK_COLORS[0];
@@ -639,7 +661,69 @@
       renderCalTags();
       if (signedIn) {
         hideError();
-        await Promise.all([loadTasks(), loadCalendar()]);
+        await Promise.all([loadTasks(), loadCalendar(), loadProjects()]);
+      }
+    }
+
+    // ---------- Projects ----------
+    async function loadProjects() {
+      try {
+        const { data, error } = await client.from('projects').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        projects = data || [];
+        renderProjects();
+        hideError();
+      } catch (e) {
+        setError('Failed to load projects: ' + e.message);
+      }
+    }
+
+    function renderProjects() {
+      const body = document.querySelector('#projectColumns [data-body="projects"]');
+      body.innerHTML = '';
+      if (!projects.length) {
+        body.innerHTML = '<div class="empty">No projects yet</div>';
+        return;
+      }
+      for (const p of projects) body.appendChild(renderProjectCard(p));
+    }
+
+    function renderProjectCard(p) {
+      const card = document.createElement('div');
+      card.className = 'card project';
+      card.onclick = () => openEdit(p, 'project');
+      const prio = p.priority || 'medium';
+      const prioColor = { low: 'var(--low)', medium: 'var(--accent-dim)', high: 'var(--done)', urgent: 'var(--warn)' }[prio] || 'var(--border)';
+      card.style.borderLeftColor = prioColor;
+      card.innerHTML =
+        `<div class="title">${escapeHtml(p.name)}</div>` +
+        `<div class="meta">` +
+          `<div class="row">` +
+            `<span class="badge ${PRIORITY_CLASS[prio] || 'p-m'}">${escapeHtml(prio)}</span>` +
+            (p.status !== 'pending' ? `<span class="badge">${escapeHtml(p.status)}</span>` : '') +
+          `</div>` +
+          (p.description ? `<div class="row desc">${escapeHtml(p.description)}</div>` : '') +
+        `</div>` +
+        `<div class="card-actions">` +
+          `<span class="due">${p.due_date ? 'Due: ' + formatDate(p.due_date) : 'No due date'}</span>` +
+          (p.status === 'done'
+            ? `<button class="go-back" type="button">REOPEN</button>`
+            : `<button type="button">COMPLETE</button>`) +
+        `</div>`;
+      const btn = card.querySelector('button');
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        setProjectStatus(p, p.status === 'done' ? 'pending' : 'done');
+      };
+      return card;
+    }
+
+    async function setProjectStatus(p, status) {
+      try {
+        await client.from('projects').update({ status, updated_at: new Date().toISOString() }).eq('id', p.id);
+        await loadProjects();
+      } catch (e) {
+        setError('Failed to update project: ' + e.message);
       }
     }
 
@@ -1259,17 +1343,42 @@
     }
 
     // ---------- Modal ----------
-    function openEdit(t) {
+    function openEdit(t, kind = 'task') {
+      modalKind = kind;
       editingId = t ? t.id : null;
-      $('modalTitle').textContent = t ? 'Edit Task' : 'New Task';
+      const isProject = kind === 'project';
+      $('modalTitle').textContent = t
+        ? (isProject ? 'Edit Project' : 'Edit Task')
+        : (isProject ? 'New Project' : 'New Task');
       $('fId').value = t ? t.id : '';
       $('fTitle').value = t ? t.title : '';
       $('fDue').value = t ? (t.due_date || '') : '';
-      $('fProject').value = t ? (t.project || '') : '';
+      if (isProject) {
+        $('fProjectField').classList.add('hidden');
+        $('fProjectSelectField').classList.add('hidden');
+      } else if (t) {
+        // Editing an existing task: keep the free-text write-in, prefilled.
+        $('fProjectField').classList.remove('hidden');
+        $('fProjectSelectField').classList.add('hidden');
+        $('fProject').value = t.project || '';
+      } else {
+        // New task: pick from the live projects list.
+        $('fProjectField').classList.add('hidden');
+        $('fProjectSelectField').classList.remove('hidden');
+        const sel = $('fProjectSelect');
+        sel.innerHTML = '<option value="">&#8212; No project &#8212;</option>';
+        for (const p of [...projects].sort((a, b) => a.name.localeCompare(b.name))) {
+          const opt = document.createElement('option');
+          opt.value = p.name;
+          opt.textContent = p.name;
+          sel.appendChild(opt);
+        }
+        sel.value = (activeProject !== 'ALL' && projects.some(p => p.name === activeProject)) ? activeProject : '';
+      }
       $('fNotes').value = t ? (t.description || '') : '';
       $('fStatus').innerHTML = t
         ? `Status: <b>${t.status === 'done' ? 'Completed' : 'Pending'}</b>`
-        : 'Status: <b>Pending</b> (new task)';
+        : 'Status: <b>Pending</b> (new ' + (isProject ? 'project' : 'task') + ')';
       modalPriority = t ? (t.priority || 'medium') : 'medium';
       setPriorityPill();
 
@@ -1293,11 +1402,36 @@
     async function save() {
       const title = $('fTitle').value.trim();
       if (!title) { alert('Title is required.'); return; }
+      if (modalKind === 'project') {
+        const payload = {
+          name: title,
+          due_date: $('fDue').value || null,
+          priority: modalPriority,
+          description: $('fNotes').value.trim() || null,
+          updated_at: new Date().toISOString(),
+        };
+        try {
+          if (editingId) {
+            await client.from('projects').update(payload).eq('id', editingId);
+          } else {
+            await client.from('projects').insert({
+              id: nanoid(),
+              status: 'pending',
+              ...payload,
+            });
+          }
+          $('overlay').classList.remove('open');
+          await loadProjects();
+        } catch (e) {
+          setError('Failed to save project: ' + e.message);
+        }
+        return;
+      }
       const payload = {
         title,
         due_date: $('fDue').value || null,
         priority: modalPriority,
-        project: $('fProject').value.trim() || null,
+        project: (editingId ? $('fProject').value : $('fProjectSelect').value).trim() || null,
         description: $('fNotes').value.trim() || null,
         updated_at: new Date().toISOString(),
       };
@@ -1322,13 +1456,18 @@
 
     async function remove() {
       if (!editingId) return;
-      if (!confirm('Delete this task?')) return;
+      if (!confirm('Delete this ' + (modalKind === 'project' ? 'project' : 'task') + '?')) return;
       try {
-        await client.from('tasks').delete().eq('id', editingId);
+        if (modalKind === 'project') {
+          await client.from('projects').delete().eq('id', editingId);
+        } else {
+          await client.from('tasks').delete().eq('id', editingId);
+        }
         $('overlay').classList.remove('open');
-        await loadTasks();
+        if (modalKind === 'project') await loadProjects();
+        else await loadTasks();
       } catch (e) {
-        setError('Failed to delete task: ' + e.message);
+        setError('Failed to delete: ' + e.message);
       }
     }
 
@@ -1366,6 +1505,7 @@
     };
 
     $('newTaskBtn').onclick = () => openEdit(null);
+    $('newProjectBtn').onclick = () => openEdit(null, 'project');
     $('refreshTasksBtn').onclick = loadTasks;
     $('newBlockBtn').onclick = () => openCalModal(null);
     $('refreshCalBtn').onclick = loadCalendar;
