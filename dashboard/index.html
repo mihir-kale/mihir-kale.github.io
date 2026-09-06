@@ -418,6 +418,27 @@
     #peopleColumns .col-body { overflow: visible; flex: none; }
     #peopleChips { max-height: 132px; overflow-y: auto; }
     #peopleChips .hint { font-size: 11px; color: var(--muted); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .selected-people { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .selected-people .sp-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 6px 3px 9px; border: 1px solid var(--border);
+      background: var(--bg-2); color: var(--text); font-size: 12px; font-weight: 600;
+    }
+    .selected-people .sp-chip button {
+      border: none; background: transparent; color: var(--muted); cursor: pointer;
+      font-size: 13px; line-height: 1; padding: 0 2px;
+    }
+    .selected-people .sp-chip button:hover { color: var(--warn); }
+    .typeahead { position: relative; }
+    .typeahead-menu {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
+      max-height: 200px; overflow-y: auto; border: 1px solid var(--border);
+      background: var(--panel); box-shadow: var(--shadow); margin-top: -1px;
+    }
+    .typeahead-menu .ta-item { padding: 7px 10px; cursor: pointer; font-size: 13px; color: var(--text); }
+    .typeahead-menu .ta-item:hover, .typeahead-menu .ta-item.hover { background: var(--bg-2); }
+    .typeahead-menu .ta-item.selected { color: var(--muted); font-style: italic; cursor: default; }
+    .typeahead-menu .ta-empty { padding: 8px 10px; color: var(--muted); font-size: 12px; font-style: italic; }
 
     /* Modal */
     .overlay {
@@ -606,7 +627,11 @@
       </div>
       <div class="field" id="fPeopleField">
         <label>People <span class="hint">(tag multiple)</span></label>
-        <div class="status-pills" id="peopleChips"></div>
+        <div class="selected-people" id="peopleSelected"></div>
+        <div class="typeahead">
+          <input id="peopleSearch" placeholder="Type a name to add…" autocomplete="off" />
+          <div class="typeahead-menu hidden" id="peopleMenu"></div>
+        </div>
       </div>
       <div class="field hidden" id="fLastContactField">
         <label>Last Contact <span class="hint">(optional)</span></label>
@@ -1736,6 +1761,9 @@
       setRecurPill();
 
       modalPeople = new Set((!isPerson && t && Array.isArray(t.people) ? t.people : []).filter(id => people.some(p => p.id === id)));
+      $('peopleSelected').innerHTML = '';
+      $('peopleSearch').value = '';
+      $('peopleMenu').classList.add('hidden');
       renderPeopleChips();
 
       const list = $('projectList');
@@ -1750,19 +1778,56 @@
     }
 
     function renderPeopleChips() {
-      const wrap = $('peopleChips');
+      const wrap = $('peopleSelected');
+      wrap.innerHTML = '';
+      for (const id of [...modalPeople]) {
+        const p = people.find(x => x.id === id);
+        if (!p) continue;
+        const chip = document.createElement('span');
+        chip.className = 'sp-chip';
+        chip.textContent = p.name;
+        const rm = document.createElement('button');
+        rm.type = 'button';
+        rm.textContent = '\u2715';
+        rm.title = 'Remove ' + p.name;
+        rm.onclick = (e) => { e.stopPropagation(); modalPeople.delete(id); renderPeopleChips(); $('peopleSearch').focus(); };
+        chip.appendChild(rm);
+        wrap.appendChild(chip);
+      }
+      updatePeopleMenu();
+    }
+
+    let peopleHoverIdx = -1;
+    function updatePeopleMenu() {
+      const input = $('peopleSearch');
+      const menu = $('peopleMenu');
+      const q = input.value.trim().toLowerCase();
       if (!people.length) {
-        wrap.innerHTML = '<span class="hint">No people yet</span>';
+        menu.classList.add('hidden');
+        peopleHoverIdx = -1;
         return;
       }
-      wrap.innerHTML = people.map(p =>
-        `<span class="tag${modalPeople.has(p.id) ? ' active' : ''}" data-person-id="${p.id}">${escapeHtml(p.name)}</span>`).join('');
-      wrap.querySelectorAll('.tag').forEach(ch => {
-        ch.onclick = () => {
-          const id = ch.dataset.personId;
-          if (modalPeople.has(id)) modalPeople.delete(id); else modalPeople.add(id);
+      if (!q) { menu.classList.add('hidden'); peopleHoverIdx = -1; return; }
+      const matches = people.filter(p => !modalPeople.has(p.id) && p.name.toLowerCase().includes(q));
+      if (!matches.length) {
+        menu.innerHTML = '<div class="ta-empty">No matches for \u201C' + escapeHtml(input.value.trim()) + '\u201D</div>';
+        menu.classList.remove('hidden');
+        peopleHoverIdx = -1;
+        return;
+      }
+      menu.innerHTML = matches.slice(0, 12).map((p, i) =>
+        `<div class="ta-item${i === peopleHoverIdx ? ' hover' : ''}" data-person-id="${p.id}">${escapeHtml(p.name)}</div>`).join('');
+      if (peopleHoverIdx >= menu.querySelectorAll('.ta-item').length) peopleHoverIdx = -1;
+      menu.classList.remove('hidden');
+      menu.querySelectorAll('.ta-item').forEach(item => {
+        item.onclick = () => {
+          const id = item.dataset.personId;
+          if (!modalPeople.has(id)) modalPeople.add(id);
+          input.value = '';
           renderPeopleChips();
+          input.focus();
         };
+        item.onmousemove = () => { peopleHoverIdx = matches.findIndex(m => m.id === item.dataset.personId); updatePeopleMenu(); };
       });
     }
 
@@ -1945,9 +2010,40 @@
       $('cStart').disabled = all;
       $('cEnd').disabled = all;
     };
-    $('cancelBtn').onclick = () => $('overlay').classList.remove('open');
+    $('cancelBtn').onclick = () => { $('overlay').classList.remove('open'); $('peopleMenu').classList.add('hidden'); };
     $('saveBtn').onclick = save;
     $('deleteBtn').onclick = remove;
+
+    const peopleSearchEl = $('peopleSearch');
+    peopleSearchEl.addEventListener('input', () => { peopleHoverIdx = -1; updatePeopleMenu(); });
+    peopleSearchEl.addEventListener('keydown', (e) => {
+      const menu = $('peopleMenu');
+      const items = [...menu.querySelectorAll('.ta-item')];
+      if (e.key === 'ArrowDown' && items.length) {
+        e.preventDefault();
+        peopleHoverIdx = peopleHoverIdx < items.length - 1 ? peopleHoverIdx + 1 : peopleHoverIdx;
+        updatePeopleMenu();
+      } else if (e.key === 'ArrowUp' && items.length) {
+        e.preventDefault();
+        peopleHoverIdx = peopleHoverIdx > 0 ? peopleHoverIdx - 1 : 0;
+        updatePeopleMenu();
+      } else if (e.key === 'Enter' && items.length && peopleHoverIdx >= 0) {
+        e.preventDefault();
+        const item = items[peopleHoverIdx];
+        const id = item.dataset.personId;
+        if (!modalPeople.has(id)) modalPeople.add(id);
+        peopleSearchEl.value = '';
+        peopleHoverIdx = -1;
+        renderPeopleChips();
+        peopleSearchEl.focus();
+      } else if (e.key === 'Escape') {
+        menu.classList.add('hidden');
+        peopleSearchEl.blur();
+      }
+    });
+    peopleSearchEl.addEventListener('blur', () => {
+      setTimeout(() => { $('peopleMenu').classList.add('hidden'); }, 120);
+    });
 
     // Drag tasks from the tasks panel onto the calendar to create 1-hour blocks;
     // drag calendar events onto the calendar to reschedule, or onto the tasks
