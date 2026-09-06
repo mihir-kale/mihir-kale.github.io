@@ -140,6 +140,14 @@
       margin-top: 14px;
     }
     .panels.projects-open { grid-template-columns: 1fr 1fr 1fr; }
+
+    /* NOW panel — mobile only */
+    .now-panel { display: none; }
+    .now-panel .now-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .now-panel .now-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--accent); }
+    .now-panel .now-kicker { margin-left: auto; font-size: 10px; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+    .now-panel .now-title { font-size: 15px; font-weight: 700; color: var(--text); word-break: break-word; }
+    .now-panel .now-when { font-size: 11px; color: var(--muted); margin-top: 2px; }
     .panel { margin-top: 0; min-width: 0; }
     .panel-head {
       padding: 10px 12px;
@@ -402,6 +410,7 @@
     @media (max-width: 900px) {
       .panels, .panels.projects-open { grid-template-columns: 1fr; }
       .panel + .panel { margin-top: 14px; }
+      .now-panel { display: block; }
     }
   </style>
 </head>
@@ -438,6 +447,12 @@
         <div class="conn-error hidden" id="connError"></div>
 
         <div class="panels" id="panels">
+        <!-- NOW PANEL (mobile only) -->
+        <section class="panel now-panel" id="nowPanel">
+          <div class="now-head"><span class="now-label">NOW</span><span class="now-kicker" id="nowKicker"></span></div>
+          <div class="now-title" id="nowTitle"></div>
+          <div class="now-when" id="nowWhen"></div>
+        </section>
         <!-- PROJECTS PANEL -->
         <section class="panel hidden" id="projectsPanel">
           <div class="panel-head">
@@ -979,6 +994,7 @@
       list.sort((a, b) => (a.due_date || '9999-12-31').localeCompare(b.due_date || '9999-12-31'));
       for (const t of list) body.appendChild(renderTaskCard(t));
       renderProjects();
+      renderNowPanel();
     }
 
     function renderTaskCard(t) {
@@ -1181,6 +1197,57 @@
       });
     }
 
+    // ---------- NOW (mobile) ----------
+    // Show the next calendar event when it's imminent (in progress now or
+    // starting within the next hour); otherwise surface the next active task.
+    function nextNowItem() {
+      const today = todayEt();
+      const nowMin = (toMin(isoToTimeStr(new Date().toISOString()))) || 0;
+      const soon = nowMin + 60;
+      const cand = events.filter(e => e.date >= today).sort((a, b) => (a.date + '|' + (a.start_time || '')).localeCompare(b.date + '|' + (b.start_time || '')));
+      for (const ev of cand) {
+        if (ev.date !== today) break;
+        if (ev.allDay || !ev.start_time) return { type: 'event', ev };
+        const sm = toMin(ev.start_time);
+        const em = ev.end_time ? toMin(ev.end_time) : null;
+        if (sm <= nowMin && em != null && nowMin < em) return { type: 'event', ev };
+        if (sm >= nowMin && sm <= soon) return { type: 'event', ev };
+      }
+      const hidden = gatedTaskIds();
+      const list = tasks.filter(t => t.status !== 'done' && !hidden.has(t.id));
+      if (!list.length) return null;
+      list.sort((a, b) => (a.due_date || '9999-12-31').localeCompare(b.due_date || '9999-12-31'));
+      return { type: 'task', t: list[0] };
+    }
+
+    function renderNowPanel() {
+      const el = $('nowPanel');
+      if (!el) return;
+      const item = nextNowItem();
+      if (!item) {
+        $('nowKicker').textContent = 'All clear';
+        $('nowTitle').textContent = '';
+        $('nowWhen').textContent = 'Nothing scheduled or pending.';
+        return;
+      }
+      if (item.type === 'event') {
+        const ev = item.ev;
+        const sameDay = ev.date === todayEt();
+        const when = ev.allDay
+          ? (sameDay ? 'All day today' : formatDate(ev.date))
+          : (sameDay ? fmtRange(ev.start_time, ev.end_time) : formatDate(ev.date) + ' · ' + fmtRange(ev.start_time, ev.end_time));
+        $('nowKicker').textContent = 'Next event';
+        $('nowTitle').textContent = ev.title;
+        $('nowWhen').textContent = when;
+      } else {
+        const t = item.t;
+        const due = t.due_date ? 'Due ' + formatDate(t.due_date) : '';
+        $('nowKicker').textContent = 'Next task';
+        $('nowTitle').textContent = t.title;
+        $('nowWhen').textContent = t.project ? t.project + (due ? ' · ' + due : '') : due;
+      }
+    }
+
     function toMin(t) {
       if (!t) return null;
       const [h, m] = t.split(':').map(Number);
@@ -1284,6 +1351,7 @@
         tl.innerHTML = tlColumn(fmtDayHead('TODAY', today), events.filter(e => e.date === today));
       }
       attachEditable();
+      renderNowPanel();
     }
 
     function attachEditable() {
