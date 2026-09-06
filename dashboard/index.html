@@ -722,9 +722,6 @@
     // END CONFIG
     // ============================================================
 
-    const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
-    const PRIORITY_CLASS = { low: 'p-l', medium: 'p-m', high: 'p-h', urgent: 'p-u' };
-
     // Calendar timeline clock: first/last hour line and pixels per hour.
     const TL_START = 7, TL_END = 23, PX_PER_HOUR = 44;
 
@@ -1058,9 +1055,7 @@
       today.setHours(0, 0, 0, 0);
       const due = t.due_date ? new Date(t.due_date + 'T00:00:00') : null;
       const overdue = due && t.status !== 'done' && due < today;
-      const prio = t.priority || 'medium';
-      const prioColor = { low: 'var(--low)', medium: 'var(--accent-dim)', high: 'var(--done)', urgent: 'var(--warn)' }[prio] || 'var(--border)';
-      card.style.borderLeftColor = prioColor;
+      card.style.borderLeftColor = 'var(--border)';
 
       card.innerHTML =
         personCirclesHtml(t.people) +
@@ -1068,7 +1063,6 @@
         `<div class="meta">` +
           `<div class="row">` +
             (t.project ? `<span class="badge">${escapeHtml(t.project)}</span>` : '') +
-            `<span class="badge ${PRIORITY_CLASS[prio] || 'p-m'}">${escapeHtml(prio)}</span>` +
           `</div>` +
           (t.description ? `<div class="row desc">${escapeHtml(t.description)}</div>` : '') +
         `</div>` +
@@ -1105,7 +1099,6 @@
             created_at: new Date().toISOString(),
             title: t.title,
             due_date: nextDue,
-            priority: t.priority || 'medium',
             recur: t.recur,
             project: projectName,
             people: t.people || [],
@@ -1739,7 +1732,6 @@
           id: nanoid(),
           title: 'TODO: ' + title,
           status: 'pending',
-          priority: 'medium',
           project: null,
           description: null,
           source: 'manual',
@@ -1770,7 +1762,7 @@
       $('fNotes').value = t ? (t.description || '') : '';
       $('fLastContact').value = isPerson && t ? (t.last_contact || '') : '';
       $('fContact').value = isPerson && t ? (t.contact || '') : '';
-      $('fPriorityField').classList.toggle('hidden', isPerson);
+      $('fPriorityField').classList.toggle('hidden', isPerson || !isProject);
       $('fDueField').classList.toggle('hidden', isProject || isPerson);
       $('fRecurField').classList.toggle('hidden', isProject || isPerson);
       $('fPeopleField').classList.toggle('hidden', isPerson);
@@ -1946,7 +1938,6 @@
       const payload = {
         title,
         due_date: $('fDue').value || null,
-        priority: modalPriority,
         recur: modalRecur || null,
         project: (editingId ? $('fProject').value : $('fProjectSelect').value).trim() || null,
         description: $('fNotes').value.trim() || null,
