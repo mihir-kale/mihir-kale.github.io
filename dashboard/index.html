@@ -25,6 +25,7 @@
       --low: #8a938c;
       --calendar-google: #0a84ff;
       --calendar-outlook: #ff9f0a;
+      --av-free: #2f9e44;
       --glow: rgba(10,126,61,0.06);
       --scanline: rgba(0,0,0,0.05);
       --shadow: 0 1px 3px rgba(0,0,0,0.12);
@@ -48,6 +49,7 @@
       --low: #59605a;
       --calendar-google: #33aaff;
       --calendar-outlook: #ffb000;
+      --av-free: #1f7a3a;
       --glow: rgba(51,255,102,0.05);
       --scanline: rgba(0,0,0,0.14);
       --shadow: 0 0 0 1px rgba(51,255,102,0.06), 0 0 18px rgba(0,0,0,0.6);
@@ -105,8 +107,10 @@
     .topbar .projects-toggle.toggle-active { background: var(--accent); color: var(--on-accent); }
 
     /* Login */
-    #loginForm .lbox { margin: 0; }
+    #loginForm .lbox { margin: 0; position: relative; }
     .lbox { border: 1px solid var(--border); background: var(--panel); padding: 26px; box-shadow: var(--shadow); width: 400px; max-width: 94vw; }
+    .auth-close { position: absolute; top: 12px; right: 12px; background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 2px 6px; }
+    .auth-close:hover { color: var(--text); }
     .lbox h2 { margin: 0 0 18px 0; font-size: 15px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
     .lbox h2::before { content: "▮"; margin-right: 6px; animation: blink 1.1s steps(1) infinite; }
     .login-field { margin-bottom: 12px; }
@@ -329,6 +333,20 @@
     .cal-nav .cal-range { margin-left: 6px; color: var(--low); letter-spacing: 0.5px; }
     .cal-nav .cal-range::before { content: '· '; }
 
+    /* Public availability view (shown to signed-out visitors) */
+    #pubView { min-height: 100vh; }
+    .pub-title { font-size: 15px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    .pub-signin { margin-left: auto; font-weight: 600; font-size: 10px; letter-spacing: 1px; padding: 4px 8px; }
+    .pub-legend { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
+    .pub-legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .pub-legend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+    .pub-legend .pub-busy-ic { background: #000; box-shadow: inset 0 0 0 1px var(--border); }
+    .pub-legend .pub-free-ic { background: var(--av-free); }
+    #pubView .cal-timeline { cursor: default; }
+    .pub-busy { position: absolute; left: 3px; right: 3px; background: #000; border-radius: 2px; }
+    .pub-busy.allday { left: 0; right: 0; border-radius: 0; }
+    .pub-grid.av-grid { background: var(--av-free); }
+
     /* Cards */
     .card.task { cursor: grab; }
     .card.task:active { cursor: grabbing; }
@@ -488,9 +506,10 @@
   </style>
 </head>
 <body>
-  <!-- Password gate (shown only when signed out) -->
+  <!-- Password gate (opened via the availability view's Sign in button) -->
   <div class="overlay" id="loginForm">
     <div class="lbox">
+      <button id="authCloseBtn" class="auth-close" title="Close">&#10005;</button>
       <h2>Personal OS</h2>
       <form id="authForm">
         <div class="login-field">
@@ -502,6 +521,31 @@
         <button type="submit" class="login-btn">Unlock</button>
         <div class="login-error" id="authError"></div>
       </form>
+    </div>
+  </div>
+
+  <!-- Public availability view (shown to signed-out visitors) -->
+  <div id="pubView">
+    <header class="topbar">
+      <span class="pub-title">Availability</span>
+      <button id="pubSignInBtn" class="pub-signin">Sign in</button>
+    </header>
+    <div class="layout">
+      <div class="main">
+        <div class="conn-error hidden" id="pubConnError"></div>
+        <div class="panels" id="pubPanels">
+          <section class="panel">
+            <div class="panel-head">
+              <span class="dot" style="background:var(--av-free)"></span>
+              Busy / Free
+              <span class="pub-legend"><span><i class="pub-busy-ic"></i>Busy</span><span><i class="pub-free-ic"></i>Free</span></span>
+            </div>
+            <div class="tagbar" id="pubCalTagbar"></div>
+            <div class="cal-timeline" id="pubCalTimeline"><div class="empty">Loading availability…</div></div>
+            <div class="cal-foot"><span class="last-updated" id="pubCalUpdated"></span></div>
+          </section>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -735,6 +779,9 @@
     let taskView = 'pending';
     let calMode = 'today';
     let calAnchor = null;
+    let pubMode = 'today';
+    let pubAnchor = null;
+    let pubEvents = [];
     let editingId = null;
     let modalKind = 'task';
     let modalPriority = 'medium';
@@ -852,14 +899,17 @@
       const signedIn = !!session;
       const email = session?.user?.email || '';
       authed = signedIn;
-      $('loginForm').classList.toggle('open', !signedIn);
+      $('loginForm').classList.toggle('open', false);
       $('os').classList.toggle('hidden', !signedIn);
+      $('pubView').classList.toggle('hidden', signedIn);
       $('signOutBtn').classList.toggle('hidden', !signedIn);
       renderTaskTags();
       renderCalTags();
       if (signedIn) {
         hideError();
         await Promise.all([loadTasks(), loadCalendar(), loadProjects(), loadPeople()]);
+      } else {
+        await loadPubCalendar();
       }
     }
 
@@ -1380,6 +1430,145 @@
       }
       renderEvents();
     }
+
+    // ---------- Public availability (signed-out visitors) ----------
+    // A read-only DAY/WEEK calendar showing only busy (black) and free (green)
+    // time. Data comes from the public calendar-proxy feed, which requires no
+    // auth; manual OS blocks stay private behind RLS.
+    function pubGridHtml(evs) {
+      const gridH = (TL_END - TL_START) * PX_PER_HOUR;
+      const minStart = TL_START * 60, minEnd = TL_END * 60;
+      const pxPerMin = PX_PER_HOUR / 60;
+      let h = `<div class="tl-grid av-grid" style="height:${gridH}px">`;
+      for (let k = TL_START; k <= TL_END; k++) {
+        const f = (k - TL_START) / (TL_END - TL_START);
+        h += `<div class="tl-hourline" style="top:${(f * 100).toFixed(2)}%"></div>`;
+      }
+      for (const e of evs) {
+        const start = toMin(e.start_time);
+        const end = toMin(e.end_time);
+        if (e.allDay || start == null) {
+          h += `<div class="pub-busy allday" style="top:0;height:${gridH}px"></div>`;
+          continue;
+        }
+        const s = Math.max(start, minStart);
+        const en = Math.min(end != null ? end : start + 60, minEnd);
+        if (en <= minStart || s >= minEnd) continue;
+        const top = (s - minStart) * pxPerMin;
+        const height = Math.max((en - s) * pxPerMin, 14);
+        h += `<div class="pub-busy" style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px"></div>`;
+      }
+      if (!evs.length) h += '<div class="tl-empty">Free all day</div>';
+      return h + '</div>';
+    }
+
+    function pubTicksHtml() {
+      const gridH = (TL_END - TL_START) * PX_PER_HOUR;
+      let h = `<div class="tl-ticks" style="height:${gridH}px">`;
+      for (let k = TL_START; k <= TL_END; k++) {
+        const f = (k - TL_START) / (TL_END - TL_START);
+        const tr = f === 0 ? 'translateY(0)' : (f >= 1 ? 'translateY(-100%)' : 'translateY(-50%)');
+        h += `<span class="tl-tick" style="top:${(f * 100).toFixed(2)}%;transform:${tr}">${fmtTime12(k + ':00')}</span>`;
+      }
+      return h + '</div>';
+    }
+
+    function pubAnchorLabel() {
+      const today = todayEt();
+      const anchor = pubAnchor || today;
+      if (pubMode === 'week') {
+        const ws = weekStartOf(anchor);
+        if (ws === today || (ws <= today && today <= addDaysLocal(ws, 6))) return 'This Week';
+        const end = addDaysLocal(ws, 6);
+        return `Week of ${formatDate(ws)}<span class="cal-range">${formatDate(ws)} – ${formatDate(end)}</span>`;
+      }
+      if (anchor === today) return 'Today';
+      return humanDay(anchor);
+    }
+
+    function renderPubTags() {
+      const bar = $('pubCalTagbar');
+      bar.innerHTML =
+        `<span class="label">Scale:</span>` +
+        [['today', 'Day'], ['week', 'Week']].map(([v, label]) =>
+          `<span class="tag${pubMode === v ? ' active' : ''}" data-mode="${v}">${label}</span>`
+        ).join('') +
+        `<span class="cal-nav">` +
+          `<button id="pubPrev" title="Previous ${pubMode === 'week' ? 'week' : 'day'}">&#9664;</button>` +
+          `<span class="cal-anchor">${pubAnchorLabel()}</span>` +
+          `<button id="pubNext" title="Next ${pubMode === 'week' ? 'week' : 'day'}">&#9654;</button>` +
+        `</span>`;
+      bar.querySelectorAll('.tag[data-mode]').forEach(ch => {
+        ch.onclick = () => { pubMode = ch.dataset.mode; renderPubEvents(); };
+      });
+      $('pubPrev').onclick = () => pubStep(-1);
+      $('pubNext').onclick = () => pubStep(1);
+    }
+
+    function pubStep(dir) {
+      if (pubMode === 'week') {
+        pubAnchor = addDaysLocal(weekStartOf(pubAnchor || todayEt()), dir * 7);
+      } else {
+        pubAnchor = addDaysLocal(pubAnchor || todayEt(), dir);
+      }
+      renderPubEvents();
+    }
+
+    function renderPubEvents() {
+      if (!pubAnchor) pubAnchor = todayEt();
+      if (pubMode === 'week') pubAnchor = weekStartOf(pubAnchor);
+      renderPubTags();
+      const tl = $('pubCalTimeline');
+      const today = todayEt();
+      if (pubMode === 'week') {
+        const ws = weekStartOf(pubAnchor);
+        const weekEnd = addDaysLocal(ws, 6);
+        let h = '<div class="tl-week">';
+        for (let i = 0; i < 7; i++) {
+          const d = addDaysLocal(ws, i);
+          const tag = d === today ? 'TODAY' : new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+          const evs = pubEvents.filter(e => e.date === d);
+          h += `<div class="tl-rail"><div class="tl-head">${fmtDayHead(tag, d)}<span class="tl-n">${evs.length || ''}</span></div>` +
+            `<div class="tl-body">${i === 0 ? pubTicksHtml() : ''}${pubGridHtml(evs)}</div></div>`;
+        }
+        tl.innerHTML = h + '</div>';
+      } else {
+        const headTag = pubAnchor === today ? 'TODAY' : new Date(pubAnchor + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+        const evs = pubEvents.filter(e => e.date === pubAnchor);
+        tl.innerHTML = `<div class="tl-rail">` +
+          `<div class="tl-head">${fmtDayHead(headTag, pubAnchor)}<span class="tl-n">${evs.length || ''}</span></div>` +
+          `<div class="tl-body">${pubTicksHtml()}${pubGridHtml(evs)}</div></div>`;
+      }
+    }
+
+    async function loadPubCalendar() {
+      const tl = $('pubCalTimeline');
+      tl.innerHTML = '<div class="empty">Loading availability…</div>';
+      let body = null;
+      try {
+        const r = await fetch(SUPABASE_URL + '/functions/v1/calendar-proxy', {
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' },
+        });
+        if (!r.ok) throw new Error('calendar proxy HTTP ' + r.status);
+        body = await r.json();
+        $('pubCalUpdated').textContent = body.last_updated
+          ? 'synced ' + new Date(body.last_updated).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' })
+          : '';
+      } catch (e) {
+        $('pubCalUpdated').textContent = 'feed offline';
+      }
+      const pubErrEl = $('pubConnError');
+      if (body && Array.isArray(body.errors) && body.errors.length) {
+        pubErrEl.className = 'conn-error notice';
+        pubErrEl.textContent = 'Some calendars unavailable: ' + body.errors.map(x => x.calendar).join(', ');
+        pubErrEl.classList.remove('hidden');
+      } else {
+        pubErrEl.classList.add('hidden');
+      }
+      pubEvents = (body?.events || []).map(proxyToEvent);
+      renderPubEvents();
+    }
+
     function tlBlock(ev) {
       const start = toMin(ev.start_time);
       const end = toMin(ev.end_time);
@@ -2048,6 +2237,8 @@
       await applyAuthState();
     };
 
+    $('pubSignInBtn').onclick = () => { $('loginForm').classList.add('open'); };
+    $('authCloseBtn').onclick = () => { $('loginForm').classList.remove('open'); };
     $('newTaskBtn').onclick = () => openEdit(null);
     $('newProjectBtn').onclick = () => openEdit(null, 'project');
     $('newPersonBtn').onclick = () => openEdit(null, 'person');
