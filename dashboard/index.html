@@ -382,6 +382,9 @@
       <h2>Personal OS</h2>
       <form id="authForm">
         <div class="login-field">
+          <input type="email" id="authEmail" placeholder="Email" autocomplete="username" required />
+        </div>
+        <div class="login-field">
           <input type="password" id="authPass" placeholder="Password" autocomplete="current-password" required />
         </div>
         <button type="submit" class="login-btn">Unlock</button>
@@ -524,8 +527,8 @@
     const SUPABASE_URL = 'https://gzwhuwzmrrmtswyhjheu.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E';
     const TZ = 'America/New_York';
-    // Client-side unlock password (OS is hidden when there is no stored session).
-    const OS_PASSWORD = 'Senec@Hills65';
+    // The gate is a real Supabase Auth sign-in (email + password). There is no
+    // client-side password: data is protected by RLS (authenticated role only).
     // Calendar feed sources (mirrors calendar-proxy's CALENDARS). Used to persist
     // feed events into calendar_events via sync_calendar_feed and to skip pruning
     // a feed that failed to fetch.
@@ -619,8 +622,9 @@
     }
 
     // Boot into the OS: reuse any stored session silently. If there is no stored
-    // session, show the password gate instead (unlock is client-side only — the
-    // calendar still works for anonymous users; tasks require a session).
+    // session, show the sign-in gate. The gate validates against Supabase Auth
+    // (email + password); RLS keeps tasks/calendar authenticated-only, so the
+    // calendar proxy here is called with the signed-in user's token.
     async function applyAuthState() {
       const { data: { session } } = await client.auth.getSession();
       const signedIn = !!session;
@@ -1339,17 +1343,20 @@
       localStorage.setItem('personalOSTheme', isDark ? 'light' : 'dark');
     };
 
-    $('authForm').addEventListener('submit', (e) => {
+    $('authForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       $('authError').textContent = '';
-      if ($('authPass').value === OS_PASSWORD) {
-        $('authPass').value = '';
-        $('loginForm').classList.remove('open');
-        $('os').classList.remove('hidden');
-        Promise.all([loadTasks(), loadCalendar()]);
+      const email = $('authEmail').value.trim();
+      const password = $('authPass').value;
+      if (!email || !password) { $('authError').textContent = 'Enter your email and password.'; return; }
+      $('authPass').value = '';
+      try {
+        const { error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await applyAuthState();
         showNotice('Unlocked');
-      } else {
-        $('authError').textContent = 'Invalid password';
+      } catch (err) {
+        $('authError').textContent = err.message || 'Sign in failed';
       }
     });
 
