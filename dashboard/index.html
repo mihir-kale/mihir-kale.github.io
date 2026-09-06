@@ -369,31 +369,14 @@
     .card-actions .go-back:hover { background: var(--done); border-color: var(--done); color: var(--on-complete); }
 
     /* Project bundles */
-    .card.project .queue {
-      border: 1px dashed var(--border); border-radius: 4px;
-      padding: 4px 6px; margin: 6px 0; min-height: 8px;
+    .card.project .p-list { margin-top: 6px; border-top: 1px dashed var(--border); }
+    .p-item {
+      display: block; padding: 4px 6px; font-size: 12px; color: var(--text);
+      border-bottom: 1px dotted var(--border); cursor: pointer; word-break: break-word;
     }
-    .card.project .queue.drag-over, .card.project .q-inbox.drag-over { outline: 2px dashed var(--accent-dim); outline-offset: -2px; }
-    .qrow {
-      display: flex; align-items: center; gap: 6px;
-      padding: 3px 4px; margin: 2px 0; border-bottom: 1px solid var(--border);
-      cursor: grab;
-    }
-    .qrow:last-child { border-bottom: none; }
-    .qrow.done .qtitle { text-decoration: line-through; opacity: 0.6; }
-    .qrow .qpos { min-width: 18px; font-size: 10px; color: var(--muted); font-weight: 700; }
-    .qrow .qtitle { flex: 1 1 auto; font-size: 12px; color: var(--text); cursor: pointer; word-break: break-word; }
-    .qrow .badge { margin: 0; font-size: 9px; }
-    .qrow button.qcheck {
-      border: 1px solid var(--border); background: transparent; color: var(--muted);
-      font-size: 9px; font-weight: 700; letter-spacing: 0.5px; padding: 1px 6px; cursor: pointer;
-    }
-    .qrow button.qcheck:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-    .q-waiting { font-size: 10px; color: var(--muted); font-style: italic; padding: 2px 4px; }
-    .q-inbox { border-top: 1px dashed var(--border); margin-top: 4px; padding: 6px 4px 0; }
-    .q-inbox::before { content: "Not queued"; display: block; font-size: 9px; letter-spacing: 1px; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
-    .qrow.inbox { border-bottom: 1px dotted var(--border); }
-    .queue-note { color: var(--muted); font-size: 11px; font-style: italic; padding: 4px 8px; }
+    .p-item:last-child { border-bottom: none; }
+    .p-item.done { text-decoration: line-through; opacity: 0.6; }
+    .p-empty { color: var(--muted); font-size: 11px; font-style: italic; padding: 4px 8px; }
 
     /* Modal */
     .overlay {
@@ -792,41 +775,10 @@
         body.innerHTML = '<div class="empty">No projects yet</div>';
         return;
       }
-      const qm = queuedByProject();
-      for (const p of projects) body.appendChild(renderProjectBundle(p, qm.get(p.name) || []));
+      for (const p of projects) body.appendChild(renderProjectBundle(p));
     }
 
-    // Tasks with a queue_pos form a per-project sequential queue (ordered by
-    // queue_pos). A queued task is only shown once every task before it in the
-    // queue is completed.
-    function queuedByProject() {
-      const map = new Map();
-      for (const t of tasks) {
-        if (t.queue_pos == null || !t.project) continue;
-        if (!map.has(t.project)) map.set(t.project, []);
-        map.get(t.project).push(t);
-      }
-      for (const list of map.values()) list.sort((a, b) => (a.queue_pos | 0) - (b.queue_pos | 0));
-      return map;
-    }
-
-    function gatedTaskIds() {
-      const hidden = new Set();
-      for (const list of queuedByProject().values()) {
-        let blocked = false;
-        for (const t of list) {
-          if (blocked) hidden.add(t.id);
-          if (t.status !== 'done') blocked = true;
-        }
-      }
-      return hidden;
-    }
-
-    function nextQueuePos(projectName) {
-      return (queuedByProject().get(projectName) || []).reduce((m, t) => Math.max(m, (t.queue_pos | 0) + 1), 1);
-    }
-
-    function renderProjectBundle(p, queued) {
+    function renderProjectBundle(p) {
       const card = document.createElement('div');
       card.className = 'card project';
       card.onclick = () => openEdit(p, 'project');
@@ -834,80 +786,33 @@
       const prioColor = { low: 'var(--low)', medium: 'var(--accent-dim)', high: 'var(--done)', urgent: 'var(--warn)' }[prio] || 'var(--border)';
       card.style.borderLeftColor = prioColor;
 
-      const queuedIds = new Set(queued.map(t => t.id));
-      const inbox = tasks.filter(t => t.project === p.name && !queuedIds.has(t.id));
-      const rows = [];
-      let waiting = 0;
-      let blocked = false;
-      for (let i = 0; i < queued.length; i++) {
-        const t = queued[i];
-        if (blocked) { waiting++; continue; }
-        if (t.status !== 'done') blocked = true;
-        rows.push({ idx: i + 1, t });
-      }
-      const projTaskCount = tasks.filter(t => t.project === p.name).length;
-      const qrowHtml = (t, extra) =>
-        `<div class="qrow ${extra}${t.status === 'done' ? ' done' : ''}" draggable="true" data-task-id="${t.id}">` +
-          (extra ? '' : `<span class="qpos">${rows.find(r => r.t.id === t.id) ? rows.find(r => r.t.id === t.id).idx : ''}</span>`) +
-          `<span class="qtitle">${escapeHtml(t.title)}</span>` +
-          `<button class="qcheck" type="button">${t.status === 'done' ? 'REOPEN' : 'DONE'}</button>` +
-        `</div>`;
+      const items = tasks
+        .filter(t => t.project === p.name)
+        .sort((a, b) => (a.due_date || '9999-12-31').localeCompare(b.due_date || '9999-12-31'));
 
       card.innerHTML =
         `<div class="title">${escapeHtml(p.name)}</div>` +
         `<div class="meta"><div class="row">` +
-          `<span class="badge">${projTaskCount} task${projTaskCount === 1 ? '' : 's'}</span>` +
+          `<span class="badge">${items.length} task${items.length === 1 ? '' : 's'}</span>` +
           (p.status !== 'pending' ? `<span class="badge">${escapeHtml(p.status)}</span>` : '') +
         `</div></div>` +
         (p.description ? `<div class="meta"><div class="row desc">${escapeHtml(p.description)}</div></div>` : '') +
-        `<div class="queue">` +
-          rows.map(r => qrowHtml(r.t, '')).join('') +
-          (waiting ? `<div class="q-waiting">${waiting} waiting in queue</div>` : '') +
-        `</div>` +
-        (inbox.length ? `<div class="q-inbox">${inbox.map(t => qrowHtml(t, 'inbox')).join('')}</div>` : '') +
+        (items.length
+          ? `<div class="p-list">` + items.map(t => `<div class="p-item${t.status === 'done' ? ' done' : ''}" data-task-id="${t.id}">${escapeHtml(t.title)}</div>`).join('') + `</div>`
+          : `<div class="p-empty">No tasks yet</div>`) +
         `<div class="card-actions">` +
           (p.status === 'done'
             ? `<button class="go-back" type="button">REOPEN</button>`
             : `<button type="button">COMPLETE</button>`) +
         `</div>`;
 
-      card.querySelectorAll('.qcheck').forEach(btn => {
-        btn.onclick = (e) => {
+      card.querySelectorAll('.p-item').forEach(row => {
+        row.onclick = (e) => {
           e.stopPropagation();
-          const id = btn.closest('.qrow').dataset.taskId;
-          const t = tasks.find(x => x.id === id);
-          if (t) setStatus(t, t.status === 'done' ? 'pending' : 'done');
-        };
-      });
-      card.querySelectorAll('.qtitle').forEach(qt => {
-        qt.onclick = (e) => {
-          e.stopPropagation();
-          const id = qt.closest('.qrow').dataset.taskId;
-          const t = tasks.find(x => x.id === id);
+          const t = tasks.find(x => x.id === row.dataset.taskId);
           if (t) openEdit(t);
         };
       });
-      card.querySelectorAll('.qrow').forEach(row => {
-        row.ondragstart = (e) => {
-          e.stopPropagation();
-          dragCtx = { type: 'queue', taskId: row.dataset.taskId, fromProject: p.name };
-          e.dataTransfer.effectAllowed = 'move';
-          try { e.dataTransfer.setData('text/plain', String(row.dataset.taskId)); } catch (err) {}
-        };
-        row.ondragend = () => { dragCtx = null; };
-      });
-
-      const queueEl = card.querySelector('.queue');
-      queueEl.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = dragCtx ? 'move' : 'copy'; queueEl.classList.add('drag-over'); };
-      queueEl.ondragleave = () => queueEl.classList.remove('drag-over');
-      queueEl.ondrop = (e) => { e.preventDefault(); queueEl.classList.remove('drag-over'); e.stopPropagation(); dropOnQueue(e, p); };
-
-      const inboxEl = card.querySelector('.q-inbox');
-      if (inboxEl) {
-        inboxEl.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; inboxEl.classList.add('drag-over'); };
-        inboxEl.ondragleave = () => inboxEl.classList.remove('drag-over');
-        inboxEl.ondrop = (e) => { e.preventDefault(); inboxEl.classList.remove('drag-over'); e.stopPropagation(); dropOnInbox(e, p); };
-      }
 
       const btn = card.querySelector('.card-actions > button');
       btn.onclick = (e) => {
@@ -915,84 +820,6 @@
         setProjectStatus(p, p.status === 'done' ? 'pending' : 'done');
       };
       return card;
-    }
-
-    async function dropOnQueue(e, p) {
-      const target = e.target.closest('.qrow[data-task-id]');
-      const targetId = target ? target.dataset.taskId : null;
-      const calRaw = e.dataTransfer.getData('application/x-cal-event');
-      if (calRaw) {
-        let payload;
-        try { payload = JSON.parse(calRaw); } catch (err) { return; }
-        const title = String(payload.title || 'Untitled').trim();
-        if (!title) return;
-        try {
-          const { error } = await client.from('tasks').insert({
-            id: nanoid(), title: 'TODO: ' + title, status: 'pending',
-            priority: 'medium', project: p.name, queue_pos: nextQueuePos(p.name),
-            description: null, source: 'manual', created_at: new Date().toISOString(),
-          });
-          if (error) throw error;
-          await refreshTasksAndProjects();
-          showNotice('Queued "TODO: ' + title + '" under ' + p.name);
-        } catch (err) {
-          setError('Could not create task: ' + err.message);
-        }
-        return;
-      }
-      const taskId = dragCtx ? dragCtx.taskId : (e.dataTransfer.getData('text/plain') || null);
-      if (!taskId) return;
-      const t = tasks.find(x => x.id === taskId);
-      if (!t) return;
-      if (dragCtx && dragCtx.type === 'queue' && dragCtx.fromProject === p.name) {
-        const ids = (queuedByProject().get(p.name) || []).map(x => x.id).filter(id => id !== taskId);
-        const i = ids.indexOf(targetId);
-        if (i >= 0) ids.splice(i, 0, taskId); else ids.push(taskId);
-        await saveQueue(p.name, ids);
-      } else {
-        if (dragCtx && dragCtx.type === 'queue' && dragCtx.fromProject !== p.name) {
-          const srcIds = (queuedByProject().get(dragCtx.fromProject) || []).map(x => x.id).filter(id => id !== taskId);
-          await saveQueue(dragCtx.fromProject, srcIds);
-        }
-        const ids = (queuedByProject().get(p.name) || []).map(x => x.id).filter(id => id !== taskId);
-        ids.push(taskId);
-        await saveQueue(p.name, ids);
-      }
-    }
-
-    async function dropOnInbox(e, p) {
-      const taskId = dragCtx ? dragCtx.taskId : (e.dataTransfer.getData('text/plain') || null);
-      if (!taskId) return;
-      const t = tasks.find(x => x.id === taskId);
-      if (!t) return;
-      if (dragCtx && dragCtx.type === 'queue') {
-        const srcIds = (queuedByProject().get(dragCtx.fromProject) || []).map(x => x.id).filter(id => id !== taskId);
-        await saveQueue(dragCtx.fromProject, srcIds);
-      }
-      try {
-        await client.from('tasks').update({ project: p.name, queue_pos: null, updated_at: new Date().toISOString() }).eq('id', taskId);
-        await refreshTasksAndProjects();
-        showNotice('"' + t.title + '" moved to ' + p.name + ' (not queued)');
-      } catch (err) {
-        setError('Failed to update task: ' + err.message);
-      }
-    }
-
-    async function saveQueue(projectName, orderedIds) {
-      if (!orderedIds.length) return;
-      try {
-        await client.from('tasks').update({ project: projectName, updated_at: new Date().toISOString() }).in('id', orderedIds);
-        for (let i = 0; i < orderedIds.length; i++) {
-          await client.from('tasks').update({ queue_pos: i + 1 }).eq('id', orderedIds[i]);
-        }
-        await refreshTasksAndProjects();
-      } catch (err) {
-        setError('Could not save queue: ' + err.message);
-      }
-    }
-
-    function refreshTasksAndProjects() {
-      return Promise.all([loadTasks(), loadProjects()]);
     }
 
     async function setProjectStatus(p, status) {
@@ -1041,15 +868,11 @@
 
     function renderTasks() {
       renderTaskTags();
-      const hidden = gatedTaskIds();
-      const list = filteredTasks(tasks.filter(t => taskView === 'done' ? t.status === 'done' : t.status !== 'done')
-        .filter(t => !hidden.has(t.id)));
+      const list = filteredTasks(tasks.filter(t => taskView === 'done' ? t.status === 'done' : t.status !== 'done'));
       const body = document.querySelector('#taskColumns [data-body="tasks"]');
       body.innerHTML = '';
-      const waiting = tasks.filter(t => hidden.has(t.id)).length;
-      if (waiting) body.innerHTML = `<div class="queue-note">${waiting} task${waiting === 1 ? '' : 's'} waiting in queues</div>`;
       if (!list.length) {
-        body.innerHTML += taskView === 'done' ? '<div class="empty">Nothing completed</div>' : '<div class="empty">No active tasks</div>';
+        body.innerHTML = taskView === 'done' ? '<div class="empty">Nothing completed</div>' : '<div class="empty">No active tasks</div>';
         renderProjects();
         return;
       }
@@ -1115,7 +938,6 @@
           const base = t.due_date || todayEt();
           const nextDue = addDaysLocal(base, advance);
           const projectName = t.project || null;
-          const queue_pos = projectName ? nextQueuePos(projectName) : null;
           const { error: insErr } = await client.from('tasks').insert({
             id: nanoid(),
             status: 'pending',
@@ -1128,7 +950,6 @@
             project: projectName,
             description: t.description,
             updated_at: new Date().toISOString(),
-            ...(queue_pos == null ? {} : { queue_pos }),
           });
           if (insErr) throw insErr;
         }
@@ -1307,8 +1128,7 @@
         if (sm <= nowMin && em != null && nowMin < em) return { type: 'event', ev };
         if (sm >= nowMin && sm <= soon) return { type: 'event', ev };
       }
-      const hidden = gatedTaskIds();
-      const list = tasks.filter(t => t.status !== 'done' && !hidden.has(t.id));
+      const list = tasks.filter(t => t.status !== 'done');
       if (!list.length) return null;
       list.sort((a, b) => (a.due_date || '9999-12-31').localeCompare(b.due_date || '9999-12-31'));
       return { type: 'task', t: list[0] };
@@ -1850,15 +1670,12 @@
         if (editingId) {
           await client.from('tasks').update(payload).eq('id', editingId);
         } else {
-          const projectName = payload.project;
-          const queue_pos = projectName ? nextQueuePos(projectName) : null;
           await client.from('tasks').insert({
             id: nanoid(),
             status: 'pending',
             source: 'manual',
             created_at: new Date().toISOString(),
             ...payload,
-            ...(queue_pos == null ? {} : { queue_pos }),
           });
         }
         $('overlay').classList.remove('open');
