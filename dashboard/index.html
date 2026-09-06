@@ -677,6 +677,14 @@
         <label class="check"><input type="checkbox" id="cAllDay" /> All day</label>
       </div>
       <div class="field">
+        <label>Repeats</label>
+        <div class="status-pills" id="cRecurPills">
+          <span class="tag" data-crecur="">Never</span>
+          <span class="tag" data-crecur="daily">Daily</span>
+          <span class="tag" data-crecur="weekly">Same day weekly</span>
+        </div>
+      </div>
+      <div class="field">
         <label>Color</label>
         <div class="status-pills" id="cColorPills"></div>
       </div>
@@ -734,6 +742,7 @@
     let dragCtx = null;
     let editingCalId = null;
     let calColor = BLOCK_COLORS[0];
+    let calRecur = '';
     let hiddenEvents = new Set();
 
     function loadHiddenEvents() {
@@ -1138,6 +1147,7 @@
         location: row.location || '',
         calendar: row.calendar || '',
         color: row.color || 'var(--border)',
+        recur: row.recur || null,
         source: row.source || 'manual',
       };
     }
@@ -1199,7 +1209,7 @@
           const { data, error } = await client.from('calendar_events')
             .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
           if (error) throw error;
-          events = (data || []).map(rowToEvent);
+          events = (data || []).map(rowToEvent).map(advanceRecurringEvent);
         } catch (e) {
           events = (body?.events || []).map(proxyToEvent);
         }
@@ -1218,13 +1228,29 @@
           if (ev.source === 'feed' && ev.external_id && feedById.has(ev.external_id)) continue;
           merged.push(ev);
         }
-        events = merged.concat(feedEvt);
+        events = merged.concat(feedEvt).map(advanceRecurringEvent);
       }
 
       renderEvents();
       if (feedErr && events.length) { setError('Calendar feed offline — showing saved blocks.'); return; }
       if (feedErr && !events.length) { setError('Failed to load calendar: ' + feedErr.message); return; }
       hideError();
+    }
+
+    // Recurrent manual blocks auto-advance: their stored date is the anchor; the
+    // effective date rolls forward (daily +1d, weekly +7d) until the next
+    // occurrence on or after today. The DB row keeps the original anchor so it
+    // keeps advancing, never writing.
+    function advanceRecurringEvent(ev) {
+      if (ev.source !== 'manual' || !ev.recur) return ev;
+      const step = ev.recur === 'daily' ? 1 : 7;
+      const today = todayEt();
+      if (ev.date >= today) return ev;
+      const anchor = new Date(ev.date + 'T12:00:00');
+      const t = new Date(today + 'T12:00:00');
+      const days = Math.round((t - anchor) / 86400000);
+      const jump = Math.max(1, Math.ceil(days / step)) * step;
+      return { ...ev, date: addDaysLocal(ev.date, jump) };
     }
 
     function renderCalTags() {
@@ -1526,6 +1552,12 @@
       });
     }
 
+    function setCalRecurPill() {
+      document.querySelectorAll('#cRecurPills .tag').forEach(p => {
+        p.classList.toggle('active', p.dataset.crecur === calRecur);
+      });
+    }
+
     function openCalModal(ev) {
       editingCalId = ev ? ev.id : null;
       $('calModalTitle').textContent = ev ? 'Edit Block' : 'New Block';
@@ -1539,6 +1571,8 @@
       $('cStart').disabled = $('cAllDay').checked;
       $('cEnd').disabled = $('cAllDay').checked;
       calColor = ev && ev.color && BLOCK_COLORS.includes(ev.color) ? ev.color : BLOCK_COLORS[0];
+      calRecur = ev ? (ev.recur || '') : '';
+      setCalRecurPill();
       renderColorPills();
       $('calDeleteBtn').classList.toggle('hidden', !editingCalId);
       $('calOverlay').classList.add('open');
@@ -1560,6 +1594,7 @@
         all_day: allDay,
         color: calColor,
         location: $('cLocation').value.trim(),
+        recur: calRecur || null,
         source: 'manual',
       };
       try {
@@ -2063,6 +2098,9 @@
     });
     document.querySelectorAll('#recurPills .tag').forEach(p => {
       p.onclick = () => { modalRecur = p.dataset.recur; setRecurPill(); };
+    });
+    document.querySelectorAll('#cRecurPills .tag').forEach(p => {
+      p.onclick = () => { calRecur = p.dataset.crecur; setCalRecurPill(); };
     });
 
     // ---------- Boot ----------
