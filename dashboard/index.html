@@ -138,7 +138,7 @@
       align-items: start;
       margin-top: 14px;
     }
-    .panels.projects-open { grid-template-columns: 1fr 1fr 1fr; }
+    .panels.projects-open { grid-template-columns: 1fr 1fr 1fr 1fr; }
 
     /* NOW panel — mobile only */
     .now-panel { display: none; }
@@ -327,6 +327,7 @@
     .blk { cursor: grab; }
     .blk.editable:active, .blk.feed:active, .card.editable:active, .card.feed:active { cursor: grabbing; }
     .card {
+      position: relative;
       background: var(--card);
       border: 1px solid var(--border);
       border-left: 3px solid var(--assigned, var(--border));
@@ -377,6 +378,36 @@
     .p-item:last-child { border-bottom: none; }
     .p-item.done { text-decoration: line-through; opacity: 0.6; }
     .p-empty { color: var(--muted); font-size: 11px; font-style: italic; padding: 4px 8px; }
+
+    /* People */
+    .person-circles {
+      position: absolute; top: 8px; right: 8px;
+      display: flex; gap: 4px;
+    }
+    .p-circle {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent); color: var(--on-accent);
+      font-size: 10px; font-weight: 700; line-height: 20px; text-align: center;
+      cursor: default; position: relative;
+    }
+    .p-circle::after {
+      content: attr(data-name);
+      position: absolute; top: -4px; right: 0; transform: translateY(-100%);
+      background: var(--bg-2); border: 1px solid var(--border); color: var(--text);
+      font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none;
+      padding: 3px 7px; white-space: nowrap; pointer-events: none; opacity: 0;
+      transition: opacity 0.1s; z-index: 3;
+    }
+    .p-circle:hover::after { opacity: 1; }
+    .p-circle.more {
+      background: var(--bg-2); color: var(--muted);
+      border: 1px solid var(--border); line-height: 18px;
+    }
+    .card.project .title, .card.task .title { padding-right: 24px; }
+    #peopleColumns { display: block; max-height: calc(100vh - 300px); overflow-y: auto; }
+    #peopleColumns .col-body { overflow: visible; flex: none; }
+    #peopleChips { max-height: 132px; overflow-y: auto; }
+    #peopleChips .hint { font-size: 11px; color: var(--muted); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0; }
 
     /* Modal */
     .overlay {
@@ -475,6 +506,18 @@
           </div>
         </section>
 
+        <!-- PEOPLE PANEL -->
+        <section class="panel hidden" id="peoplePanel">
+          <div class="panel-head">
+            <span class="dot" style="background:var(--accent-dim)"></span>
+            People
+            <button class="panel-action" id="newPersonBtn">+ Person</button>
+          </div>
+          <div class="columns" id="peopleColumns">
+            <div class="col-body" data-body="people"></div>
+          </div>
+        </section>
+
         <!-- TASKS PANEL -->
         <section class="panel">
           <div class="panel-head">
@@ -519,7 +562,7 @@
         <label>Due Date</label>
         <input id="fDue" type="date" />
       </div>
-      <div class="field">
+      <div class="field" id="fPriorityField">
         <label>Priority</label>
         <div class="status-pills" id="priorityPills">
           <span class="tag" data-priority="low">Low</span>
@@ -546,6 +589,14 @@
         <select id="fProjectSelect">
           <option value="">&#8212; No project &#8212;</option>
         </select>
+      </div>
+      <div class="field" id="fPeopleField">
+        <label>People <span class="hint">(tag multiple)</span></label>
+        <div class="status-pills" id="peopleChips"></div>
+      </div>
+      <div class="field hidden" id="fLastContactField">
+        <label>Last Contact <span class="hint">(optional)</span></label>
+        <input id="fLastContact" placeholder="e.g. 2026-09-01, yesterday" />
       </div>
       <div class="field">
         <label>Description <span class="hint">(optional)</span></label>
@@ -630,6 +681,7 @@
     let authed = false;
     let tasks = [];
     let projects = [];
+    let people = [];
     let events = [];
     let activeProject = 'ALL';
     let taskView = 'pending';
@@ -639,6 +691,7 @@
     let modalKind = 'task';
     let modalPriority = 'medium';
     let modalRecur = '';
+    let modalPeople = new Set();
     let dragCtx = null;
     let editingCalId = null;
     let calColor = BLOCK_COLORS[0];
@@ -751,7 +804,7 @@
       renderCalTags();
       if (signedIn) {
         hideError();
-        await Promise.all([loadTasks(), loadCalendar(), loadProjects()]);
+        await Promise.all([loadTasks(), loadCalendar(), loadProjects(), loadPeople()]);
       }
     }
 
@@ -791,6 +844,7 @@
         .sort((a, b) => (a.due_date || '9999-12-31').localeCompare(b.due_date || '9999-12-31'));
 
       card.innerHTML =
+        personCirclesHtml(p.people) +
         `<div class="title">${escapeHtml(p.name)}</div>` +
         `<div class="meta"><div class="row">` +
           `<span class="badge">${items.length} task${items.length === 1 ? '' : 's'}</span>` +
@@ -829,6 +883,58 @@
       } catch (e) {
         setError('Failed to update project: ' + e.message);
       }
+    }
+
+    // ---------- People ----------
+    async function loadPeople() {
+      try {
+        const { data, error } = await client.from('people').select('*').order('created_at', { ascending: true });
+        if (error) throw error;
+        people = data || [];
+        renderPeople();
+        renderTasks();
+        renderProjects();
+        hideError();
+      } catch (e) {
+        setError('Failed to load people: ' + e.message);
+      }
+    }
+
+    function renderPeople() {
+      const body = document.querySelector('#peopleColumns [data-body="people"]');
+      body.innerHTML = '';
+      if (!people.length) {
+        body.innerHTML = '<div class="empty">No people yet</div>';
+        return;
+      }
+      for (const person of people) body.appendChild(renderPersonCard(person));
+    }
+
+    function renderPersonCard(person) {
+      const card = document.createElement('div');
+      card.className = 'card person';
+      card.onclick = () => openEdit(person, 'person');
+      card.innerHTML =
+        `<div class="title">${escapeHtml(person.name)}</div>` +
+        (person.description ? `<div class="meta"><div class="row desc">${escapeHtml(person.description)}</div></div>` : '') +
+        `<div class="card-actions"><span class="due">Last contact: ${escapeHtml(person.last_contact || 'never')}</span></div>`;
+      return card;
+    }
+
+    function personCirclesHtml(personIds) {
+      const list = (personIds || [])
+        .map(id => people.find(p => p.id === id))
+        .filter(Boolean);
+      if (!list.length) return '';
+      const shown = list.slice(0, 3);
+      const more = list.length - shown.length;
+      return `<div class="person-circles">` +
+        shown.map(p => {
+          const initial = (p.name || '?').trim().charAt(0).toUpperCase() || '?';
+          return `<span class="p-circle" data-name="${escapeHtml(p.name)}" title="${escapeHtml(p.name)}">${escapeHtml(initial)}</span>`;
+        }).join('') +
+        (more > 0 ? `<span class="p-circle more" data-name="${more} more" title="${more} more">+${more}</span>` : '') +
+        `</div>`;
     }
 
     // ---------- Tasks ----------
@@ -904,6 +1010,7 @@
       card.style.borderLeftColor = prioColor;
 
       card.innerHTML =
+        personCirclesHtml(t.people) +
         `<div class="title">${escapeHtml(t.title)}</div>` +
         `<div class="meta">` +
           `<div class="row">` +
@@ -948,6 +1055,7 @@
             priority: t.priority || 'medium',
             recur: t.recur,
             project: projectName,
+            people: t.people || [],
             description: t.description,
             updated_at: new Date().toISOString(),
           });
@@ -1564,21 +1672,25 @@
     function openEdit(t, kind = 'task') {
       modalKind = kind;
       editingId = t ? t.id : null;
+      const isPerson = kind === 'person';
       const isProject = kind === 'project';
       $('modalTitle').textContent = t
-        ? (isProject ? 'Edit Project' : 'Edit Task')
-        : (isProject ? 'New Project' : 'New Task');
+        ? (isProject ? 'Edit Project' : isPerson ? 'Edit Person' : 'Edit Task')
+        : (isProject ? 'New Project' : isPerson ? 'New Person' : 'New Task');
       $('fId').value = t ? t.id : '';
       $('fTitle').value = t ? t.title : '';
       $('fDue').value = t ? (t.due_date || '') : '';
-      if (isProject) {
+      $('fNotes').value = t ? (t.description || '') : '';
+      $('fLastContact').value = isPerson && t ? (t.last_contact || '') : '';
+      $('fPriorityField').classList.toggle('hidden', isPerson);
+      $('fDueField').classList.toggle('hidden', isProject || isPerson);
+      $('fRecurField').classList.toggle('hidden', isProject || isPerson);
+      $('fPeopleField').classList.toggle('hidden', isPerson);
+      $('fLastContactField').classList.toggle('hidden', !isPerson);
+      if (isProject || isPerson) {
         $('fProjectField').classList.add('hidden');
         $('fProjectSelectField').classList.add('hidden');
-        $('fDueField').classList.add('hidden');
-        $('fRecurField').classList.add('hidden');
       } else {
-        $('fDueField').classList.remove('hidden');
-        $('fRecurField').classList.remove('hidden');
         if (t) {
           // Editing an existing task: keep the free-text write-in, prefilled.
           $('fProjectField').classList.remove('hidden');
@@ -1599,14 +1711,16 @@
         sel.value = (activeProject !== 'ALL' && projects.some(p => p.name === activeProject)) ? activeProject : '';
         }
       }
-      $('fNotes').value = t ? (t.description || '') : '';
       $('fStatus').innerHTML = t
-        ? `Status: <b>${t.status === 'done' ? 'Completed' : 'Pending'}</b>`
-        : 'Status: <b>Pending</b> (new ' + (isProject ? 'project' : 'task') + ')';
+        ? (isPerson ? 'Status: <b>Saved</b>' : `Status: <b>${t.status === 'done' ? 'Completed' : 'Pending'}</b>`)
+        : 'Status: <b>Pending</b> (new ' + (isProject ? 'project' : isPerson ? 'person' : 'task') + ')';
       modalPriority = t ? (t.priority || 'medium') : 'medium';
       setPriorityPill();
       modalRecur = t ? (t.recur || '') : '';
       setRecurPill();
+
+      modalPeople = new Set((!isPerson && t && Array.isArray(t.people) ? t.people : []).filter(id => people.some(p => p.id === id)));
+      renderPeopleChips();
 
       const list = $('projectList');
       list.innerHTML = '';
@@ -1617,6 +1731,23 @@
       }
       $('deleteBtn').classList.toggle('hidden', !t);
       $('overlay').classList.add('open');
+    }
+
+    function renderPeopleChips() {
+      const wrap = $('peopleChips');
+      if (!people.length) {
+        wrap.innerHTML = '<span class="hint">No people yet</span>';
+        return;
+      }
+      wrap.innerHTML = people.map(p =>
+        `<span class="tag${modalPeople.has(p.id) ? ' active' : ''}" data-person-id="${p.id}">${escapeHtml(p.name)}</span>`).join('');
+      wrap.querySelectorAll('.tag').forEach(ch => {
+        ch.onclick = () => {
+          const id = ch.dataset.personId;
+          if (modalPeople.has(id)) modalPeople.delete(id); else modalPeople.add(id);
+          renderPeopleChips();
+        };
+      });
     }
 
     function setPriorityPill() {
@@ -1633,11 +1764,36 @@
     async function save() {
       const title = $('fTitle').value.trim();
       if (!title) { alert('Title is required.'); return; }
+      if (modalKind === 'person') {
+        const payload = {
+          name: title,
+          description: $('fNotes').value.trim() || '',
+          last_contact: $('fLastContact').value.trim() || null,
+          updated_at: new Date().toISOString(),
+        };
+        try {
+          if (editingId) {
+            await client.from('people').update(payload).eq('id', editingId);
+          } else {
+            await client.from('people').insert({
+              id: nanoid(),
+              created_at: new Date().toISOString(),
+              ...payload,
+            });
+          }
+          $('overlay').classList.remove('open');
+          await loadPeople();
+        } catch (e) {
+          setError('Failed to save person: ' + e.message);
+        }
+        return;
+      }
       if (modalKind === 'project') {
         const payload = {
           name: title,
           priority: modalPriority,
           description: $('fNotes').value.trim() || null,
+          people: [...modalPeople],
           updated_at: new Date().toISOString(),
         };
         try {
@@ -1664,6 +1820,7 @@
         recur: modalRecur || null,
         project: (editingId ? $('fProject').value : $('fProjectSelect').value).trim() || null,
         description: $('fNotes').value.trim() || null,
+        people: [...modalPeople],
         updated_at: new Date().toISOString(),
       };
       try {
@@ -1687,15 +1844,18 @@
 
     async function remove() {
       if (!editingId) return;
-      if (!confirm('Delete this ' + (modalKind === 'project' ? 'project' : 'task') + '?')) return;
+      if (!confirm('Delete this ' + (modalKind === 'project' ? 'project' : modalKind === 'person' ? 'person' : 'task') + '?')) return;
       try {
         if (modalKind === 'project') {
           await client.from('projects').delete().eq('id', editingId);
+        } else if (modalKind === 'person') {
+          await client.from('people').delete().eq('id', editingId);
         } else {
           await client.from('tasks').delete().eq('id', editingId);
         }
         $('overlay').classList.remove('open');
         if (modalKind === 'project') await loadProjects();
+        else if (modalKind === 'person') await loadPeople();
         else await loadTasks();
       } catch (e) {
         setError('Failed to delete: ' + e.message);
@@ -1715,6 +1875,7 @@
 
     function setProjectsOpen(open) {
       $('projectsPanel').classList.toggle('hidden', !open);
+      $('peoplePanel').classList.toggle('hidden', !open);
       $('panels').classList.toggle('projects-open', open);
       $('projectsToggle').textContent = open ? 'Hide Projects' : 'Projects';
       $('projectsToggle').classList.toggle('toggle-active', open);
@@ -1748,6 +1909,7 @@
 
     $('newTaskBtn').onclick = () => openEdit(null);
     $('newProjectBtn').onclick = () => openEdit(null, 'project');
+    $('newPersonBtn').onclick = () => openEdit(null, 'person');
     $('refreshTasksBtn').onclick = loadTasks;
     $('newBlockBtn').onclick = () => openCalModal(null);
     $('refreshCalBtn').onclick = loadCalendar;
