@@ -1209,7 +1209,7 @@
           const { data, error } = await client.from('calendar_events')
             .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
           if (error) throw error;
-          events = (data || []).map(rowToEvent).map(advanceRecurringEvent);
+          events = (data || []).map(rowToEvent);
         } catch (e) {
           events = (body?.events || []).map(proxyToEvent);
         }
@@ -1228,7 +1228,7 @@
           if (ev.source === 'feed' && ev.external_id && feedById.has(ev.external_id)) continue;
           merged.push(ev);
         }
-        events = merged.concat(feedEvt).map(advanceRecurringEvent);
+        events = merged.concat(feedEvt);
       }
 
       renderEvents();
@@ -1237,20 +1237,26 @@
       hideError();
     }
 
-    // Recurrent manual blocks auto-advance: their stored date is the anchor; the
-    // effective date rolls forward (daily +1d, weekly +7d) until the next
-    // occurrence on or after today. The DB row keeps the original anchor so it
-    // keeps advancing, never writing.
-    function advanceRecurringEvent(ev) {
-      if (ev.source !== 'manual' || !ev.recur) return ev;
-      const step = ev.recur === 'daily' ? 1 : 7;
-      const today = todayEt();
-      if (ev.date >= today) return ev;
-      const anchor = new Date(ev.date + 'T12:00:00');
-      const t = new Date(today + 'T12:00:00');
-      const days = Math.round((t - anchor) / 86400000);
-      const jump = Math.max(1, Math.ceil(days / step)) * step;
-      return { ...ev, date: addDaysLocal(ev.date, jump) };
+    // Recurrent manual blocks: the stored row is the anchor. At render time the
+    // anchor is expanded into one virtual occurrence per matching day inside the
+    // visible range (daily → every day, weekly → same day-of-week).  The DB row
+    // is never mutated; editing any virtual copy opens the original anchor.
+    function expandRecurring(evs, rangeStart, rangeEnd) {
+      const out = [];
+      for (const ev of evs) {
+        if (!ev.recur || ev.source !== 'manual') { out.push(ev); continue; }
+        const anchorDow = new Date(ev.date + 'T12:00:00').getDay();
+        let d = new Date(rangeStart + 'T12:00:00');
+        const end = new Date(rangeEnd + 'T12:00:00');
+        while (d <= end) {
+          const dow = d.getDay();
+          if (ev.recur === 'daily' || (ev.recur === 'weekly' && dow === anchorDow)) {
+            out.push({ ...ev, date: d.toLocaleDateString('en-CA', { timeZone: TZ }) });
+          }
+          d.setDate(d.getDate() + 1);
+        }
+      }
+      return out;
     }
 
     function renderCalTags() {
@@ -1450,16 +1456,16 @@
       const vis = events.filter(e => !isHidden(e));
       if (calMode === 'week') {
         const weekEnd = addDaysLocal(calAnchor, 6);
+        const expanded = expandRecurring(vis, calAnchor, weekEnd);
         const key = e => e.date + '|' + (e.start_time || '');
-        const weekEvs = vis.filter(e => e.date >= calAnchor && e.date <= weekEnd).sort((a, b) => key(a).localeCompare(key(b)));
+        const weekEvs = expanded.filter(e => e.date >= calAnchor && e.date <= weekEnd).sort((a, b) => key(a).localeCompare(key(b)));
         tl.innerHTML = renderDateList(weekEvs, 'No events in this week');
       } else {
-        // Always render the full hourly timeline (even on an empty day) so the
-        // user can scroll through the day; tlColumn shows a "No events" hint.
+        const expanded = expandRecurring(vis, calAnchor, calAnchor);
         const headTag = calAnchor === today
           ? 'TODAY'
           : new Date(calAnchor + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
-        tl.innerHTML = tlColumn(fmtDayHead(headTag, calAnchor), vis.filter(e => e.date === calAnchor));
+        tl.innerHTML = tlColumn(fmtDayHead(headTag, calAnchor), expanded.filter(e => e.date === calAnchor));
       }
       attachEditable();
       renderNowPanel();
