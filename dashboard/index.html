@@ -164,7 +164,15 @@
       color: var(--accent);
     }
     .panel-head .dot { width: 8px; height: 8px; background: var(--accent); }
-    .panel-head .last-updated { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: none; }
+    .panel .cal-foot {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-top: none;
+      background: var(--bg-2);
+    }
+    .panel .cal-foot .last-updated { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: none; }
     .panel-head .panel-action {
       margin-left: auto;
       border: 1px solid var(--accent); background: transparent; color: var(--accent);
@@ -485,11 +493,11 @@
             <span class="dot" style="background:var(--done)"></span>
             Calendar
             <button class="panel-action" id="newBlockBtn" style="margin-left:0">+ Block</button>
-            <span class="last-updated" id="calUpdated"></span>
             <button class="panel-action" id="refreshCalBtn">&#8635; Refresh</button>
           </div>
           <div class="tagbar" id="calTagbar"></div>
           <div class="cal-timeline" id="calTimeline"><div class="empty">Loading calendar…</div></div>
+          <div class="cal-foot"><span class="last-updated" id="calUpdated"></span></div>
         </section>
         </div>
       </div>
@@ -657,7 +665,7 @@
     }
     function fmtRange(s, e) {
       if (!s) return '';
-      return e ? `${fmtTime12(s)}–${fmtTime12(e)}` : fmtTime12(s);
+      return e ? `${fmtTime12(s)} - ${fmtTime12(e)}` : fmtTime12(s);
     }
     function formatDate(dateStr) {
       if (!dateStr) return '—';
