@@ -637,6 +637,10 @@
         <label>Last Contact <span class="hint">(optional)</span></label>
         <input id="fLastContact" placeholder="e.g. 2026-09-01, yesterday" />
       </div>
+      <div class="field hidden" id="fContactField">
+        <label>Contact Info <span class="hint">(optional: email / phone / link)</span></label>
+        <input id="fContact" placeholder="e.g. jane@acme.com, +1 555-0100" />
+      </div>
       <div class="field">
         <label>Description <span class="hint">(optional)</span></label>
         <textarea id="fNotes" placeholder="Details..."></textarea>
@@ -964,6 +968,7 @@
       card.onclick = () => openEdit(person, 'person');
       card.innerHTML =
         `<div class="title">${escapeHtml(person.name)}</div>` +
+        (person.contact ? `<div class="meta"><div class="row contact">${escapeHtml(person.contact)}</div></div>` : '') +
         (person.description ? `<div class="meta"><div class="row desc">${escapeHtml(person.description)}</div></div>` : '') +
         `<div class="card-actions"><span class="due">Last contact: ${escapeHtml(person.last_contact || 'never')}</span></div>`;
       return card;
@@ -1764,11 +1769,13 @@
       $('fDue').value = t ? (t.due_date || '') : '';
       $('fNotes').value = t ? (t.description || '') : '';
       $('fLastContact').value = isPerson && t ? (t.last_contact || '') : '';
+      $('fContact').value = isPerson && t ? (t.contact || '') : '';
       $('fPriorityField').classList.toggle('hidden', isPerson);
       $('fDueField').classList.toggle('hidden', isProject || isPerson);
       $('fRecurField').classList.toggle('hidden', isProject || isPerson);
       $('fPeopleField').classList.toggle('hidden', isPerson);
       $('fLastContactField').classList.toggle('hidden', !isPerson);
+      $('fContactField').classList.toggle('hidden', !isPerson);
       if (isProject || isPerson) {
         $('fProjectField').classList.add('hidden');
         $('fProjectSelectField').classList.add('hidden');
@@ -1891,6 +1898,7 @@
           name: title,
           description: $('fNotes').value.trim() || '',
           last_contact: $('fLastContact').value.trim() || null,
+          contact: $('fContact').value.trim() || null,
           updated_at: new Date().toISOString(),
         };
         try {
