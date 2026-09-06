@@ -291,6 +291,16 @@
     .blk.editable { cursor: pointer; }
     .blk.editable:hover { box-shadow: var(--shadow); }
     .blk.feed { border-left-style: dashed; opacity: 0.85; }
+    .ev-hide {
+      position: absolute; top: 2px; right: 2px; z-index: 2;
+      display: none; align-items: center; justify-content: center;
+      width: 15px; height: 15px; padding: 0; border: 1px solid var(--border);
+      background: var(--bg-2); color: var(--muted);
+      font-size: 10px; line-height: 1; cursor: pointer;
+    }
+    .ev-hide:hover { background: var(--warn); border-color: var(--warn); color: var(--warn); }
+    .blk:hover .ev-hide, .cal-timeline .card:hover .ev-hide { display: flex; }
+    .cal-timeline .card { position: relative; }
     .tl-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--low); font-size: 11px; font-style: italic; }
     .tl-later { display: flex; flex-direction: column; gap: 10px; }
     .later-row { border: 1px solid var(--border); background: var(--panel); }
@@ -298,6 +308,8 @@
     .later-cards { padding: 8px; }
     .tl-count { color: var(--low); font-size: 10px; margin-left: 2px; }
     .tag.active .tl-count { color: var(--on-accent); opacity: 0.75; }
+    .tag.hidden-chip { margin-left: auto; }
+    .tag.hidden-chip:hover { color: var(--warn); border-color: var(--warn); }
 
     /* Cards */
     .card.task { cursor: grab; }
@@ -630,6 +642,33 @@
     let dragCtx = null;
     let editingCalId = null;
     let calColor = BLOCK_COLORS[0];
+    let hiddenEvents = new Set();
+
+    function loadHiddenEvents() {
+      try {
+        hiddenEvents = new Set(localStorage.getItem('personalOSHiddenEvents')
+          ? JSON.parse(localStorage.getItem('personalOSHiddenEvents')) : []);
+      } catch (e) { hiddenEvents = new Set(); }
+    }
+    function evKey(ev) {
+      return ev.source === 'feed' ? 'ext:' + (ev.external_id || ev.id) : 'id:' + ev.id;
+    }
+    function isHidden(ev) { return hiddenEvents.has(evKey(ev)); }
+    function persistHiddenEvents() {
+      localStorage.setItem('personalOSHiddenEvents', JSON.stringify([...hiddenEvents]));
+    }
+    function hideEvent(key) {
+      hiddenEvents.add(key);
+      persistHiddenEvents();
+      renderEvents();
+      renderNowPanel();
+    }
+    function unhideAll() {
+      hiddenEvents.clear();
+      persistHiddenEvents();
+      renderEvents();
+      renderNowPanel();
+    }
 
     const $ = (id) => document.getElementById(id);
 
@@ -1188,6 +1227,7 @@
       const weekEnd = addDaysLocal(today, 7);
       const counts = { today: 0, week: 0, later: 0 };
       for (const e of events) {
+        if (isHidden(e)) continue;
         if (!e.date || e.date < today) continue;
         if (e.date === today) counts.today++;
         else if (e.date <= weekEnd) counts.week++;
@@ -1199,10 +1239,13 @@
         [['today', 'Today'], ['week', 'This Week'], ['later', 'Later']]
           .map(([v, label]) =>
             `<span class="tag${calMode === v ? ' active' : ''}" data-mode="${v}">${label}<span class="tl-count">${counts[v]}</span></span>`
-          ).join('');
-      bar.querySelectorAll('.tag').forEach(ch => {
+          ).join('') +
+        (hiddenEvents.size ? `<span class="tag hidden-chip" data-action="unhide" title="Show all hidden events">Hidden ${hiddenEvents.size}</span>` : '');
+      bar.querySelectorAll('.tag[data-mode]').forEach(ch => {
         ch.onclick = () => { calMode = ch.dataset.mode; renderEvents(); };
       });
+      const unhideChip = bar.querySelector('.tag[data-action="unhide"]');
+      if (unhideChip) unhideChip.onclick = unhideAll;
     }
 
     // ---------- NOW (mobile) ----------
@@ -1212,7 +1255,7 @@
       const today = todayEt();
       const nowMin = (toMin(isoToTimeStr(new Date().toISOString()))) || 0;
       const soon = nowMin + 60;
-      const cand = events.filter(e => e.date >= today).sort((a, b) => (a.date + '|' + (a.start_time || '')).localeCompare(b.date + '|' + (b.start_time || '')));
+      const cand = events.filter(e => !isHidden(e) && e.date >= today).sort((a, b) => (a.date + '|' + (a.start_time || '')).localeCompare(b.date + '|' + (b.start_time || '')));
       for (const ev of cand) {
         if (ev.date !== today) break;
         if (ev.allDay || !ev.start_time) return { type: 'event', ev };
@@ -1280,6 +1323,7 @@
       const extra = feed ? ' feed' : ' editable';
       const did = feed ? ` data-ext="${escapeHtml(ev.external_id || '')}"` : ` data-id="${escapeHtml(ev.id)}"`;
       return `<div class="blk${extra}"${did} style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
+        `<button class="ev-hide" data-hide="${escapeHtml(evKey(ev))}" title="Hide event">&#10005;</button>` +
         `<div class="b-title">${escapeHtml(ev.title)}</div>` +
         `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div>` +
         `</div>`;
@@ -1294,6 +1338,7 @@
         const extra = feed ? ' feed' : ' editable';
         const did = feed ? ` data-ext="${escapeHtml(e.external_id || '')}"` : ` data-id="${escapeHtml(e.id)}"`;
         h += `<div class="blk allday${extra}"${did} style="border-left-color:${e.color}">` +
+          `<button class="ev-hide" data-hide="${escapeHtml(evKey(e))}" title="Hide event">&#10005;</button>` +
           `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span></div>`;
       }
       h += `<div class="tl-body"><div class="tl-ticks" style="height:${gridH}px">`;
@@ -1345,18 +1390,19 @@
       renderCalTags();
       const tl = $('calTimeline');
       const today = todayEt();
+      const vis = events.filter(e => !isHidden(e));
       if (calMode === 'week') {
         const weekEnd = addDaysLocal(today, 6);
         const key = e => e.date + '|' + (e.start_time || '');
-        const weekEvs = events.filter(e => e.date >= today && e.date <= weekEnd).sort((a, b) => key(a).localeCompare(key(b)));
+        const weekEvs = vis.filter(e => e.date >= today && e.date <= weekEnd).sort((a, b) => key(a).localeCompare(key(b)));
         tl.innerHTML = renderDateList(weekEvs, 'No events this week');
       } else if (calMode === 'later') {
-        const future = events.filter(e => e.date > today).sort((a, b) => a.date.localeCompare(b.date));
+        const future = vis.filter(e => e.date > today).sort((a, b) => a.date.localeCompare(b.date));
         tl.innerHTML = renderDateList(future, 'No later events');
       } else {
         // Always render the full hourly timeline (even on an empty day) so the
         // user can scroll through the day; tlColumn shows a "No events" hint.
-        tl.innerHTML = tlColumn(fmtDayHead('TODAY', today), events.filter(e => e.date === today));
+        tl.innerHTML = tlColumn(fmtDayHead('TODAY', today), vis.filter(e => e.date === today));
       }
       attachEditable();
       renderNowPanel();
@@ -1372,6 +1418,9 @@
         makeCalDraggable(el);
       });
       tl.querySelectorAll('.blk.feed, .card.feed').forEach(makeCalDraggable);
+      tl.querySelectorAll('.ev-hide').forEach(btn => {
+        btn.onclick = (e) => { e.stopPropagation(); hideEvent(btn.dataset.hide); };
+      });
     }
 
     function eventDurMin(ev) {
@@ -1416,6 +1465,7 @@
       const extra = feed ? ' feed' : ' editable';
       const did = feed ? ` data-ext="${escapeHtml(ev.external_id || '')}"` : ` data-id="${escapeHtml(ev.id)}"`;
       return `<div class="card${extra}"${did} style="border-left-color:${ev.color}">` +
+        `<button class="ev-hide" data-hide="${escapeHtml(evKey(ev))}" title="Hide event">&#10005;</button>` +
         `<div class="title">${escapeHtml(ev.title)}</div>` +
         `<div class="meta">` +
           `<div class="row">` +
@@ -1781,6 +1831,7 @@
     }
     $('projectsToggle').onclick = () => setProjectsOpen($('projectsPanel').classList.contains('hidden'));
     setProjectsOpen(localStorage.getItem('personalOSProjectsOpen') === '1');
+    loadHiddenEvents();
 
     $('authForm').addEventListener('submit', async (e) => {
       e.preventDefault();
