@@ -104,6 +104,8 @@
     .topbar button:hover { background: var(--accent); color: var(--on-accent); }
     .topbar .theme-toggle { margin-left: auto; opacity: 0.55; font-weight: 600; font-size: 10px; letter-spacing: 1px; padding: 4px 8px; }
     .topbar .theme-toggle:hover { opacity: 1; }
+    .topbar .projects-toggle { font-weight: 600; font-size: 10px; letter-spacing: 1px; padding: 4px 8px; }
+    .topbar .projects-toggle.toggle-active { background: var(--accent); color: var(--on-accent); }
 
     /* Login */
     #loginForm .lbox { margin: 0; }
@@ -134,11 +136,12 @@
     /* Panels */
     .panels {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 14px;
       align-items: start;
       margin-top: 14px;
     }
+    .panels.projects-open { grid-template-columns: 1fr 1fr 1fr; }
     .panel { margin-top: 0; min-width: 0; }
     .panel-head {
       padding: 10px 12px;
@@ -372,7 +375,7 @@
     .field input[type="checkbox"] { width: auto; accent-color: var(--accent); }
 
     @media (max-width: 900px) {
-      .panels { grid-template-columns: 1fr; }
+      .panels, .panels.projects-open { grid-template-columns: 1fr; }
       .panel + .panel { margin-top: 14px; }
     }
   </style>
@@ -401,6 +404,7 @@
       Personal OS
       <span class="who" id="whoAmI"></span>
       <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">light / dark</button>
+      <button id="projectsToggle" class="projects-toggle" title="Show or hide the Projects panel">Projects</button>
       <button id="signOutBtn" class="hidden">Sign out</button>
     </header>
 
@@ -408,9 +412,9 @@
       <div class="main">
         <div class="conn-error hidden" id="connError"></div>
 
-        <div class="panels">
+        <div class="panels" id="panels">
         <!-- PROJECTS PANEL -->
-        <section class="panel">
+        <section class="panel hidden" id="projectsPanel">
           <div class="panel-head">
             <span class="dot" style="background:var(--accent)"></span>
             Projects
@@ -1481,6 +1485,16 @@
       else rootEl.setAttribute('data-theme', 'dark');
       localStorage.setItem('personalOSTheme', isDark ? 'light' : 'dark');
     };
+
+    function setProjectsOpen(open) {
+      $('projectsPanel').classList.toggle('hidden', !open);
+      $('panels').classList.toggle('projects-open', open);
+      $('projectsToggle').textContent = open ? 'Hide Projects' : 'Projects';
+      $('projectsToggle').classList.toggle('toggle-active', open);
+      localStorage.setItem('personalOSProjectsOpen', open ? '1' : '0');
+    }
+    $('projectsToggle').onclick = () => setProjectsOpen($('projectsPanel').classList.contains('hidden'));
+    setProjectsOpen(localStorage.getItem('personalOSProjectsOpen') === '1');
 
     $('authForm').addEventListener('submit', async (e) => {
       e.preventDefault();
