@@ -1235,18 +1235,17 @@
     function renderCalTags() {
       const today = todayEt();
       const weekEnd = addDaysLocal(today, 7);
-      const counts = { today: 0, week: 0, later: 0 };
+      const counts = { today: 0, week: 0 };
       for (const e of events) {
         if (isHidden(e)) continue;
         if (!e.date || e.date < today) continue;
         if (e.date === today) counts.today++;
         else if (e.date <= weekEnd) counts.week++;
-        else counts.later++;
       }
       const bar = $('calTagbar');
       bar.innerHTML =
         `<span class="label">Scale:</span>` +
-        [['today', 'Day'], ['week', 'Week'], ['later', 'Later']]
+        [['today', 'Day'], ['week', 'Week']]
           .map(([v, label]) =>
             `<span class="tag${calMode === v ? ' active' : ''}" data-mode="${v}">${label}<span class="tl-count">${counts[v]}</span></span>`
           ).join('') +
@@ -1434,9 +1433,6 @@
         const key = e => e.date + '|' + (e.start_time || '');
         const weekEvs = vis.filter(e => e.date >= calAnchor && e.date <= weekEnd).sort((a, b) => key(a).localeCompare(key(b)));
         tl.innerHTML = renderDateList(weekEvs, 'No events in this week');
-      } else if (calMode === 'later') {
-        const future = vis.filter(e => e.date > today).sort((a, b) => a.date.localeCompare(b.date));
-        tl.innerHTML = renderDateList(future, 'No later events');
       } else {
         // Always render the full hourly timeline (even on an empty day) so the
         // user can scroll through the day; tlColumn shows a "No events" hint.
