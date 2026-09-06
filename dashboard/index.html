@@ -85,7 +85,6 @@
     }
     .topbar::before { content: "▮"; color: var(--accent); animation: blink 1.1s steps(1) infinite; }
     @keyframes blink { 50% { opacity: 0; } }
-    .topbar .who { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 1px; }
     .topbar button {
       background: transparent;
       border: 1px solid var(--accent);
@@ -465,7 +464,6 @@
   <div id="os">
     <header class="topbar">
       Personal OS
-      <span class="who" id="whoAmI"></span>
       <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">light / dark</button>
       <button id="projectsToggle" class="projects-toggle" title="Show or hide the Projects panel">Projects</button>
       <button id="signOutBtn" class="hidden">Sign out</button>
@@ -765,8 +763,6 @@
       authed = signedIn;
       $('loginForm').classList.toggle('open', !signedIn);
       $('os').classList.toggle('hidden', !signedIn);
-      $('whoAmI').textContent = email;
-      $('whoAmI').classList.toggle('hidden', !email);
       $('signOutBtn').classList.toggle('hidden', !signedIn);
       renderTaskTags();
       renderCalTags();
