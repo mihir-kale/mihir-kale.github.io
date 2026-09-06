@@ -357,7 +357,7 @@
     .qrow button.qcheck:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
     .q-waiting { font-size: 10px; color: var(--muted); font-style: italic; padding: 2px 4px; }
     .q-inbox { border-top: 1px dashed var(--border); margin-top: 4px; padding: 6px 4px 0; }
-    .q-inbox::before { content: "Inbox — not queued"; display: block; font-size: 9px; letter-spacing: 1px; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+    .q-inbox::before { content: "Not queued"; display: block; font-size: 9px; letter-spacing: 1px; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
     .qrow.inbox { border-bottom: 1px dotted var(--border); }
     .queue-note { color: var(--muted); font-size: 11px; font-style: italic; padding: 4px 8px; }
 
@@ -771,19 +771,16 @@
         rows.push({ idx: i + 1, t });
       }
       const projTaskCount = tasks.filter(t => t.project === p.name).length;
-      const prioBadge = cls => `<span class="badge ${PRIORITY_CLASS[cls] || 'p-m'}">${escapeHtml(cls)}</span>`;
       const qrowHtml = (t, extra) =>
         `<div class="qrow ${extra}${t.status === 'done' ? ' done' : ''}" draggable="true" data-task-id="${t.id}">` +
           (extra ? '' : `<span class="qpos">${rows.find(r => r.t.id === t.id) ? rows.find(r => r.t.id === t.id).idx : ''}</span>`) +
           `<span class="qtitle">${escapeHtml(t.title)}</span>` +
-          prioBadge(t.priority || 'medium') +
           `<button class="qcheck" type="button">${t.status === 'done' ? 'REOPEN' : 'DONE'}</button>` +
         `</div>`;
 
       card.innerHTML =
         `<div class="title">${escapeHtml(p.name)}</div>` +
         `<div class="meta"><div class="row">` +
-          prioBadge(prio) +
           `<span class="badge">${projTaskCount} task${projTaskCount === 1 ? '' : 's'}</span>` +
           (p.status !== 'pending' ? `<span class="badge">${escapeHtml(p.status)}</span>` : '') +
         `</div></div>` +
@@ -1014,7 +1011,6 @@
           `<div class="row">` +
             (t.project ? `<span class="badge">${escapeHtml(t.project)}</span>` : '') +
             `<span class="badge ${PRIORITY_CLASS[prio] || 'p-m'}">${escapeHtml(prio)}</span>` +
-            (t.source ? `<span class="badge">${escapeHtml(t.source)}</span>` : '') +
           `</div>` +
           (t.description ? `<div class="row desc">${escapeHtml(t.description)}</div>` : '') +
         `</div>` +
