@@ -492,7 +492,7 @@
         <label>Title <span class="req">*</span></label>
         <input id="fTitle" placeholder="What needs doing?" />
       </div>
-      <div class="field">
+      <div class="field" id="fDueField">
         <label>Due Date</label>
         <input id="fDue" type="date" />
       </div>
@@ -791,7 +791,6 @@
         `</div>` +
         (inbox.length ? `<div class="q-inbox">${inbox.map(t => qrowHtml(t, 'inbox')).join('')}</div>` : '') +
         `<div class="card-actions">` +
-          `<span class="due">${p.due_date ? 'Due: ' + formatDate(p.due_date) : 'No due date'}</span>` +
           (p.status === 'done'
             ? `<button class="go-back" type="button">REOPEN</button>`
             : `<button type="button">COMPLETE</button>`) +
@@ -1568,12 +1567,15 @@
       if (isProject) {
         $('fProjectField').classList.add('hidden');
         $('fProjectSelectField').classList.add('hidden');
-      } else if (t) {
-        // Editing an existing task: keep the free-text write-in, prefilled.
-        $('fProjectField').classList.remove('hidden');
-        $('fProjectSelectField').classList.add('hidden');
-        $('fProject').value = t.project || '';
+        $('fDueField').classList.add('hidden');
       } else {
+        $('fDueField').classList.remove('hidden');
+        if (t) {
+          // Editing an existing task: keep the free-text write-in, prefilled.
+          $('fProjectField').classList.remove('hidden');
+          $('fProjectSelectField').classList.add('hidden');
+          $('fProject').value = t.project || '';
+        } else {
         // New task: pick from the live projects list.
         $('fProjectField').classList.add('hidden');
         $('fProjectSelectField').classList.remove('hidden');
@@ -1586,6 +1588,7 @@
           sel.appendChild(opt);
         }
         sel.value = (activeProject !== 'ALL' && projects.some(p => p.name === activeProject)) ? activeProject : '';
+        }
       }
       $('fNotes').value = t ? (t.description || '') : '';
       $('fStatus').innerHTML = t
@@ -1617,7 +1620,6 @@
       if (modalKind === 'project') {
         const payload = {
           name: title,
-          due_date: $('fDue').value || null,
           priority: modalPriority,
           description: $('fNotes').value.trim() || null,
           updated_at: new Date().toISOString(),
