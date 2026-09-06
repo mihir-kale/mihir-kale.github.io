@@ -138,7 +138,9 @@
       align-items: start;
       margin-top: 14px;
     }
-    .panels.projects-open { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .panels.projects-open { grid-template-columns: 1fr 1fr 1fr; }
+
+    .stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 
     /* NOW panel — mobile only */
     .now-panel { display: none; }
@@ -179,6 +181,14 @@
       text-transform: uppercase; padding: 5px 10px; cursor: pointer;
     }
     .panel-head .panel-action:hover { background: var(--accent); color: var(--on-accent); }
+    .panel-head .collapse-btn {
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      font-family: inherit; font-size: 11px; font-weight: 700; line-height: 1;
+      padding: 4px 8px; cursor: pointer;
+    }
+    .panel-head .collapse-btn:hover { color: var(--text); border-color: var(--accent); }
+    #peoplePanel.collapsed #peopleColumns { display: none; }
+    #peoplePanel.collapsed .panel-head { border-bottom: 1px solid var(--border); }
 
     /* Tagbar */
     .tagbar {
@@ -494,8 +504,10 @@
           <div class="now-title" id="nowTitle"></div>
           <div class="now-when" id="nowWhen"></div>
         </section>
+        <!-- PROJECTS + PEOPLE STACK -->
+        <div class="stack" id="projectsStack">
         <!-- PROJECTS PANEL -->
-        <section class="panel hidden" id="projectsPanel">
+        <section class="panel" id="projectsPanel">
           <div class="panel-head">
             <span class="dot" style="background:var(--accent)"></span>
             Projects
@@ -507,16 +519,18 @@
         </section>
 
         <!-- PEOPLE PANEL -->
-        <section class="panel hidden" id="peoplePanel">
+        <section class="panel collapsed" id="peoplePanel">
           <div class="panel-head">
             <span class="dot" style="background:var(--accent-dim)"></span>
             People
             <button class="panel-action" id="newPersonBtn">+ Person</button>
+            <button class="collapse-btn" id="peopleToggle" title="Collapse or expand the People panel">&#9656;</button>
           </div>
           <div class="columns" id="peopleColumns">
             <div class="col-body" data-body="people"></div>
           </div>
         </section>
+        </div>
 
         <!-- TASKS PANEL -->
         <section class="panel">
@@ -1874,15 +1888,23 @@
     };
 
     function setProjectsOpen(open) {
-      $('projectsPanel').classList.toggle('hidden', !open);
-      $('peoplePanel').classList.toggle('hidden', !open);
+      $('projectsStack').classList.toggle('hidden', !open);
       $('panels').classList.toggle('projects-open', open);
       $('projectsToggle').textContent = open ? 'Hide Projects' : 'Projects';
       $('projectsToggle').classList.toggle('toggle-active', open);
       localStorage.setItem('personalOSProjectsOpen', open ? '1' : '0');
     }
-    $('projectsToggle').onclick = () => setProjectsOpen($('projectsPanel').classList.contains('hidden'));
+    $('projectsToggle').onclick = () => setProjectsOpen($('projectsStack').classList.contains('hidden'));
     setProjectsOpen(localStorage.getItem('personalOSProjectsOpen') === '1');
+
+    function setPeopleCollapsed(collapsed) {
+      $('peoplePanel').classList.toggle('collapsed', collapsed);
+      $('peopleToggle').textContent = collapsed ? '\u25B8' : '\u25BE';
+      localStorage.setItem('personalOSPeopleCollapsed', collapsed ? '1' : '0');
+    }
+    const peopleCollapsed = localStorage.getItem('personalOSPeopleCollapsed');
+    setPeopleCollapsed(peopleCollapsed === null ? true : peopleCollapsed === '1');
+    $('peopleToggle').onclick = () => setPeopleCollapsed(!$('peoplePanel').classList.contains('collapsed'));
     loadHiddenEvents();
 
     $('authForm').addEventListener('submit', async (e) => {
