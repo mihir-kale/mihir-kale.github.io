@@ -569,7 +569,7 @@
       <h2 id="modalTitle">New Task</h2>
       <input type="hidden" id="fId" />
       <div class="field">
-        <label>Title <span class="req">*</span></label>
+        <label id="fTitleLabel">Title <span class="req">*</span></label>
         <input id="fTitle" placeholder="What needs doing?" />
       </div>
       <div class="field" id="fDueField">
@@ -1692,7 +1692,9 @@
         ? (isProject ? 'Edit Project' : isPerson ? 'Edit Person' : 'Edit Task')
         : (isProject ? 'New Project' : isPerson ? 'New Person' : 'New Task');
       $('fId').value = t ? t.id : '';
-      $('fTitle').value = t ? t.title : '';
+      $('fTitleLabel').innerHTML = (isPerson ? 'Name' : 'Title') + ' <span class="req">*</span>';
+      $('fTitle').placeholder = isPerson ? "Person's name" : 'What needs doing?';
+      $('fTitle').value = t ? (isPerson ? t.name : t.title) : '';
       $('fDue').value = t ? (t.due_date || '') : '';
       $('fNotes').value = t ? (t.description || '') : '';
       $('fLastContact').value = isPerson && t ? (t.last_contact || '') : '';
