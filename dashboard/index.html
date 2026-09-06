@@ -1567,7 +1567,7 @@
       $('calModalTitle').textContent = ev ? 'Edit Block' : 'New Block';
       $('cId').value = ev ? ev.id : '';
       $('cTitle').value = ev ? ev.title : '';
-      $('cDate').value = ev ? (ev.date || todayEt()) : todayEt();
+      $('cDate').value = ev ? (ev.date || todayEt()) : (calAnchor || todayEt());
       $('cStart').value = ev ? (ev.start_time || '09:00') : '09:00';
       $('cEnd').value = ev ? (ev.end_time || '10:00') : '10:00';
       $('cLocation').value = ev ? (ev.location || '') : '';
