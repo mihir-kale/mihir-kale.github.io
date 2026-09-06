@@ -786,6 +786,12 @@
       d.setDate(d.getDate() + n);
       return d.toLocaleDateString('en-CA', { timeZone: TZ });
     }
+    function weekStartOf(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00');
+      const dow = (d.getDay() + 6) % 7; // 0=Mon … 6=Sun
+      d.setDate(d.getDate() - dow);
+      return d.toLocaleDateString('en-CA', { timeZone: TZ });
+    }
     function isoToDateStr(iso) {
       return new Date(iso).toLocaleDateString('en-CA', { timeZone: TZ });
     }
@@ -1259,7 +1265,8 @@
 
     function renderCalTags() {
       const today = todayEt();
-      const weekEnd = addDaysLocal(today, 7);
+      const weekStart = weekStartOf(today);
+      const weekEnd = addDaysLocal(weekStart, 6);
       const counts = { today: 0, week: 0 };
       for (const e of events) {
         if (isHidden(e)) continue;
@@ -1357,16 +1364,20 @@
       const today = todayEt();
       const anchor = calAnchor || today;
       if (calMode === 'week') {
-        if (anchor === today) return 'This Week';
-        const end = addDaysLocal(anchor, 6);
-        return `Week of ${formatDate(anchor)}<span class="cal-range">${formatDate(anchor)} – ${formatDate(end)}</span>`;
+        const ws = weekStartOf(anchor);
+        if (ws === today || (ws <= today && today <= addDaysLocal(ws, 6))) return 'This Week';
+        const end = addDaysLocal(ws, 6);
+        return `Week of ${formatDate(ws)}<span class="cal-range">${formatDate(ws)} – ${formatDate(end)}</span>`;
       }
       if (anchor === today) return 'Today';
       return humanDay(anchor);
     }
     function stepCal(dir) {
-      const step = calMode === 'week' ? 7 : 1;
-      calAnchor = addDaysLocal(calAnchor || todayEt(), dir * step);
+      if (calMode === 'week') {
+        calAnchor = addDaysLocal(weekStartOf(calAnchor || todayEt()), dir * 7);
+      } else {
+        calAnchor = addDaysLocal(calAnchor || todayEt(), dir);
+      }
       renderEvents();
     }
     function tlBlock(ev) {
@@ -1449,6 +1460,7 @@
     function renderEvents() {
       const today = todayEt();
       if (!calAnchor) calAnchor = today;
+      if (calMode === 'week') calAnchor = weekStartOf(calAnchor);
       renderCalTags();
       const tl = $('calTimeline');
       const vis = events.filter(e => !isHidden(e));
