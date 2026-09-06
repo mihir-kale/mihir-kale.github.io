@@ -547,6 +547,14 @@
           <span class="tag" data-priority="urgent">Urgent</span>
         </div>
       </div>
+      <div class="field" id="fRecurField">
+        <label>Repeats</label>
+        <div class="status-pills" id="recurPills">
+          <span class="tag" data-recur="">Never</span>
+          <span class="tag" data-recur="daily">Daily</span>
+          <span class="tag" data-recur="weekly">Same day weekly</span>
+        </div>
+      </div>
       <div class="field" id="fProjectField">
         <label>Project <span class="hint">(optional)</span></label>
         <input id="fProject" list="projectList" placeholder="e.g. Fall 2026" />
@@ -649,6 +657,7 @@
     let editingId = null;
     let modalKind = 'task';
     let modalPriority = 'medium';
+    let modalRecur = '';
     let dragCtx = null;
     let editingCalId = null;
     let calColor = BLOCK_COLORS[0];
@@ -1105,6 +1114,28 @@
           .update({ status, updated_at: new Date().toISOString() })
           .eq('id', t.id);
         if (error) throw error;
+        if (status === 'done' && t.recur) {
+          const advance = t.recur === 'daily' ? 1 : 7;
+          const base = t.due_date || todayEt();
+          const nextDue = addDaysLocal(base, advance);
+          const projectName = t.project || null;
+          const queue_pos = projectName ? nextQueuePos(projectName) : null;
+          const { error: insErr } = await client.from('tasks').insert({
+            id: nanoid(),
+            status: 'pending',
+            source: 'manual',
+            created_at: new Date().toISOString(),
+            title: t.title,
+            due_date: nextDue,
+            priority: t.priority || 'medium',
+            recur: t.recur,
+            project: projectName,
+            description: t.description,
+            updated_at: new Date().toISOString(),
+            ...(queue_pos == null ? {} : { queue_pos }),
+          });
+          if (insErr) throw insErr;
+        }
         await loadTasks();
       } catch (e) {
         setError('Failed to update task: ' + e.message);
@@ -1728,8 +1759,10 @@
         $('fProjectField').classList.add('hidden');
         $('fProjectSelectField').classList.add('hidden');
         $('fDueField').classList.add('hidden');
+        $('fRecurField').classList.add('hidden');
       } else {
         $('fDueField').classList.remove('hidden');
+        $('fRecurField').classList.remove('hidden');
         if (t) {
           // Editing an existing task: keep the free-text write-in, prefilled.
           $('fProjectField').classList.remove('hidden');
@@ -1756,6 +1789,8 @@
         : 'Status: <b>Pending</b> (new ' + (isProject ? 'project' : 'task') + ')';
       modalPriority = t ? (t.priority || 'medium') : 'medium';
       setPriorityPill();
+      modalRecur = t ? (t.recur || '') : '';
+      setRecurPill();
 
       const list = $('projectList');
       list.innerHTML = '';
@@ -1771,6 +1806,11 @@
     function setPriorityPill() {
       document.querySelectorAll('#priorityPills .tag').forEach(p => {
         p.classList.toggle('active', p.dataset.priority === modalPriority);
+      });
+    }
+    function setRecurPill() {
+      document.querySelectorAll('#recurPills .tag').forEach(p => {
+        p.classList.toggle('active', p.dataset.recur === modalRecur);
       });
     }
 
@@ -1805,6 +1845,7 @@
         title,
         due_date: $('fDue').value || null,
         priority: modalPriority,
+        recur: modalRecur || null,
         project: (editingId ? $('fProject').value : $('fProjectSelect').value).trim() || null,
         description: $('fNotes').value.trim() || null,
         updated_at: new Date().toISOString(),
@@ -1924,6 +1965,9 @@
 
     document.querySelectorAll('#priorityPills .tag').forEach(p => {
       p.onclick = () => { modalPriority = p.dataset.priority; setPriorityPill(); };
+    });
+    document.querySelectorAll('#recurPills .tag').forEach(p => {
+      p.onclick = () => { modalRecur = p.dataset.recur; setRecurPill(); };
     });
 
     // ---------- Boot ----------
