@@ -352,24 +352,16 @@
     .cal-nav .cal-range { margin-left: 6px; color: var(--low); letter-spacing: 0.5px; }
     .cal-nav .cal-range::before { content: '· '; }
 
-    /* Demo view (shown to signed-out visitors) */
-    .demo-title { font-size: 15px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
-    .demo-action {
-      border: 1px solid var(--border); background: transparent; color: var(--muted);
-      font-family: inherit; font-size: 10px; font-weight: 600; letter-spacing: 1px;
-      padding: 4px 8px; cursor: pointer;
+    /* Demo mode (signed-out visitors see sample data on the real dashboard) */
+    .demo-banner {
+      background: rgba(10,126,61,0.08); color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      padding: 10px 16px; margin: 14px 0 0 0; font-size: 13px;
     }
-    .demo-action:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-    .demo-action.tour { margin-left: auto; }
-    .demo-action.signin { color: var(--accent); border-color: var(--accent); }
-    .demo-action.signin:hover { color: var(--on-accent); }
-    .demo-note { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
-    #demoView .card, #demoView .blk { cursor: default; }
-    #demoView .card:hover { border-color: var(--border); box-shadow: none; }
-    #demoView .blk.editable:hover { box-shadow: none; }
-    #demoView .cal-foot .last-updated { text-transform: none; }
-    #demoView .panel-action:disabled, #demoView .panel-action { cursor: default; }
-    #demoView .panel-action:hover { background: transparent; color: var(--accent); }
+    .topbar .btn-tour { opacity: 0.7; }
+    .topbar .btn-tour:hover { opacity: 1; }
+    .topbar .btn-signin { color: var(--accent); border-color: var(--accent); margin-left: 8px; }
+    .topbar .btn-signin:hover { color: var(--on-accent); }
 
     /* Feature tour */
     #tourBox {
@@ -557,7 +549,7 @@
   </style>
 </head>
 <body>
-  <!-- Password gate (opened via the demo view's Sign in button) -->
+  <!-- Password gate (opened via the top bar's Sign in button) -->
   <div class="overlay" id="loginForm">
     <div class="lbox">
       <button id="authCloseBtn" class="auth-close" title="Close">&#10005;</button>
@@ -572,67 +564,6 @@
         <button type="submit" class="login-btn">Unlock</button>
         <div class="login-error" id="authError"></div>
       </form>
-    </div>
-  </div>
-
-  <!-- Demo view (shown to signed-out visitors) -->
-  <div id="demoView">
-    <header class="topbar">
-      <span class="demo-title">Personal OS — Demo</span>
-      <button id="demoTourBtn" class="demo-action tour">Take the tour</button>
-      <button id="demoSignInBtn" class="demo-action signin">Sign in</button>
-    </header>
-    <div class="layout">
-      <div class="main">
-        <div class="conn-error notice" id="demoNote">
-          Sample data — sign in to load your real tasks, projects, and calendar.
-        </div>
-        <div class="panels" id="demoPanels">
-          <section class="panel" id="demoProjectsPanel">
-            <div class="panel-head">
-              <span class="dot" style="background:var(--accent)"></span>
-              Projects
-              <button class="panel-action" type="button">+ Project</button>
-            </div>
-            <div class="tagbar">
-              <span class="label">List:</span>
-              <span class="tag">Archived<span class="tl-count">1</span></span>
-            </div>
-            <div class="columns">
-              <div class="col-body" id="demoProjects"></div>
-            </div>
-          </section>
-          <section class="panel" id="demoTasksPanel">
-            <div class="panel-head">
-              <span class="dot"></span>
-              Tasks
-              <button class="panel-action" type="button" style="margin-left:0">+ Task</button>
-            </div>
-            <div class="tagbar">
-              <span class="label">List:</span>
-              <span class="tag">Completed<span class="tl-count">1</span></span>
-              <span class="tag active">Project<span class="sel-name">All</span><span class="caret">▾</span></span>
-            </div>
-            <div class="columns">
-              <div class="col-body" id="demoTasks"></div>
-            </div>
-          </section>
-          <section class="panel" id="demoCalPanel">
-            <div class="panel-head">
-              <span class="dot" style="background:var(--done)"></span>
-              Calendar
-              <button class="panel-action" type="button" style="margin-left:0">+ Block</button>
-            </div>
-            <div class="tagbar">
-              <span class="label">Scale:</span>
-              <span class="tag active">Day<span class="tl-count">6</span></span>
-              <span class="tag">Week</span>
-            </div>
-            <div class="cal-timeline" id="demoCal"><div class="empty">Loading demo…</div></div>
-            <div class="cal-foot"><span class="last-updated">Sample data · no real calendar connected</span></div>
-          </section>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -656,12 +587,15 @@
       Personal OS
       <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">light / dark</button>
       <button id="projectsToggle" class="projects-toggle" title="Show or hide the Projects panel">Projects</button>
+      <button id="tourBtn" class="btn-tour hidden" title="Take the guided tour">Tour</button>
+      <button id="signInBtn" class="btn-signin hidden">Sign in</button>
       <button id="signOutBtn" class="hidden">Sign out</button>
     </header>
 
     <div class="layout">
       <div class="main">
         <div class="conn-error hidden" id="connError"></div>
+        <div class="demo-banner hidden" id="demoBanner">Sample data — try filters, add tasks, and time-block the calendar. Nothing is saved. <b>Sign in</b> to load your real dashboard.</div>
 
         <div class="panels" id="panels">
         <!-- NOW PANEL (mobile only) -->
@@ -687,7 +621,7 @@
         </div>
 
         <!-- TASKS PANEL -->
-        <section class="panel">
+        <section class="panel" id="tasksPanel">
           <div class="panel-head">
             <span class="dot"></span>
             Tasks
@@ -701,7 +635,7 @@
         </section>
 
         <!-- CALENDAR PANEL -->
-        <section class="panel">
+        <section class="panel" id="calPanel">
           <div class="panel-head">
             <span class="dot" style="background:var(--done)"></span>
             Calendar
@@ -846,6 +780,8 @@
     const TZ = 'America/New_York';
     // The gate is a real Supabase Auth sign-in (email + password). There is no
     // client-side password: data is protected by RLS (authenticated role only).
+    // Signed-out visitors see the same dashboard preloaded with sample data
+    // (demo mode) — nothing is fetched from or written to Supabase.
     // Calendar feed sources (mirrors calendar-proxy's CALENDARS). Used to persist
     // feed events into calendar_events via sync_calendar_feed and to skip pruning
     // a feed that failed to fetch.
@@ -867,6 +803,7 @@
     let activeProject = 'ALL';
     let taskView = 'pending';
     let showArchivedProjects = localStorage.getItem('personalOSShowArchivedProjects') === '1';
+    let demoMode = false;
     let calMode = 'today';
     let calAnchor = null;
     let editingId = null;
@@ -978,30 +915,34 @@
     }
 
     // Boot into the OS: reuse any stored session silently. If there is no stored
-    // session, show the demo. The gate validates against Supabase Auth
-    // (email + password); RLS keeps tasks/calendar authenticated-only, so the
-    // calendar proxy here is called with the signed-in user's token.
+    // session, the app runs in demo mode with sample data so the whole surface —
+    // filters, project toggle, calendar, drag-drop — works identically to the
+    // signed-in app. The gate validates against Supabase Auth (email + password);
+    // RLS keeps the real tasks/calendar authenticated-only, so the calendar
+    // proxy here is called with the signed-in user's token.
     async function applyAuthState() {
       const { data: { session } } = await client.auth.getSession();
       const signedIn = !!session;
-      const email = session?.user?.email || '';
       authed = signedIn;
+      demoMode = !signedIn;
       $('loginForm').classList.toggle('open', false);
-      $('os').classList.toggle('hidden', !signedIn);
-      $('demoView').classList.toggle('hidden', signedIn);
       $('signOutBtn').classList.toggle('hidden', !signedIn);
+      $('signInBtn').classList.toggle('hidden', signedIn);
+      $('tourBtn').classList.toggle('hidden', signedIn);
+      $('demoBanner').classList.toggle('hidden', signedIn);
       renderTaskTags();
       renderCalTags();
       if (signedIn) {
         hideError();
         await Promise.all([loadTasks(), loadCalendar(), loadProjects(), loadPeople()]);
       } else {
-        renderDemo();
+        loadDemoData();
       }
     }
 
     // ---------- Projects ----------
     async function loadProjects() {
+      if (demoMode) return;
       try {
         const { data, error } = await client.from('projects').select('*').order('created_at', { ascending: true });
         if (error) throw error;
@@ -1096,6 +1037,11 @@
 
     async function deleteProject(p) {
       if (!confirm(`Delete project "${p.name}"?`)) return;
+      if (demoMode) {
+        projects = projects.filter(x => x.id !== p.id);
+        renderProjects();
+        return;
+      }
       try {
         await client.from('projects').delete().eq('id', p.id);
         await loadProjects();
@@ -1105,6 +1051,11 @@
     }
 
     async function setProjectStatus(p, status) {
+      if (demoMode) {
+        p.status = status;
+        renderProjects();
+        return;
+      }
       try {
         await client.from('projects').update({ status, updated_at: new Date().toISOString() }).eq('id', p.id);
         await loadProjects();
@@ -1115,6 +1066,7 @@
 
     // ---------- People ----------
     async function loadPeople() {
+      if (demoMode) return;
       try {
         const { data, error } = await client.from('people').select('*').order('created_at', { ascending: true });
         if (error) throw error;
@@ -1145,6 +1097,7 @@
 
     // ---------- Tasks ----------
     async function loadTasks() {
+      if (demoMode) return;
       try {
         const { data, error } = await client.from('tasks').select('*').order('created_at', { ascending: true });
         if (error) throw error;
@@ -1267,6 +1220,27 @@
     }
 
     async function setStatus(t, status) {
+      if (demoMode) {
+        t.status = status;
+        if (status === 'done' && t.recur) {
+          const advance = t.recur === 'daily' ? 1 : 7;
+          tasks.push({
+            id: nanoid(),
+            status: 'pending',
+            source: 'manual',
+            created_at: new Date().toISOString(),
+            title: t.title,
+            due_date: addDaysLocal(t.due_date || todayEt(), advance),
+            recur: t.recur,
+            project: t.project || null,
+            people: t.people || [],
+            description: t.description,
+            updated_at: new Date().toISOString(),
+          });
+        }
+        renderTasks();
+        return;
+      }
       try {
         const { error } = await client.from('tasks')
           .update({ status, updated_at: new Date().toISOString() })
@@ -1353,6 +1327,7 @@
     }
 
     async function loadCalendar() {
+      if (demoMode) return;
       const { data: { session } } = await client.auth.getSession();
       const token = session?.access_token || '';
       let body = null;
@@ -1560,139 +1535,77 @@
       renderEvents();
     }
 
-    // ---------- Demo view (signed-out visitors) ----------
-    // A self-contained preview of the dashboard rendered from hardcoded sample
-    // data. Nothing is fetched from Supabase and nothing is editable — it just
-    // shows what the app looks like. Real data stays behind the sign-in.
+    // ---------- Demo mode (signed-out visitors) ----------
+    // Signed-out visitors get the real dashboard preloaded with hardcoded sample
+    // data, so the tour and every control behave exactly like the live app.
+    // Nothing is fetched from or written to Supabase while signed out — edits
+    // update the in-memory arrays and re-render, then vanish on refresh.
+    function demoPeople() {
+      return [
+        { id: 'demo-AC', name: 'Amelia Chen', description: '', last_contact: null, contact: null, created_at: null, updated_at: null },
+        { id: 'demo-SR', name: 'Sam Rivera', description: '', last_contact: null, contact: null, created_at: null, updated_at: null },
+        { id: 'demo-JK', name: 'Jasmine Kim', description: '', last_contact: null, contact: null, created_at: null, updated_at: null },
+      ];
+    }
+
+    function demoProjectsData() {
+      return [
+        { id: 'demo-p1', name: 'Website Redesign', priority: 'high', status: 'pending', people: ['demo-AC', 'demo-SR'], description: 'New homepage + CMS migration.', created_at: null, updated_at: null },
+        { id: 'demo-p2', name: 'Fall 2026 Reading', priority: 'medium', status: 'pending', people: ['demo-JK'], description: 'The Power Broker & The Overstory.', created_at: null, updated_at: null },
+        { id: 'demo-p3', name: 'Internship Applications', priority: 'urgent', status: 'pending', people: [], description: 'Deadlines pile up in September.', created_at: null, updated_at: null },
+        { id: 'demo-p4', name: 'Apartment Deep Clean', priority: 'low', status: 'pending', people: [], description: '', created_at: null, updated_at: null },
+        { id: 'demo-p5', name: 'Old Project 2024', priority: 'low', status: 'done', people: [], description: '', created_at: null, updated_at: null },
+      ];
+    }
+
     function demoTasksData() {
       const today = todayEt();
       return [
-        { title: 'Redesign homepage hero', project: 'Website Redesign', people: ['AC'], due: today, desc: 'New copy + layout above the fold.', status: 'pending' },
-        { title: 'Migrate to the new CMS', project: 'Website Redesign', people: ['SR'], due: addDaysLocal(today, 2), desc: '', status: 'pending' },
-        { title: "Finish 'The Power Broker'", project: 'Fall 2026 Reading', people: ['JK'], due: addDaysLocal(today, 5), desc: '', status: 'pending' },
-        { title: 'Send 3 internship applications', project: 'Internship Applications', people: [], due: addDaysLocal(today, 3), desc: '', status: 'pending' },
-        { title: 'Book dentist appointment', project: null, people: [], due: addDaysLocal(today, -1), desc: '', status: 'pending' },
-        { title: 'Send recap to team', project: 'Website Redesign', people: ['AC'], due: addDaysLocal(today, -2), desc: '', status: 'done' },
-        { title: 'Weekly review', project: null, people: [], due: today, desc: 'Repeats weekly.', status: 'pending' },
+        { id: 'demo-t1', title: 'Redesign homepage hero', status: 'pending', due_date: today, recur: null, project: 'Website Redesign', people: ['demo-AC'], description: 'New copy + layout above the fold.', source: 'manual', created_at: null, updated_at: null },
+        { id: 'demo-t2', title: 'Migrate to the new CMS', status: 'pending', due_date: addDaysLocal(today, 2), recur: null, project: 'Website Redesign', people: ['demo-SR'], description: '', source: 'manual', created_at: null, updated_at: null },
+        { id: 'demo-t3', title: "Finish 'The Power Broker'", status: 'pending', due_date: addDaysLocal(today, 5), recur: null, project: 'Fall 2026 Reading', people: ['demo-JK'], description: '', source: 'manual', created_at: null, updated_at: null },
+        { id: 'demo-t4', title: 'Send 3 internship applications', status: 'pending', due_date: addDaysLocal(today, 3), recur: null, project: 'Internship Applications', people: [], description: '', source: 'manual', created_at: null, updated_at: null },
+        { id: 'demo-t5', title: 'Book dentist appointment', status: 'pending', due_date: addDaysLocal(today, -1), recur: null, project: null, people: [], description: '', source: 'manual', created_at: null, updated_at: null },
+        { id: 'demo-t6', title: 'Send recap to team', status: 'done', due_date: addDaysLocal(today, -2), recur: null, project: 'Website Redesign', people: ['demo-AC'], description: '', source: 'manual', created_at: null, updated_at: null },
+        { id: 'demo-t7', title: 'Weekly review', status: 'pending', due_date: today, recur: 'weekly', project: null, people: [], description: 'Repeats weekly.', source: 'manual', created_at: null, updated_at: null },
       ];
     }
 
-    function demoCirclesHtml(initials) {
-      const list = (initials || []).slice(0, 3);
-      const more = (initials || []).length - list.length;
-      return `<div class="person-circles">` +
-        list.map(i => `<span class="p-circle" data-name="${escapeHtml(i)}">${escapeHtml(i.charAt(0))}</span>`).join('') +
-        (more > 0 ? `<span class="p-circle more" data-name="${more} more">+${more}</span>` : '') +
-        `</div>`;
-    }
-
-    function renderDemoProjects() {
-      const body = $('demoProjects');
-      const all = demoTasksData();
-      const prioColor = { low: 'var(--low)', medium: 'var(--accent-dim)', high: 'var(--done)', urgent: 'var(--warn)' };
-      const projs = [
-        { name: 'Website Redesign', priority: 'high', status: 'pending', people: ['AC', 'SR'], description: 'New homepage + CMS migration.' },
-        { name: 'Fall 2026 Reading', priority: 'medium', status: 'pending', people: ['JK'], description: 'The Power Broker & The Overstory.' },
-        { name: 'Internship Applications', priority: 'urgent', status: 'pending', people: [], description: 'Deadlines pile up in September.' },
-        { name: 'Apartment Deep Clean', priority: 'low', status: 'pending', people: [], description: '' },
-        { name: 'Old Project 2024', priority: 'low', status: 'done', people: [], description: '' },
+    function demoEventsData() {
+      const today = todayEt();
+      return [
+        { id: 'demo-e1', external_id: 'demo-f-rent', title: 'Rent due', date: today, start_time: null, end_time: null, allDay: true, location: '', calendar: 'Google', color: '#ff453a', recur: null, source: 'feed' },
+        { id: 'demo-e2', external_id: 'demo-f-11', title: '1:1 with Sam', date: today, start_time: '09:00', end_time: '09:30', allDay: false, location: '', calendar: 'Google', color: 'var(--calendar-google)', recur: null, source: 'feed' },
+        { id: 'demo-e3', external_id: null, title: 'Deep work — redesign', date: today, start_time: '10:00', end_time: '12:00', allDay: false, location: '', calendar: '', color: 'var(--accent)', recur: null, source: 'manual' },
+        { id: 'demo-e4', external_id: null, title: 'Lunch', date: today, start_time: '12:30', end_time: '13:30', allDay: false, location: '', calendar: '', color: '#0a84ff', recur: null, source: 'manual' },
+        { id: 'demo-e5', external_id: null, title: 'Reading hour', date: today, start_time: '17:00', end_time: '18:00', allDay: false, location: '', calendar: '', color: '#ff9f0a', recur: null, source: 'manual' },
+        { id: 'demo-e6', external_id: null, title: 'Gym', date: today, start_time: '18:30', end_time: '20:00', allDay: false, location: '', calendar: '', color: '#bf5af2', recur: null, source: 'manual' },
+        { id: 'demo-e7', external_id: 'demo-f-standup', title: 'Standup', date: addDaysLocal(today, 1), start_time: '09:30', end_time: '09:45', allDay: false, location: '', calendar: 'Outlook', color: 'var(--calendar-outlook)', recur: null, source: 'feed' },
+        { id: 'demo-e8', external_id: 'demo-f-gym-class', title: 'Cycling class', date: addDaysLocal(today, 2), start_time: '18:00', end_time: '19:00', allDay: false, location: '', calendar: 'Google', color: '#ff453a', recur: null, source: 'feed' },
       ];
-      body.innerHTML = projs.map(p => {
-        const items = all.filter(t => t.project === p.name);
-        const archived = p.status === 'done';
-        const actions = archived
-          ? `<div class="card-actions"><button class="go-back" type="button">REOPEN</button><button class="del" type="button">DELETE</button></div>`
-          : (items.length ? '' : `<div class="card-actions"><button type="button">ARCHIVE</button></div>`);
-        const taskList = items.length
-          ? `<div class="p-list">` + items.map(t => `<span class="p-item${t.status === 'done' ? ' done' : ''}">${escapeHtml(t.title)}</span>`).join('') + `</div>`
-          : `<div class="p-empty">No tasks yet</div>`;
-        return `<div class="card project" style="border-left-color:${prioColor[p.priority] || 'var(--border)'}">` +
-          `${demoCirclesHtml(p.people)}<div class="title">${escapeHtml(p.name)}</div>` +
-          `<div class="meta"><div class="row"><span class="badge">${items.length} task${items.length === 1 ? '' : 's'}</span>` +
-          (archived ? `<span class="badge">done</span>` : '') + `</div></div>` +
-          (p.description ? `<div class="meta"><div class="row desc">${escapeHtml(p.description)}</div></div>` : '') +
-          taskList + actions + `</div>`;
-      }).join('');
     }
 
-    function renderDemoTasks() {
-      const body = $('demoTasks');
-      body.innerHTML = demoTasksData().map(t => {
-        const due = t.due ? new Date(t.due + 'T00:00:00') : null;
-        const overdue = due && t.status !== 'done' && due < new Date(todayEt() + 'T00:00:00');
-        return `<div class="card task" style="border-left-color:var(--border)">` +
-          `${demoCirclesHtml(t.people)}<div class="title">${escapeHtml(t.title)}</div>` +
-          `<div class="meta"><div class="row">` +
-            (t.project ? `<span class="badge">${escapeHtml(t.project)}</span>` : '') +
-          `</div>` +
-          (t.desc ? `<div class="row desc">${escapeHtml(t.desc)}</div>` : '') +
-          `</div>` +
-          `<div class="card-actions"><span class="due${overdue ? ' overdue' : ''}">Due: ${formatDate(t.due)}${overdue ? ' (overdue)' : ''}</span>` +
-          (t.status === 'done' ? `<button class="go-back" type="button">REOPEN</button>` : `<button type="button">COMPLETE</button>`) +
-          `</div></div>`;
-      }).join('');
-    }
-
-    function demoBlk(ev) {
-      const minStart = TL_START * 60, minEnd = TL_END * 60;
-      const s = Math.max(toMin(ev.start_time), minStart);
-      const en = Math.min(ev.end_time ? toMin(ev.end_time) : s + 60, minEnd);
-      if (en <= minStart || s >= minEnd) return '';
-      const pxPerMin = PX_PER_HOUR / 60;
-      const top = (s - minStart) * pxPerMin;
-      const height = Math.max((en - s) * pxPerMin, 16);
-      const extra = ev.source === 'feed' ? ' feed' : ' editable';
-      return `<div class="blk${extra}" style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
-        `<div class="b-title">${escapeHtml(ev.title)}</div>` +
-        `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div></div>`;
-    }
-
-    function renderDemoCalendar() {
-      const tl = $('demoCal');
-      const gridH = (TL_END - TL_START) * PX_PER_HOUR;
-      const events = [
-        { title: 'Rent due', allDay: true, start_time: null, end_time: null, color: '#ff453a', source: 'feed' },
-        { title: '1:1 with Sam', start_time: '09:00', end_time: '09:30', color: 'var(--calendar-google)', source: 'feed' },
-        { title: 'Deep work — redesign', start_time: '10:00', end_time: '12:00', color: 'var(--accent)', source: 'manual' },
-        { title: 'Lunch', start_time: '12:30', end_time: '13:30', color: '#0a84ff', source: 'manual' },
-        { title: 'Reading hour', start_time: '17:00', end_time: '18:00', color: '#ff9f0a', source: 'manual' },
-        { title: 'Gym', start_time: '18:30', end_time: '20:00', color: '#bf5af2', source: 'manual' },
-      ];
-      const allDay = events.filter(e => e.allDay || !e.start_time);
-      const timed = events.filter(e => !e.allDay && e.start_time);
-      let h = `<div class="tl-rail"><div class="tl-head">${fmtDayHead('TODAY', todayEt())}<span class="tl-n">${events.length}</span></div>`;
-      for (const e of allDay) {
-        const extra = e.source === 'feed' ? ' feed' : ' editable';
-        h += `<div class="blk allday${extra}" style="border-left-color:${e.color}">` +
-          `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span></div>`;
-      }
-      h += `<div class="tl-body"><div class="tl-ticks" style="height:${gridH}px">`;
-      for (let k = TL_START; k <= TL_END; k++) {
-        const f = (k - TL_START) / (TL_END - TL_START);
-        const tr = f === 0 ? 'translateY(0)' : (f >= 1 ? 'translateY(-100%)' : 'translateY(-50%)');
-        h += `<span class="tl-tick" style="top:${(f * 100).toFixed(2)}%;transform:${tr}">${fmtTime12(k + ':00')}</span>`;
-      }
-      h += `</div><div class="tl-grid" style="height:${gridH}px">`;
-      for (let k = TL_START; k <= TL_END; k++) {
-        const f = (k - TL_START) / (TL_END - TL_START);
-        h += `<div class="tl-hourline" style="top:${(f * 100).toFixed(2)}%"></div>`;
-      }
-      h += timed.map(demoBlk).join('') + `</div></div></div>`;
-      tl.innerHTML = h;
-    }
-
-    function renderDemo() {
-      renderDemoProjects();
-      renderDemoTasks();
-      renderDemoCalendar();
+    function loadDemoData() {
+      people = demoPeople();
+      tasks = demoTasksData();
+      projects = demoProjectsData();
+      events = demoEventsData();
+      calAnchor = null;
+      hideError();
+      $('calUpdated').textContent = 'sample data — sign in to sync your real calendar';
+      renderTaskTags();
+      renderCalTags();
+      renderProjects();
+      renderTasks();
+      renderEvents();
     }
 
     // ---------- Feature tour ----------
     const TOUR_STEPS = [
-      { target: 'demoProjectsPanel', title: 'Projects', text: 'Projects bundle related tasks under one name and priority, with the people involved. Archive a project once its work is done — archived projects stay hidden until you reveal them with the filter.' },
-      { target: 'demoTasksPanel', title: 'Tasks', text: 'Tasks carry a due date, project, people, notes, and optional daily/weekly recurrence. Filter by project with the Project dropdown, toggle completed work, or drag a task onto the calendar to time-block it.' },
-      { target: 'demoCalPanel', title: 'Calendar', text: 'The calendar blends your manual time blocks with read-only feed events from Outlook and Google. Use Day/Week scales, drag blocks to reschedule, and drag a calendar event onto tasks to capture it as something to do.' },
-      { target: 'demoSignInBtn', title: 'Sign in', text: 'This demo is hardcoded sample data. Sign in to see your real tasks, projects, and calendar — everything is private behind Supabase auth.' },
+      { target: 'projectsPanel', title: 'Projects', text: 'Projects bundle related tasks under one name and priority, with the people involved. Hide or reveal this panel any time with the "Projects" toggle in the top bar. Archive a project once its work is done — archived projects stay hidden until you reveal them with the filter.' },
+      { target: 'tasksPanel', title: 'Tasks', text: 'Tasks carry a due date, project, people, notes, and optional daily/weekly recurrence. Filter by project with the Project dropdown, toggle completed work, or drag a task onto the calendar to time-block it.' },
+      { target: 'calPanel', title: 'Calendar', text: 'The calendar blends your manual time blocks with read-only feed events from Outlook and Google. Use Day/Week scales, drag blocks to reschedule, and drag a calendar event onto tasks to capture it as something to do.' },
+      { target: 'signInBtn', title: 'Sign in', text: 'You are looking at sample data on the real dashboard — try the filters, add a task, block some time. Sign in to load your real tasks, projects, and calendar, all private behind Supabase auth.' },
     ];
     let tourIdx = 0;
 
@@ -1970,6 +1883,32 @@
         source: 'manual',
       };
       try {
+        if (demoMode) {
+          const row = {
+            id: editingCalId || nanoid(),
+            external_id: null,
+            title: rec.title,
+            date: rec.date,
+            start_time: rec.start_time,
+            end_time: rec.end_time,
+            allDay: rec.all_day,
+            location: rec.location,
+            calendar: '',
+            color: rec.color,
+            recur: rec.recur,
+            source: 'manual',
+          };
+          if (editingCalId) {
+            const i = events.findIndex(x => x.id === editingCalId);
+            if (i >= 0) events[i] = { ...events[i], ...row };
+          } else {
+            events.push(row);
+          }
+          $('calOverlay').classList.remove('open');
+          renderEvents();
+          showNotice(`Saved "${title}"`);
+          return;
+        }
         if (editingCalId) {
           const { error } = await client.from('calendar_events').update(rec).eq('id', editingCalId);
           if (error) throw error;
@@ -1986,6 +1925,12 @@
 
     async function deleteCalBlock() {
       if (!editingCalId) return;
+      if (demoMode) {
+        events = events.filter(x => x.id !== editingCalId);
+        $('calOverlay').classList.remove('open');
+        renderEvents();
+        return;
+      }
       try {
         const { error } = await client.from('calendar_events').delete().eq('id', editingCalId);
         if (error) throw error;
@@ -2021,6 +1966,15 @@
       const endMin = Math.max(startMin + 60, Math.min(startMin + durMin, TL_END * 60));
       const start = fmtHM(startMin);
       const end = fmtHM(endMin);
+      if (demoMode) {
+        const i = events.findIndex(x => x.id === payload.id);
+        if (i >= 0) {
+          events[i] = { ...events[i], start_time: start, end_time: end };
+          renderEvents();
+        }
+        showNotice(`Moved "${payload.title}" to ${fmtTime12(start)}–${fmtTime12(end)}`);
+        return;
+      }
       try {
         const { error } = await client.from('calendar_events')
           .update({ start_time: start, end_time: end })
@@ -2066,6 +2020,25 @@
       const end = fmtHH(startH + 1) + ':00';
 
       try {
+        if (demoMode) {
+          events.push({
+            id: nanoid(),
+            external_id: null,
+            title: t.title,
+            date: todayEt(),
+            start_time: start,
+            end_time: end,
+            allDay: false,
+            location: '',
+            calendar: '',
+            color: BLOCK_COLORS[0],
+            recur: null,
+            source: 'manual',
+          });
+          renderEvents();
+          showNotice(`Blocked "${t.title}" ${fmtTime12(start)}–${fmtTime12(end)}`);
+          return;
+        }
         const { error } = await client.from('calendar_events').insert({
           title: t.title,
           date: todayEt(),
@@ -2096,6 +2069,24 @@
       const title = String(payload.title || 'Untitled').trim();
       if (!title) return;
       try {
+        if (demoMode) {
+          tasks.push({
+            id: nanoid(),
+            title: 'TODO: ' + title,
+            status: 'pending',
+            project: null,
+            description: null,
+            source: 'manual',
+            due_date: null,
+            recur: null,
+            people: [],
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+          renderTasks();
+          showNotice(`Added task "TODO: ${title}"`);
+          return;
+        }
         const { error } = await client.from('tasks').insert({
           id: nanoid(),
           title: 'TODO: ' + title,
@@ -2262,6 +2253,18 @@
           updated_at: new Date().toISOString(),
         };
         try {
+          if (demoMode) {
+            if (editingId) {
+              const i = people.findIndex(x => x.id === editingId);
+              if (i >= 0) people[i] = { ...people[i], ...payload };
+            } else {
+              people.push({ id: nanoid(), created_at: new Date().toISOString(), ...payload });
+            }
+            $('overlay').classList.remove('open');
+            renderTasks();
+            renderProjects();
+            return;
+          }
           if (editingId) {
             await client.from('people').update(payload).eq('id', editingId);
           } else {
@@ -2287,6 +2290,17 @@
           updated_at: new Date().toISOString(),
         };
         try {
+          if (demoMode) {
+            if (editingId) {
+              const i = projects.findIndex(x => x.id === editingId);
+              if (i >= 0) projects[i] = { ...projects[i], ...payload };
+            } else {
+              projects.push({ id: nanoid(), status: 'pending', ...payload });
+            }
+            $('overlay').classList.remove('open');
+            renderProjects();
+            return;
+          }
           if (editingId) {
             await client.from('projects').update(payload).eq('id', editingId);
           } else {
@@ -2313,6 +2327,24 @@
         updated_at: new Date().toISOString(),
       };
       try {
+        if (demoMode) {
+          if (editingId) {
+            const i = tasks.findIndex(x => x.id === editingId);
+            if (i >= 0) tasks[i] = { ...tasks[i], ...payload };
+          } else {
+            tasks.push({
+              id: nanoid(),
+              status: 'pending',
+              source: 'manual',
+              created_at: new Date().toISOString(),
+              people: payload.people,
+              ...payload,
+            });
+          }
+          $('overlay').classList.remove('open');
+          renderTasks();
+          return;
+        }
         if (editingId) {
           await client.from('tasks').update(payload).eq('id', editingId);
         } else {
@@ -2334,6 +2366,21 @@
     async function remove() {
       if (!editingId) return;
       if (!confirm('Delete this ' + (modalKind === 'project' ? 'project' : modalKind === 'person' ? 'person' : 'task') + '?')) return;
+      if (demoMode) {
+        if (modalKind === 'project') {
+          projects = projects.filter(x => x.id !== editingId);
+          renderProjects();
+        } else if (modalKind === 'person') {
+          people = people.filter(x => x.id !== editingId);
+          renderTasks();
+          renderProjects();
+        } else {
+          tasks = tasks.filter(x => x.id !== editingId);
+          renderTasks();
+        }
+        $('overlay').classList.remove('open');
+        return;
+      }
       try {
         if (modalKind === 'project') {
           await client.from('projects').delete().eq('id', editingId);
@@ -2395,8 +2442,8 @@
       await applyAuthState();
     };
 
-    $('demoSignInBtn').onclick = () => { $('loginForm').classList.add('open'); };
-    $('demoTourBtn').onclick = startTour;
+    $('signInBtn').onclick = () => { $('loginForm').classList.add('open'); };
+    $('tourBtn').onclick = startTour;
     $('tourSkip').onclick = endTour;
     $('tourBack').onclick = () => { if (tourIdx > 0) { tourIdx--; renderTour(); } };
     $('tourNext').onclick = () => {

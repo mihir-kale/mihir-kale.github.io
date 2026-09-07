@@ -15,7 +15,7 @@ Personal GitHub Pages site (`mihir-kale.github.io`). Static HTML + Supabase back
 
 ## Dashboard App Details
 - **Backend**: Supabase. Tables: `tasks`, `projects`, `people`, `calendar_events`
-- **Auth**: Email/password via Supabase Auth (`signInWithPassword`). RLS gates all data; sign-in required for the OS view.
+- **Auth**: Email/password via Supabase Auth (`signInWithPassword`). RLS gates all real data. Signed-out visitors get demo mode: the real dashboard preloaded with hardcoded sample data (via `loadDemoData()`), so every control — filters, Projects toggle, calendar, drag-drop — behaves exactly like the live app. While signed out nothing is fetched from or written to Supabase; edits mutate in-memory arrays only (`demoMode` guards every loader/write path).
 - **Calendar**: Reads `calendar_events` table + live feed from the `calendar-proxy` edge function. Feed rows come from Outlook/Google, persist via RPC `sync_calendar_feed`, and dedupe by `external_id`. Each row has a `source` (`'feed'` = read-only, `'manual'` = editable time block).
 - **Features**:
   - Tasks: title, due date, project, people, description, recurrence (daily/same-day weekly). No priority on tasks (projects keep priority).
@@ -23,7 +23,7 @@ Personal GitHub Pages site (`mihir-kale.github.io`). Static HTML + Supabase back
   - People: name, contact, last contact, description; multi-tag onto tasks/projects.
   - Projects: name, priority (low/medium/high/urgent), status (pending/done), people, description; bundles its tasks.
   - "NOW" panel (mobile): next imminent event or next active task.
-  - Demo view (signed-out): a self-contained preview showing hardcoded sample projects/tasks/calendar plus a guided feature tour. No Supabase or real data is fetched while signed out; everything is behind the sign-in.
+  - Demo mode (signed-out): the real `#os` dashboard with sample tasks/projects/people/events from `demoTasksData()`/`demoProjectsData()`/`demoEventsData()`; topbar shows `#signInBtn` + `#tourBtn` and a `#demoBanner` notice, Projects hide toggle works. Feature tour (`TOUR_STEPS`) targets real panels (`#projectsPanel`, `#tasksPanel`, `#calPanel`, `#signInBtn`). `demoMode = !signedIn` set in `applyAuthState()`; guarded writes snapshot to local STATE arrays and re-render.
 - **Theme**: Light/dark mode (CSS custom properties, `data-theme="dark"` on root, persisted in localStorage under `personalOSTheme`).
 - **Timezone**: `America/New_York` (constant `TZ`).
 - **No frameworks** — vanilla JS, vanilla CSS, monospace font aesthetic.
