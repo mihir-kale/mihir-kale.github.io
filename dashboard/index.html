@@ -185,14 +185,6 @@
       text-transform: uppercase; padding: 5px 10px; cursor: pointer;
     }
     .panel-head .panel-action:hover { background: var(--accent); color: var(--on-accent); }
-    .panel-head .collapse-btn {
-      border: 1px solid var(--border); background: transparent; color: var(--muted);
-      font-family: inherit; font-size: 11px; font-weight: 700; line-height: 1;
-      padding: 4px 8px; cursor: pointer;
-    }
-    .panel-head .collapse-btn:hover { color: var(--text); border-color: var(--accent); }
-    #peoplePanel.collapsed #peopleColumns { display: none; }
-    #peoplePanel.collapsed .panel-head { border-bottom: 1px solid var(--border); }
 
     /* Tagbar */
     .tagbar {
@@ -460,10 +452,6 @@
       border: 1px solid var(--border); line-height: 18px;
     }
     .card.project .title, .card.task .title { padding-right: 24px; }
-    #peopleColumns { display: block; max-height: calc(100vh - 300px); overflow-y: auto; }
-    #peopleColumns .col-body { overflow: visible; flex: none; }
-    #peopleChips { max-height: 132px; overflow-y: auto; }
-    #peopleChips .hint { font-size: 11px; color: var(--muted); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .selected-people { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
     .selected-people .sp-chip {
       display: inline-flex; align-items: center; gap: 6px;
@@ -609,19 +597,6 @@
           <div class="tagbar" id="projectTagbar"></div>
           <div class="columns" id="projectColumns">
             <div class="col-body" data-body="projects"></div>
-          </div>
-        </section>
-
-        <!-- PEOPLE PANEL -->
-        <section class="panel collapsed" id="peoplePanel">
-          <div class="panel-head">
-            <span class="dot" style="background:var(--accent-dim)"></span>
-            People
-            <button class="panel-action" id="newPersonBtn">+ Person</button>
-            <button class="collapse-btn" id="peopleToggle" title="Collapse or expand the People panel">&#9656;</button>
-          </div>
-          <div class="columns" id="peopleColumns">
-            <div class="col-body" data-body="people"></div>
           </div>
         </section>
         </div>
@@ -1062,35 +1037,12 @@
         const { data, error } = await client.from('people').select('*').order('created_at', { ascending: true });
         if (error) throw error;
         people = data || [];
-        renderPeople();
         renderTasks();
         renderProjects();
         hideError();
       } catch (e) {
         setError('Failed to load people: ' + e.message);
       }
-    }
-
-    function renderPeople() {
-      const body = document.querySelector('#peopleColumns [data-body="people"]');
-      body.innerHTML = '';
-      if (!people.length) {
-        body.innerHTML = '<div class="empty">No people yet</div>';
-        return;
-      }
-      for (const person of people) body.appendChild(renderPersonCard(person));
-    }
-
-    function renderPersonCard(person) {
-      const card = document.createElement('div');
-      card.className = 'card person';
-      card.onclick = () => openEdit(person, 'person');
-      card.innerHTML =
-        `<div class="title">${escapeHtml(person.name)}</div>` +
-        (person.contact ? `<div class="meta"><div class="row contact">${escapeHtml(person.contact)}</div></div>` : '') +
-        (person.description ? `<div class="meta"><div class="row desc">${escapeHtml(person.description)}</div></div>` : '') +
-        `<div class="card-actions"><span class="due">Last contact: ${escapeHtml(person.last_contact || 'never')}</span></div>`;
-      return card;
     }
 
     function personCirclesHtml(personIds) {
@@ -2321,15 +2273,6 @@
     }
     $('projectsToggle').onclick = () => setProjectsOpen($('projectsStack').classList.contains('hidden'));
     setProjectsOpen(localStorage.getItem('personalOSProjectsOpen') === '1');
-
-    function setPeopleCollapsed(collapsed) {
-      $('peoplePanel').classList.toggle('collapsed', collapsed);
-      $('peopleToggle').textContent = collapsed ? '\u25B8' : '\u25BE';
-      localStorage.setItem('personalOSPeopleCollapsed', collapsed ? '1' : '0');
-    }
-    const peopleCollapsed = localStorage.getItem('personalOSPeopleCollapsed');
-    setPeopleCollapsed(peopleCollapsed === null ? true : peopleCollapsed === '1');
-    $('peopleToggle').onclick = () => setPeopleCollapsed(!$('peoplePanel').classList.contains('collapsed'));
     loadHiddenEvents();
 
     $('authForm').addEventListener('submit', async (e) => {
@@ -2358,7 +2301,6 @@
     $('authCloseBtn').onclick = () => { $('loginForm').classList.remove('open'); };
     $('newTaskBtn').onclick = () => openEdit(null);
     $('newProjectBtn').onclick = () => openEdit(null, 'project');
-    $('newPersonBtn').onclick = () => openEdit(null, 'person');
     $('refreshTasksBtn').onclick = loadTasks;
     $('newBlockBtn').onclick = () => openCalModal(null);
     $('refreshCalBtn').onclick = loadCalendar;
