@@ -423,6 +423,7 @@
     }
     .card-actions button:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
     .card-actions .go-back:hover { background: var(--done); border-color: var(--done); color: var(--on-complete); }
+    .card-actions .del:hover { background: var(--warn); border-color: var(--warn); color: var(--on-warn); }
 
     /* Project bundles */
     .card.project .p-list { margin-top: 6px; border-top: 1px dashed var(--border); }
@@ -605,6 +606,7 @@
             Projects
             <button class="panel-action" id="newProjectBtn">+ Project</button>
           </div>
+          <div class="tagbar" id="projectTagbar"></div>
           <div class="columns" id="projectColumns">
             <div class="col-body" data-body="projects"></div>
           </div>
@@ -804,6 +806,7 @@
     let events = [];
     let activeProject = 'ALL';
     let taskView = 'pending';
+    let showArchivedProjects = localStorage.getItem('personalOSShowArchivedProjects') === '1';
     let calMode = 'today';
     let calAnchor = null;
     let pubMode = 'today';
@@ -953,14 +956,35 @@
       }
     }
 
+    function renderProjectTags() {
+      const archivedCount = projects.filter(p => p.status === 'done').length;
+      const bar = $('projectTagbar');
+      if (!bar) return;
+      bar.innerHTML =
+        `<span class="label">List:</span>` +
+        `<span class="tag${showArchivedProjects ? ' active' : ''}" data-toggle="archived">Archived<span class="tl-count">${archivedCount}</span></span>`;
+      bar.querySelectorAll('.tag[data-toggle="archived"]').forEach(ch => {
+        ch.onclick = () => {
+          showArchivedProjects = !showArchivedProjects;
+          localStorage.setItem('personalOSShowArchivedProjects', showArchivedProjects ? '1' : '0');
+          renderProjectTags();
+          renderProjects();
+        };
+      });
+    }
+
     function renderProjects() {
+      renderProjectTags();
       const body = document.querySelector('#projectColumns [data-body="projects"]');
       body.innerHTML = '';
-      if (!projects.length) {
-        body.innerHTML = '<div class="empty">No projects yet</div>';
+      const list = showArchivedProjects ? projects : projects.filter(p => p.status !== 'done');
+      if (!list.length) {
+        const noneAnywhere = !projects.length;
+        const msg = showArchivedProjects ? 'No archived projects' : (noneAnywhere ? 'No projects yet' : 'No active projects');
+        body.innerHTML = '<div class="empty">' + msg + '</div>';
         return;
       }
-      for (const p of projects) body.appendChild(renderProjectBundle(p));
+      for (const p of list) body.appendChild(renderProjectBundle(p));
     }
 
     function renderProjectBundle(p) {
@@ -975,6 +999,14 @@
         .filter(t => t.project === p.name)
         .sort((a, b) => (a.due_date || '9999-12-31').localeCompare(b.due_date || '9999-12-31'));
 
+      const archived = p.status === 'done';
+      let actionsHtml = '';
+      if (archived) {
+        actionsHtml = `<div class="card-actions"><button class="go-back" type="button">REOPEN</button><button class="del" type="button">DELETE</button></div>`;
+      } else if (!items.length) {
+        actionsHtml = `<div class="card-actions"><button type="button">ARCHIVE</button></div>`;
+      }
+
       card.innerHTML =
         personCirclesHtml(p.people) +
         `<div class="title">${escapeHtml(p.name)}</div>` +
@@ -986,11 +1018,7 @@
         (items.length
           ? `<div class="p-list">` + items.map(t => `<div class="p-item${t.status === 'done' ? ' done' : ''}" data-task-id="${t.id}">${escapeHtml(t.title)}</div>`).join('') + `</div>`
           : `<div class="p-empty">No tasks yet</div>`) +
-        `<div class="card-actions">` +
-          (p.status === 'done'
-            ? `<button class="go-back" type="button">REOPEN</button>`
-            : `<button type="button">COMPLETE</button>`) +
-        `</div>`;
+        actionsHtml;
 
       card.querySelectorAll('.p-item').forEach(row => {
         row.onclick = (e) => {
@@ -1000,12 +1028,23 @@
         };
       });
 
-      const btn = card.querySelector('.card-actions > button');
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        setProjectStatus(p, p.status === 'done' ? 'pending' : 'done');
-      };
+      const goBack = card.querySelector('.go-back');
+      if (goBack) goBack.onclick = (e) => { e.stopPropagation(); setProjectStatus(p, 'pending'); };
+      const del = card.querySelector('.del');
+      if (del) del.onclick = (e) => { e.stopPropagation(); deleteProject(p); };
+      const archive = card.querySelector('.card-actions > button:not(.go-back):not(.del)');
+      if (archive) archive.onclick = (e) => { e.stopPropagation(); setProjectStatus(p, 'done'); };
       return card;
+    }
+
+    async function deleteProject(p) {
+      if (!confirm(`Delete project "${p.name}"?`)) return;
+      try {
+        await client.from('projects').delete().eq('id', p.id);
+        await loadProjects();
+      } catch (e) {
+        setError('Failed to delete project: ' + e.message);
+      }
     }
 
     async function setProjectStatus(p, status) {
