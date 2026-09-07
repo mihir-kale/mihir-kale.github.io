@@ -23,7 +23,7 @@ Personal GitHub Pages site (`mihir-kale.github.io`). Static HTML + Supabase back
   - People: name, contact, last contact, description; multi-tag onto tasks/projects.
   - Projects: name, priority (low/medium/high/urgent), status (pending/done), people, description; bundles its tasks.
   - "NOW" panel (mobile): next imminent event or next active task.
-  - Demo mode (signed-out): the real `#os` dashboard with sample tasks/projects/people/events from `demoTasksData()`/`demoProjectsData()`/`demoEventsData()`; topbar shows `#signInBtn` + `#tourBtn` and a `#demoBanner` notice, Projects hide toggle works. Feature tour (`TOUR_STEPS`) targets real panels (`#projectsPanel`, `#tasksPanel`, `#calPanel`, `#signInBtn`). `demoMode = !signedIn` set in `applyAuthState()`; guarded writes snapshot to local STATE arrays and re-render.
+  - Demo mode (signed-out): the real `#os` dashboard with sample tasks/projects/people/events from `demoTasksData()`/`demoProjectsData()`/`demoEventsData()`; topbar shows `#signInBtn` + `#tourBtn` and a `#demoBanner` notice, Projects hide toggle works. Feature tour (`TOUR_STEPS`) targets real panels (`#projectsPanel`, `#tasksPanel`, `#calPanel`). `demoMode = !signedIn` set in `applyAuthState()`; guarded writes snapshot to local STATE arrays and re-render.
 - **Theme**: Light/dark mode (CSS custom properties, `data-theme="dark"` on root, persisted in localStorage under `personalOSTheme`).
 - **Timezone**: `America/New_York` (constant `TZ`).
 - **No frameworks** — vanilla JS, vanilla CSS, monospace font aesthetic.
