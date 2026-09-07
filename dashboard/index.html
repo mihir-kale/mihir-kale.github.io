@@ -352,19 +352,54 @@
     .cal-nav .cal-range { margin-left: 6px; color: var(--low); letter-spacing: 0.5px; }
     .cal-nav .cal-range::before { content: '· '; }
 
-    /* Public availability view (shown to signed-out visitors) */
-    #pubView { min-height: 100vh; }
-    .pub-title { font-size: 15px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
-    .pub-signin { margin-left: auto; font-weight: 600; font-size: 10px; letter-spacing: 1px; padding: 4px 8px; }
-    .pub-legend { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
-    .pub-legend span { display: inline-flex; align-items: center; gap: 4px; }
-    .pub-legend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
-    .pub-legend .pub-busy-ic { background: #000; box-shadow: inset 0 0 0 1px var(--border); }
-    .pub-legend .pub-free-ic { background: var(--av-free); }
-    #pubView .cal-timeline { cursor: default; }
-    .pub-busy { position: absolute; left: 3px; right: 3px; background: #000; border-radius: 2px; }
-    .pub-busy.allday { left: 0; right: 0; border-radius: 0; }
-    .pub-grid.av-grid { background: var(--av-free); }
+    /* Demo view (shown to signed-out visitors) */
+    .demo-title { font-size: 15px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    .demo-action {
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      font-family: inherit; font-size: 10px; font-weight: 600; letter-spacing: 1px;
+      padding: 4px 8px; cursor: pointer;
+    }
+    .demo-action:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .demo-action.tour { margin-left: auto; }
+    .demo-action.signin { color: var(--accent); border-color: var(--accent); }
+    .demo-action.signin:hover { color: var(--on-accent); }
+    .demo-note { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
+    #demoView .card, #demoView .blk { cursor: default; }
+    #demoView .card:hover { border-color: var(--border); box-shadow: none; }
+    #demoView .blk.editable:hover { box-shadow: none; }
+    #demoView .cal-foot .last-updated { text-transform: none; }
+    #demoView .panel-action:disabled, #demoView .panel-action { cursor: default; }
+    #demoView .panel-action:hover { background: transparent; color: var(--accent); }
+
+    /* Feature tour */
+    #tourBox {
+      position: fixed; z-index: 401; border-radius: 4px;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.55), 0 0 0 2px var(--accent);
+      transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+    }
+    #tourCard {
+      position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%);
+      width: 480px; max-width: 94vw; z-index: 402;
+      background: var(--bg-2); border: 1px solid var(--accent-dim);
+      box-shadow: var(--shadow); padding: 18px 22px;
+    }
+    .tour-kicker { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+    .tour-kicker .tour-num { color: var(--muted); }
+    #tourCard h3 { margin: 0 0 8px 0; font-size: 16px; color: var(--text); }
+    #tourCard p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+    .tour-actions { display: flex; align-items: center; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+    .tour-dots { display: inline-flex; gap: 6px; margin-right: auto; }
+    .tour-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--border); display: inline-block; transition: background 0.1s; }
+    .tour-dots i.on { background: var(--accent); }
+    .tour-actions button {
+      padding: 5px 14px; border: 1px solid var(--accent); background: transparent; color: var(--accent);
+      font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+    }
+    .tour-actions button:hover { background: var(--accent); color: var(--on-accent); }
+    .tour-actions .skip { color: var(--muted); border-color: transparent; }
+    .tour-actions .skip:hover { background: transparent; border-color: transparent; color: var(--text); }
+    .tour-actions .primary { background: var(--accent); color: var(--on-accent); }
+    .tour-actions .primary:hover { filter: brightness(1.1); }
 
     /* Cards */
     .card.task { cursor: grab; }
@@ -522,7 +557,7 @@
   </style>
 </head>
 <body>
-  <!-- Password gate (opened via the availability view's Sign in button) -->
+  <!-- Password gate (opened via the demo view's Sign in button) -->
   <div class="overlay" id="loginForm">
     <div class="lbox">
       <button id="authCloseBtn" class="auth-close" title="Close">&#10005;</button>
@@ -540,28 +575,78 @@
     </div>
   </div>
 
-  <!-- Public availability view (shown to signed-out visitors) -->
-  <div id="pubView">
+  <!-- Demo view (shown to signed-out visitors) -->
+  <div id="demoView">
     <header class="topbar">
-      <span class="pub-title">Availability</span>
-      <button id="pubSignInBtn" class="pub-signin">Sign in</button>
+      <span class="demo-title">Personal OS — Demo</span>
+      <button id="demoTourBtn" class="demo-action tour">Take the tour</button>
+      <button id="demoSignInBtn" class="demo-action signin">Sign in</button>
     </header>
     <div class="layout">
       <div class="main">
-        <div class="conn-error hidden" id="pubConnError"></div>
-        <div class="panels" id="pubPanels">
-          <section class="panel">
+        <div class="conn-error notice" id="demoNote">
+          Sample data — sign in to load your real tasks, projects, and calendar.
+        </div>
+        <div class="panels" id="demoPanels">
+          <section class="panel" id="demoProjectsPanel">
             <div class="panel-head">
-              <span class="dot" style="background:var(--av-free)"></span>
-              Busy / Free
-              <span class="pub-legend"><span><i class="pub-busy-ic"></i>Busy</span><span><i class="pub-free-ic"></i>Free</span></span>
+              <span class="dot" style="background:var(--accent)"></span>
+              Projects
+              <button class="panel-action" type="button">+ Project</button>
             </div>
-            <div class="tagbar" id="pubCalTagbar"></div>
-            <div class="cal-timeline" id="pubCalTimeline"><div class="empty">Loading availability…</div></div>
-            <div class="cal-foot"><span class="last-updated" id="pubCalUpdated"></span></div>
+            <div class="tagbar">
+              <span class="label">List:</span>
+              <span class="tag">Archived<span class="tl-count">1</span></span>
+            </div>
+            <div class="columns">
+              <div class="col-body" id="demoProjects"></div>
+            </div>
+          </section>
+          <section class="panel" id="demoTasksPanel">
+            <div class="panel-head">
+              <span class="dot"></span>
+              Tasks
+              <button class="panel-action" type="button" style="margin-left:0">+ Task</button>
+            </div>
+            <div class="tagbar">
+              <span class="label">List:</span>
+              <span class="tag">Completed<span class="tl-count">1</span></span>
+              <span class="tag active">Project<span class="sel-name">All</span><span class="caret">▾</span></span>
+            </div>
+            <div class="columns">
+              <div class="col-body" id="demoTasks"></div>
+            </div>
+          </section>
+          <section class="panel" id="demoCalPanel">
+            <div class="panel-head">
+              <span class="dot" style="background:var(--done)"></span>
+              Calendar
+              <button class="panel-action" type="button" style="margin-left:0">+ Block</button>
+            </div>
+            <div class="tagbar">
+              <span class="label">Scale:</span>
+              <span class="tag active">Day<span class="tl-count">6</span></span>
+              <span class="tag">Week</span>
+            </div>
+            <div class="cal-timeline" id="demoCal"><div class="empty">Loading demo…</div></div>
+            <div class="cal-foot"><span class="last-updated">Sample data · no real calendar connected</span></div>
           </section>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Feature tour -->
+  <div id="tourBox" class="hidden"></div>
+  <div id="tourCard" class="hidden">
+    <div class="tour-kicker">Tour <span class="tour-num" id="tourStepNum"></span></div>
+    <h3 id="tourTitle"></h3>
+    <p id="tourText"></p>
+    <div class="tour-actions">
+      <button id="tourSkip" class="skip" type="button">Skip</button>
+      <span class="tour-dots" id="tourDots"></span>
+      <button id="tourBack" type="button">Back</button>
+      <button id="tourNext" class="primary" type="button">Next</button>
     </div>
   </div>
 
@@ -784,9 +869,6 @@
     let showArchivedProjects = localStorage.getItem('personalOSShowArchivedProjects') === '1';
     let calMode = 'today';
     let calAnchor = null;
-    let pubMode = 'today';
-    let pubAnchor = null;
-    let pubEvents = [];
     let editingId = null;
     let modalKind = 'task';
     let modalPriority = 'medium';
@@ -896,7 +978,7 @@
     }
 
     // Boot into the OS: reuse any stored session silently. If there is no stored
-    // session, show the sign-in gate. The gate validates against Supabase Auth
+    // session, show the demo. The gate validates against Supabase Auth
     // (email + password); RLS keeps tasks/calendar authenticated-only, so the
     // calendar proxy here is called with the signed-in user's token.
     async function applyAuthState() {
@@ -906,7 +988,7 @@
       authed = signedIn;
       $('loginForm').classList.toggle('open', false);
       $('os').classList.toggle('hidden', !signedIn);
-      $('pubView').classList.toggle('hidden', signedIn);
+      $('demoView').classList.toggle('hidden', signedIn);
       $('signOutBtn').classList.toggle('hidden', !signedIn);
       renderTaskTags();
       renderCalTags();
@@ -914,7 +996,7 @@
         hideError();
         await Promise.all([loadTasks(), loadCalendar(), loadProjects(), loadPeople()]);
       } else {
-        await loadPubCalendar();
+        renderDemo();
       }
     }
 
@@ -1478,164 +1560,180 @@
       renderEvents();
     }
 
-    // ---------- Public availability (signed-out visitors) ----------
-    // A read-only DAY/WEEK calendar showing only busy (black) and free (green)
-    // time. Data comes from the public calendar-proxy feed, which requires no
-    // auth; manual OS blocks stay private behind RLS.
-    function pubGridHtml(evs) {
-      const gridH = (TL_END - TL_START) * PX_PER_HOUR;
-      const minStart = TL_START * 60, minEnd = TL_END * 60;
-      const pxPerMin = PX_PER_HOUR / 60;
-      let h = `<div class="tl-grid av-grid" style="height:${gridH}px">`;
-      for (let k = TL_START; k <= TL_END; k++) {
-        const f = (k - TL_START) / (TL_END - TL_START);
-        h += `<div class="tl-hourline" style="top:${(f * 100).toFixed(2)}%"></div>`;
-      }
-      for (const e of evs) {
-        const start = toMin(e.start_time);
-        const end = toMin(e.end_time);
-        if (e.allDay || start == null) {
-          h += `<div class="pub-busy allday" style="top:0;height:${gridH}px"></div>`;
-          continue;
-        }
-        const s = Math.max(start, minStart);
-        const en = Math.min(end != null ? end : start + 60, minEnd);
-        if (en <= minStart || s >= minEnd) continue;
-        const top = (s - minStart) * pxPerMin;
-        const height = Math.max((en - s) * pxPerMin, 14);
-        h += `<div class="pub-busy" style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px"></div>`;
-      }
-      if (!evs.length) h += '<div class="tl-empty">Free all day</div>';
-      return h + '</div>';
+    // ---------- Demo view (signed-out visitors) ----------
+    // A self-contained preview of the dashboard rendered from hardcoded sample
+    // data. Nothing is fetched from Supabase and nothing is editable — it just
+    // shows what the app looks like. Real data stays behind the sign-in.
+    function demoTasksData() {
+      const today = todayEt();
+      return [
+        { title: 'Redesign homepage hero', project: 'Website Redesign', people: ['AC'], due: today, desc: 'New copy + layout above the fold.', status: 'pending' },
+        { title: 'Migrate to the new CMS', project: 'Website Redesign', people: ['SR'], due: addDaysLocal(today, 2), desc: '', status: 'pending' },
+        { title: "Finish 'The Power Broker'", project: 'Fall 2026 Reading', people: ['JK'], due: addDaysLocal(today, 5), desc: '', status: 'pending' },
+        { title: 'Send 3 internship applications', project: 'Internship Applications', people: [], due: addDaysLocal(today, 3), desc: '', status: 'pending' },
+        { title: 'Book dentist appointment', project: null, people: [], due: addDaysLocal(today, -1), desc: '', status: 'pending' },
+        { title: 'Send recap to team', project: 'Website Redesign', people: ['AC'], due: addDaysLocal(today, -2), desc: '', status: 'done' },
+        { title: 'Weekly review', project: null, people: [], due: today, desc: 'Repeats weekly.', status: 'pending' },
+      ];
     }
 
-    function pubTicksHtml() {
+    function demoCirclesHtml(initials) {
+      const list = (initials || []).slice(0, 3);
+      const more = (initials || []).length - list.length;
+      return `<div class="person-circles">` +
+        list.map(i => `<span class="p-circle" data-name="${escapeHtml(i)}">${escapeHtml(i.charAt(0))}</span>`).join('') +
+        (more > 0 ? `<span class="p-circle more" data-name="${more} more">+${more}</span>` : '') +
+        `</div>`;
+    }
+
+    function renderDemoProjects() {
+      const body = $('demoProjects');
+      const all = demoTasksData();
+      const prioColor = { low: 'var(--low)', medium: 'var(--accent-dim)', high: 'var(--done)', urgent: 'var(--warn)' };
+      const projs = [
+        { name: 'Website Redesign', priority: 'high', status: 'pending', people: ['AC', 'SR'], description: 'New homepage + CMS migration.' },
+        { name: 'Fall 2026 Reading', priority: 'medium', status: 'pending', people: ['JK'], description: 'The Power Broker & The Overstory.' },
+        { name: 'Internship Applications', priority: 'urgent', status: 'pending', people: [], description: 'Deadlines pile up in September.' },
+        { name: 'Apartment Deep Clean', priority: 'low', status: 'pending', people: [], description: '' },
+        { name: 'Old Project 2024', priority: 'low', status: 'done', people: [], description: '' },
+      ];
+      body.innerHTML = projs.map(p => {
+        const items = all.filter(t => t.project === p.name);
+        const archived = p.status === 'done';
+        const actions = archived
+          ? `<div class="card-actions"><button class="go-back" type="button">REOPEN</button><button class="del" type="button">DELETE</button></div>`
+          : (items.length ? '' : `<div class="card-actions"><button type="button">ARCHIVE</button></div>`);
+        const taskList = items.length
+          ? `<div class="p-list">` + items.map(t => `<span class="p-item${t.status === 'done' ? ' done' : ''}">${escapeHtml(t.title)}</span>`).join('') + `</div>`
+          : `<div class="p-empty">No tasks yet</div>`;
+        return `<div class="card project" style="border-left-color:${prioColor[p.priority] || 'var(--border)'}">` +
+          `${demoCirclesHtml(p.people)}<div class="title">${escapeHtml(p.name)}</div>` +
+          `<div class="meta"><div class="row"><span class="badge">${items.length} task${items.length === 1 ? '' : 's'}</span>` +
+          (archived ? `<span class="badge">done</span>` : '') + `</div></div>` +
+          (p.description ? `<div class="meta"><div class="row desc">${escapeHtml(p.description)}</div></div>` : '') +
+          taskList + actions + `</div>`;
+      }).join('');
+    }
+
+    function renderDemoTasks() {
+      const body = $('demoTasks');
+      body.innerHTML = demoTasksData().map(t => {
+        const due = t.due ? new Date(t.due + 'T00:00:00') : null;
+        const overdue = due && t.status !== 'done' && due < new Date(todayEt() + 'T00:00:00');
+        return `<div class="card task" style="border-left-color:var(--border)">` +
+          `${demoCirclesHtml(t.people)}<div class="title">${escapeHtml(t.title)}</div>` +
+          `<div class="meta"><div class="row">` +
+            (t.project ? `<span class="badge">${escapeHtml(t.project)}</span>` : '') +
+          `</div>` +
+          (t.desc ? `<div class="row desc">${escapeHtml(t.desc)}</div>` : '') +
+          `</div>` +
+          `<div class="card-actions"><span class="due${overdue ? ' overdue' : ''}">Due: ${formatDate(t.due)}${overdue ? ' (overdue)' : ''}</span>` +
+          (t.status === 'done' ? `<button class="go-back" type="button">REOPEN</button>` : `<button type="button">COMPLETE</button>`) +
+          `</div></div>`;
+      }).join('');
+    }
+
+    function demoBlk(ev) {
+      const minStart = TL_START * 60, minEnd = TL_END * 60;
+      const s = Math.max(toMin(ev.start_time), minStart);
+      const en = Math.min(ev.end_time ? toMin(ev.end_time) : s + 60, minEnd);
+      if (en <= minStart || s >= minEnd) return '';
+      const pxPerMin = PX_PER_HOUR / 60;
+      const top = (s - minStart) * pxPerMin;
+      const height = Math.max((en - s) * pxPerMin, 16);
+      const extra = ev.source === 'feed' ? ' feed' : ' editable';
+      return `<div class="blk${extra}" style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
+        `<div class="b-title">${escapeHtml(ev.title)}</div>` +
+        `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div></div>`;
+    }
+
+    function renderDemoCalendar() {
+      const tl = $('demoCal');
       const gridH = (TL_END - TL_START) * PX_PER_HOUR;
-      let h = `<div class="tl-ticks" style="height:${gridH}px">`;
+      const events = [
+        { title: 'Rent due', allDay: true, start_time: null, end_time: null, color: '#ff453a', source: 'feed' },
+        { title: '1:1 with Sam', start_time: '09:00', end_time: '09:30', color: 'var(--calendar-google)', source: 'feed' },
+        { title: 'Deep work — redesign', start_time: '10:00', end_time: '12:00', color: 'var(--accent)', source: 'manual' },
+        { title: 'Lunch', start_time: '12:30', end_time: '13:30', color: '#0a84ff', source: 'manual' },
+        { title: 'Reading hour', start_time: '17:00', end_time: '18:00', color: '#ff9f0a', source: 'manual' },
+        { title: 'Gym', start_time: '18:30', end_time: '20:00', color: '#bf5af2', source: 'manual' },
+      ];
+      const allDay = events.filter(e => e.allDay || !e.start_time);
+      const timed = events.filter(e => !e.allDay && e.start_time);
+      let h = `<div class="tl-rail"><div class="tl-head">${fmtDayHead('TODAY', todayEt())}<span class="tl-n">${events.length}</span></div>`;
+      for (const e of allDay) {
+        const extra = e.source === 'feed' ? ' feed' : ' editable';
+        h += `<div class="blk allday${extra}" style="border-left-color:${e.color}">` +
+          `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span></div>`;
+      }
+      h += `<div class="tl-body"><div class="tl-ticks" style="height:${gridH}px">`;
       for (let k = TL_START; k <= TL_END; k++) {
         const f = (k - TL_START) / (TL_END - TL_START);
         const tr = f === 0 ? 'translateY(0)' : (f >= 1 ? 'translateY(-100%)' : 'translateY(-50%)');
         h += `<span class="tl-tick" style="top:${(f * 100).toFixed(2)}%;transform:${tr}">${fmtTime12(k + ':00')}</span>`;
       }
-      return h + '</div>';
+      h += `</div><div class="tl-grid" style="height:${gridH}px">`;
+      for (let k = TL_START; k <= TL_END; k++) {
+        const f = (k - TL_START) / (TL_END - TL_START);
+        h += `<div class="tl-hourline" style="top:${(f * 100).toFixed(2)}%"></div>`;
+      }
+      h += timed.map(demoBlk).join('') + `</div></div></div>`;
+      tl.innerHTML = h;
     }
 
-    function pubAnchorLabel() {
-      const today = todayEt();
-      const anchor = pubAnchor || today;
-      if (pubMode === 'week') {
-        const ws = weekStartOf(anchor);
-        if (ws === today || (ws <= today && today <= addDaysLocal(ws, 6))) return 'This Week';
-        const end = addDaysLocal(ws, 6);
-        return `Week of ${formatDate(ws)}<span class="cal-range">${formatDate(ws)} – ${formatDate(end)}</span>`;
-      }
-      if (anchor === today) return 'Today';
-      return humanDay(anchor);
+    function renderDemo() {
+      renderDemoProjects();
+      renderDemoTasks();
+      renderDemoCalendar();
     }
 
-    function renderPubTags() {
-      const bar = $('pubCalTagbar');
-      bar.innerHTML =
-        `<span class="label">Scale:</span>` +
-        [['today', 'Day'], ['week', 'Week']].map(([v, label]) =>
-          `<span class="tag${pubMode === v ? ' active' : ''}" data-mode="${v}">${label}</span>`
-        ).join('') +
-        `<span class="cal-nav">` +
-          `<button id="pubPrev" title="Previous ${pubMode === 'week' ? 'week' : 'day'}">&#9664;</button>` +
-          `<span class="cal-anchor">${pubAnchorLabel()}</span>` +
-          `<button id="pubNext" title="Next ${pubMode === 'week' ? 'week' : 'day'}">&#9654;</button>` +
-        `</span>`;
-      bar.querySelectorAll('.tag[data-mode]').forEach(ch => {
-        ch.onclick = () => { pubMode = ch.dataset.mode; renderPubEvents(); };
-      });
-      $('pubPrev').onclick = () => pubStep(-1);
-      $('pubNext').onclick = () => pubStep(1);
+    // ---------- Feature tour ----------
+    const TOUR_STEPS = [
+      { target: 'demoProjectsPanel', title: 'Projects', text: 'Projects bundle related tasks under one name and priority, with the people involved. Archive a project once its work is done — archived projects stay hidden until you reveal them with the filter.' },
+      { target: 'demoTasksPanel', title: 'Tasks', text: 'Tasks carry a due date, project, people, notes, and optional daily/weekly recurrence. Filter by project with the Project dropdown, toggle completed work, or drag a task onto the calendar to time-block it.' },
+      { target: 'demoCalPanel', title: 'Calendar', text: 'The calendar blends your manual time blocks with read-only feed events from Outlook and Google. Use Day/Week scales, drag blocks to reschedule, and drag a calendar event onto tasks to capture it as something to do.' },
+      { target: 'demoSignInBtn', title: 'Sign in', text: 'This demo is hardcoded sample data. Sign in to see your real tasks, projects, and calendar — everything is private behind Supabase auth.' },
+    ];
+    let tourIdx = 0;
+
+    function positionTourBox(id, autoScroll) {
+      const el = $(id);
+      const box = $('tourBox');
+      if (!el) return;
+      if (autoScroll) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const apply = () => {
+        const r = el.getBoundingClientRect();
+        box.style.top = (r.top - 6) + 'px';
+        box.style.left = (r.left - 6) + 'px';
+        box.style.width = (r.width + 12) + 'px';
+        box.style.height = (r.height + 12) + 'px';
+      };
+      if (autoScroll) setTimeout(apply, 350); else apply();
     }
 
-    function pubStep(dir) {
-      if (pubMode === 'week') {
-        pubAnchor = addDaysLocal(weekStartOf(pubAnchor || todayEt()), dir * 7);
-      } else {
-        pubAnchor = addDaysLocal(pubAnchor || todayEt(), dir);
-      }
-      renderPubEvents();
+    function renderTour() {
+      const step = TOUR_STEPS[tourIdx];
+      $('tourStepNum').textContent = (tourIdx + 1) + ' / ' + TOUR_STEPS.length;
+      $('tourTitle').textContent = step.title;
+      $('tourText').textContent = step.text;
+      $('tourDots').innerHTML = TOUR_STEPS.map((_, i) => `<i${i === tourIdx ? ' class="on"' : ''}></i>`).join('');
+      const back = $('tourBack');
+      back.disabled = tourIdx === 0;
+      back.style.opacity = tourIdx === 0 ? 0.35 : 1;
+      $('tourNext').textContent = tourIdx === TOUR_STEPS.length - 1 ? 'Got it' : 'Next';
+      positionTourBox(step.target, true);
     }
 
-    function renderPubEvents() {
-      if (!pubAnchor) pubAnchor = todayEt();
-      if (pubMode === 'week') pubAnchor = weekStartOf(pubAnchor);
-      renderPubTags();
-      const tl = $('pubCalTimeline');
-      const today = todayEt();
-      if (pubMode === 'week') {
-        const ws = weekStartOf(pubAnchor);
-        const weekEnd = addDaysLocal(ws, 6);
-        const expanded = expandRecurring(pubEvents, ws, weekEnd);
-        const weekEvs = expanded.filter(e => e.date >= ws && e.date <= weekEnd);
-        let h = '<div class="tl-week">';
-        for (let i = 0; i < 7; i++) {
-          const d = addDaysLocal(ws, i);
-          const tag = d === today ? 'TODAY' : new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-          const evs = weekEvs.filter(e => e.date === d);
-          h += `<div class="tl-rail"><div class="tl-head">${fmtDayHead(tag, d)}<span class="tl-n">${evs.length || ''}</span></div>` +
-            `<div class="tl-body">${i === 0 ? pubTicksHtml() : ''}${pubGridHtml(evs)}</div></div>`;
-        }
-        tl.innerHTML = h + '</div>';
-      } else {
-        const headTag = pubAnchor === today ? 'TODAY' : new Date(pubAnchor + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
-        const expanded = expandRecurring(pubEvents, pubAnchor, pubAnchor);
-        const evs = expanded.filter(e => e.date === pubAnchor);
-        tl.innerHTML = `<div class="tl-rail">` +
-          `<div class="tl-head">${fmtDayHead(headTag, pubAnchor)}<span class="tl-n">${evs.length || ''}</span></div>` +
-          `<div class="tl-body">${pubTicksHtml()}${pubGridHtml(evs)}</div></div>`;
-      }
+    function startTour() {
+      tourIdx = 0;
+      $('tourCard').classList.remove('hidden');
+      $('tourBox').classList.remove('hidden');
+      renderTour();
     }
 
-    async function loadPubCalendar() {
-      const tl = $('pubCalTimeline');
-      tl.innerHTML = '<div class="empty">Loading availability…</div>';
-      let body = null;
-      try {
-        const r = await fetch(SUPABASE_URL + '/functions/v1/calendar-proxy', {
-          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' },
-        });
-        if (!r.ok) throw new Error('calendar proxy HTTP ' + r.status);
-        body = await r.json();
-        $('pubCalUpdated').textContent = body.last_updated
-          ? 'synced ' + new Date(body.last_updated).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' })
-          : '';
-      } catch (e) {
-        $('pubCalUpdated').textContent = 'feed offline';
-      }
-      const pubErrEl = $('pubConnError');
-      if (body && Array.isArray(body.errors) && body.errors.length) {
-        pubErrEl.className = 'conn-error notice';
-        pubErrEl.textContent = 'Some calendars unavailable: ' + body.errors.map(x => x.calendar).join(', ');
-        pubErrEl.classList.remove('hidden');
-      } else {
-        pubErrEl.classList.add('hidden');
-      }
-      // Merge the live feed (public proxy) with manually placed time blocks.
-      // Manual rows come back stripped to date/time only via get_manual_busy(),
-      // so titles/locations stay private behind RLS.
-      let manual = [];
-      try {
-        const { data, error } = await client.rpc('get_manual_busy');
-        if (!error && Array.isArray(data)) {
-          manual = data.map(r => ({
-            title: 'Busy',
-            date: r.date,
-            start_time: r.start_time || null,
-            end_time: r.end_time || null,
-            allDay: !!r.all_day,
-            recur: r.recur || null,
-            source: 'manual',
-            color: '#000',
-          }));
-        }
-      } catch (e) { /* manual busy fetch is non-fatal */ }
-      pubEvents = manual.concat((body?.events || []).map(proxyToEvent));
-      renderPubEvents();
+    function endTour() {
+      $('tourCard').classList.add('hidden');
+      $('tourBox').classList.add('hidden');
     }
 
     function tlBlock(ev) {
@@ -2297,7 +2395,17 @@
       await applyAuthState();
     };
 
-    $('pubSignInBtn').onclick = () => { $('loginForm').classList.add('open'); };
+    $('demoSignInBtn').onclick = () => { $('loginForm').classList.add('open'); };
+    $('demoTourBtn').onclick = startTour;
+    $('tourSkip').onclick = endTour;
+    $('tourBack').onclick = () => { if (tourIdx > 0) { tourIdx--; renderTour(); } };
+    $('tourNext').onclick = () => {
+      if (tourIdx >= TOUR_STEPS.length - 1) { endTour(); return; }
+      tourIdx++; renderTour();
+    };
+    window.addEventListener('resize', () => {
+      if (!$('tourCard').classList.contains('hidden')) positionTourBox(TOUR_STEPS[tourIdx].target, false);
+    });
     $('authCloseBtn').onclick = () => { $('loginForm').classList.remove('open'); };
     $('newTaskBtn').onclick = () => openEdit(null);
     $('newProjectBtn').onclick = () => openEdit(null, 'project');

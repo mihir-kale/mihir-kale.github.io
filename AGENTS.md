@@ -23,7 +23,7 @@ Personal GitHub Pages site (`mihir-kale.github.io`). Static HTML + Supabase back
   - People: name, contact, last contact, description; multi-tag onto tasks/projects.
   - Projects: name, priority (low/medium/high/urgent), status (pending/done), people, description; bundles its tasks.
   - "NOW" panel (mobile): next imminent event or next active task.
-  - Public availability view: shown to signed-out visitors; busy/free (black/green) day/week calendar from the public proxy feed + `get_manual_busy` RPC (titles/locations stay private).
+  - Demo view (signed-out): a self-contained preview showing hardcoded sample projects/tasks/calendar plus a guided feature tour. No Supabase or real data is fetched while signed out; everything is behind the sign-in.
 - **Theme**: Light/dark mode (CSS custom properties, `data-theme="dark"` on root, persisted in localStorage under `personalOSTheme`).
 - **Timezone**: `America/New_York` (constant `TZ`).
 - **No frameworks** — vanilla JS, vanilla CSS, monospace font aesthetic.
