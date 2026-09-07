@@ -223,6 +223,33 @@
     .tag:hover { color: var(--text); border-color: var(--accent); }
     .tag.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
     .tag .loc-dot { flex: none; width: 8px; height: 8px; }
+    .tag .sel-name { color: var(--accent); font-weight: 700; }
+    .tag.active .sel-name { color: var(--on-accent); }
+    .tag .caret { font-size: 9px; opacity: 0.7; }
+    .tagbar { position: relative; }
+    .tag-menu {
+      position: absolute;
+      top: calc(100% - 1px);
+      left: 12px;
+      min-width: 180px;
+      max-height: 260px;
+      overflow-y: auto;
+      z-index: 30;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .tag-menu .tm-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      border-bottom: 1px dotted var(--border);
+      word-break: break-word;
+    }
+    .tag-menu .tm-item:last-child { border-bottom: none; }
+    .tag-menu .tm-item:hover { background: var(--bg-2); }
+    .tag-menu .tm-item.active { color: var(--accent); font-weight: 700; }
 
     /* Columns */
     .columns {
@@ -1068,14 +1095,43 @@
       bar.innerHTML =
         `<span class="label">List:</span>` +
         `<span class="tag${taskView === 'done' ? ' active' : ''}" data-toggle="done">Completed<span class="tl-count">${doneCount}</span></span>` +
-        `<span class="tag${activeProject === 'ALL' ? ' active' : ''}" data-project="ALL">All</span>` +
-        projects.map(p => `<span class="tag${activeProject === p ? ' active' : ''}" data-project="${escapeHtml(p)}">${escapeHtml(p)}</span>`).join('');
+        `<span class="tag${activeProject === 'ALL' ? ' active' : ''}" data-toggle="projects">Project` +
+          `<span class="sel-name">${activeProject === 'ALL' ? 'All' : escapeHtml(activeProject)}</span>` +
+          `<span class="caret">▾</span>` +
+        `</span>` +
+        `<div class="tag-menu hidden" id="projectMenu">` +
+          `<div class="tm-item${activeProject === 'ALL' ? ' active' : ''}" data-project="ALL">All</div>` +
+          projects.map(p => `<div class="tm-item${activeProject === p ? ' active' : ''}" data-project="${escapeHtml(p)}">${escapeHtml(p)}</div>`).join('') +
+        `</div>`;
       bar.querySelectorAll('.tag[data-toggle="done"]').forEach(ch => {
         ch.onclick = () => { taskView = taskView === 'done' ? 'pending' : 'done'; renderTaskTags(); renderTasks(); };
       });
-      bar.querySelectorAll('.tag[data-project]').forEach(ch => {
-        ch.onclick = () => { activeProject = ch.dataset.project; renderTaskTags(); renderTasks(); };
-      });
+      const projectTag = bar.querySelector('.tag[data-toggle="projects"]');
+      const menu = $('projectMenu');
+      menu.onclick = (e) => {
+        const item = e.target.closest('.tm-item[data-project]');
+        if (!item) return;
+        activeProject = item.dataset.project;
+        menu.classList.add('hidden');
+        renderTaskTags();
+        renderTasks();
+      };
+      projectTag.onclick = () => {
+        const open = !menu.classList.contains('hidden');
+        closeProjectMenu();
+        if (!open) menu.classList.remove('hidden');
+      };
+      if (bar._projBlur) { bar.removeEventListener('click', bar._projBlur); bar._projBlur = null; }
+      bar._projBlur = (e) => {
+        if (!e.target.closest('.tag[data-toggle="projects"]') && !e.target.closest('#projectMenu')) {
+          menu.classList.add('hidden');
+        }
+      };
+      bar.addEventListener('click', bar._projBlur);
+    }
+    function closeProjectMenu() {
+      const menu = $('projectMenu');
+      if (menu) menu.classList.add('hidden');
     }
 
     function renderTasks() {
