@@ -89,7 +89,7 @@
     }
     .topbar::before { content: "▮"; color: var(--accent); animation: blink 1.1s steps(1) infinite; }
     @keyframes blink { 50% { opacity: 0; } }
-    .topbar button {
+    .os-actions button {
       background: transparent;
       border: 1px solid var(--accent);
       color: var(--accent);
@@ -102,11 +102,38 @@
       cursor: pointer;
       transition: background 0.1s, color 0.1s;
     }
-    .topbar button:hover { background: var(--accent); color: var(--on-accent); }
-    .topbar .theme-toggle { margin-left: auto; opacity: 0.55; font-weight: 600; font-size: 10px; letter-spacing: 1px; padding: 4px 8px; }
-    .topbar .theme-toggle:hover { opacity: 1; }
-    .topbar .projects-toggle { font-weight: 600; font-size: 10px; letter-spacing: 1px; padding: 4px 8px; }
-    .topbar .projects-toggle.toggle-active { background: var(--accent); color: var(--on-accent); }
+    .os-actions button:hover { background: var(--accent); color: var(--on-accent); }
+    .os-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+
+    /* Up-next chip — top right, Outlook-style current/next event */
+    .up-next {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border); background: var(--bg-2); padding: 4px 8px; min-width: 0;
+    }
+    .up-next[hidden] { display: none; }
+    .up-next-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 2px 5px;
+      color: var(--on-accent); background: var(--accent);
+    }
+    .up-next[data-state="next"] .up-next-tag {
+      color: var(--accent); background: transparent; border: 1px solid var(--accent);
+    }
+    .up-next-title { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+    .up-next-when { font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+    /* Theme square — filled when light theme is active, empty in dark */
+    .theme-toggle { width: 20px; height: 20px; padding: 0; border-radius: 2px; opacity: 0.7; }
+    :root:not([data-theme="dark"]) .theme-toggle { background: var(--text); border-color: var(--text); }
+    :root[data-theme="dark"] .theme-toggle { background: transparent; }
+    .theme-toggle:hover { opacity: 1; }
+
+    .projects-toggle { font-weight: 600; font-size: 10px; letter-spacing: 1px; padding: 4px 8px; }
+    .projects-toggle.toggle-active { background: var(--accent); color: var(--on-accent); }
+    .btn-tour { opacity: 0.7; }
+    .btn-tour:hover { opacity: 1; }
+    .btn-signin { color: var(--accent); border-color: var(--accent); }
+    .btn-signin:hover { color: var(--on-accent); }
 
     /* Login */
     #loginForm .lbox { margin: 0; position: relative; }
@@ -362,10 +389,6 @@
     }
     .demo-banner a { color: var(--accent); text-decoration: underline; }
     .demo-banner a:hover { color: var(--on-accent); }
-    .topbar .btn-tour { opacity: 0.7; }
-    .topbar .btn-tour:hover { opacity: 1; }
-    .topbar .btn-signin { color: var(--accent); border-color: var(--accent); margin-left: 8px; }
-    .topbar .btn-signin:hover { color: var(--on-accent); }
 
     /* Feature tour */
     #tourBox {
@@ -589,11 +612,11 @@
   <div id="os">
     <header class="topbar">
       Personal OS
-      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">light / dark</button>
-      <button id="projectsToggle" class="projects-toggle" title="Show or hide the Projects panel">Projects</button>
-      <button id="tourBtn" class="btn-tour hidden" title="Take the guided tour">Tour</button>
-      <button id="signInBtn" class="btn-signin hidden">Sign in</button>
-      <button id="signOutBtn" class="hidden">Sign out</button>
+      <div class="up-next" id="upNext" hidden>
+        <span class="up-next-tag" id="upNextTag">NEXT</span>
+        <span class="up-next-title" id="upNextTitle"></span>
+        <span class="up-next-when" id="upNextWhen"></span>
+      </div>
     </header>
 
     <div class="layout">
@@ -652,6 +675,14 @@
         </section>
         </div>
       </div>
+    </div>
+
+    <div class="os-actions">
+      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode"></button>
+      <button id="projectsToggle" class="projects-toggle" title="Show or hide the Projects panel">Projects</button>
+      <button id="tourBtn" class="btn-tour hidden" title="Take the guided tour">Tour</button>
+      <button id="signInBtn" class="btn-signin hidden">Sign in</button>
+      <button id="signOutBtn" class="hidden">Sign out</button>
     </div>
   </div>
 
@@ -839,12 +870,14 @@
       persistHiddenEvents();
       renderEvents();
       renderNowPanel();
+      renderUpNext();
     }
     function unhideAll() {
       hiddenEvents.clear();
       persistHiddenEvents();
       renderEvents();
       renderNowPanel();
+      renderUpNext();
     }
 
     const $ = (id) => document.getElementById(id);
@@ -1178,6 +1211,7 @@
       for (const t of list) body.appendChild(renderTaskCard(t));
       renderProjects();
       renderNowPanel();
+      renderUpNext();
     }
 
     function renderTaskCard(t) {
@@ -1504,6 +1538,42 @@
       }
     }
 
+    // ---------- Up-next chip (desktop, Outlook-style) ----------
+    // Timed events/time blocks only: NOW while one is in progress, otherwise NEXT.
+    function currentOrNextEvent() {
+      const today = todayEt();
+      const nowMin = (toMin(isoToTimeStr(new Date().toISOString()))) || 0;
+      const cand = events.filter(e => !isHidden(e)).sort((a, b) =>
+        (a.date + '|' + (a.start_time || '')).localeCompare(b.date + '|' + (b.start_time || '')));
+      for (const ev of cand) {
+        if (ev.allDay || !ev.start_time) continue;
+        if (ev.date < today) continue;
+        const sm = toMin(ev.start_time);
+        const em = ev.end_time ? toMin(ev.end_time) : null;
+        if (ev.date === today && em != null && sm <= nowMin && nowMin < em) return { state: 'now', ev };
+        if (ev.date === today && sm <= nowMin) continue;
+        return { state: 'next', ev };
+      }
+      return null;
+    }
+
+    function renderUpNext() {
+      const el = $('upNext');
+      if (!el) return;
+      const item = currentOrNextEvent();
+      if (!item) { el.hidden = true; return; }
+      const ev = item.ev;
+      const sameDay = ev.date === todayEt();
+      const when = sameDay
+        ? fmtRange(ev.start_time, ev.end_time)
+        : formatDate(ev.date) + (ev.start_time ? ' · ' + fmtRange(ev.start_time, ev.end_time) : '');
+      el.dataset.state = item.state;
+      $('upNextTag').textContent = item.state === 'now' ? 'NOW' : 'NEXT';
+      $('upNextTitle').textContent = ev.title;
+      $('upNextWhen').textContent = when;
+      el.hidden = false;
+    }
+
     function toMin(t) {
       if (!t) return null;
       const [h, m] = t.split(':').map(Number);
@@ -1751,6 +1821,7 @@
       }
       attachEditable();
       renderNowPanel();
+      renderUpNext();
     }
 
     function attachEditable() {
@@ -2541,6 +2612,7 @@
       // Polling fallback
       setInterval(() => { loadTasks(); }, 60000);
       setInterval(() => { loadCalendar(); }, 300000);
+      setInterval(() => { renderUpNext(); }, 30000);
     }
 
     boot();
