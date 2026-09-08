@@ -341,7 +341,7 @@
     .tl-grid { position: relative; flex: 1 1 auto; min-width: 0; }
     .tl-hourline { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--border); }
     .blk {
-      position: absolute; left: 4px; right: 4px; overflow: hidden;
+      position: absolute; overflow: hidden;
       padding: 3px 6px; box-sizing: border-box;
       border-left: 3px solid var(--border);
       background: var(--card);
@@ -1722,7 +1722,52 @@
       $('tourBox').classList.add('hidden');
     }
 
-    function tlBlock(ev) {
+    // Clamped render interval for a timed event (same math as tlBlock).
+    function evInterval(ev) {
+      const start = toMin(ev.start_time);
+      const end = toMin(ev.end_time);
+      const s = Math.max(start, TL_START * 60);
+      let e = Math.min(end != null ? end : start + 60, TL_END * 60);
+      if (e <= s) e = s + 1; // zero-duration → 1 minute so it still clusters
+      return { s, e };
+    }
+    // Group overlapping events into clusters, then give every event a column
+    // within its cluster so they squeeze horizontally instead of covering
+    // each other (Google Calendar-style side-by-side).
+    function layoutClusters(timed) {
+      const sorted = [...timed].sort((a, b) => {
+        const ia = evInterval(a), ib = evInterval(b);
+        return ia.s - ib.s || ib.e - ia.e;
+      });
+      const clusters = [];
+      let cl = [], clEnd = -1;
+      for (const ev of sorted) {
+        const { s } = evInterval(ev);
+        if (cl.length && s >= clEnd) { clusters.push(cl); cl = []; clEnd = -1; }
+        cl.push(ev);
+        clEnd = Math.max(clEnd, evInterval(ev).e);
+      }
+      if (cl.length) clusters.push(cl);
+      const out = [];
+      for (const cluster of clusters) {
+        const colEnd = [];
+        const placed = [];
+        for (const ev of cluster) {
+          const { s, e } = evInterval(ev);
+          let col = -1, bestEnd = -1;
+          for (let i = 0; i < colEnd.length; i++) {
+            if (colEnd[i] <= s && colEnd[i] > bestEnd) { col = i; bestEnd = colEnd[i]; }
+          }
+          if (col === -1) { col = colEnd.length; colEnd.push(-1); }
+          colEnd[col] = e;
+          placed.push({ ev, col });
+        }
+        const cols = colEnd.length;
+        for (const { ev, col } of placed) out.push({ ev, col, cols });
+      }
+      return out;
+    }
+    function tlBlock(ev, col, cols) {
       const start = toMin(ev.start_time);
       const end = toMin(ev.end_time);
       const minStart = TL_START * 60, minEnd = TL_END * 60;
@@ -1732,10 +1777,12 @@
       const pxPerMin = PX_PER_HOUR / 60;
       const top = (s - minStart) * pxPerMin;
       const height = Math.max((e - s) * pxPerMin, 16);
+      const leftPct = (col * 100 / cols).toFixed(3);
+      const widthPct = (100 / cols).toFixed(3);
       const feed = ev.source === 'feed';
       const extra = feed ? ' feed' : ' editable';
       const did = feed ? ` data-ext="${escapeHtml(ev.external_id || '')}"` : ` data-id="${escapeHtml(ev.id)}"`;
-      return `<div class="blk${extra}"${did} style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;border-left-color:${ev.color}">` +
+      return `<div class="blk${extra}"${did} style="top:${top.toFixed(1)}px;height:${height.toFixed(1)}px;left:calc(${leftPct}% + 2px);width:calc(${widthPct}% - 4px);border-left-color:${ev.color}">` +
         `<button class="ev-hide" data-hide="${escapeHtml(evKey(ev))}" title="Hide event">&#10005;</button>` +
         `<div class="b-title">${escapeHtml(ev.title)}</div>` +
         `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div>` +
@@ -1765,7 +1812,7 @@
         const f = (k - TL_START) / (TL_END - TL_START);
         h += `<div class="tl-hourline" style="top:${(f * 100).toFixed(2)}%"></div>`;
       }
-      const blkHtml = timed.map(e => tlBlock(e)).filter(Boolean).join('');
+      const blkHtml = layoutClusters(timed).map(({ ev, col, cols }) => tlBlock(ev, col, cols)).filter(Boolean).join('');
       h += blkHtml || (allDay.length ? '' : '<div class="tl-empty">No events</div>');
       h += `</div></div></div>`;
       return h;
