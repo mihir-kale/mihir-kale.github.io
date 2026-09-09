@@ -353,7 +353,6 @@
     .blk.editable:hover { box-shadow: var(--shadow); }
     .blk.feed { border-left-style: dashed; opacity: 0.85; }
     .ev-src {
-      position: absolute; right: 4px; bottom: 3px;
       font-size: 8px; letter-spacing: 0.6px; text-transform: uppercase;
       color: var(--muted); background: var(--bg-2);
       border: 1px solid var(--border); border-radius: 2px; padding: 1px 3px;
@@ -361,7 +360,6 @@
       max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .card-actions .due-wrap { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-    .card .ev-src { position: static; min-width: 0; }
     .ev-hide {
       position: absolute; top: 2px; right: 2px; z-index: 2;
       display: none; align-items: center; justify-content: center;
@@ -1048,7 +1046,8 @@
       let actionsHtml = '';
       if (archived) {
         actionsHtml = `<div class="card-actions"><button class="go-back" type="button">REOPEN</button><button class="del" type="button">DELETE</button></div>`;
-      } else if (!items.length) {
+      } else if (!items.some(t => t.status !== 'done')) {
+        // No pending tasks left (all done or none) → ready to archive.
         actionsHtml = `<div class="card-actions"><button type="button">ARCHIVE</button></div>`;
       }
 
@@ -1800,7 +1799,6 @@
         `<button class="ev-hide" data-hide="${escapeHtml(evKey(ev))}" title="Hide event">&#10005;</button>` +
         `<div class="b-title">${escapeHtml(ev.title)}</div>` +
         `<div class="b-time">${escapeHtml(fmtRange(ev.start_time, ev.end_time))}</div>` +
-        calSrcHtml(ev) +
         `</div>`;
     }
     function tlColumn(titleHtml, evs) {
@@ -1814,9 +1812,7 @@
         const did = feed ? ` data-ext="${escapeHtml(e.external_id || '')}"` : ` data-id="${escapeHtml(e.id)}"`;
         h += `<div class="blk allday${extra}"${did} style="border-left-color:${e.color}">` +
           `<button class="ev-hide" data-hide="${escapeHtml(evKey(e))}" title="Hide event">&#10005;</button>` +
-          `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span>` +
-          calSrcHtml(e) +
-          `</div>`;
+          `<span class="b-label">ALL DAY</span><span class="b-title">${escapeHtml(e.title)}</span></div>`;
       }
       h += `<div class="tl-body"><div class="tl-ticks" style="height:${gridH}px">`;
       for (let k = TL_START; k <= TL_END; k++) {
@@ -1954,7 +1950,7 @@
           `<div class="row">${escapeHtml(timeLine)}</div>` +
           (ev.location ? `<div class="row">${escapeHtml(ev.location)}</div>` : '') +
         `</div>` +
-        `<div class="card-actions"><span class="due-wrap"><span class="due">${escapeHtml(formatDate(ev.date))}</span>${calSrcHtml(ev)}</span></div>` +
+        `<div class="card-actions"><span class="due-wrap">${calSrcHtml(ev)}<span class="due">${escapeHtml(formatDate(ev.date))}</span></span></div>` +
       `</div>`;
     }
 
