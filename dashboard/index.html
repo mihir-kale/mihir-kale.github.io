@@ -481,6 +481,7 @@
 
     /* Project bundles */
     .card.project .p-list { margin-top: 6px; border-top: 1px dashed var(--border); }
+    .p-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
     .p-item {
       display: block; padding: 4px 6px; font-size: 12px; color: var(--text);
       border-bottom: 1px dotted var(--border); cursor: pointer; word-break: break-word;
@@ -716,6 +717,10 @@
           <span class="tag" data-priority="urgent">Urgent</span>
         </div>
       </div>
+      <div class="field hidden" id="fColorField">
+        <label>Color</label>
+        <div class="status-pills" id="colorPills"></div>
+      </div>
       <div class="field" id="fRecurField">
         <label>Repeats</label>
         <div class="status-pills" id="recurPills">
@@ -830,6 +835,7 @@
     // a feed that failed to fetch.
     const FEED_CALENDARS = ['Outlook', 'Google', 'Handshake'];
     const BLOCK_COLORS = ['var(--accent)', '#0a84ff', '#ff9f0a', '#ff453a', '#30d158', '#bf5af2'];
+    const PROJECT_COLORS = ['var(--accent)', 'var(--calendar-google)', 'var(--calendar-outlook)', 'var(--calendar-handshake)', '#ff453a', '#30d158', 'var(--done)'];
     // ============================================================
     // END CONFIG
     // ============================================================
@@ -852,6 +858,7 @@
     let editingId = null;
     let modalKind = 'task';
     let modalPriority = 'medium';
+    let modalColor = PROJECT_COLORS[0];
     let modalRecur = '';
     let modalPeople = new Set();
     let dragCtx = null;
@@ -993,6 +1000,7 @@
         if (error) throw error;
         projects = data || [];
         renderProjects();
+        renderTasks();
         hideError();
       } catch (e) {
         setError('Failed to load projects: ' + e.message);
@@ -1036,7 +1044,7 @@
       card.onclick = () => openEdit(p, 'project');
       const prio = p.priority || 'medium';
       const prioColor = { low: 'var(--low)', medium: 'var(--accent-dim)', high: 'var(--done)', urgent: 'var(--warn)' }[prio] || 'var(--border)';
-      card.style.borderLeftColor = prioColor;
+      card.style.borderLeftColor = (p.color && PROJECT_COLORS.includes(p.color)) ? p.color : prioColor;
 
       const items = tasks
         .filter(t => t.project === p.name)
@@ -1053,7 +1061,7 @@
 
       card.innerHTML =
         personCirclesHtml(p.people) +
-        `<div class="title">${escapeHtml(p.name)}</div>` +
+        `<div class="title">${(p.color && PROJECT_COLORS.includes(p.color)) ? `<span class="p-dot" style="background:${escapeHtml(p.color)}"></span>` : ''}${escapeHtml(p.name)}</div>` +
         `<div class="meta"><div class="row">` +
           `<span class="badge">${items.length} task${items.length === 1 ? '' : 's'}</span>` +
           (p.status !== 'pending' ? `<span class="badge">${escapeHtml(p.status)}</span>` : '') +
@@ -1240,14 +1248,16 @@
       today.setHours(0, 0, 0, 0);
       const due = t.due_date ? new Date(t.due_date + 'T00:00:00') : null;
       const overdue = due && t.status !== 'done' && due < today;
-      card.style.borderLeftColor = 'var(--border)';
+      const proj = t.project ? projects.find(x => x.name === t.project) : null;
+      const projColor = (proj && proj.color && PROJECT_COLORS.includes(proj.color)) ? proj.color : null;
+      card.style.borderLeftColor = projColor || 'var(--border)';
 
       card.innerHTML =
         personCirclesHtml(t.people) +
         `<div class="title">${escapeHtml(t.title)}</div>` +
         `<div class="meta">` +
           `<div class="row">` +
-            (t.project ? `<span class="badge">${escapeHtml(t.project)}</span>` : '') +
+            (t.project ? `<span class="badge"${projColor ? ` style="border-left-color:${escapeHtml(projColor)}"` : ''}>${escapeHtml(t.project)}</span>` : '') +
           `</div>` +
           (t.description ? `<div class="row desc">${escapeHtml(t.description)}</div>` : '') +
         `</div>` +
@@ -1633,11 +1643,11 @@
 
     function demoProjectsData() {
       return [
-        { id: 'demo-p1', name: 'Website Redesign', priority: 'high', status: 'pending', people: ['demo-AC', 'demo-SR'], description: 'New homepage + CMS migration.', created_at: null, updated_at: null },
-        { id: 'demo-p2', name: 'Fall 2026 Reading', priority: 'medium', status: 'pending', people: ['demo-JK'], description: 'The Power Broker & The Overstory.', created_at: null, updated_at: null },
-        { id: 'demo-p3', name: 'Internship Applications', priority: 'urgent', status: 'pending', people: [], description: 'Deadlines pile up in September.', created_at: null, updated_at: null },
-        { id: 'demo-p4', name: 'Apartment Deep Clean', priority: 'low', status: 'pending', people: [], description: '', created_at: null, updated_at: null },
-        { id: 'demo-p5', name: 'Old Project 2024', priority: 'low', status: 'done', people: [], description: '', created_at: null, updated_at: null },
+        { id: 'demo-p1', name: 'Website Redesign', priority: 'high', status: 'pending', people: ['demo-AC', 'demo-SR'], description: 'New homepage + CMS migration.', color: PROJECT_COLORS[0], created_at: null, updated_at: null },
+        { id: 'demo-p2', name: 'Fall 2026 Reading', priority: 'medium', status: 'pending', people: ['demo-JK'], description: 'The Power Broker & The Overstory.', color: PROJECT_COLORS[1], created_at: null, updated_at: null },
+        { id: 'demo-p3', name: 'Internship Applications', priority: 'urgent', status: 'pending', people: [], description: 'Deadlines pile up in September.', color: PROJECT_COLORS[2], created_at: null, updated_at: null },
+        { id: 'demo-p4', name: 'Apartment Deep Clean', priority: 'low', status: 'pending', people: [], description: '', color: PROJECT_COLORS[3], created_at: null, updated_at: null },
+        { id: 'demo-p5', name: 'Old Project 2024', priority: 'low', status: 'done', people: [], description: '', color: PROJECT_COLORS[4], created_at: null, updated_at: null },
       ];
     }
 
@@ -2250,12 +2260,13 @@
       $('fId').value = t ? t.id : '';
       $('fTitleLabel').innerHTML = (isPerson ? 'Name' : 'Title') + ' <span class="req">*</span>';
       $('fTitle').placeholder = isPerson ? "Person's name" : 'What needs doing?';
-      $('fTitle').value = t ? (isPerson ? t.name : t.title) : '';
+      $('fTitle').value = t ? (isPerson || isProject ? t.name : t.title) : '';
       $('fDue').value = t ? (t.due_date || '') : '';
       $('fNotes').value = t ? (t.description || '') : '';
       $('fLastContact').value = isPerson && t ? (t.last_contact || '') : '';
       $('fContact').value = isPerson && t ? (t.contact || '') : '';
       $('fPriorityField').classList.toggle('hidden', isPerson || !isProject);
+      $('fColorField').classList.toggle('hidden', !isProject);
       $('fDueField').classList.toggle('hidden', isProject || isPerson);
       $('fRecurField').classList.toggle('hidden', isProject || isPerson);
       $('fPeopleField').classList.toggle('hidden', isPerson);
@@ -2290,6 +2301,8 @@
         : 'Status: <b>Pending</b> (new ' + (isProject ? 'project' : isPerson ? 'person' : 'task') + ')';
       modalPriority = t ? (t.priority || 'medium') : 'medium';
       setPriorityPill();
+      modalColor = isProject && t && t.color ? t.color : PROJECT_COLORS[0];
+      renderProjectColorPills();
       modalRecur = t ? (t.recur || '') : '';
       setRecurPill();
 
@@ -2374,6 +2387,13 @@
         p.classList.toggle('active', p.dataset.recur === modalRecur);
       });
     }
+    function renderProjectColorPills() {
+      $('colorPills').innerHTML = PROJECT_COLORS.map(c =>
+        `<span class="swatch${modalColor === c ? ' active' : ''}" data-color="${escapeHtml(c)}" style="background:${escapeHtml(c)}"></span>`).join('');
+      $('colorPills').querySelectorAll('.swatch').forEach(s => {
+        s.onclick = () => { modalColor = s.dataset.color; renderProjectColorPills(); };
+      });
+    }
 
     async function save() {
       const title = $('fTitle').value.trim();
@@ -2419,6 +2439,7 @@
         const payload = {
           name: title,
           priority: modalPriority,
+          color: modalColor,
           description: $('fNotes').value.trim() || null,
           people: [...modalPeople],
           updated_at: new Date().toISOString(),
