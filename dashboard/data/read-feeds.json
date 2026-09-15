@@ -1,35 +1,407 @@
 {
-  "last_updated": "2026-08-02T19:12:03.855145+00:00",
+  "last_updated": "2026-09-13T07:05:49.101Z",
   "articles": [
     {
-      "title": "Glen Hansard\u2019s Street-Corner Stories",
-      "url": "https://www.newyorker.com/news/postscript/glen-hansards-street-corner-stories",
+      "title": "AI’s Code-Red Moment",
+      "url": "https://www.theatlantic.com/technology/2026/09/dario-amodei-slow-down-ai-save-humanity/688610/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "AI Is Running Laps Around Our Political System",
+      "url": "https://www.theatlantic.com/politics/2026/09/ai-dario-amodei-essay/688596/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Remembering 9/11, 25 Years Later",
+      "url": "https://www.theatlantic.com/national/2026/09/remembering-9-11-washington-week/688609/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Mario-a-Lago Kart, Anyone?",
+      "url": "https://www.theatlantic.com/newsletters/2026/09/white-house-arcade-games-parody/688602/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "The Joy of Being Asked to Help",
+      "url": "https://www.theatlantic.com/newsletters/2026/09/asking-help-awkward/688608/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "The Year Great-White Sharks Took Over Maine",
+      "url": "https://www.theatlantic.com/culture/2026/09/sharks-maine-infestation/688581/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Cormac McCarthy’s Midlife Crisis",
+      "url": "https://www.theatlantic.com/magazine/2026/10/cormac-mccarthy-biography-tracy-daugherty/688350/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Trump Will Never Mail the $5,000 Checks",
+      "url": "https://www.theatlantic.com/ideas/2026/09/trump-5000-rebate-checks/688599/",
+      "source": "The Atlantic",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Ben Shelton Comes Into Full Focus",
+      "url": "https://www.newyorker.com/sports/sporting-scene/ben-shelton-comes-into-full-focus",
       "source": "The New Yorker",
-      "date": "2026-07-31"
+      "date": "2026-09-12"
     },
     {
-      "title": "Rachel Yoder Reads \u201cThe Promise\u201d",
-      "url": "https://www.newyorker.com/podcast/the-writers-voice/rachel-yoder-reads-the-promise",
+      "title": "Play Shuffalo: Saturday, September 12, 2026",
+      "url": "https://www.newyorker.com/puzzles-and-games-dept/shuffalo/2026/09/12",
       "source": "The New Yorker",
-      "date": "2026-08-02"
+      "date": "2026-09-12"
     },
     {
-      "title": "Cover Story newsletter: The global currency beef",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/31/cover-story-newsletter-the-global-currency-beef",
-      "source": "The Economist",
-      "date": "2026-07-31"
-    },
-    {
-      "title": "Politics",
-      "url": "https://www.economist.com/the-world-this-week/2026/07/30/politics",
-      "source": "The Economist",
-      "date": "2026-07-30"
-    },
-    {
-      "title": "Wendy Wasserstein\u2019s Prescient Play",
-      "url": "https://www.newyorker.com/culture/goings-on/wendy-wassersteins-prescient-play",
+      "title": "On Not Being a Homeowner",
+      "url": "https://www.newyorker.com/news/the-weekend-essay/on-not-being-a-homeowner",
       "source": "The New Yorker",
-      "date": "2026-07-31"
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Ric Burns, N.Y.C. Optimist",
+      "url": "https://www.newyorker.com/magazine/2026/09/21/ric-burns-nyc-optimist",
+      "source": "The New Yorker",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Play Catalogues: Saturday, September 12, 2026",
+      "url": "https://www.newyorker.com/puzzles-and-games-dept/catalogues/2026/09/12",
+      "source": "The New Yorker",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Is a Blue Wave Really Coming?",
+      "url": "https://www.newyorker.com/podcast/political-scene/is-a-blue-wave-really-coming",
+      "source": "The New Yorker",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "The Anti-Woke Right Can’t Figure Out How to Stop ‘Grand Theft Auto VI’",
+      "url": "https://www.wired.com/story/the-anti-woke-right-cant-figure-out-how-to-stop-grand-theft-auto-vi/",
+      "source": "Wired",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "From Hacks to Bioweapons, Claude Misuse Is Now Everywhere",
+      "url": "https://www.wired.com/story/security-news-this-week-from-hacks-to-bioweapons-claude-misuse-is-now-everywhere/",
+      "source": "Wired",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Branch Ergonomic Chair Pro (Sega Edition) Review: Comfy, Not Boring",
+      "url": "https://www.wired.com/review/branch-ergonomic-chair-pro-sega-edition/",
+      "source": "Wired",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "‘I’m Really Terrified’: A Mathematician Grapples With AI’s Recent Breakthroughs",
+      "url": "https://www.wired.com/story/mathematician-steven-strogatz-grapples-with-ai-recent-breakthroughs/",
+      "source": "Wired",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "You Don’t Have a Right to Safe Drinking Water, Trump-Appointed Judge Rules",
+      "url": "https://www.wired.com/story/you-dont-have-right-to-safe-drinking-water-trump-appointed-judge-rules/",
+      "source": "Wired",
+      "date": "2026-09-12"
+    },
+    {
+      "title": "Everything Trump Wants to Do Causes Inflation",
+      "url": "https://www.theatlantic.com/newsletters/2026/09/trump-5k-inflation-republican-midterm-convention/688603/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "A Recap of a Surreal Midterm Convention",
+      "url": "https://www.theatlantic.com/newsletters/2026/09/trump-republican-midterm-convention-speeches/688606/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "The AI Pandemic Isn’t On Its Way",
+      "url": "https://www.theatlantic.com/health/2026/09/ai-virus-nature-pandemic/688569/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Photos: 9/11 Memorials",
+      "url": "https://www.theatlantic.com/photography/2026/09/photos-911-memorials/688574/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "AI Writing Has Entered Its Post-Shame Era",
+      "url": "https://www.theatlantic.com/podcasts/2026/09/is-ai-writing-inevitable/688578/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "The Spectacle of 1980s Hollywood",
+      "url": "https://www.theatlantic.com/newsletters/2026/09/the-books-briefing-jackie-collins-la-novelist/688595/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Trump Loses the Other Strait",
+      "url": "https://www.theatlantic.com/international/2026/09/trump-iran-houthis-yemen/688592/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Postscript to American Ground: Unbuilding the World Trade Center",
+      "url": "https://www.theatlantic.com/national/2026/09/afterword-american-ground-unbuilding-world-trade-center/688570/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Rules Designed to Create Chaos",
+      "url": "https://www.theatlantic.com/ideas/2026/09/mail-voting-usps-trump/688585/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Photos of the Week: Night Harvest, Heavy Surf, Pumpkin Kong",
+      "url": "https://www.theatlantic.com/photography/2026/09/photos-of-the-week-night-harvest-heavy-surf-pumpkin-kong/688573/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "America Has Forfeited Its Greatest Strength",
+      "url": "https://www.theatlantic.com/ideas/2026/09/september-11-trust-america/688580/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "How to Kill a Franchise Before It Even Starts",
+      "url": "https://www.theatlantic.com/culture/2026/09/hope-movie-review/688589/",
+      "source": "The Atlantic",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Years of Grief, War, and Human Grace",
+      "url": "https://www.newyorker.com/newsletter/the-daily/years-of-grief-war-and-human-grace",
+      "source": "The New Yorker",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "“The Uprising” Is a Grim But Scattershot History Lesson",
+      "url": "https://www.newyorker.com/culture/the-current-cinema/the-uprising-is-a-grim-but-scattershot-history-lesson",
+      "source": "The New Yorker",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Daily Cartoon: Friday, September 11th",
+      "url": "https://www.newyorker.com/cartoons/daily-cartoon/friday-september-11th-summer-reading",
+      "source": "The New Yorker",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "John Wilson and “The History of Concrete”",
+      "url": "https://www.newyorker.com/podcast/the-new-yorker-radio-hour/john-wilson-and-the-history-of-concrete",
+      "source": "The New Yorker",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "The 9 Best TV Shows to Stream This Month (September 2026)",
+      "url": "https://www.wired.com/story/the-9-best-shows-to-stream-right-now/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "The US Government Launched 3 Previously Unreported Investigations of Polymarket Trades",
+      "url": "https://www.wired.com/story/polymarket-investigations-iran-biden-google-foia/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Meta Sued Over Training Data for Its AI and Face-Recognition Systems",
+      "url": "https://www.wired.com/story/meta-sued-over-training-data-for-its-ai-and-face-recognition-systems/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Petlibro Offers: 30% Off in September 2026",
+      "url": "https://www.wired.com/story/petlibro-discount-code/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "One of AI’s Fiercest Critics Says All the Doom Talk Is ‘Meant to Distract Us’",
+      "url": "https://www.wired.com/story/one-of-ais-fiercest-critics-says-all-the-doom-talk-is-meant-to-distract-us/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "This Man Has a Cult Internet Following Over His Olive Garden Lifetime Pasta Pass",
+      "url": "https://www.wired.com/story/this-man-has-a-cult-internet-following-over-his-olive-garden-lifetime-pasta-pass/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "I Fixed a Tractor Using John Deere’s Self-Repair Service. Farmers Aren’t Sold on It",
+      "url": "https://www.wired.com/story/i-fixed-a-tractor-john-deere-self-repair-service/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "The Trump Alien ‘Disclosure Speech’ Rumors Are Reaching a Fever Pitch",
+      "url": "https://www.wired.com/story/the-trump-alien-disclosure-speech-rumors-are-reaching-a-fever-pitch/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "How 9/11 Made Everyone a Conspiracy Theorist",
+      "url": "https://www.wired.com/story/conspiracy-how-9-11-broke-americas-brain/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "The US and Mexico Announce They’re Teaming Up Against Drones",
+      "url": "https://www.wired.com/story/us-and-mexico-announce-teaming-up-against-drones/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Samsung Galaxy S26 FE Review: Same as Before, but for More Money",
+      "url": "https://www.wired.com/review/samsung-galaxy-s26-fe/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Why So Many AI Researchers Think the Machines Could Kill Everyone",
+      "url": "https://www.wired.com/story/why-so-many-ai-researchers-think-the-machines-could-kill-everyone/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "50% Off DoorDash Promo Code | September 2026",
+      "url": "https://www.wired.com/story/doordash-promo-code/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "30% Off Canon Promo Codes | September 2026",
+      "url": "https://www.wired.com/story/canon-promo-code/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "Surfshark Promo Codes: 87% Off | September 2026",
+      "url": "https://www.wired.com/story/surfshark-coupon/",
+      "source": "Wired",
+      "date": "2026-09-11"
+    },
+    {
+      "title": "My Father’s Drawing",
+      "url": "https://yalereview.org/article/fatima-jafar-my-fathers-drawing",
+      "source": "The Yale Review",
+      "date": "2026-09-02"
+    },
+    {
+      "title": "Who Cares About Ballet?",
+      "url": "https://yalereview.org/article/joanna-biggs-ballet",
+      "source": "The Yale Review",
+      "date": "2026-09-01"
+    },
+    {
+      "title": "The Sappho We Fell in Love With",
+      "url": "https://yalereview.org/article/emily-greenwood-sappho",
+      "source": "The Yale Review",
+      "date": "2026-09-01"
+    },
+    {
+      "title": "Moby-Dick and the Indefinite Sublime",
+      "url": "https://yalereview.org/article/tom-mccarthy-indefinite-sublime",
+      "source": "The Yale Review",
+      "date": "2026-08-31"
+    },
+    {
+      "title": "How to Talk About Murder",
+      "url": "https://yalereview.org/article/emily-ogden-edgar-allan-poe",
+      "source": "The Yale Review",
+      "date": "2026-08-31"
+    },
+    {
+      "title": "Man in Love",
+      "url": "https://yalereview.org/article/christina-anderson-man-in-love",
+      "source": "The Yale Review",
+      "date": "2026-08-31"
+    },
+    {
+      "title": "Ottawa–Montreal Corridor",
+      "url": "https://yalereview.org/article/karen-solie-ottawa-montreal-corridor",
+      "source": "The Yale Review",
+      "date": "2026-08-31"
+    },
+    {
+      "title": "Killanova",
+      "url": "https://yalereview.org/article/joyelle-mcsweeney-killanova",
+      "source": "The Yale Review",
+      "date": "2026-08-28"
+    },
+    {
+      "title": "The Sun’s Song",
+      "url": "https://yalereview.org/article/s-shakthidharan-the-suns-song",
+      "source": "The Yale Review",
+      "date": "2026-08-28"
+    },
+    {
+      "title": "Richard Pryor",
+      "url": "https://yalereview.org/article/hilton-als-richard-pryor",
+      "source": "The Yale Review",
+      "date": "2024-09-08"
+    },
+    {
+      "title": "A History of Invention",
+      "url": "https://yalereview.org/article/carolyn-forché-a-history-of-invention",
+      "source": "The Yale Review",
+      "date": ""
+    },
+    {
+      "title": "Written in pencil / anamnesis",
+      "url": "https://yalereview.org/article/carolyn-forché-written-in-pencil",
+      "source": "The Yale Review",
+      "date": ""
+    },
+    {
+      "title": "In the beginning",
+      "url": "https://yalereview.org/article/carolyn-forché-in-the-beginning",
+      "source": "The Yale Review",
+      "date": ""
+    },
+    {
+      "title": "The Mirror",
+      "url": "https://yalereview.org/article/haruki-murakami-the-mirror",
+      "source": "The Yale Review",
+      "date": ""
+    },
+    {
+      "title": "Some Other, Better Otto",
+      "url": "https://yalereview.org/article/deborah-eisenberg-some-other-better-otto",
+      "source": "The Yale Review",
+      "date": ""
+    },
+    {
+      "title": "Gods",
+      "url": "https://yalereview.org/article/vladimir-nabokov-gods",
+      "source": "The Yale Review",
+      "date": ""
+    },
+    {
+      "title": "A Conversation About Art",
+      "url": "https://yalereview.org/article/virginia-woolf-conversation-about-art",
+      "source": "The Yale Review",
+      "date": ""
     }
   ]
 }

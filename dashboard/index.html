@@ -70,8 +70,35 @@
     .hidden { display: none !important; }
     .layout {
       padding: 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
     }
+    .layout.reading-open { grid-template-columns: 300px minmax(0, 1fr); }
     .main { min-width: 0; }
+    .feed-sidebar { min-width: 0; }
+    #feedColumns { display: block; max-height: calc(100vh - 250px); overflow-y: auto; }
+    .fi {
+      --fi-color: var(--accent);
+      display: block;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--fi-color);
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      background: var(--card);
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.1s, box-shadow 0.1s;
+    }
+    .fi:hover { border-color: var(--accent-dim); box-shadow: var(--shadow); }
+    .fi[data-src="The Atlantic"] { --fi-color: var(--calendar-google); }
+    .fi[data-src="The New Yorker"] { --fi-color: #ff453a; }
+    .fi[data-src="Wired"] { --fi-color: var(--calendar-handshake); }
+    .fi[data-src="The Yale Review"] { --fi-color: var(--done); }
+    .fi-src { display: block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--fi-color); margin-bottom: 3px; }
+    .fi-title { display: block; font-size: 12px; font-weight: 700; line-height: 1.35; word-break: break-word; }
+    .fi-date { display: block; font-size: 10px; color: var(--muted); margin-top: 4px; }
 
     /* Header */
     .topbar {
@@ -578,6 +605,7 @@
     .field input[type="checkbox"] { width: auto; accent-color: var(--accent); }
 
     @media (max-width: 900px) {
+      .layout, .layout.reading-open { grid-template-columns: 1fr; }
       .panels, .panels.projects-open { grid-template-columns: 1fr; }
       .panel + .panel { margin-top: 14px; }
       .now-panel { display: block; }
@@ -627,12 +655,27 @@
         <span class="up-next-when" id="upNextWhen"></span>
       </div>
       <button id="projectsToggle" class="projects-toggle" title="Show or hide the Projects panel">Projects</button>
+      <button id="readingToggle" class="projects-toggle" title="Show or hide the Reading panel">Reading</button>
       <button id="tourBtn" class="btn-tour hidden" title="Take the guided tour">Tour</button>
       <button id="signInBtn" class="btn-signin hidden">Sign in</button>
       <button id="signOutBtn" class="hidden">Sign out</button>
     </header>
 
-    <div class="layout">
+    <div class="layout" id="appLayout">
+      <!-- READING PANEL (left) — RSS feeds via the feeds-proxy edge function -->
+      <aside class="feed-sidebar" id="feedSidebar">
+        <section class="panel" id="readsPanel">
+          <div class="panel-head">
+            <span class="dot" style="background:var(--calendar-handshake)"></span>
+            Reading
+            <button class="panel-action" id="refreshFeedsBtn">&#8635; Refresh</button>
+          </div>
+          <div class="tagbar" id="feedTagbar"></div>
+          <div class="columns" id="feedColumns"><div class="empty">Loading reading list…</div></div>
+          <div class="cal-foot"><span class="last-updated" id="feedUpdated"></span></div>
+        </section>
+      </aside>
+
       <div class="main">
         <div class="conn-error hidden" id="connError"></div>
         <div class="demo-banner hidden" id="demoBanner">My personal OS set up — copy <a href="https://github.com/mihir-kale/mihir-kale.github.io/blob/main/dashboard/SETUP.md" target="_blank" rel="noopener noreferrer">these instructions</a> to use it yourself.</div>
@@ -866,6 +909,8 @@
     let calColor = BLOCK_COLORS[0];
     let calRecur = '';
     let hiddenEvents = new Set();
+    let feedArticles = [];
+    let feedSource = 'ALL';
 
     function loadHiddenEvents() {
       try {
@@ -952,6 +997,84 @@
       el.className = 'conn-error';
       el.textContent = msg;
       el.classList.remove('hidden');
+    }
+
+    // ---------- Reading panel (RSS feeds) ----------
+    // The left "Reading" panel shows the latest articles from The Atlantic,
+    // The New Yorker, Wired (buying guides filtered out), and The Yale Review.
+    // Feeds are fetched via the feeds-proxy edge function (browser CORS blocks
+    // direct RSS reads); data/read-feeds.json is the committed offline cache.
+    const FEED_SOURCES = ['The Atlantic', 'The New Yorker', 'Wired', 'The Yale Review'];
+
+    function fmtReadUpdated(iso) {
+      if (!iso) return '';
+      return new Date(iso).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function feedCount(src) {
+      return src === 'ALL' ? feedArticles.length : feedArticles.filter(a => a.source === src).length;
+    }
+
+    function renderFeedTags() {
+      const bar = $('feedTagbar');
+      bar.innerHTML =
+        `<span class="label">Sources:</span>` +
+        `<span class="tag${feedSource === 'ALL' ? ' active' : ''}" data-src="ALL">All<span class="tl-count">${feedCount('ALL')}</span></span>` +
+        FEED_SOURCES
+          .filter(s => feedArticles.some(a => a.source === s))
+          .map(s => `<span class="tag${feedSource === s ? ' active' : ''}" data-src="${escapeHtml(s)}">${escapeHtml(s)}<span class="tl-count">${feedCount(s)}</span></span>`)
+          .join('');
+      bar.querySelectorAll('.tag[data-src]').forEach(ch => {
+        ch.onclick = () => { feedSource = ch.dataset.src; renderFeedTags(); renderFeeds(); };
+      });
+    }
+
+    function feedItemHtml(a) {
+      const date = a.date ? formatDate(a.date) : '';
+      return `<a class="fi" data-src="${escapeHtml(a.source || '')}" href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">` +
+        `<span class="fi-src">${escapeHtml(a.source || '')}</span>` +
+        `<span class="fi-title">${escapeHtml(a.title)}</span>` +
+        (date ? `<span class="fi-date">${escapeHtml(date)}</span>` : '') +
+        `</a>`;
+    }
+
+    function renderFeeds() {
+      renderFeedTags();
+      const body = $('feedColumns');
+      const list = feedSource === 'ALL' ? feedArticles : feedArticles.filter(a => a.source === feedSource);
+      body.innerHTML = list.length
+        ? list.slice(0, 60).map(feedItemHtml).join('')
+        : '<div class="empty">No articles yet</div>';
+    }
+
+    async function loadFeedCache() {
+      try {
+        const r = await fetch('data/read-feeds.json');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const body = await r.json();
+        if (!Array.isArray(body.articles) || !body.articles.length) return;
+        feedArticles = body.articles;
+        renderFeeds();
+        $('feedUpdated').textContent = body.last_updated ? 'cached ' + fmtReadUpdated(body.last_updated) : 'cached';
+      } catch (e) { /* offline — live proxy fetch is the fallback */ }
+    }
+
+    async function loadFeeds() {
+      const { data: { session } } = await client.auth.getSession();
+      const token = session?.access_token || '';
+      try {
+        const r = await fetch(SUPABASE_URL + '/functions/v1/feeds-proxy', {
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
+        });
+        if (!r.ok) throw new Error('feeds proxy HTTP ' + r.status);
+        const body = await r.json();
+        if (!Array.isArray(body.articles)) throw new Error('bad feeds payload');
+        feedArticles = body.articles;
+        renderFeeds();
+        $('feedUpdated').textContent = 'live ' + fmtReadUpdated(body.last_updated);
+      } catch (e) {
+        $('feedUpdated').textContent = feedArticles.length ? 'feed offline — cached' : 'feed offline';
+      }
     }
 
     // ---------- Auth ----------
@@ -2573,6 +2696,17 @@
     }
     $('projectsToggle').onclick = () => setProjectsOpen($('projectsStack').classList.contains('hidden'));
     setProjectsOpen(localStorage.getItem('personalOSProjectsOpen') === '1');
+
+    function setReadingOpen(open) {
+      $('feedSidebar').classList.toggle('hidden', !open);
+      $('appLayout').classList.toggle('reading-open', open);
+      $('readingToggle').textContent = open ? 'Hide Reading' : 'Reading';
+      $('readingToggle').classList.toggle('toggle-active', open);
+      localStorage.setItem('personalOSReadingOpen', open ? '1' : '0');
+    }
+    $('readingToggle').onclick = () => setReadingOpen($('feedSidebar').classList.contains('hidden'));
+    setReadingOpen(localStorage.getItem('personalOSReadingOpen') !== '0');
+    $('refreshFeedsBtn').onclick = loadFeeds;
     loadHiddenEvents();
 
     $('authForm').addEventListener('submit', async (e) => {
@@ -2694,6 +2828,11 @@
       setInterval(() => { loadTasks(); }, 60000);
       setInterval(() => { loadCalendar(); }, 300000);
       setInterval(() => { renderUpNext(); }, 30000);
+      // Reading panel: render the committed cache immediately, then hit the
+      // feeds-proxy for fresh articles; refresh every 15 minutes.
+      loadFeedCache();
+      loadFeeds();
+      setInterval(() => { loadFeeds(); }, 900000);
     }
 
     boot();
