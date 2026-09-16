@@ -23,7 +23,21 @@
     </label>
   </header>
 
-  <main id="board" class="board" aria-label="Curated media mood board"></main>
+  <main class="shell" aria-label="Commonplace board and article reading queue">
+    <aside class="reading" aria-label="Latest articles from selected feeds">
+      <header class="reading-head">
+        <span class="reading-title">reading</span>
+        <button id="readsRefresh" class="reading-refresh" type="button" title="Refresh from feeds" aria-label="Refresh articles from feeds">&#8635;</button>
+      </header>
+      <nav class="reading-filters" id="readsFilters" aria-label="Filter articles by source"></nav>
+      <ul class="reading-list" id="readsList"></ul>
+      <footer class="reading-foot">
+        <span id="readsStatus">…</span>
+        <span><span id="readsCount">0</span> articles</span>
+      </footer>
+    </aside>
+    <section id="board" class="board" aria-label="Curated media mood board"></section>
+  </main>
 
   <noscript>
     <p class="notice">This board needs JavaScript. Enable it and reload.</p>
@@ -35,5 +49,6 @@
   </footer>
 
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/reads.js"></script>
 </body>
 </html>

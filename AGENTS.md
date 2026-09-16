@@ -7,8 +7,7 @@ Personal GitHub Pages site (`mihir-kale.github.io`). Static HTML + Supabase back
 - `portfolio/` — Landing page (HTML + CSS, Inter font, profile photo)
 - `dashboard/` — "Personal OS" single-page app
   - `index.html` — monolithic: all HTML/CSS/JS in one file (~2350 lines)
-  - `data/read-feeds.json` — cached RSS/reading feed data (committed static asset)
-- `media/` — Commonplace book (books, films, music): `index.html`, `styles.css`, `js/app.js|covers.js|data.js`, `data/library.json`, `scripts/add_media.js`
+- `media/` — Commonplace book (books, films, music): `index.html`, `styles.css`, `js/app.js|covers.js|data.js|reads.js`, `data/library.json`, `data/read-feeds.json` (cached RSS/reading feed data, committed static asset), `scripts/add_media.js`
 - `.github/workflows/update-fitness-data.yml` — GitHub Action (manually dispatched; Strava step stubbed)
 - `.env` — secrets (gitignored)
 - `supabase/` — gitignored (migrations)
