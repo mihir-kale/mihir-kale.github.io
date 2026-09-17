@@ -11,8 +11,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+
+  <!-- Sign-in overlay (opens from the top bar; same account as the dashboard) -->
+  <div class="overlay reads-overlay" id="mediaLoginForm">
+    <div class="lbox">
+      <button id="mediaAuthCloseBtn" class="auth-close" title="Close">&#10005;</button>
+      <h2>sign in</h2>
+      <form id="mediaAuthForm">
+        <div class="login-field">
+          <input type="email" id="mediaAuthEmail" placeholder="Email" autocomplete="username" required />
+        </div>
+        <div class="login-field">
+          <input type="password" id="mediaAuthPass" placeholder="Password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="login-btn">Unlock</button>
+        <div class="login-error" id="mediaAuthError"></div>
+      </form>
+    </div>
+  </div>
 
   <header class="topbar">
     <p class="brand">MK<span class="brand-kicker">/commonplace</span></p>
@@ -21,16 +40,44 @@
       <span class="search-glyph" aria-hidden="true">&gt;</span>
       <input id="search" type="search" placeholder="search" autocomplete="off">
     </label>
+    <button id="mediaSignInBtn" class="auth-btn hidden">sign in</button>
+    <button id="mediaSignOutBtn" class="auth-btn hidden">sign out</button>
   </header>
 
   <main class="shell" aria-label="Commonplace board and article reading queue">
-    <aside class="reading" aria-label="Latest articles from selected feeds">
+    <aside class="reading" aria-label="Article queue — stack or read">
       <header class="reading-head">
         <span class="reading-title">reading</span>
         <button id="readsRefresh" class="reading-refresh" type="button" title="Refresh from feeds" aria-label="Refresh articles from feeds">&#8635;</button>
       </header>
-      <nav class="reading-filters" id="readsFilters" aria-label="Filter articles by source"></nav>
+      <nav class="reading-filters" id="readsFilters" aria-label="Filter articles by read state"></nav>
       <ul class="reading-list" id="readsList"></ul>
+      <div class="reading-entry hidden" id="readsEntry">
+        <form id="addForm" class="entry-form" autocomplete="off">
+          <label class="entry-field">
+            <span class="entry-label">title</span>
+            <input id="addTitle" type="text" placeholder="article title" required maxlength="200">
+          </label>
+          <label class="entry-field">
+            <span class="entry-label">link</span>
+            <input id="addUrl" type="url" placeholder="https://…" required>
+          </label>
+          <label class="entry-field">
+            <span class="entry-label">thoughts</span>
+            <textarea id="addThoughts" rows="3" placeholder="brief thoughts — why it belongs here" maxlength="500"></textarea>
+          </label>
+          <div class="entry-row">
+            <label class="entry-status">
+              <input type="radio" name="addStatus" value="stack" checked> add to stack
+            </label>
+            <label class="entry-status">
+              <input type="radio" name="addStatus" value="read"> already read
+            </label>
+            <button type="submit" class="entry-save">save</button>
+          </div>
+          <div class="entry-error" id="addError"></div>
+        </form>
+      </div>
       <footer class="reading-foot">
         <span id="readsStatus">…</span>
         <span><span id="readsCount">0</span> articles</span>
