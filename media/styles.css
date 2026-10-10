@@ -133,6 +133,59 @@ a{color:inherit;text-decoration:none}
 .rail-title::before{content:"\25B8";color:var(--accent);margin-right:.4rem}
 .rail-count{color:var(--ink-soft);font-weight:400}
 
+/* recommend-me-something rail */
+
+.suggest-form{
+  display:flex;
+  flex-direction:column;
+  gap:.55rem;
+  padding:.65rem .85rem;
+  border-bottom:1px dashed var(--grid);
+}
+.suggest-field{display:block}
+.suggest-label{
+  display:block;
+  margin-bottom:.15rem;
+  font-size:.5rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.suggest-input{
+  width:100%;
+  font-family:inherit;
+  font-size:.66rem;
+  color:var(--ink);
+  background:transparent;
+  border:1px solid var(--grid);
+  padding:.3rem .35rem;
+  resize:vertical;
+}
+select.suggest-input{cursor:pointer}
+.suggest-input::placeholder{color:var(--ink-soft)}
+.suggest-input:focus{outline:none;border-color:var(--accent)}
+.suggest-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.6rem;
+}
+.suggest-error{font-size:.54rem;color:var(--amber)}
+.suggest-submit{
+  appearance:none;
+  font-family:inherit;
+  font-size:.56rem;
+  font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--card);
+  background:var(--ink);
+  border:1px solid var(--ink);
+  padding:.3rem .7rem;
+  cursor:pointer;
+}
+.suggest-submit:hover{background:var(--accent);border-color:var(--accent)}
+
 .rail-list{
   list-style:none;
   margin:0;

@@ -6,7 +6,9 @@ const railsEl = document.getElementById("rails");
 const emptyNotice = document.getElementById("emptyNotice");
 const totalCount = document.getElementById("total-count");
 
-const state = { items: [], query: "", list: "shelf" };
+const SUGGEST_KEY = "media:suggestions:v1";
+
+const state = { items: [], query: "", list: "shelf", suggestions: [] };
 const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
@@ -16,6 +18,11 @@ const GAP_MIN = 14;
 const GAP_MAX = 22;
 
 let railEls = [];
+let formRail = null;
+let suggestListEl = null;
+let suggestCountEl = null;
+let suggestErrorEl = null;
+let suggestForm = null;
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -106,6 +113,125 @@ function buildRail(type, items) {
   return rail;
 }
 
+/* ----------------------------- recommend rail ----------------------------- */
+
+function readSuggestions() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SUGGEST_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistSuggestions() {
+  try {
+    localStorage.setItem(SUGGEST_KEY, JSON.stringify(state.suggestions));
+  } catch {
+    /* storage unavailable — keep in-memory only */
+  }
+}
+
+function renderSuggestions() {
+  if (!suggestListEl) return;
+  suggestListEl.replaceChildren();
+  if (!state.suggestions.length) {
+    suggestListEl.append(el("li", "rail-empty", "no recommendations yet — be the first"));
+  } else {
+    state.suggestions.forEach((s) => suggestListEl.append(buildItem(s)));
+  }
+  if (suggestCountEl) suggestCountEl.textContent = String(state.suggestions.length);
+}
+
+function buildField(labelText, control) {
+  const label = el("label", "suggest-field");
+  label.append(el("span", "suggest-label", labelText), control);
+  return label;
+}
+
+function buildFormRail() {
+  const rail = el("section", "rail rail--form");
+  rail.setAttribute("aria-label", "Recommend something");
+
+  const head = el("header", "rail-head");
+  head.append(el("span", "rail-title", "recommend me something"));
+  suggestCountEl = el("span", "rail-count", "0");
+  head.append(suggestCountEl);
+  rail.append(head);
+
+  suggestForm = document.createElement("form");
+  suggestForm.className = "suggest-form";
+  suggestForm.autocomplete = "off";
+
+  const select = document.createElement("select");
+  select.className = "suggest-input";
+  select.id = "suggestCategory";
+  for (const type of MEDIA_TYPES) {
+    const option = document.createElement("option");
+    option.value = type;
+    option.textContent = TYPE_LABELS[type];
+    select.append(option);
+  }
+
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.className = "suggest-input";
+  titleInput.id = "suggestTitle";
+  titleInput.placeholder = "title";
+  titleInput.maxLength = 200;
+  titleInput.required = true;
+
+  const whyInput = document.createElement("textarea");
+  whyInput.className = "suggest-input";
+  whyInput.id = "suggestWhy";
+  whyInput.rows = 3;
+  whyInput.placeholder = "why should i read / watch / listen to it?";
+  whyInput.maxLength = 500;
+
+  suggestForm.append(
+    buildField("category", select),
+    buildField("title", titleInput),
+    buildField("why", whyInput)
+  );
+
+  const row = el("div", "suggest-row");
+  suggestErrorEl = el("span", "suggest-error", "");
+  const submit = el("button", "suggest-submit", "recommend");
+  submit.type = "submit";
+  row.append(suggestErrorEl, submit);
+  suggestForm.append(row);
+
+  suggestForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const title = titleInput.value.trim();
+    if (!title) {
+      suggestErrorEl.textContent = "a title is required";
+      titleInput.focus();
+      return;
+    }
+    suggestErrorEl.textContent = "";
+    state.suggestions.unshift({
+      id: `sug-${Date.now()}`,
+      mediaType: select.value,
+      title,
+      notes: whyInput.value.trim(),
+      creator: "recommended"
+    });
+    persistSuggestions();
+    renderSuggestions();
+    suggestForm.reset();
+    titleInput.focus();
+  });
+
+  rail.append(suggestForm);
+
+  suggestListEl = el("ul", "rail-list");
+  rail.append(suggestListEl);
+  return rail;
+}
+
+/* --------------------------------- layout --------------------------------- */
+
 function currentGap() {
   return Math.min(GAP_MAX, Math.max(GAP_MIN, window.innerWidth * 0.02));
 }
@@ -147,6 +273,8 @@ function scheduleLayout() {
   resizeTimer = setTimeout(layout, 120);
 }
 
+/* --------------------------------- toggle --------------------------------- */
+
 function buildToggle() {
   listsEl.replaceChildren();
   listButtons.clear();
@@ -171,6 +299,8 @@ function syncToggle() {
   }
 }
 
+/* --------------------------------- render --------------------------------- */
+
 function render() {
   const query = state.query.trim().toLowerCase();
   const byType = new Map();
@@ -182,28 +312,35 @@ function render() {
     byType.get(item.mediaType).push(item);
   }
 
-  railEls = [];
+  const categoryRails = [];
   for (const type of MEDIA_TYPES) {
     const items = byType.get(type);
-    if (items && items.length) railEls.push(buildRail(type, items));
+    if (items && items.length) categoryRails.push(buildRail(type, items));
   }
 
-  const total = railEls.reduce((sum, rail) => sum + rail.querySelectorAll(".rail-item").length, 0);
+  const total = categoryRails.reduce((sum, rail) => sum + rail.querySelectorAll(".rail-item").length, 0);
   emptyNotice.classList.toggle("hidden", total > 0);
+
+  railEls = [...categoryRails, formRail];
   layout();
 }
+
+/* ---------------------------------- init ---------------------------------- */
 
 searchInput.addEventListener("input", () => {
   state.query = searchInput.value;
   render();
 });
 
-buildToggle();
-
 window.addEventListener("resize", scheduleLayout);
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => layout());
 }
+
+buildToggle();
+formRail = buildFormRail();
+state.suggestions = readSuggestions();
+renderSuggestions();
 
 loadLibrary()
   .then((items) => {
