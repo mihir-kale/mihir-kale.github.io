@@ -1,4 +1,4 @@
-import { loadLibrary, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
+import { loadLibrary, loadFeeds, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
 import { resolveCover } from "./covers.js";
 
 const searchInput = document.getElementById("search");
@@ -17,6 +17,7 @@ const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
+const SHELF_LIMIT = 15;
 const MIN_COL = 280;
 const GAP_MIN = 14;
 const GAP_MAX = 22;
@@ -403,7 +404,9 @@ function render() {
 
   const categoryRails = [];
   for (const type of MEDIA_TYPES) {
-    categoryRails.push(buildRail(type, byType.get(type) || []));
+    const items = byType.get(type) || [];
+    const shown = state.list === "shelf" ? items.slice(0, SHELF_LIMIT) : items;
+    categoryRails.push(buildRail(type, shown));
   }
 
   railEls = [...categoryRails, formRail];
@@ -427,9 +430,9 @@ formRail = buildFormRail();
 state.suggestions = readSuggestions();
 renderSuggestions();
 
-loadLibrary()
-  .then((items) => {
-    state.items = items;
+Promise.all([loadLibrary(), loadFeeds()])
+  .then(([library, feeds]) => {
+    state.items = [...library, ...feeds];
     render();
   })
   .catch((error) => {

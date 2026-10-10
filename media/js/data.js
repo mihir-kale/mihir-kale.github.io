@@ -67,6 +67,32 @@ export function normalizeItem(raw) {
   return item;
 }
 
+export async function loadFeeds(url = "data/feeds.json") {
+  let response;
+  try {
+    response = await fetch(url);
+  } catch {
+    return [];
+  }
+  if (!response.ok) return [];
+  let payload;
+  try {
+    payload = await response.json();
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(payload)) return [];
+  const items = [];
+  payload.forEach((raw, index) => {
+    try {
+      items.push(normalizeItem(raw));
+    } catch (error) {
+      console.warn(`Skipping feed entry ${index + 1}: ${error.message}`);
+    }
+  });
+  return items;
+}
+
 export async function loadLibrary(url = "data/library.json") {
   let response;
   try {
