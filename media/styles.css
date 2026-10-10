@@ -1,21 +1,13 @@
 :root{
-  /* palette */
-  --paper:#F4F1E8;      /* warm paper */
-  --card:#FCFAF4;       /* ivory */
-  --ink:#292824;        /* charcoal — primary text */
-  --ink-soft:#68665E;   /* stone — secondary text */
-  --accent:#455F91;     /* muted cobalt */
-  --grid:#DCE1E7;       /* pale blue-gray grid lines */
-  --ochre:#A57628;      /* in-progress indicator */
-
-  /* derived helpers */
-  --grid-soft:rgba(220,225,231,.45);
-  --rule:rgba(41,40,36,.12);   /* subtle entry separators */
-  --line:rgba(104,102,94,.4);  /* input borders */
-
-  /* type */
-  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --serif:"IBM Plex Serif",ui-serif,Georgia,"Times New Roman",Times,serif;
+  --paper:#f3f2ec;
+  --card:#fbfaf6;
+  --ink:#16161d;
+  --ink-soft:#73727e;
+  --grid-soft:rgba(76,102,158,.14);
+  --grid:rgba(76,102,158,.30);
+  --accent:#2437cc;
+  --amber:#9a5f14;
+  --mono:"Space Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -27,7 +19,7 @@ body{
   min-height:100vh;
   font-family:var(--mono);
   font-size:13px;
-  line-height:1.5;
+  line-height:1.45;
   color:var(--ink);
   background-color:var(--paper);
   background-image:
@@ -40,7 +32,7 @@ body{
 
 a{color:inherit;text-decoration:none}
 
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:2px dashed var(--accent);outline-offset:2px}
 .hidden{display:none!important}
 
 /* -------------------------------- top bar -------------------------------- */
@@ -52,13 +44,13 @@ a{color:inherit;text-decoration:none}
   flex-wrap:wrap;
   padding:.8rem clamp(1rem,3vw,2rem);
   border-bottom:1px solid var(--ink);
-  background:rgba(244,241,232,.94);
+  background:rgba(243,242,236,.94);
   position:sticky;
   top:0;
   z-index:10;
 }
-.brand{margin:0;font-weight:700;letter-spacing:.1em;font-size:13px}
-.brand-kicker{color:var(--ink-soft);font-weight:400;letter-spacing:.02em;font-size:12px;margin-left:.4rem}
+.brand{margin:0;font-weight:700;letter-spacing:.1em;font-size:.82rem}
+.brand-kicker{color:var(--ink-soft);font-weight:400;letter-spacing:.02em;font-size:.68rem;margin-left:.4rem}
 
 .lists{display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:baseline}
 .list-button{
@@ -68,13 +60,13 @@ a{color:inherit;text-decoration:none}
   padding:0;
   cursor:pointer;
   font-family:inherit;
-  font-size:12px;
+  font-size:.7rem;
   letter-spacing:.05em;
   color:var(--ink-soft);
   text-transform:lowercase;
   transition:color .12s ease;
 }
-.list-button:hover{color:var(--accent)}
+.list-button:hover{color:var(--ink)}
 .list-button[aria-pressed="true"]{
   color:var(--card);
   background:var(--ink);
@@ -87,19 +79,19 @@ a{color:inherit;text-decoration:none}
   align-items:baseline;
   gap:.45rem;
 }
-.search-glyph{color:var(--accent);font-size:14px}
+.search-glyph{color:var(--accent);font-size:.85rem}
 .search input{
   font-family:inherit;
-  font-size:13px;
+  font-size:.76rem;
   color:var(--ink);
   background:transparent;
   border:none;
   border-bottom:1px dashed var(--ink-soft);
   padding:.1rem .15rem;
-  width:10rem;
+  width:9rem;
 }
 .search input::placeholder{color:var(--ink-soft)}
-.search input:focus{border-bottom-color:var(--accent);border-bottom-style:solid}
+.search input:focus{outline:none;border-bottom-color:var(--accent);border-bottom-style:solid}
 
 /* --------------------------------- shell --------------------------------- */
 
@@ -131,65 +123,65 @@ a{color:inherit;text-decoration:none}
   justify-content:space-between;
   align-items:baseline;
   gap:1rem;
-  padding:.6rem .9rem;
+  padding:.55rem .85rem;
   border-bottom:1px solid var(--ink);
-  font-size:12px;
-  font-weight:600;
-  letter-spacing:.16em;
+  font-size:.58rem;
+  font-weight:700;
+  letter-spacing:.2em;
   text-transform:uppercase;
 }
 .rail-title::before{content:"\25B8";color:var(--accent);margin-right:.4rem}
-.rail-count{color:var(--ink-soft);font-weight:400;font-size:11px;letter-spacing:.08em}
+.rail-count{color:var(--ink-soft);font-weight:400}
 
 /* recommend-me-something rail */
 
 .suggest-form{
   display:flex;
   flex-direction:column;
-  gap:.6rem;
-  padding:.75rem .9rem;
-  border-bottom:1px solid var(--rule);
+  gap:.55rem;
+  padding:.65rem .85rem;
+  border-bottom:1px dashed var(--grid);
 }
 .suggest-field{display:block}
 .suggest-label{
   display:block;
-  margin-bottom:.2rem;
-  font-size:11px;
-  letter-spacing:.14em;
+  margin-bottom:.15rem;
+  font-size:.5rem;
+  letter-spacing:.16em;
   text-transform:uppercase;
   color:var(--ink-soft);
 }
 .suggest-input{
   width:100%;
   font-family:inherit;
-  font-size:13px;
+  font-size:.66rem;
   color:var(--ink);
   background:transparent;
-  border:1px solid var(--line);
-  padding:.35rem .4rem;
+  border:1px solid var(--grid);
+  padding:.3rem .35rem;
   resize:vertical;
 }
 select.suggest-input{cursor:pointer}
 .suggest-input::placeholder{color:var(--ink-soft)}
-.suggest-input:focus{border-color:var(--accent)}
+.suggest-input:focus{outline:none;border-color:var(--accent)}
 .suggest-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:.6rem;
 }
-.suggest-error{font-size:11px;color:var(--ochre)}
+.suggest-error{font-size:.54rem;color:var(--amber)}
 .suggest-submit{
   appearance:none;
   font-family:inherit;
-  font-size:11px;
+  font-size:.56rem;
   font-weight:700;
   letter-spacing:.16em;
   text-transform:uppercase;
   color:var(--card);
   background:var(--ink);
   border:1px solid var(--ink);
-  padding:.35rem .8rem;
+  padding:.3rem .7rem;
   cursor:pointer;
 }
 .suggest-submit:hover{background:var(--accent);border-color:var(--accent)}
@@ -197,16 +189,22 @@ select.suggest-input{cursor:pointer}
 .rail-list{
   list-style:none;
   margin:0;
-  padding:.2rem .9rem .45rem;
+  padding:.15rem .85rem .4rem;
 }
 
 .rail-item .rail-link{
   display:block;
-  padding:.85rem 0;
-  border-bottom:1px solid var(--rule);
+  padding:.7rem 0;
+  border-bottom:1px dotted var(--grid);
 }
 .rail-item:last-child .rail-link{border-bottom:none}
-.rail-item .rail-link:hover .ri-title{color:var(--accent)}
+.rail-item .rail-link:hover .ri-title{
+  text-decoration:underline;
+  text-underline-offset:2px;
+  text-decoration-style:dashed;
+}
+.rail-item.is-progress .ri-title{color:var(--ink)}
+.rail-item.is-backlog .ri-title{color:var(--ink-soft)}
 
 .ri-head{
   display:flex;
@@ -216,46 +214,47 @@ select.suggest-input{cursor:pointer}
 }
 .ri-src{
   display:block;
-  font-size:11px;
-  letter-spacing:.12em;
+  font-size:.5rem;
+  letter-spacing:.18em;
   text-transform:uppercase;
   color:var(--ink-soft);
 }
 .ri-src::before{content:"\25B8  ";color:var(--accent)}
-.ri-status{font-size:12px;line-height:1;color:var(--ink-soft)}
-.ri-status--in-progress{color:var(--ochre)}
+.ri-status{font-size:.68rem;line-height:1;color:var(--ink-soft)}
+.ri-status--in-progress{color:var(--amber)}
 .ri-status--backlog{color:var(--ink-soft)}
 
 .ri-title{
-  margin:.25rem 0 0;
-  font-family:var(--serif);
-  font-size:17px;
-  font-weight:600;
-  line-height:1.35;
-  color:var(--ink);
+  margin:.15rem 0 0;
+  font-size:.78rem;
+  font-weight:700;
+  line-height:1.4;
   overflow-wrap:anywhere;
 }
 .ri-thoughts{
-  margin:.4rem 0 0;
+  margin:.3rem 0 0;
   max-width:68ch;
-  font-family:var(--serif);
-  font-size:15px;
-  font-weight:400;
+  font-size:.62rem;
   line-height:1.5;
-  color:var(--ink);
+  color:var(--ink-soft);
+}
+.ri-foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.8rem;
+  margin-top:.4rem;
 }
 .ri-meta{
-  display:inline-block;
-  margin-top:.45rem;
-  font-size:11px;
-  letter-spacing:.08em;
+  font-size:.52rem;
+  letter-spacing:.1em;
   text-transform:uppercase;
   color:var(--ink-soft);
 }
 
 .rail-empty{
   padding:1.2rem .2rem;
-  font-size:12px;
+  font-size:.68rem;
   color:var(--ink-soft);
 }
 
@@ -277,7 +276,7 @@ select.suggest-input{cursor:pointer}
   flex-wrap:wrap;
   padding:.5rem clamp(1rem,3vw,2rem) 1.2rem;
   border-top:1px solid var(--ink);
-  font-size:11px;
+  font-size:.56rem;
   letter-spacing:.12em;
   text-transform:uppercase;
   color:var(--ink-soft);
@@ -286,6 +285,7 @@ select.suggest-input{cursor:pointer}
 @media (max-width:560px){
   .search{margin-left:0;width:100%}
   .search input{flex:1;width:auto}
+  .ri-thoughts{font-size:.64rem}
 }
 
 @media (prefers-reduced-motion:reduce){
