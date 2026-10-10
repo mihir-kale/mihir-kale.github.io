@@ -4,86 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>the commonplace — mihir</title>
-  <meta name="description" content="A mood board of books, films, series, albums, articles, and podcasts I've consumed.">
+  <meta name="description" content="A commonplace book of articles, essays, books, films, albums, and podcasts I've consumed.">
   <meta name="tmdb-api-key" content="475a2ebafc31a860c0a98e7280853eb0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23f3f2ec'/><path d='M0 8h64M0 16h64M0 24h64M0 32h64M0 40h64M0 48h64M0 56h64M8 0v64M16 0v64M24 0v64M32 0v64M40 0v64M48 0v64M56 0v64' stroke='%23b9c3d8'/><text x='32' y='41' font-family='Menlo,monospace' font-size='24' text-anchor='middle' fill='%2316161d'>MK</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-  <!-- Sign-in overlay (opens from the top bar; same account as the dashboard) -->
-  <div class="overlay reads-overlay" id="mediaLoginForm">
-    <div class="lbox">
-      <button id="mediaAuthCloseBtn" class="auth-close" title="Close">&#10005;</button>
-      <h2>sign in</h2>
-      <form id="mediaAuthForm">
-        <div class="login-field">
-          <input type="email" id="mediaAuthEmail" placeholder="Email" autocomplete="username" required />
-        </div>
-        <div class="login-field">
-          <input type="password" id="mediaAuthPass" placeholder="Password" autocomplete="current-password" required />
-        </div>
-        <button type="submit" class="login-btn">Unlock</button>
-        <div class="login-error" id="mediaAuthError"></div>
-      </form>
-    </div>
-  </div>
-
   <header class="topbar">
     <p class="brand">MK<span class="brand-kicker">/commonplace</span></p>
-    <nav class="filters" id="filters" aria-label="Filter the board by media type"></nav>
     <label class="search">
       <span class="search-glyph" aria-hidden="true">&gt;</span>
       <input id="search" type="search" placeholder="search" autocomplete="off">
     </label>
-    <button id="mediaSignInBtn" class="auth-btn hidden">sign in</button>
-    <button id="mediaSignOutBtn" class="auth-btn hidden">sign out</button>
   </header>
 
-  <main class="shell" aria-label="Commonplace board and article reading queue">
-    <aside class="reading" aria-label="Article queue — stack or read">
-      <header class="reading-head">
-        <span class="reading-title">reading</span>
-        <button id="readsRefresh" class="reading-refresh" type="button" title="Refresh from feeds" aria-label="Refresh articles from feeds">&#8635;</button>
+  <main class="shell" aria-label="Commonplace catalogue">
+    <section class="rail" aria-label="Catalogue entries">
+      <header class="rail-head">
+        <span class="rail-title" id="railTitle">everything</span>
+        <span class="rail-count"><span id="railCount">0</span> shown</span>
       </header>
-      <nav class="reading-filters" id="readsFilters" aria-label="Filter articles by read state"></nav>
-      <ul class="reading-list" id="readsList"></ul>
-      <div class="reading-entry hidden" id="readsEntry">
-        <form id="addForm" class="entry-form" autocomplete="off">
-          <label class="entry-field">
-            <span class="entry-label">title</span>
-            <input id="addTitle" type="text" placeholder="article title" required maxlength="200">
-          </label>
-          <label class="entry-field">
-            <span class="entry-label">link</span>
-            <input id="addUrl" type="url" placeholder="https://…" required>
-          </label>
-          <label class="entry-field">
-            <span class="entry-label">thoughts</span>
-            <textarea id="addThoughts" rows="3" placeholder="brief thoughts — why it belongs here" maxlength="500"></textarea>
-          </label>
-          <div class="entry-row">
-            <label class="entry-status">
-              <input type="radio" name="addStatus" value="stack" checked> add to stack
-            </label>
-            <label class="entry-status">
-              <input type="radio" name="addStatus" value="read"> already read
-            </label>
-            <button type="submit" class="entry-save">save</button>
-          </div>
-          <div class="entry-error" id="addError"></div>
-        </form>
-      </div>
-      <footer class="reading-foot">
-        <span id="readsStatus">…</span>
-        <span><span id="readsCount">0</span> articles</span>
-      </footer>
-    </aside>
-    <section id="board" class="board" aria-label="Curated media mood board"></section>
+      <ul class="rail-list" id="railList"></ul>
+    </section>
   </main>
 
   <noscript>
@@ -91,11 +37,10 @@
   </noscript>
 
   <footer class="foot">
-    <span><span id="total-count">0</span> entries</span>
-    <span>covers · google books · open library · tmdb · itunes</span>
+    <span><span id="total-count">0</span> entries in the catalogue</span>
+    <span>articles · essays · books · films · albums · podcasts</span>
   </footer>
 
   <script type="module" src="js/app.js"></script>
-  <script type="module" src="js/reads.js"></script>
 </body>
 </html>

@@ -32,25 +32,8 @@
     "spotlight": true
   },
   {
-    "id": "west-wing",
-    "mediaType": "tv",
-    "title": "The West Wing",
-    "creator": "Aaron Sorkin",
-    "year": 1999,
-    "status": "finished",
-    "rating": 5,
-    "consumed": "2026-06-28",
-    "notes": "Sorkin's walk-and-talks remain the most flattering — and most instructive — portrait of public service ever filmed.",
-    "tags": [
-      "politics",
-      "drama"
-    ],
-    "url": "https://en.wikipedia.org/wiki/The_West_Wing",
-    "spotlight": true
-  },
-  {
     "id": "i-pencil",
-    "mediaType": "article",
+    "mediaType": "essay",
     "title": "I, Pencil",
     "creator": "Leonard Read",
     "year": 1958,
@@ -143,21 +126,6 @@
       "economics"
     ],
     "url": "https://en.wikipedia.org/wiki/The_Theory_of_Money_and_Credit"
-  },
-  {
-    "id": "man-high-castle",
-    "mediaType": "tv",
-    "title": "The Man in the High Castle",
-    "creator": "Frank Spotnitz",
-    "year": 2015,
-    "status": "finished",
-    "rating": 4,
-    "consumed": "2026-02-09",
-    "notes": "The Axis won. A prestige series that makes authoritarianism feel mundane — and resistance feel costly.",
-    "tags": [
-      "alternative-history",
-      "drama"
-    ]
   },
   {
     "id": "why-we-disagree",
@@ -254,5 +222,53 @@
       "classic"
     ],
     "url": "https://music.apple.com/us/album/illmatic/1440775704"
+  },
+  {
+    "id": "use-of-knowledge",
+    "mediaType": "essay",
+    "title": "The Use of Knowledge in Society",
+    "creator": "F. A. Hayek",
+    "year": 1945,
+    "status": "finished",
+    "rating": 5,
+    "consumed": "2025-12-03",
+    "notes": "Prices as a compressed signal no central planner can ever assemble. The case for markets in fourteen pages.",
+    "tags": [
+      "economics",
+      "classic"
+    ],
+    "url": "https://en.wikipedia.org/wiki/The_Use_of_Knowledge_in_Society"
+  },
+  {
+    "id": "oppenheimer",
+    "mediaType": "film",
+    "title": "Oppenheimer",
+    "creator": "Christopher Nolan",
+    "year": 2023,
+    "status": "finished",
+    "rating": 4.5,
+    "consumed": "2026-03-15",
+    "notes": "A three-hour conversation held together by a courtroom. The bomb is the premise; the security hearing is the movie.",
+    "tags": [
+      "history",
+      "drama"
+    ],
+    "url": "https://en.wikipedia.org/wiki/Oppenheimer_(film)"
+  },
+  {
+    "id": "whiplash",
+    "mediaType": "film",
+    "title": "Whiplash",
+    "creator": "Damien Chazelle",
+    "year": 2014,
+    "status": "finished",
+    "rating": 4.5,
+    "consumed": "2026-01-08",
+    "notes": "Editing as percussion. A film about the cost of greatness that never quite says whether it was worth it.",
+    "tags": [
+      "drama",
+      "music"
+    ],
+    "url": "https://en.wikipedia.org/wiki/Whiplash_(2014_film)"
   }
 ]

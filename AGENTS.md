@@ -7,7 +7,7 @@ Personal GitHub Pages site (`mihir-kale.github.io`). Static HTML + Supabase back
 - `portfolio/` — Landing page (HTML + CSS, Inter font, profile photo)
 - `dashboard/` — "Personal OS" single-page app
   - `index.html` — monolithic: all HTML/CSS/JS in one file (~2760 lines)
-- `media/` — Commonplace book (books, films, music): `index.html`, `styles.css`, `js/app.js|covers.js|data.js|reads.js`, `data/library.json`, `data/read-feeds.json` (cached RSS/reading feed data, committed static asset), `scripts/add_media.js`. The "reading" rail merges RSS feed items with Supabase `reading_items` (manual adds: title/url/thoughts) and `reading_marks` (per-URL stack/read state for feed items); rail is public-read, owner-write behind the same email/password sign-in as the dashboard.
+- `media/` — Commonplace book: `index.html`, `styles.css`, `js/app.js|covers.js|data.js`, `data/library.json`, `scripts/add_media.js`. Read-only, no auth/Supabase — a single centered rail styled like a reading list, with top-bar tabs per type (all · articles · essays · books · films · albums · podcasts), search, spotlight-first ordering, and rating dots. Types: `article`, `essay`, `book`, `film`, `album`, `podcast` (`tv` retired). Covers are not rendered right now (the rail is text-only); `js/covers.js` (`resolveCover`) and the `tmdb-api-key` meta are kept for reintroducing cover art within the rail later.
 - `.env` — secrets (gitignored)
 - `supabase/` — gitignored (migrations)
 

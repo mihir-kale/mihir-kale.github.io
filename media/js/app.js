@@ -1,12 +1,11 @@
-import { loadLibrary, TYPE_LABELS, KIND_LABELS, FILTER_ORDER, COVER_TYPES } from "./data.js";
-import { resolveCover } from "./covers.js";
+import { loadLibrary, TYPE_LABELS } from "./data.js";
 
-const board = document.getElementById("board");
-const filtersNav = document.getElementById("filters");
 const searchInput = document.getElementById("search");
+const railList = document.getElementById("railList");
+const railCount = document.getElementById("railCount");
 const totalCount = document.getElementById("total-count");
 
-const state = { items: [], type: "all", query: "" };
+const state = { items: [], query: "" };
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
@@ -21,17 +20,11 @@ function isHttpUrl(url) {
   return /^https?:\/\//i.test(url || "");
 }
 
-function tileWrap(item, className) {
-  const linked = isHttpUrl(item.url);
-  const node = document.createElement(linked ? "a" : "figure");
-  node.className = className;
-  if (linked) {
-    node.href = item.url;
-    node.target = "_blank";
-    node.rel = "noopener noreferrer";
-    node.setAttribute("aria-label", `${item.title} — opens in a new tab`);
-  }
-  return node;
+function fmtDate(iso) {
+  if (!iso) return "";
+  const d = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function dots(rating) {
@@ -53,65 +46,6 @@ function dots(rating) {
   return wrap;
 }
 
-function buildTextTile(item) {
-  const tile = tileWrap(item, "tile tile--text");
-
-  const top = el("div", "tile-top");
-  top.append(el("span", "tile-code", TYPE_LABELS[item.mediaType]));
-  if (STATUS_GLYPHS[item.status]) {
-    top.append(el("span", `tile-status tile-status--${item.status}`, STATUS_GLYPHS[item.status]));
-  }
-
-  const title = el("p", "tile-title", item.title);
-  tile.title = `${item.title}${item.creator ? ` — ${item.creator}` : ""}`;
-
-  const bottom = el("div", "tile-bottom");
-  const rating = dots(item.rating);
-  if (rating) bottom.append(rating);
-  if (item.year) bottom.append(el("span", "tile-year", String(item.year)));
-
-  tile.append(top, title, bottom);
-  return tile;
-}
-
-function buildImageTile(item) {
-  const tile = tileWrap(item, "tile tile--image");
-  tile.title = `${item.title}${item.creator ? ` — ${item.creator}` : ""}`;
-
-  const frame = el("div", "tile-frame");
-  const fallback = el("div", "fallback");
-  fallback.append(
-    el("span", "fb-kind", TYPE_LABELS[item.mediaType]),
-    el("span", "fb-title", item.title)
-  );
-  frame.append(fallback);
-
-  const caption = el("div", "tile-caption");
-  caption.append(el("span", "cap-title", item.title));
-  const rating = dots(item.rating);
-  if (rating) caption.append(rating);
-  caption.classList.toggle("is-pinned", item.status === "in-progress");
-
-  tile.append(frame, caption);
-  hydrateCover(frame, item);
-  return tile;
-}
-
-async function hydrateCover(frame, item) {
-  const url = await resolveCover(item);
-  if (!url || !frame || !frame.isConnected) return;
-  const img = new Image();
-  img.alt = `${TYPE_LABELS[item.mediaType]} artwork for ${item.title}`;
-  img.decoding = "async";
-  img.src = url;
-  try {
-    await img.decode();
-  } catch {
-    return;
-  }
-  if (frame.isConnected) frame.replaceChildren(img);
-}
-
 function consumed(item) {
   return item.consumed ? new Date(`${item.consumed}T00:00:00`).getTime() : -Infinity;
 }
@@ -128,77 +62,75 @@ function orderedItems() {
 
 function visibleItems() {
   const query = state.query.trim().toLowerCase();
+  if (!query) return orderedItems();
   return orderedItems().filter((item) => {
-    if (state.type !== "all" && item.mediaType !== state.type) return false;
-    if (query) {
-      const haystack = [item.title, item.creator, item.tags.join(" "), item.year]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      if (!haystack.includes(query)) return false;
-    }
-    return true;
+    const haystack = [item.title, item.creator, item.tags.join(" "), item.year, TYPE_LABELS[item.mediaType]]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(query);
   });
 }
 
-function renderBoard() {
-  const list = visibleItems();
-  if (totalCount) {
-    totalCount.textContent = String(list.length);
+function buildItem(item) {
+  const li = el("li", `rail-item rail-item--${item.mediaType}`);
+  if (item.status) li.classList.add(`is-${item.status}`);
+
+  const linked = isHttpUrl(item.url);
+  const link = document.createElement(linked ? "a" : "div");
+  link.className = "rail-link";
+  if (linked) {
+    link.href = item.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
   }
-  board.replaceChildren();
+
+  const head = el("div", "ri-head");
+  head.append(el("span", "ri-src", TYPE_LABELS[item.mediaType]));
+  if (STATUS_GLYPHS[item.status]) {
+    head.append(el("span", `ri-status ri-status--${item.status}`, STATUS_GLYPHS[item.status]));
+  }
+  link.append(head);
+
+  link.append(el("p", "ri-title", item.title));
+  if (item.notes) link.append(el("p", "ri-thoughts", item.notes));
+
+  const foot = el("div", "ri-foot");
+  const meta = [item.creator, item.year ? String(item.year) : "", item.consumed ? fmtDate(item.consumed) : ""]
+    .filter(Boolean);
+  if (meta.length) foot.append(el("span", "ri-meta", meta.join(" · ")));
+  const rating = dots(item.rating);
+  if (rating) foot.append(rating);
+  if (foot.childNodes.length) link.append(foot);
+
+  li.append(link);
+  return li;
+}
+
+function render() {
+  const list = visibleItems();
+  railCount.textContent = String(list.length);
+  railList.replaceChildren();
   if (!list.length) {
-    board.append(el("p", "notice", "nothing here — widen the filters"));
+    railList.append(el("li", "rail-empty", "nothing here — try another search"));
     return;
   }
-  list.forEach((item) => {
-    const image = item.spotlight && COVER_TYPES.has(item.mediaType);
-    board.append(image ? buildImageTile(item) : buildTextTile(item));
-  });
-}
-
-function renderFilters() {
-  filtersNav.replaceChildren();
-  for (const id of FILTER_ORDER) {
-    const count =
-      id === "all" ? state.items.length : state.items.filter((item) => item.mediaType === id).length;
-    const button = el("button", "filter-button");
-    button.type = "button";
-    button.dataset.filter = id;
-    button.setAttribute("aria-pressed", String(id === state.type));
-    button.append(
-      el("span", "filter-label", id === "all" ? "all" : KIND_LABELS[id].toLowerCase()),
-      el("sup", "filter-count", String(count))
-    );
-    button.addEventListener("click", () => {
-      if (id === state.type) return;
-      state.type = id;
-      renderFilters();
-      renderBoard();
-    });
-    filtersNav.append(button);
-  }
-}
-
-function showError(message) {
-  board.replaceChildren();
-  const notice = el("p", "notice");
-  notice.textContent = message;
-  board.append(notice);
+  list.forEach((item) => railList.append(buildItem(item)));
 }
 
 searchInput.addEventListener("input", () => {
   state.query = searchInput.value;
-  renderBoard();
+  render();
 });
 
 loadLibrary()
   .then((items) => {
     state.items = items;
-    renderFilters();
-    renderBoard();
+    if (totalCount) totalCount.textContent = String(items.length);
+    render();
   })
   .catch((error) => {
     console.error(error);
-    showError(error.message);
+    railList.replaceChildren();
+    railList.append(el("li", "rail-empty", error.message));
   });

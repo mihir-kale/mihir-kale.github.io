@@ -13,9 +13,9 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { resolve } from "node:path";
 
-const MEDIA_TYPES = ["book", "film", "tv", "album", "article", "podcast"];
+const MEDIA_TYPES = ["article", "essay", "book", "film", "album", "podcast"];
 const STATUSES = ["backlog", "in-progress", "finished"];
-const TYPE_ALIASES = { movie: "film", show: "tv", series: "tv", music: "album", essay: "article" };
+const TYPE_ALIASES = { movie: "film", music: "album" };
 
 const args = parseArgs(process.argv.slice(2));
 const file = resolve(args.file || "media/data/library.json");
@@ -121,6 +121,6 @@ function parseArgs(argv) {
 
 function fail(message) {
   console.error(`\u2717 ${message}`);
-  console.error("Usage: node scripts/add_media.js --type <book|film|tv|album|article|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
+  console.error("Usage: node scripts/add_media.js --type <article|essay|book|film|album|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
   process.exit(1);
 }

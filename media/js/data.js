@@ -1,26 +1,26 @@
-export const MEDIA_TYPES = ["book", "film", "tv", "album", "article", "podcast"];
+export const MEDIA_TYPES = ["article", "essay", "book", "film", "album", "podcast"];
 
 export const TYPE_LABELS = {
+  article: "Article",
+  essay: "Essay",
   book: "Book",
   film: "Film",
-  tv: "Series",
   album: "Album",
-  article: "Article",
   podcast: "Podcast"
 };
 
 export const KIND_LABELS = {
+  article: "Articles",
+  essay: "Essays",
   book: "Books",
   film: "Films",
-  tv: "Series",
-  album: "Music",
-  article: "Articles",
+  album: "Albums",
   podcast: "Podcasts"
 };
 
 export const FILTER_ORDER = ["all", ...MEDIA_TYPES];
 
-export const COVER_TYPES = new Set(["book", "film", "tv", "album"]);
+export const COVER_TYPES = new Set(["book", "film", "album"]);
 
 export const STATUS_LABELS = {
   backlog: "On the list",
