@@ -169,7 +169,8 @@ function buildItem(source, block) {
     tags: [...new Set(tags.filter(Boolean))],
     url: link,
     spotlight: false,
-    list: "shelf"
+    list: "shelf",
+    source: "feed"
   };
 }
 

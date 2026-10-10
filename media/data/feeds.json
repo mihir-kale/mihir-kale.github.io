@@ -14,7 +14,8 @@
     ],
     "url": "https://www.theatlantic.com/culture/2026/10/elon-musk-documentary-alex-gibney/688942/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-630749c58c36",
@@ -31,7 +32,8 @@
     ],
     "url": "https://www.theatlantic.com/national/2026/10/trump-red-states-washington-week/688963/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-c42b45a0b11a",
@@ -48,7 +50,8 @@
     ],
     "url": "https://www.wired.com/story/ai-is-getting-really-good-at-messing-with-cybercriminals/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-e3c3394182fe",
@@ -64,7 +67,8 @@
     ],
     "url": "https://www.economist.com/podcasts/2026/10/10/and-tango-makes-three",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-404474ae6830",
@@ -81,7 +85,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/10/nyregion/at-cornell-a-sorority-finds-itself-sued-by-one-of-its-own.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-6de1ab37a36d",
@@ -98,7 +103,8 @@
     ],
     "url": "https://www.wired.com/gallery/gifts-for-lego-lovers/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-ea24cb5ac914",
@@ -115,7 +121,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/10/us/politics/christa-pike-discharged-hospital-survive-execution.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-fc8b9921af20",
@@ -132,7 +139,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/10/us/politics/trump-inflation-midterms-republicans.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-71a1db301f11",
@@ -149,7 +157,8 @@
     ],
     "url": "https://www.theatlantic.com/newsletters/2026/10/good-friends-bad-texters/688957/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-746e67646daa",
@@ -166,7 +175,8 @@
     ],
     "url": "https://www.newyorker.com/culture/dancing/how-oscar-stages-the-sad-sordid-decline-of-oscar-wilde",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-7c3327749353",
@@ -183,7 +193,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/10/nyregion/cornell-rape-lawsuit-fraternity-brothers.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-5361b5924863",
@@ -200,7 +211,8 @@
     ],
     "url": "https://www.newyorker.com/culture/the-weekend-essay/how-i-became-a-lock-picker",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-2c1c73e83f44",
@@ -217,7 +229,8 @@
     ],
     "url": "https://www.wired.com/story/how-this-tiny-startup-pikio-built-the-worlds-safest-bike-helmet/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-96ca4ceb834c",
@@ -234,7 +247,8 @@
     ],
     "url": "https://www.wired.com/story/humans-watched-this-supernova-explode-nearly-a-millennium-ago-now-you-can-see-it-in-high-definition/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-74020e2db290",
@@ -251,7 +265,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/09/weather/hurricane-simon-rachel-california.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-4067a4ed061d",
@@ -268,7 +283,8 @@
     ],
     "url": "https://www.newyorker.com/magazine/2026/10/19/kash-patels-slap-shot",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-3a4240bffd29",
@@ -285,7 +301,8 @@
     ],
     "url": "https://www.theatlantic.com/culture/2026/10/megyn-kelly-youtube-cornell-allegations/688951/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-0a1d2419560d",
@@ -302,7 +319,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/10/world/europe/ukraine-russia-trump-diesel-talks.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-6a171ca2ff89",
@@ -319,7 +337,8 @@
     ],
     "url": "https://www.newyorker.com/culture/photo-booth/richard-avedons-defining-early-fashion-shoots",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-ecab9dd712f1",
@@ -336,7 +355,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/10/world/middleeast/riyadh-airport-attack-energy-congress.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-cd23df2c45b1",
@@ -353,7 +373,8 @@
     ],
     "url": "https://www.theatlantic.com/health/2026/10/yogurt-best-protein-source/688950/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-f448a50428ea",
@@ -370,7 +391,8 @@
     ],
     "url": "https://www.wired.com/gallery/best-smart-scales/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-b7890366825d",
@@ -387,7 +409,8 @@
     ],
     "url": "https://www.newyorker.com/culture/the-current-cinema/the-blistering-hollywood-satire-of-misty-green",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-04bfc3e11d8c",
@@ -404,7 +427,8 @@
     ],
     "url": "https://www.theatlantic.com/international/2026/10/french-decline-politics-extremism/688953/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-66e818fd04f9",
@@ -421,7 +445,8 @@
     ],
     "url": "https://www.newyorker.com/culture/critics-notebook/the-good-hang-economy",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-5ad69bab9641",
@@ -438,7 +463,8 @@
     ],
     "url": "https://www.theatlantic.com/magazine/2026/11/sarah-j-maas-romantasy/688680/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-87eb42e07f5e",
@@ -455,7 +481,8 @@
     ],
     "url": "https://www.theatlantic.com/ideas/2026/10/trumps-diesel-deal-sells-out-ukraine/688964/?utm_source=feed",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-28b9cb70b7f1",
@@ -472,7 +499,8 @@
     ],
     "url": "https://www.newyorker.com/news/the-political-scene/who-won-the-redistricting-war",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-743e687ee62c",
@@ -489,7 +517,8 @@
     ],
     "url": "https://www.nytimes.com/2026/10/10/science/ketamine-cornell-anesthesia.html",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-76de0913355e",
@@ -505,7 +534,8 @@
     ],
     "url": "https://www.newyorker.com/podcast/political-scene/will-donald-trumps-corruption-matter-in-november",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-ee203b95187e",
@@ -521,7 +551,8 @@
     ],
     "url": "https://www.economist.com/interactive/europe/2026/10/09/belarus-is-becoming-increasingly-russian",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-9f656b4d5f81",
@@ -538,7 +569,8 @@
     ],
     "url": "https://www.wired.com/story/book-publishers-are-quietly-using-more-ai-staff-are-revolting/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-54ae95376e88",
@@ -554,7 +586,8 @@
     ],
     "url": "https://www.economist.com/united-states/2026/10/09/checks-and-balance-newsletter-plans-to-livestream-an-execution-in-america",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-60455a9b6db2",
@@ -570,7 +603,8 @@
     ],
     "url": "https://www.economist.com/science-and-technology/2026/10/09/do-you-need-to-walk-10000-steps-a-day",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-9844c1510457",
@@ -586,7 +620,8 @@
     ],
     "url": "https://www.economist.com/europe/2026/10/09/italys-politicians-are-obsessed-with-short-skirts",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-c2d94a4d5dbb",
@@ -603,7 +638,25 @@
     ],
     "url": "https://www.wired.com/story/nasa-just-made-nearly-1-tb-of-artemis-ii-data-available-to-the-public/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-284b74710c7d",
+    "mediaType": "podcast",
+    "title": "People Who Lie and People Who Die (w/ Sam Roberts) Members Only #349",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-09",
+    "notes": "“There are no ordinary lives and everyone has a story” -Sam Roberts’ father takes him to see the Rosenbergs’ funeral -Fifty years in journalism and an unexpected career writing obituaries -Anna Nicole Smith and the brutality of British obituaries -Charlie Rangel’s complicated…",
+    "tags": [
+      "the-fifth-column"
+    ],
+    "url": "https://www.wethefifth.com/p/people-who-lie-and-people-who-die",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-60a4eae7f3e5",
@@ -619,7 +672,8 @@
     ],
     "url": "https://www.economist.com/culture/2026/10/09/plot-twist-newsletter-silicon-valley-is-taking-over-your-screen",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-ce5be8631da0",
@@ -635,7 +689,25 @@
     ],
     "url": "https://www.economist.com/united-states/2026/10/09/professional-sumo-wrestling-comes-to-america",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-188d5b55fa50",
+    "mediaType": "podcast",
+    "title": "Second Sunday Coordinates 10/11",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-09",
+    "notes": "Kmele is the King of Halloween, did you know that? Below find the link for this month’s Second Sunday, taking place LIVE on Zoom at 6PM Eastern Time (on Sunday ) Paid subscribers get the link below the fold. Read more",
+    "tags": [
+      "the-fifth-column"
+    ],
+    "url": "https://www.wethefifth.com/p/second-sunday-coordinates-1011",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-c194535ad715",
@@ -652,7 +724,8 @@
     ],
     "url": "https://www.wired.com/story/tesla-full-self-driving-becomes-assisted-driving-in-europe/",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
   },
   {
     "id": "feed-0a13c1869cca",
@@ -668,6 +741,398 @@
     ],
     "url": "https://www.economist.com/podcasts/2026/10/09/the-christian-vote",
     "spotlight": false,
-    "list": "shelf"
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-acc418b9d0f8",
+    "mediaType": "podcast",
+    "title": "Europe Is Melting, Meritocracy Is Racist, and Everyone Gets Dignity",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-07",
+    "notes": "Did we mention we’re nominated…did you vote yet? If not, what in the actual fuck is your problem? -all the bad words are here -come to Fairfield on November 12th! (https://quickcenter.fairfield.edu/2026-27-season-calendar/lectures/the-fifth-column-podcast.html) -Trump in…",
+    "tags": [
+      "the-fifth-column"
+    ],
+    "url": "https://www.wethefifth.com/p/europe-is-melting-meritocracy-is",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e8617b4744f6",
+    "mediaType": "podcast",
+    "title": "Addiction, Faith, and the Limits of Willpower (with Meghan O’Gieblyn)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-05",
+    "notes": "Why do we keep doing things we know we shouldn’t? And is that really a failure of will? Author Meghan O’Gieblyn spent years trying to answer that question, first in response to her struggle with alcoholism and her loss of faith, and then by means of Simone Weil, William James,…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/addiction-faith-and-the-limits-of-willpower-with-meghan-ogieblyn/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-5623956236ee",
+    "mediaType": "podcast",
+    "title": "Firehose #215: Fall Forward",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-04",
+    "notes": "In this house barn we celebrate the annual arboreal costume change, and the busy season of work & televised sports it portends. Sure, you could put on your A.I.-generated screen saver of autumn leaves and crackling fires, but ain’t it grander to touch grass and breathe in the…",
+    "tags": [
+      "the-fifth-column",
+      "matt-welch"
+    ],
+    "url": "https://www.wethefifth.com/p/firehose-215-fall-forward",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1e58b2faffba",
+    "mediaType": "podcast",
+    "title": "One Hitter: Why Oil Prices Could Get Much Worse (w/ Marshall Adkins) Members Only #348",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-03",
+    "notes": "Marshall spent 25 years covering oil and gas at Raymond James before retiring this week. He joins the guys to explain what’s actually driving prices higher, why diesel matters more than most people realize, and how war, refinery outages, and shrinking reserves have left the…",
+    "tags": [
+      "the-fifth-column"
+    ],
+    "url": "https://www.wethefifth.com/p/one-hitter-why-oil-prices-could-get",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-ead4feab4d86",
+    "mediaType": "podcast",
+    "title": "Vote for The Fifth Column in the Signal Awards!",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-03",
+    "notes": "In what is surely the crowning achievement of our careers, The Fifth Column has been nominated for a Signal Award in the news & politics category. A secretive “judging academy” will apparently decide if we will take home the gold (or silver, or bronze) headphones, but oh–what’s…",
+    "tags": [
+      "the-fifth-column"
+    ],
+    "url": "https://www.wethefifth.com/p/vote-for-the-fifth-column-in-the",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c4026740d5d4",
+    "mediaType": "podcast",
+    "title": "The Weave Within the Weave (#577)",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-02",
+    "notes": "…and Moynihan discusses Harvard’s artist in residence. Also, we’ve been nominated for something! vote for us in for the Signal Awards! -Kmele’s Cross-Country Trail of Tears -Trump Praises the Latinos -Yukon Cornelius and the Bumble -Coming Soon: Jason’s Weird Fetishes -Trump…",
+    "tags": [
+      "the-fifth-column"
+    ],
+    "url": "https://www.wethefifth.com/p/the-weave-within-the-weave",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1d96a0a899bd",
+    "mediaType": "podcast",
+    "title": "Sarah Hepola and the Life You Didn’t Choose (Members Only #347)",
+    "creator": "The Fifth Column",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-29",
+    "notes": "Finally, a break from politics and a discussion about…love. If you like Sarah, check out her podcast with friend of The Fifth Column Nancy Rommelmann -Sarah is back on the wagon (not really!) -The married man, the younger man, and the New Orleans homicide detective -Women’s…",
+    "tags": [
+      "the-fifth-column"
+    ],
+    "url": "https://www.wethefifth.com/p/sarah-hepola-and-the-life-you-didnt",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b79d3670ad98",
+    "mediaType": "podcast",
+    "title": "Public Choice and Politics Without Romance (with Mike Munger)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-28",
+    "notes": "Before you give the government new powers, try the Munger Test: cross out “government” and insert the name of the politician you trust least. Then see if you still like the idea. In his 52nd EconTalk appearance, Mike Munger talks with host Russ Roberts about public choice,…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/public-choice-and-politics-without-romance-with-mike-munger/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a67e55588482",
+    "mediaType": "podcast",
+    "title": "Luis Garicano",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-23",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "dallas-floer"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/luis-garicano/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-398cb7bc9daa",
+    "mediaType": "podcast",
+    "title": "The Death of Reading (with James Marriott)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-21",
+    "notes": "Are we living in the new Dark Ages? Despite vast technological advances, our societies are increasingly looking like those that preceded the advent of literacy. So argues journalist James Marriott , who sees in our abandonment of reading a threat to democracy and a reversal of…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/the-death-of-reading-with-james-marriott/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-2c4c1373a4df",
+    "mediaType": "podcast",
+    "title": "Incentives Are for Losers (with Adam Mastroianni)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-14",
+    "notes": "Incentives matter, sure. But what should you do when following the incentives means quietly participating in something wrong? Psychologist Adam Mastroianni argues that obeying bad incentives–shading a headline for clicks, keeping the found wallet because no one’s watching–is…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/incentives-are-for-losers-with-adam-mastroianni/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-0a32b599e878",
+    "mediaType": "podcast",
+    "title": "Gita Gopinath",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-09",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "dallas-floer"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/gita-gopinath/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-22fcf7adba09",
+    "mediaType": "podcast",
+    "title": "Meritocracy, Exams, and the Knowledge That Matters (with Daisy Christodoulou)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-07",
+    "notes": "What does a failed 19th-century Chinese civil exam and one of the deadliest wars in history have to do with how we hire, educate, and test people today? In this EconTalk conversation, Russ Roberts and education expert Daisy Christodoulou trace a surprising thread from the…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/meritocracy-exams-and-the-knowledge-that-matters-with-daisy-christodoulou/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c6b4607dfe11",
+    "mediaType": "podcast",
+    "title": "Annie Lowrey",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-09-02",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "dallas-floer"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/annie-lowrey/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1366fda4cf9a",
+    "mediaType": "podcast",
+    "title": "Hamas and the Future of Gaza (with Ahmed Fouad Alkhatib)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-08-31",
+    "notes": "He lost his childhood homes, dozens of family members, and most of his hearing in his left ear to Israeli bombs, yet Ahmed Fouad Alkhatib insists that Palestinians must also take responsibility for Gaza’s destruction and for peace. Most Gazans, he insists, have turned against…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/hamas-and-the-future-of-gaza-with-ahmed-fouad-alkhatib/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c654a957eb88",
+    "mediaType": "podcast",
+    "title": "Jared Diamond",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-08-27",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "dallas-floer"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/jared-diamond/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-fc2850baaad4",
+    "mediaType": "podcast",
+    "title": "Are We Alone? Cosmic Loneliness and the Longing to Believe (with Adam Kirsch)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-08-24",
+    "notes": "Has the earth been visited by extraterrestrials? Are we alone? Despite no formal evidence for conscious life outside of earth, the belief that we are not alone has become more common among both scientists and everyday people. Listen as author Adam Kirsch talks to EconTalk host…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/are-we-alone-cosmic-loneliness-and-the-longing-to-believe-with-adam-kirsch/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c1310990c68e",
+    "mediaType": "podcast",
+    "title": "The Hidden Cause of the Industrial Revolution (with Ben Southwood)",
+    "creator": "EconTalk",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-08-17",
+    "notes": "What if the Industrial Revolution wasn’t sparked by the steam engine, but by a quiet legal revolution in how England handled property rights? Ben Southwood of Works in Progress argues that the Glorious Revolution of the 1680s unleashed British growth by empowering a Parliament…",
+    "tags": [
+      "econtalk",
+      "lauren-landsburg"
+    ],
+    "url": "https://www.econtalk.org/the-hidden-cause-of-the-industrial-revolution-with-ben-southwood/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-92145ee553f3",
+    "mediaType": "podcast",
+    "title": "Michael Moritz",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-08-11",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "dallas-floer"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/michael-moritz/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-38f6a540db71",
+    "mediaType": "podcast",
+    "title": "Daron Acemoglu",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-07-24",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "dallas-floer"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/daron-acemoglu-2/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c6391a6c832b",
+    "mediaType": "podcast",
+    "title": "Luke Burgis",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-07-24",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "dallas-floer"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/luke-burgis/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e676d413769c",
+    "mediaType": "podcast",
+    "title": "Julia Ioffe",
+    "creator": "Conversations with Tyler",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-07-15",
+    "notes": "",
+    "tags": [
+      "conversations-with-tyler",
+      "web-admin"
+    ],
+    "url": "https://conversationswithtyler.com/episodes/julia-ioffe/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
   }
 ]

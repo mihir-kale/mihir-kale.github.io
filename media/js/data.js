@@ -56,7 +56,8 @@ export function normalizeItem(raw) {
     tags: normalizedTags(raw && raw.tags),
     url: clean(raw && raw.url),
     spotlight: Boolean(raw && raw.spotlight),
-    list: LISTS.includes(clean(raw && raw.list).toLowerCase()) ? clean(raw && raw.list).toLowerCase() : "shelf"
+    list: LISTS.includes(clean(raw && raw.list).toLowerCase()) ? clean(raw && raw.list).toLowerCase() : "shelf",
+    source: clean(raw && raw.source)
   };
   if (!MEDIA_TYPES.includes(item.mediaType)) {
     throw new Error(`unknown media type "${raw.mediaType}"`);

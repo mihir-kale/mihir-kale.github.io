@@ -6,13 +6,14 @@ const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
 
 const SUGGEST_KEY = "media:suggestions:v1";
+const DISMISS_KEY = "media:dismissed:v1";
 
 // Public by design (RLS-protected); the media catalogue itself stays a static JSON file.
 const SUPABASE_URL = "https://gzwhuwzmrrmtswyhjheu.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E";
 
-const state = { items: [], query: "", list: "recommend", suggestions: [] };
+const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set() };
 const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
@@ -97,9 +98,23 @@ function buildItem(item) {
   const main = el("div", "ri-main");
 
   const head = el("div", "ri-head");
-  head.append(el("span", "ri-src", item.creator || TYPE_LABELS[item.mediaType]));
+  const headMain = el("span", "ri-head-main");
+  headMain.append(el("span", "ri-src", item.creator || TYPE_LABELS[item.mediaType]));
   if (STATUS_GLYPHS[item.status]) {
-    head.append(el("span", `ri-status ri-status--${item.status}`, STATUS_GLYPHS[item.status]));
+    headMain.append(el("span", `ri-status ri-status--${item.status}`, STATUS_GLYPHS[item.status]));
+  }
+  head.append(headMain);
+  if (item.source === "feed") {
+    const dismiss = el("button", "ri-dismiss", "\u00D7");
+    dismiss.type = "button";
+    dismiss.title = "not interested";
+    dismiss.setAttribute("aria-label", `Not interested: ${item.title}`);
+    dismiss.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      dismissItem(item.id);
+    });
+    head.append(dismiss);
   }
   main.append(head);
 
@@ -176,6 +191,30 @@ function readSuggestions() {
   } catch {
     return [];
   }
+}
+
+function readDismissed() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(DISMISS_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistDismissed() {
+  try {
+    localStorage.setItem(DISMISS_KEY, JSON.stringify([...state.dismissed]));
+  } catch {
+    /* storage unavailable — keep in-memory only */
+  }
+}
+
+function dismissItem(id) {
+  if (!id) return;
+  state.dismissed.add(id);
+  persistDismissed();
+  render();
 }
 
 function persistSuggestions() {
@@ -397,6 +436,7 @@ function render() {
 
   for (const item of ordered(state.items)) {
     if (item.list !== state.list) continue;
+    if (state.dismissed.has(item.id)) continue;
     if (!matches(item, query)) continue;
     if (!byType.has(item.mediaType)) byType.set(item.mediaType, []);
     byType.get(item.mediaType).push(item);
@@ -428,6 +468,7 @@ if (document.fonts && document.fonts.ready) {
 buildToggle();
 formRail = buildFormRail();
 state.suggestions = readSuggestions();
+state.dismissed = new Set(readDismissed());
 renderSuggestions();
 
 Promise.all([loadLibrary(), loadFeeds()])

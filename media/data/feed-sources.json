@@ -8,6 +8,9 @@
     { "name": "WIRED", "type": "article", "url": "https://www.wired.com/feed/rss" },
     { "name": "The Economist", "type": "article", "url": "https://www.economist.com/latest/rss.xml" },
     { "name": "The New York Times", "type": "article", "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" },
-    { "name": "The Yale Review", "type": "article", "url": "", "enabled": false, "note": "yalereview.org publishes no RSS feed (sitemap only); set a url to enable." }
+    { "name": "The Yale Review", "type": "article", "url": "", "enabled": false, "note": "yalereview.org publishes no RSS feed (sitemap only); set a url to enable." },
+    { "name": "EconTalk", "type": "podcast", "url": "https://www.econtalk.org/feed/" },
+    { "name": "Conversations with Tyler", "type": "podcast", "url": "https://conversationswithtyler.com/episodes/feed/" },
+    { "name": "The Fifth Column", "type": "podcast", "url": "https://wethefifth.substack.com/feed" }
   ]
 }

@@ -244,6 +244,26 @@ select.suggest-input{cursor:pointer}
   align-items:baseline;
   gap:.6rem;
 }
+.ri-head-main{
+  display:inline-flex;
+  align-items:baseline;
+  gap:.6rem;
+  min-width:0;
+}
+.ri-dismiss{
+  appearance:none;
+  background:none;
+  border:none;
+  margin:0;
+  padding:0 .1rem;
+  font-family:inherit;
+  font-size:.82rem;
+  line-height:1;
+  cursor:pointer;
+  color:var(--ink-soft);
+  opacity:.4;
+}
+.ri-dismiss:hover{color:var(--amber);opacity:1}
 .ri-src{
   display:block;
   font-size:.5rem;
