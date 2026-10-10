@@ -236,7 +236,7 @@ select.suggest-input{cursor:pointer}
   max-width:68ch;
   font-size:.62rem;
   line-height:1.5;
-  color:var(--ink-soft);
+  color:var(--ink);
 }
 .rail-empty{
   padding:1.2rem .2rem;
