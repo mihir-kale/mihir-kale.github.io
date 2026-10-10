@@ -81,10 +81,16 @@ a{color:inherit;text-decoration:none}
 /* ---------------------------------- rails --------------------------------- */
 
 .rails{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+  display:flex;
   gap:clamp(14px,2vw,22px);
-  align-items:start;
+  align-items:flex-start;
+}
+.rail-col{
+  flex:1 1 0;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:clamp(14px,2vw,22px);
 }
 
 .rail{

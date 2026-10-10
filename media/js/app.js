@@ -9,6 +9,12 @@ const state = { items: [], query: "" };
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
+const MIN_COL = 280;
+const GAP_MIN = 14;
+const GAP_MAX = 22;
+
+let railEls = [];
+
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -121,33 +127,77 @@ function buildRail(type, items) {
   return rail;
 }
 
+function currentGap() {
+  return Math.min(GAP_MAX, Math.max(GAP_MIN, window.innerWidth * 0.02));
+}
+
+function layout() {
+  const width = railsEl.clientWidth;
+  if (!width || !railEls.length) return;
+  const gap = currentGap();
+  const cols = Math.max(1, Math.floor((width + gap) / (MIN_COL + gap)));
+
+  const columns = [];
+  railsEl.replaceChildren();
+  for (let i = 0; i < cols; i += 1) {
+    const node = el("div", "rail-col");
+    railsEl.append(node);
+    columns.push({ el: node, height: 0 });
+  }
+
+  const heights = railEls.map((rail) => {
+    columns[0].el.append(rail);
+    const h = rail.getBoundingClientRect().height;
+    rail.remove();
+    return h;
+  });
+
+  railEls.forEach((rail, index) => {
+    let target = columns[0];
+    for (const col of columns) {
+      if (col.height < target.height) target = col;
+    }
+    target.el.append(rail);
+    target.height += heights[index] + gap;
+  });
+}
+
+let resizeTimer = null;
+function scheduleLayout() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(layout, 120);
+}
+
 function render() {
   const query = state.query.trim().toLowerCase();
-  const counts = {};
-  let total = 0;
   const byType = new Map();
 
   for (const item of ordered(state.items)) {
     if (!matches(item, query)) continue;
-    counts[item.mediaType] = (counts[item.mediaType] || 0) + 1;
     if (!byType.has(item.mediaType)) byType.set(item.mediaType, []);
     byType.get(item.mediaType).push(item);
-    total += 1;
   }
 
-  railsEl.replaceChildren();
+  railEls = [];
   for (const type of MEDIA_TYPES) {
     const items = byType.get(type);
-    if (items && items.length) railsEl.append(buildRail(type, items));
+    if (items && items.length) railEls.push(buildRail(type, items));
   }
 
+  const total = railEls.reduce((sum, rail) => sum + rail.querySelectorAll(".rail-item").length, 0);
   emptyNotice.classList.toggle("hidden", total > 0);
+  layout();
 }
 
 searchInput.addEventListener("input", () => {
   state.query = searchInput.value;
   render();
 });
+
+window.addEventListener("resize", scheduleLayout);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => layout());
+}
 
 loadLibrary()
   .then((items) => {
