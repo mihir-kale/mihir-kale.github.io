@@ -18,9 +18,14 @@ export const KIND_LABELS = {
   podcast: "Podcasts"
 };
 
-export const FILTER_ORDER = ["all", ...MEDIA_TYPES];
-
 export const COVER_TYPES = new Set(["book", "film", "album"]);
+
+export const LISTS = ["shelf", "recommend"];
+
+export const LIST_LABELS = {
+  shelf: "on my shelf",
+  recommend: "my recommendations"
+};
 
 export const STATUS_LABELS = {
   backlog: "On the list",
@@ -50,7 +55,8 @@ export function normalizeItem(raw) {
     notes: clean(raw && raw.notes),
     tags: normalizedTags(raw && raw.tags),
     url: clean(raw && raw.url),
-    spotlight: Boolean(raw && raw.spotlight)
+    spotlight: Boolean(raw && raw.spotlight),
+    list: LISTS.includes(clean(raw && raw.list).toLowerCase()) ? clean(raw && raw.list).toLowerCase() : "shelf"
   };
   if (!MEDIA_TYPES.includes(item.mediaType)) {
     throw new Error(`unknown media type "${raw.mediaType}"`);

@@ -65,7 +65,8 @@ function buildFromFlags(args) {
     notes: args.notes || "",
     tags: args.tags || [],
     url: args.url || "",
-    spotlight: Boolean(args.spotlight)
+    spotlight: Boolean(args.spotlight),
+    list: args.list || "shelf"
   };
 }
 
@@ -89,7 +90,8 @@ function normalize(raw) {
     notes: String(raw.notes || "").trim(),
     tags: [...new Set((raw.tags || []).map((tag) => String(tag).trim()).filter(Boolean))],
     url: String(raw.url || "").trim(),
-    spotlight: Boolean(raw.spotlight)
+    spotlight: Boolean(raw.spotlight),
+    list: raw.list === "recommend" ? "recommend" : "shelf"
   };
   for (const key of Object.keys(item)) {
     if (item[key] === null || item[key] === "" || (Array.isArray(item[key]) && !item[key].length)) delete item[key];

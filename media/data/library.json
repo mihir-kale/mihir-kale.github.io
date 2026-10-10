@@ -13,7 +13,8 @@
       "sci-fi"
     ],
     "url": "https://en.wikipedia.org/wiki/Project_Hail_Mary",
-    "spotlight": true
+    "spotlight": true,
+    "list": "recommend"
   },
   {
     "id": "gk-m-a-a-d-city",
@@ -29,7 +30,8 @@
       "hip-hop"
     ],
     "url": "https://music.apple.com/us/album/good-kid-m-a-a-d-city/1440840692",
-    "spotlight": true
+    "spotlight": true,
+    "list": "recommend"
   },
   {
     "id": "i-pencil",
@@ -46,7 +48,8 @@
       "classic"
     ],
     "url": "https://en.wikipedia.org/wiki/I,_Pencil",
-    "spotlight": true
+    "spotlight": true,
+    "list": "recommend"
   },
   {
     "id": "loonshots",
@@ -62,7 +65,8 @@
       "business",
       "innovation"
     ],
-    "url": "https://en.wikipedia.org/wiki/Loonshots"
+    "url": "https://en.wikipedia.org/wiki/Loonshots",
+    "list": "shelf"
   },
   {
     "id": "diplomacy",
@@ -78,7 +82,8 @@
       "history",
       "foreign-policy"
     ],
-    "url": "https://en.wikipedia.org/wiki/Diplomacy_(Kissinger_book)"
+    "url": "https://en.wikipedia.org/wiki/Diplomacy_(Kissinger_book)",
+    "list": "shelf"
   },
   {
     "id": "federalist-papers",
@@ -95,7 +100,8 @@
       "politics",
       "classic"
     ],
-    "url": "https://en.wikipedia.org/wiki/The_Federalist_Papers"
+    "url": "https://en.wikipedia.org/wiki/The_Federalist_Papers",
+    "list": "shelf"
   },
   {
     "id": "basic-economics",
@@ -110,7 +116,8 @@
     "tags": [
       "economics"
     ],
-    "url": "https://en.wikipedia.org/wiki/Basic_Economics"
+    "url": "https://en.wikipedia.org/wiki/Basic_Economics",
+    "list": "shelf"
   },
   {
     "id": "theory-money-credit",
@@ -125,7 +132,8 @@
     "tags": [
       "economics"
     ],
-    "url": "https://en.wikipedia.org/wiki/The_Theory_of_Money_and_Credit"
+    "url": "https://en.wikipedia.org/wiki/The_Theory_of_Money_and_Credit",
+    "list": "shelf"
   },
   {
     "id": "why-we-disagree",
@@ -141,7 +149,8 @@
       "politics",
       "culture"
     ],
-    "url": ""
+    "url": "",
+    "list": "shelf"
   },
   {
     "id": "conversations-tyler-acemoglu",
@@ -157,7 +166,8 @@
       "economics",
       "long-form"
     ],
-    "url": "https://conversationswithtyler.com/episodes/daron-acemoglu-2/"
+    "url": "https://conversationswithtyler.com/episodes/daron-acemoglu-2/",
+    "list": "shelf"
   },
   {
     "id": "econtalk-southwood",
@@ -173,7 +183,8 @@
       "economics",
       "history"
     ],
-    "url": "https://www.econtalk.org/the-hidden-cause-of-the-industrial-revolution-with-ben-southwood/"
+    "url": "https://www.econtalk.org/the-hidden-cause-of-the-industrial-revolution-with-ben-southwood/",
+    "list": "shelf"
   },
   {
     "id": "fifth-column-politics",
@@ -189,7 +200,8 @@
       "politics",
       "media"
     ],
-    "url": "https://www.wethefifth.com/p/the-politics-of-pretending-episode"
+    "url": "https://www.wethefifth.com/p/the-politics-of-pretending-episode",
+    "list": "shelf"
   },
   {
     "id": "silver-2026-midterms",
@@ -205,7 +217,8 @@
       "elections",
       "data"
     ],
-    "url": "https://www.natesilver.net/p/nate-silver-2026-midterm-election-polls-model"
+    "url": "https://www.natesilver.net/p/nate-silver-2026-midterm-election-polls-model",
+    "list": "shelf"
   },
   {
     "id": "illmatic",
@@ -221,7 +234,8 @@
       "hip-hop",
       "classic"
     ],
-    "url": "https://music.apple.com/us/album/illmatic/1440775704"
+    "url": "https://music.apple.com/us/album/illmatic/1440775704",
+    "list": "shelf"
   },
   {
     "id": "use-of-knowledge",
@@ -237,7 +251,8 @@
       "economics",
       "classic"
     ],
-    "url": "https://en.wikipedia.org/wiki/The_Use_of_Knowledge_in_Society"
+    "url": "https://en.wikipedia.org/wiki/The_Use_of_Knowledge_in_Society",
+    "list": "shelf"
   },
   {
     "id": "oppenheimer",
@@ -253,7 +268,8 @@
       "history",
       "drama"
     ],
-    "url": "https://en.wikipedia.org/wiki/Oppenheimer_(film)"
+    "url": "https://en.wikipedia.org/wiki/Oppenheimer_(film)",
+    "list": "shelf"
   },
   {
     "id": "whiplash",
@@ -269,6 +285,7 @@
       "drama",
       "music"
     ],
-    "url": "https://en.wikipedia.org/wiki/Whiplash_(2014_film)"
+    "url": "https://en.wikipedia.org/wiki/Whiplash_(2014_film)",
+    "list": "shelf"
   }
 ]

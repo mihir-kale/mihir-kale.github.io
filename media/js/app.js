@@ -1,11 +1,13 @@
-import { loadLibrary, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS } from "./data.js";
+import { loadLibrary, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS } from "./data.js";
 
 const searchInput = document.getElementById("search");
+const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
 const emptyNotice = document.getElementById("emptyNotice");
 const totalCount = document.getElementById("total-count");
 
-const state = { items: [], query: "" };
+const state = { items: [], query: "", list: "shelf" };
+const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
@@ -31,25 +33,6 @@ function fmtDate(iso) {
   const d = new Date(`${iso}T00:00:00`);
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
-
-function dots(rating) {
-  if (!rating) return null;
-  const wrap = el("span", "dots");
-  wrap.setAttribute("role", "img");
-  wrap.setAttribute("aria-label", `${rating} of 5`);
-  for (let i = 1; i <= 5; i += 1) {
-    const dot = el("span", "dot");
-    if (rating >= i - 0.25) {
-      // full
-    } else if (rating >= i - 0.75) {
-      dot.classList.add("dot--half");
-    } else {
-      dot.classList.add("dot--off");
-    }
-    wrap.append(dot);
-  }
-  return wrap;
 }
 
 function consumed(item) {
@@ -99,12 +82,8 @@ function buildItem(item) {
   link.append(el("p", "ri-title", item.title));
   if (item.notes) link.append(el("p", "ri-thoughts", item.notes));
 
-  const foot = el("div", "ri-foot");
   const meta = [item.year ? String(item.year) : "", item.consumed ? fmtDate(item.consumed) : ""].filter(Boolean);
-  if (meta.length) foot.append(el("span", "ri-meta", meta.join(" · ")));
-  const rating = dots(item.rating);
-  if (rating) foot.append(rating);
-  if (foot.childNodes.length) link.append(foot);
+  if (meta.length) link.append(el("span", "ri-meta", meta.join(" · ")));
 
   li.append(link);
   return li;
@@ -168,11 +147,36 @@ function scheduleLayout() {
   resizeTimer = setTimeout(layout, 120);
 }
 
+function buildToggle() {
+  listsEl.replaceChildren();
+  listButtons.clear();
+  for (const id of LISTS) {
+    const button = el("button", "list-button", LIST_LABELS[id]);
+    button.type = "button";
+    button.setAttribute("aria-pressed", String(state.list === id));
+    button.addEventListener("click", () => {
+      if (state.list === id) return;
+      state.list = id;
+      syncToggle();
+      render();
+    });
+    listButtons.set(id, button);
+    listsEl.append(button);
+  }
+}
+
+function syncToggle() {
+  for (const [id, button] of listButtons) {
+    button.setAttribute("aria-pressed", String(state.list === id));
+  }
+}
+
 function render() {
   const query = state.query.trim().toLowerCase();
   const byType = new Map();
 
   for (const item of ordered(state.items)) {
+    if (item.list !== state.list) continue;
     if (!matches(item, query)) continue;
     if (!byType.has(item.mediaType)) byType.set(item.mediaType, []);
     byType.get(item.mediaType).push(item);
@@ -193,6 +197,8 @@ searchInput.addEventListener("input", () => {
   state.query = searchInput.value;
   render();
 });
+
+buildToggle();
 
 window.addEventListener("resize", scheduleLayout);
 if (document.fonts && document.fonts.ready) {

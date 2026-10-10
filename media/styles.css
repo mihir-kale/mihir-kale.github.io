@@ -52,6 +52,27 @@ a{color:inherit;text-decoration:none}
 .brand{margin:0;font-weight:700;letter-spacing:.1em;font-size:.82rem}
 .brand-kicker{color:var(--ink-soft);font-weight:400;letter-spacing:.02em;font-size:.68rem;margin-left:.4rem}
 
+.lists{display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:baseline}
+.list-button{
+  appearance:none;
+  background:none;
+  border:none;
+  padding:0;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:.7rem;
+  letter-spacing:.05em;
+  color:var(--ink-soft);
+  text-transform:lowercase;
+  transition:color .12s ease;
+}
+.list-button:hover{color:var(--ink)}
+.list-button[aria-pressed="true"]{
+  color:var(--card);
+  background:var(--ink);
+  padding:0 .4rem;
+}
+
 .search{
   margin-left:auto;
   display:flex;
@@ -182,16 +203,6 @@ a{color:inherit;text-decoration:none}
   padding:1.2rem .2rem;
   font-size:.68rem;
   color:var(--ink-soft);
-}
-
-/* rating dots */
-
-.dots{display:inline-flex;gap:2px;align-items:baseline;flex:none}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--ink);flex:none}
-.dot--off{background:transparent;border:1px solid var(--ink-soft)}
-.dot--half{
-  background:linear-gradient(90deg,var(--ink) 0 50%,transparent 50% 100%);
-  border:1px solid var(--ink);
 }
 
 .notice{
