@@ -7,6 +7,11 @@ const railsEl = document.getElementById("rails");
 
 const SUGGEST_KEY = "media:suggestions:v1";
 
+// Public by design (RLS-protected); the media catalogue itself stays a static JSON file.
+const SUPABASE_URL = "https://gzwhuwzmrrmtswyhjheu.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E";
+
 const state = { items: [], query: "", list: "recommend", suggestions: [] };
 const listButtons = new Map();
 
@@ -21,6 +26,7 @@ let formRail = null;
 let suggestListEl = null;
 let suggestCountEl = null;
 let suggestErrorEl = null;
+let suggestStatusEl = null;
 let suggestForm = null;
 
 function el(tag, className, text) {
@@ -179,6 +185,24 @@ function persistSuggestions() {
   }
 }
 
+async function sendSuggestion(entry) {
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/media_suggestions`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({ media_type: entry.mediaType, title: entry.title, notes: entry.notes || null })
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 function renderSuggestions() {
   if (!suggestListEl) return;
   suggestListEl.replaceChildren();
@@ -232,40 +256,58 @@ function buildFormRail() {
   whyInput.placeholder = "why should i read / watch / listen to it?";
   whyInput.maxLength = 500;
 
+  const honeypot = document.createElement("input");
+  honeypot.type = "text";
+  honeypot.name = "website";
+  honeypot.className = "suggest-honeypot";
+  honeypot.tabIndex = -1;
+  honeypot.autocomplete = "off";
+  honeypot.setAttribute("aria-hidden", "true");
+
   suggestForm.append(
     buildField("category", select),
     buildField("title", titleInput),
-    buildField("why", whyInput)
+    buildField("why", whyInput),
+    honeypot
   );
 
   const row = el("div", "suggest-row");
+  const msg = el("span", "suggest-msg");
   suggestErrorEl = el("span", "suggest-error", "");
+  suggestStatusEl = el("span", "suggest-status", "");
+  msg.append(suggestErrorEl, suggestStatusEl);
   const submit = el("button", "suggest-submit", "recommend");
   submit.type = "submit";
-  row.append(suggestErrorEl, submit);
+  row.append(msg, submit);
   suggestForm.append(row);
 
-  suggestForm.addEventListener("submit", (event) => {
+  suggestForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (honeypot.value) return;
     const title = titleInput.value.trim();
     if (!title) {
       suggestErrorEl.textContent = "a title is required";
+      suggestStatusEl.textContent = "";
       titleInput.focus();
       return;
     }
     suggestErrorEl.textContent = "";
-    state.suggestions.unshift({
+    suggestStatusEl.textContent = "sending\u2026";
+    const entry = {
       id: `sug-${Date.now()}`,
       mediaType: select.value,
       title,
       notes: whyInput.value.trim(),
       creator: "recommended",
       list: "recommend"
-    });
+    };
+    state.suggestions.unshift(entry);
     persistSuggestions();
     renderSuggestions();
     suggestForm.reset();
     titleInput.focus();
+    const ok = await sendSuggestion(entry);
+    suggestStatusEl.textContent = ok ? "sent \u2014 thank you" : "saved locally \u2014 couldn\u2019t reach the server";
   });
 
   rail.append(suggestForm);
