@@ -1,4 +1,5 @@
-import { loadLibrary, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS } from "./data.js";
+import { loadLibrary, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
+import { resolveCover } from "./covers.js";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -56,33 +57,90 @@ function matches(item, query) {
   return haystack.includes(query);
 }
 
+/* --------------------------------- entries -------------------------------- */
+
+function coverWrap(item) {
+  const node = document.createElement(isHttpUrl(item.url) ? "a" : "figure");
+  node.className = "ri-cover";
+  if (node.tagName === "A") {
+    node.href = item.url;
+    node.target = "_blank";
+    node.rel = "noopener noreferrer";
+  }
+  return node;
+}
+
+async function hydrateCover(frame, item, li) {
+  const url = await resolveCover(item);
+  if (!url || !frame.isConnected) return;
+  const img = new Image();
+  img.alt = `${TYPE_LABELS[item.mediaType]} cover for ${item.title}`;
+  img.decoding = "async";
+  img.loading = "lazy";
+  img.src = url;
+  frame.replaceChildren(img);
+  li.classList.add("has-cover");
+  scheduleLayout();
+}
+
 function buildItem(item) {
   const li = el("li", `rail-item rail-item--${item.mediaType}`);
   if (item.status) li.classList.add(`is-${item.status}`);
 
-  const linked = isHttpUrl(item.url);
-  const link = document.createElement(linked ? "a" : "div");
-  link.className = "rail-link";
-  if (linked) {
-    link.href = item.url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-  }
+  const main = el("div", "ri-main");
 
   const head = el("div", "ri-head");
-  const kicker = item.creator || TYPE_LABELS[item.mediaType];
-  head.append(el("span", "ri-src", kicker));
+  head.append(el("span", "ri-src", item.creator || TYPE_LABELS[item.mediaType]));
   if (STATUS_GLYPHS[item.status]) {
     head.append(el("span", `ri-status ri-status--${item.status}`, STATUS_GLYPHS[item.status]));
   }
-  link.append(head);
+  main.append(head);
 
-  link.append(el("p", "ri-title", item.title));
-  if (item.notes) link.append(el("p", "ri-thoughts", item.notes));
+  const title = el("p", "ri-title");
+  if (isHttpUrl(item.url)) {
+    const link = el("a", null, item.title);
+    link.href = item.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    title.append(link);
+  } else {
+    title.textContent = item.title;
+  }
+  main.append(title);
 
-  li.append(link);
+  if (item.notes) {
+    main.append(el("p", "ri-thoughts is-clamped", item.notes));
+    const more = el("button", "ri-more hidden", "more\u2026");
+    more.type = "button";
+    more.addEventListener("click", () => {
+      const expanded = li.classList.toggle("is-expanded");
+      more.textContent = expanded ? "less" : "more\u2026";
+      scheduleLayout();
+    });
+    main.append(more);
+  }
+
+  const row = el("div", "ri-row");
+  row.append(main);
+
+  if (COVER_TYPES.has(item.mediaType)) {
+    const frame = coverWrap(item);
+    row.append(frame);
+    hydrateCover(frame, item, li);
+  }
+
+  li.append(row);
   return li;
 }
+
+function finalizeClamps() {
+  railsEl.querySelectorAll(".rail-item:not(.is-expanded) .ri-thoughts.is-clamped").forEach((p) => {
+    const more = p.parentElement.querySelector(".ri-more");
+    if (more) more.classList.toggle("hidden", p.scrollHeight <= p.clientHeight + 1);
+  });
+}
+
+/* ---------------------------------- rails --------------------------------- */
 
 function buildRail(type, items) {
   const rail = el("section", "rail");
@@ -251,6 +309,8 @@ function layout() {
     target.el.append(rail);
     target.height += heights[index] + gap;
   });
+
+  finalizeClamps();
 }
 
 let resizeTimer = null;

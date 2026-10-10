@@ -70,12 +70,8 @@ async function fetchJson(url) {
   return response.json();
 }
 
-async function googleBookCandidates(title, author) {
+async function googleBookQuery(query) {
   try {
-    const query = [`intitle:"${title}"`, author ? `inauthor:"${author}"` : ""]
-      .filter(Boolean)
-      .map(encodeURIComponent)
-      .join("+");
     const data = await fetchJson(
       `https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=5&country=US`
     );
@@ -91,22 +87,37 @@ async function googleBookCandidates(title, author) {
         : `${secure}${secure.includes("?") ? "&" : "?"}zoom=3`;
       return [...new Set([zoomed, secure])];
     }
-    return [];
+  } catch {}
+  return [];
+}
+
+async function googleBookCandidates(title, author) {
+  const scoped = [`intitle:"${title}"`, author ? `inauthor:"${author}"` : ""]
+    .filter(Boolean)
+    .map(encodeURIComponent)
+    .join("+");
+  const found = await googleBookQuery(scoped);
+  if (found.length) return found;
+  return googleBookQuery(encodeURIComponent(`intitle:"${title}"`));
+}
+
+async function openLibrarySearch(params) {
+  try {
+    const data = await fetchJson(`https://openlibrary.org/search.json?${params}`);
+    return data.docs || [];
   } catch {
     return [];
   }
 }
 
 async function openLibraryCandidates(title, author) {
-  try {
-    const params = new URLSearchParams({ title, limit: "5", fields: "cover_i" });
-    if (author) params.set("author", author);
-    const data = await fetchJson(`https://openlibrary.org/search.json?${params}`);
-    const hit = (data.docs || []).find((doc) => doc.cover_i);
-    return hit ? [`https://covers.openlibrary.org/b/id/${hit.cover_i}-L.jpg`] : [];
-  } catch {
-    return [];
+  const docs = [];
+  if (author) {
+    docs.push(...(await openLibrarySearch(new URLSearchParams({ title, author, limit: "5", fields: "cover_i" }))));
   }
+  docs.push(...(await openLibrarySearch(new URLSearchParams({ title, limit: "5", fields: "cover_i" }))));
+  const hit = docs.find((doc) => doc.cover_i);
+  return hit ? [`https://covers.openlibrary.org/b/id/${hit.cover_i}-L.jpg`] : [];
 }
 
 async function tmdbCandidates(title, mediaType) {
@@ -176,6 +187,6 @@ export async function resolveCover(item) {
   }
 
   const url = await firstLoadable(candidates);
-  if (url) writeCache(key, url);
+  writeCache(key, url || "");
   return url;
 }
