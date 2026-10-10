@@ -135,11 +135,8 @@ function persistSuggestions() {
 function renderSuggestions() {
   if (!suggestListEl) return;
   suggestListEl.replaceChildren();
-  if (!state.suggestions.length) {
-    suggestListEl.append(el("li", "rail-empty", "no recommendations yet — be the first"));
-  } else {
-    state.suggestions.forEach((s) => suggestListEl.append(buildItem(s)));
-  }
+  state.suggestions.forEach((s) => suggestListEl.append(buildItem(s)));
+  suggestListEl.classList.toggle("hidden", state.suggestions.length === 0);
   if (suggestCountEl) suggestCountEl.textContent = String(state.suggestions.length);
 }
 
