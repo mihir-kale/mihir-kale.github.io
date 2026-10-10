@@ -3,7 +3,6 @@ import { loadLibrary, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
-const emptyNotice = document.getElementById("emptyNotice");
 
 const SUGGEST_KEY = "media:suggestions:v1";
 
@@ -97,7 +96,8 @@ function buildRail(type, items) {
   rail.append(head);
 
   const list = el("ul", "rail-list");
-  items.forEach((item) => list.append(buildItem(item)));
+  if (items.length) items.forEach((item) => list.append(buildItem(item)));
+  else list.append(el("li", "rail-empty", "nothing here yet"));
   rail.append(list);
   return rail;
 }
@@ -300,12 +300,8 @@ function render() {
 
   const categoryRails = [];
   for (const type of MEDIA_TYPES) {
-    const items = byType.get(type);
-    if (items && items.length) categoryRails.push(buildRail(type, items));
+    categoryRails.push(buildRail(type, byType.get(type) || []));
   }
-
-  const total = categoryRails.reduce((sum, rail) => sum + rail.querySelectorAll(".rail-item").length, 0);
-  emptyNotice.classList.toggle("hidden", total > 0);
 
   railEls = [...categoryRails, formRail];
   layout();
@@ -336,6 +332,5 @@ loadLibrary()
   .catch((error) => {
     console.error(error);
     railsEl.replaceChildren();
-    emptyNotice.textContent = error.message;
-    emptyNotice.classList.remove("hidden");
+    railsEl.append(el("p", "notice", error.message));
   });
