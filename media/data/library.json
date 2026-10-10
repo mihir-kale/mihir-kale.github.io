@@ -66,7 +66,7 @@
       "innovation"
     ],
     "url": "https://en.wikipedia.org/wiki/Loonshots",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "diplomacy",
@@ -83,7 +83,7 @@
       "foreign-policy"
     ],
     "url": "https://en.wikipedia.org/wiki/Diplomacy_(Kissinger_book)",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "federalist-papers",
@@ -101,7 +101,7 @@
       "classic"
     ],
     "url": "https://en.wikipedia.org/wiki/The_Federalist_Papers",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "basic-economics",
@@ -117,7 +117,7 @@
       "economics"
     ],
     "url": "https://en.wikipedia.org/wiki/Basic_Economics",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "theory-money-credit",
@@ -133,7 +133,7 @@
       "economics"
     ],
     "url": "https://en.wikipedia.org/wiki/The_Theory_of_Money_and_Credit",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "why-we-disagree",
@@ -150,7 +150,7 @@
       "culture"
     ],
     "url": "",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "conversations-tyler-acemoglu",
@@ -167,7 +167,7 @@
       "long-form"
     ],
     "url": "https://conversationswithtyler.com/episodes/daron-acemoglu-2/",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "econtalk-southwood",
@@ -184,7 +184,7 @@
       "history"
     ],
     "url": "https://www.econtalk.org/the-hidden-cause-of-the-industrial-revolution-with-ben-southwood/",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "fifth-column-politics",
@@ -201,7 +201,7 @@
       "media"
     ],
     "url": "https://www.wethefifth.com/p/the-politics-of-pretending-episode",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "silver-2026-midterms",
@@ -218,7 +218,7 @@
       "data"
     ],
     "url": "https://www.natesilver.net/p/nate-silver-2026-midterm-election-polls-model",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "illmatic",
@@ -235,7 +235,7 @@
       "classic"
     ],
     "url": "https://music.apple.com/us/album/illmatic/1440775704",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "use-of-knowledge",
@@ -252,7 +252,7 @@
       "classic"
     ],
     "url": "https://en.wikipedia.org/wiki/The_Use_of_Knowledge_in_Society",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "oppenheimer",
@@ -269,7 +269,7 @@
       "drama"
     ],
     "url": "https://en.wikipedia.org/wiki/Oppenheimer_(film)",
-    "list": "shelf"
+    "list": "recommend"
   },
   {
     "id": "whiplash",
@@ -286,6 +286,6 @@
       "music"
     ],
     "url": "https://en.wikipedia.org/wiki/Whiplash_(2014_film)",
-    "list": "shelf"
+    "list": "recommend"
   }
 ]
