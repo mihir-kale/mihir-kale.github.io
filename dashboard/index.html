@@ -488,6 +488,13 @@
     }
     .p-item:last-child { border-bottom: none; }
     .p-item.done { text-decoration: line-through; opacity: 0.6; }
+    .p-done-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--muted); cursor: pointer;
+      border-top: 1px dotted var(--border); transition: color 0.1s;
+    }
+    .p-done-toggle:hover { color: var(--accent); }
     .p-empty { color: var(--muted); font-size: 11px; font-style: italic; padding: 4px 8px; }
 
     /* People */
@@ -866,6 +873,8 @@
     let calColor = BLOCK_COLORS[0];
     let calRecur = '';
     let hiddenEvents = new Set();
+    let feedRefreshing = false;
+    let expandedProjectDone = new Set();
 
     function loadHiddenEvents() {
       try {
@@ -1059,6 +1068,23 @@
         actionsHtml = `<div class="card-actions"><button type="button">ARCHIVE</button></div>`;
       }
 
+      const openItems = items.filter(t => t.status !== 'done');
+      const doneItems = items.filter(t => t.status === 'done');
+      const doneExpanded = expandedProjectDone.has(p.id);
+      const itemHtml = t => `<div class="p-item${t.status === 'done' ? ' done' : ''}" data-task-id="${t.id}">${escapeHtml(t.title)}</div>`;
+      let listHtml;
+      if (!items.length) {
+        listHtml = `<div class="p-empty">No tasks yet</div>`;
+      } else {
+        listHtml = `<div class="p-list">` +
+          (openItems.length ? openItems.map(itemHtml).join('') : `<div class="p-empty">All tasks done</div>`) +
+          (doneItems.length
+            ? `<div class="p-done-toggle">Completed (${doneItems.length})<span class="caret">${doneExpanded ? '▴' : '▾'}</span></div>` +
+              `<div class="p-done-list${doneExpanded ? '' : ' hidden'}">` + doneItems.map(itemHtml).join('') + `</div>`
+            : '') +
+        `</div>`;
+      }
+
       card.innerHTML =
         personCirclesHtml(p.people) +
         `<div class="title">${(p.color && PROJECT_COLORS.includes(p.color)) ? `<span class="p-dot" style="background:${escapeHtml(p.color)}"></span>` : ''}${escapeHtml(p.name)}</div>` +
@@ -1067,9 +1093,7 @@
           (p.status !== 'pending' ? `<span class="badge">${escapeHtml(p.status)}</span>` : '') +
         `</div></div>` +
         (p.description ? `<div class="meta"><div class="row desc">${escapeHtml(p.description)}</div></div>` : '') +
-        (items.length
-          ? `<div class="p-list">` + items.map(t => `<div class="p-item${t.status === 'done' ? ' done' : ''}" data-task-id="${t.id}">${escapeHtml(t.title)}</div>`).join('') + `</div>`
-          : `<div class="p-empty">No tasks yet</div>`) +
+        listHtml +
         actionsHtml;
 
       card.querySelectorAll('.p-item').forEach(row => {
@@ -1079,6 +1103,24 @@
           if (t) openEdit(t);
         };
       });
+
+      const doneToggle = card.querySelector('.p-done-toggle');
+      if (doneToggle) {
+        doneToggle.onclick = (e) => {
+          e.stopPropagation();
+          const list = card.querySelector('.p-done-list');
+          const caret = doneToggle.querySelector('.caret');
+          if (expandedProjectDone.has(p.id)) {
+            expandedProjectDone.delete(p.id);
+            list.classList.add('hidden');
+            if (caret) caret.textContent = '▾';
+          } else {
+            expandedProjectDone.add(p.id);
+            list.classList.remove('hidden');
+            if (caret) caret.textContent = '▴';
+          }
+        };
+      }
 
       const goBack = card.querySelector('.go-back');
       if (goBack) goBack.onclick = (e) => { e.stopPropagation(); setProjectStatus(p, 'pending'); };
@@ -1383,73 +1425,94 @@
       };
     }
 
+    // Fast path: paint the calendar from saved Supabase rows. This never touches
+    // the external feed, so the calendar appears immediately on load instead of
+    // waiting on the (slow) proxy round-trip.
     async function loadCalendar() {
       if (demoMode) return;
-      const { data: { session } } = await client.auth.getSession();
-      const token = session?.access_token || '';
-      let body = null;
-      let feedErr = null;
+      await loadCalendarFromTable();
+      // Refresh the external feed in the background; it repaints when it lands.
+      refreshCalendarFeed();
+    }
+
+    async function loadCalendarFromTable() {
       try {
-        const r = await fetch(SUPABASE_URL + '/functions/v1/calendar-proxy', {
-          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
-        });
-        if (!r.ok) throw new Error('calendar proxy HTTP ' + r.status);
-        body = await r.json();
-        $('calUpdated').textContent = body.last_updated
-          ? 'synced ' + new Date(body.last_updated).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' })
-          : '';
+        const { data, error } = await client.from('calendar_events')
+          .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
+        if (error) throw error;
+        events = (data || []).map(rowToEvent);
+        renderEvents();
+        hideError();
       } catch (e) {
-        feedErr = e;
-        $('calUpdated').textContent = 'feed offline';
+        setError('Failed to load calendar: ' + e.message);
       }
+    }
 
-      // Persist feed events into calendar_events (signed-in users only). Feed
-      // rows that vanished from a successfully-fetched feed are pruned here.
-      if (authed && body && Array.isArray(body.events)) {
-        const errored = new Set((body.errors || []).map(err => err.calendar));
-        const fetched = FEED_CALENDARS.filter(c => !errored.has(c));
+    // Slow path: pull the live feed from the proxy, persist it via the sync RPC,
+    // then repaint from the table. Fire-and-forget so it never blocks the table
+    // paint; guarded so overlapping callers don't stack feed requests.
+    async function refreshCalendarFeed() {
+      if (feedRefreshing) return;
+      feedRefreshing = true;
+      try {
+        const { data: { session } } = await client.auth.getSession();
+        const token = session?.access_token || '';
+        let body = null;
         try {
-          await client.rpc('sync_calendar_feed', {
-            p_payload: { calendars: fetched, rows: (body.events || []).map(feedRow) },
+          const r = await fetch(SUPABASE_URL + '/functions/v1/calendar-proxy', {
+            headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
           });
-        } catch (e) { /* feed sync failure is non-fatal */ }
-      }
-
-      // Signed-in: read everything (feed + manual blocks) from the table.
-      // Anonymous (gate-unlocked): merge table rows (your manual blocks) with the
-      // live feed from the proxy, since anon can't run the sync RPC. Table feed
-      // rows are replaced by the fresher proxy feed row for the same external_id.
-      if (authed) {
-        try {
-          const { data, error } = await client.from('calendar_events')
-            .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
-          if (error) throw error;
-          events = (data || []).map(rowToEvent);
+          if (!r.ok) throw new Error('calendar proxy HTTP ' + r.status);
+          body = await r.json();
+          $('calUpdated').textContent = body.last_updated
+            ? 'synced ' + new Date(body.last_updated).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' })
+            : '';
         } catch (e) {
-          events = (body?.events || []).map(proxyToEvent);
+          $('calUpdated').textContent = 'feed offline';
+          if (!events.length) setError('Failed to load calendar: ' + e.message);
+          return;
         }
-      } else {
-        let tableRows = [];
-        try {
-          const { data } = await client.from('calendar_events')
-            .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
-          tableRows = data || [];
-        } catch (e) { /* table missing/offline: fall through to feed only */ }
-        const feedEvt = (body?.events || []).map(proxyToEvent);
-        const feedById = new Map(feedEvt.filter(e => e.external_id).map(e => [e.external_id, e]));
-        const merged = [];
-        for (const r of tableRows) {
-          const ev = rowToEvent(r);
-          if (ev.source === 'feed' && ev.external_id && feedById.has(ev.external_id)) continue;
-          merged.push(ev);
-        }
-        events = merged.concat(feedEvt);
-      }
 
-      renderEvents();
-      if (feedErr && events.length) { setError('Calendar feed offline — showing saved blocks.'); return; }
-      if (feedErr && !events.length) { setError('Failed to load calendar: ' + feedErr.message); return; }
-      hideError();
+        // Persist feed events into calendar_events (signed-in users only). Feed
+        // rows that vanished from a successfully-fetched feed are pruned here.
+        if (authed && body && Array.isArray(body.events)) {
+          const errored = new Set((body.errors || []).map(err => err.calendar));
+          const fetched = FEED_CALENDARS.filter(c => !errored.has(c));
+          try {
+            await client.rpc('sync_calendar_feed', {
+              p_payload: { calendars: fetched, rows: (body.events || []).map(feedRow) },
+            });
+          } catch (e) { /* feed sync failure is non-fatal */ }
+        }
+
+        // Signed-in: repaint everything (feed + manual blocks) from the table.
+        // Anonymous (gate-unlocked): merge table rows (your manual blocks) with the
+        // live feed from the proxy, since anon can't run the sync RPC. Table feed
+        // rows are replaced by the fresher proxy feed row for the same external_id.
+        if (authed) {
+          await loadCalendarFromTable();
+        } else {
+          let tableRows = [];
+          try {
+            const { data } = await client.from('calendar_events')
+              .select('*').order('date', { ascending: true }).order('start_time', { ascending: true });
+            tableRows = data || [];
+          } catch (e) { /* table missing/offline: fall through to feed only */ }
+          const feedEvt = (body?.events || []).map(proxyToEvent);
+          const feedById = new Map(feedEvt.filter(e => e.external_id).map(e => [e.external_id, e]));
+          const merged = [];
+          for (const r of tableRows) {
+            const ev = rowToEvent(r);
+            if (ev.source === 'feed' && ev.external_id && feedById.has(ev.external_id)) continue;
+            merged.push(ev);
+          }
+          events = merged.concat(feedEvt);
+          renderEvents();
+        }
+        hideError();
+      } finally {
+        feedRefreshing = false;
+      }
     }
 
     // Recurrent manual blocks: the stored row is the anchor. At render time the
