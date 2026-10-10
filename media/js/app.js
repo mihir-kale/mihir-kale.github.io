@@ -123,7 +123,7 @@ function buildItem(item) {
   const row = el("div", "ri-row");
   row.append(main);
 
-  if (COVER_TYPES.has(item.mediaType)) {
+  if (COVER_TYPES.has(item.mediaType) && item.list === "recommend") {
     const frame = coverWrap(item);
     row.append(frame);
     hydrateCover(frame, item, li);
@@ -259,7 +259,8 @@ function buildFormRail() {
       mediaType: select.value,
       title,
       notes: whyInput.value.trim(),
-      creator: "recommended"
+      creator: "recommended",
+      list: "recommend"
     });
     persistSuggestions();
     renderSuggestions();
