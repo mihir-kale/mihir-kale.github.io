@@ -7,7 +7,7 @@ const emptyNotice = document.getElementById("emptyNotice");
 
 const SUGGEST_KEY = "media:suggestions:v1";
 
-const state = { items: [], query: "", list: "shelf", suggestions: [] };
+const state = { items: [], query: "", list: "recommend", suggestions: [] };
 const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
