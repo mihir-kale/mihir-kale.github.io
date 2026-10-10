@@ -20,7 +20,7 @@ export const KIND_LABELS = {
 
 export const COVER_TYPES = new Set(["book", "film", "album"]);
 
-export const LISTS = ["shelf", "recommend"];
+export const LISTS = ["recommend", "shelf"];
 
 export const LIST_LABELS = {
   shelf: "on my shelf",
