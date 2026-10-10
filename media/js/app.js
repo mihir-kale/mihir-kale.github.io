@@ -4,7 +4,6 @@ const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
 const emptyNotice = document.getElementById("emptyNotice");
-const totalCount = document.getElementById("total-count");
 
 const SUGGEST_KEY = "media:suggestions:v1";
 
@@ -33,13 +32,6 @@ function el(tag, className, text) {
 
 function isHttpUrl(url) {
   return /^https?:\/\//i.test(url || "");
-}
-
-function fmtDate(iso) {
-  if (!iso) return "";
-  const d = new Date(`${iso}T00:00:00`);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function consumed(item) {
@@ -88,9 +80,6 @@ function buildItem(item) {
 
   link.append(el("p", "ri-title", item.title));
   if (item.notes) link.append(el("p", "ri-thoughts", item.notes));
-
-  const meta = [item.year ? String(item.year) : "", item.consumed ? fmtDate(item.consumed) : ""].filter(Boolean);
-  if (meta.length) link.append(el("span", "ri-meta", meta.join(" · ")));
 
   li.append(link);
   return li;
@@ -342,7 +331,6 @@ renderSuggestions();
 loadLibrary()
   .then((items) => {
     state.items = items;
-    if (totalCount) totalCount.textContent = String(items.length);
     render();
   })
   .catch((error) => {

@@ -238,20 +238,6 @@ select.suggest-input{cursor:pointer}
   line-height:1.5;
   color:var(--ink-soft);
 }
-.ri-foot{
-  display:flex;
-  justify-content:space-between;
-  align-items:baseline;
-  gap:.8rem;
-  margin-top:.4rem;
-}
-.ri-meta{
-  font-size:.52rem;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:var(--ink-soft);
-}
-
 .rail-empty{
   padding:1.2rem .2rem;
   font-size:.68rem;
@@ -265,21 +251,6 @@ select.suggest-input{cursor:pointer}
   border:1px dashed var(--ink);
   color:var(--ink-soft);
   text-align:center;
-}
-
-/* ---------------------------------- foot ---------------------------------- */
-
-.foot{
-  display:flex;
-  justify-content:space-between;
-  gap:1rem;
-  flex-wrap:wrap;
-  padding:.5rem clamp(1rem,3vw,2rem) 1.2rem;
-  border-top:1px solid var(--ink);
-  font-size:.56rem;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--ink-soft);
 }
 
 @media (max-width:560px){
