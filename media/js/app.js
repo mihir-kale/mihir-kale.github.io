@@ -1,8 +1,8 @@
-import { loadLibrary, TYPE_LABELS } from "./data.js";
+import { loadLibrary, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS } from "./data.js";
 
 const searchInput = document.getElementById("search");
-const railList = document.getElementById("railList");
-const railCount = document.getElementById("railCount");
+const railsEl = document.getElementById("rails");
+const emptyNotice = document.getElementById("emptyNotice");
 const totalCount = document.getElementById("total-count");
 
 const state = { items: [], query: "" };
@@ -50,8 +50,8 @@ function consumed(item) {
   return item.consumed ? new Date(`${item.consumed}T00:00:00`).getTime() : -Infinity;
 }
 
-function orderedItems() {
-  return [...state.items].sort(
+function ordered(items) {
+  return [...items].sort(
     (a, b) =>
       Number(b.spotlight) - Number(a.spotlight) ||
       consumed(b) - consumed(a) ||
@@ -60,16 +60,13 @@ function orderedItems() {
   );
 }
 
-function visibleItems() {
-  const query = state.query.trim().toLowerCase();
-  if (!query) return orderedItems();
-  return orderedItems().filter((item) => {
-    const haystack = [item.title, item.creator, item.tags.join(" "), item.year, TYPE_LABELS[item.mediaType]]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-    return haystack.includes(query);
-  });
+function matches(item, query) {
+  if (!query) return true;
+  const haystack = [item.title, item.creator, item.tags.join(" "), item.year, TYPE_LABELS[item.mediaType]]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(query);
 }
 
 function buildItem(item) {
@@ -86,7 +83,8 @@ function buildItem(item) {
   }
 
   const head = el("div", "ri-head");
-  head.append(el("span", "ri-src", TYPE_LABELS[item.mediaType]));
+  const kicker = item.creator || TYPE_LABELS[item.mediaType];
+  head.append(el("span", "ri-src", kicker));
   if (STATUS_GLYPHS[item.status]) {
     head.append(el("span", `ri-status ri-status--${item.status}`, STATUS_GLYPHS[item.status]));
   }
@@ -96,8 +94,7 @@ function buildItem(item) {
   if (item.notes) link.append(el("p", "ri-thoughts", item.notes));
 
   const foot = el("div", "ri-foot");
-  const meta = [item.creator, item.year ? String(item.year) : "", item.consumed ? fmtDate(item.consumed) : ""]
-    .filter(Boolean);
+  const meta = [item.year ? String(item.year) : "", item.consumed ? fmtDate(item.consumed) : ""].filter(Boolean);
   if (meta.length) foot.append(el("span", "ri-meta", meta.join(" · ")));
   const rating = dots(item.rating);
   if (rating) foot.append(rating);
@@ -107,15 +104,44 @@ function buildItem(item) {
   return li;
 }
 
+function buildRail(type, items) {
+  const rail = el("section", "rail");
+  rail.setAttribute("aria-label", `${KIND_LABELS[type]} entries`);
+
+  const head = el("header", "rail-head");
+  head.append(
+    el("span", "rail-title", KIND_LABELS[type].toLowerCase()),
+    el("span", "rail-count", String(items.length))
+  );
+  rail.append(head);
+
+  const list = el("ul", "rail-list");
+  items.forEach((item) => list.append(buildItem(item)));
+  rail.append(list);
+  return rail;
+}
+
 function render() {
-  const list = visibleItems();
-  railCount.textContent = String(list.length);
-  railList.replaceChildren();
-  if (!list.length) {
-    railList.append(el("li", "rail-empty", "nothing here — try another search"));
-    return;
+  const query = state.query.trim().toLowerCase();
+  const counts = {};
+  let total = 0;
+  const byType = new Map();
+
+  for (const item of ordered(state.items)) {
+    if (!matches(item, query)) continue;
+    counts[item.mediaType] = (counts[item.mediaType] || 0) + 1;
+    if (!byType.has(item.mediaType)) byType.set(item.mediaType, []);
+    byType.get(item.mediaType).push(item);
+    total += 1;
   }
-  list.forEach((item) => railList.append(buildItem(item)));
+
+  railsEl.replaceChildren();
+  for (const type of MEDIA_TYPES) {
+    const items = byType.get(type);
+    if (items && items.length) railsEl.append(buildRail(type, items));
+  }
+
+  emptyNotice.classList.toggle("hidden", total > 0);
 }
 
 searchInput.addEventListener("input", () => {
@@ -131,6 +157,7 @@ loadLibrary()
   })
   .catch((error) => {
     console.error(error);
-    railList.replaceChildren();
-    railList.append(el("li", "rail-empty", error.message));
+    railsEl.replaceChildren();
+    emptyNotice.textContent = error.message;
+    emptyNotice.classList.remove("hidden");
   });
