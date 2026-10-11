@@ -131,6 +131,42 @@ export async function loadMarks() {
   }
 }
 
+// Incoming "recommend me something" submissions land on the shelf. RLS only
+// lets the signed-in owner read them, so this returns [] without a token.
+export async function loadSuggestions(token) {
+  if (!token) return [];
+  try {
+    const response = await fetch(
+      `${REST}/media_suggestions?select=id,media_type,title,notes,submitter&order=created_at.desc`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } }
+    );
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+    const items = [];
+    (Array.isArray(rows) ? rows : []).forEach((row, index) => {
+      try {
+        items.push(
+          normalizeItem({
+            id: `sug-${row.id}`,
+            mediaType: row.media_type,
+            title: row.title,
+            creator: row.submitter || "",
+            notes: row.notes || "",
+            list: "shelf",
+            source: "suggestion"
+          })
+        );
+      } catch (error) {
+        console.warn(`Skipping media_suggestions row ${index + 1}: ${error.message}`);
+      }
+    });
+    return items;
+  } catch (error) {
+    console.warn(`media_suggestions unavailable (${error.message})`);
+    return [];
+  }
+}
+
 function toRow(entry) {
   return {
     id: entry.id,

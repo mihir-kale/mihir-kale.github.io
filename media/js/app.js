@@ -1,4 +1,4 @@
-import { loadEntries, loadFeeds, loadMarks, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
 import { resolveCover } from "./covers.js";
 import { signIn, signOut, getSession } from "./auth.js";
 
@@ -7,7 +7,6 @@ const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
 const authEl = document.getElementById("auth");
 
-const SUGGEST_KEY = "media:suggestions:v1";
 const DISMISS_KEY = "media:dismissed:v1";
 const PROMOTE_KEY = "media:promoted:v1";
 
@@ -33,8 +32,6 @@ const GAP_MAX = 22;
 
 let railEls = [];
 let formRail = null;
-let suggestListEl = null;
-let suggestCountEl = null;
 let suggestErrorEl = null;
 let suggestStatusEl = null;
 let suggestForm = null;
@@ -137,7 +134,7 @@ function buildItem(item) {
       actions.append(dismiss);
     }
   }
-  if (state.session && item.source !== "feed") {
+  if (state.session && item.source !== "feed" && item.source !== "suggestion") {
     const edit = el("button", "ri-edit", "edit");
     edit.type = "button";
     edit.title = "edit entry";
@@ -227,15 +224,6 @@ function buildRail(type, items) {
 
 /* ----------------------------- recommend rail ----------------------------- */
 
-function readSuggestions() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(SUGGEST_KEY) || "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
 function readDismissed() {
   try {
     const parsed = JSON.parse(localStorage.getItem(DISMISS_KEY) || "[]");
@@ -306,14 +294,6 @@ function effectiveList(item) {
   return item.list;
 }
 
-function persistSuggestions() {
-  try {
-    localStorage.setItem(SUGGEST_KEY, JSON.stringify(state.suggestions));
-  } catch {
-    /* storage unavailable — keep in-memory only */
-  }
-}
-
 async function sendSuggestion(entry) {
   try {
     const response = await fetch(`${REST}/media_suggestions`, {
@@ -325,14 +305,6 @@ async function sendSuggestion(entry) {
   } catch {
     return false;
   }
-}
-
-function renderSuggestions() {
-  if (!suggestListEl) return;
-  suggestListEl.replaceChildren();
-  state.suggestions.forEach((s) => suggestListEl.append(buildItem(s)));
-  suggestListEl.classList.toggle("hidden", state.suggestions.length === 0);
-  if (suggestCountEl) suggestCountEl.textContent = String(state.suggestions.length);
 }
 
 function buildField(labelText, control, fieldClass = "suggest-field", labelClass = "suggest-label") {
@@ -381,8 +353,6 @@ function buildFormRail() {
 
   const head = el("header", "rail-head");
   head.append(el("span", "rail-title", "recommend me something"));
-  suggestCountEl = el("span", "rail-count", "0");
-  head.append(suggestCountEl);
   rail.append(head);
 
   suggestForm = document.createElement("form");
@@ -452,26 +422,21 @@ function buildFormRail() {
     suggestErrorEl.textContent = "";
     suggestStatusEl.textContent = "sending\u2026";
     const entry = {
-      id: `sug-${Date.now()}`,
       mediaType: select.value,
       title,
-      notes: whyInput.value.trim(),
-      creator: "recommended",
-      list: "recommend"
+      notes: whyInput.value.trim()
     };
-    state.suggestions.unshift(entry);
-    persistSuggestions();
-    renderSuggestions();
     suggestForm.reset();
     titleInput.focus();
     const ok = await sendSuggestion(entry);
-    suggestStatusEl.textContent = ok ? "sent \u2014 thank you" : "saved locally \u2014 couldn\u2019t reach the server";
+    suggestStatusEl.textContent = ok ? "sent \u2014 thank you" : "couldn\u2019t reach the server \u2014 try again";
+    if (ok && state.session) {
+      state.suggestions = await loadSuggestions(state.session.accessToken);
+      render();
+    }
   });
 
   rail.append(suggestForm);
-
-  suggestListEl = el("ul", "rail-list");
-  rail.append(suggestListEl);
   return rail;
 }
 
@@ -526,6 +491,7 @@ function buildAuthDialog() {
       state.session = await signIn(authEmail.value.trim(), authPassword.value);
       authDialog.close();
       authForm.reset();
+      state.suggestions = await loadSuggestions(state.session.accessToken);
       buildAuth();
       render();
     } catch (error) {
@@ -554,6 +520,7 @@ function buildAuth() {
     out.addEventListener("click", async () => {
       await signOut();
       state.session = null;
+      state.suggestions = [];
       buildAuth();
       render();
     });
@@ -814,8 +781,9 @@ function syncToggle() {
 function render() {
   const query = state.query.trim().toLowerCase();
   const byType = new Map();
+  const pool = state.suggestions.length ? state.items.concat(state.suggestions) : state.items;
 
-  for (const item of ordered(state.items)) {
+  for (const item of ordered(pool)) {
     if (effectiveList(item) !== state.list) continue;
     if (state.dismissed.has(item.id)) continue;
     if (!matches(item, query)) continue;
@@ -826,7 +794,14 @@ function render() {
   const categoryRails = [];
   for (const type of MEDIA_TYPES) {
     const items = byType.get(type) || [];
-    const shown = state.list === "shelf" ? items.slice(0, SHELF_LIMIT) : items;
+    let shown = items;
+    if (state.list === "shelf") {
+      // Incoming recommendations stay pinned above the shelf cap so they are
+      // never pushed out by feed items.
+      const incoming = items.filter((item) => item.source === "suggestion");
+      const rest = items.filter((item) => item.source !== "suggestion");
+      shown = [...incoming, ...rest.slice(0, SHELF_LIMIT)];
+    }
     categoryRails.push(buildRail(type, shown));
   }
 
@@ -851,14 +826,13 @@ formRail = buildFormRail();
 buildAuthDialog();
 buildEditor();
 buildAuth();
-state.suggestions = readSuggestions();
 state.dismissed = new Set(readDismissed());
 state.promoted = new Set(readPromoted());
-renderSuggestions();
 
-getSession().then((session) => {
+getSession().then(async (session) => {
   state.session = session;
   buildAuth();
+  if (session) state.suggestions = await loadSuggestions(session.accessToken);
   render();
 });
 
