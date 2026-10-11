@@ -1,5 +1,18 @@
 const MEMORY_CACHE = new Map();
-const STORE_PREFIX = "mk:media:covers:v1:";
+const STORE_PREFIX = "mk:media:covers:v2:";
+
+// Book titles often carry a subtitle after a colon or dash ("The Invention of
+// Nature: Alexander von Humboldt's New World"); cover sources match far more
+// reliably on the main title alone, so try that first and keep the full title
+// as a fallback.
+function bookTitleVariants(title) {
+  const full = (title || "").trim();
+  const base = full.split(/\s*[:—–]\s*/)[0].trim();
+  const variants = [];
+  if (base) variants.push(base);
+  if (full && full !== base) variants.push(full);
+  return variants;
+}
 
 function configuredTmdbKey() {
   let key = "";
@@ -92,13 +105,17 @@ async function googleBookQuery(query) {
 }
 
 async function googleBookCandidates(title, author) {
-  const scoped = [`intitle:"${title}"`, author ? `inauthor:"${author}"` : ""]
-    .filter(Boolean)
-    .map(encodeURIComponent)
-    .join("+");
-  const found = await googleBookQuery(scoped);
-  if (found.length) return found;
-  return googleBookQuery(encodeURIComponent(`intitle:"${title}"`));
+  for (const variant of bookTitleVariants(title)) {
+    const scoped = [`intitle:"${variant}"`, author ? `inauthor:"${author}"` : ""]
+      .filter(Boolean)
+      .map(encodeURIComponent)
+      .join("+");
+    const found = await googleBookQuery(scoped);
+    if (found.length) return found;
+    const loose = await googleBookQuery(encodeURIComponent(`intitle:"${variant}"`));
+    if (loose.length) return loose;
+  }
+  return [];
 }
 
 async function openLibrarySearch(params) {
@@ -111,13 +128,16 @@ async function openLibrarySearch(params) {
 }
 
 async function openLibraryCandidates(title, author) {
-  const docs = [];
-  if (author) {
-    docs.push(...(await openLibrarySearch(new URLSearchParams({ title, author, limit: "5", fields: "cover_i" }))));
+  for (const variant of bookTitleVariants(title)) {
+    const docs = [];
+    if (author) {
+      docs.push(...(await openLibrarySearch(new URLSearchParams({ title: variant, author, limit: "5", fields: "cover_i" }))));
+    }
+    docs.push(...(await openLibrarySearch(new URLSearchParams({ title: variant, limit: "5", fields: "cover_i" }))));
+    const hit = docs.find((doc) => doc.cover_i);
+    if (hit) return [`https://covers.openlibrary.org/b/id/${hit.cover_i}-L.jpg`];
   }
-  docs.push(...(await openLibrarySearch(new URLSearchParams({ title, limit: "5", fields: "cover_i" }))));
-  const hit = docs.find((doc) => doc.cover_i);
-  return hit ? [`https://covers.openlibrary.org/b/id/${hit.cover_i}-L.jpg`] : [];
+  return [];
 }
 
 async function tmdbCandidates(title, mediaType) {
