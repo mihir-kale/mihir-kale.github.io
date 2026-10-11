@@ -1,90 +1,484 @@
 [
   {
-    "id": "feed-e3a9514e7d6f",
+    "id": "feed-fff9eebd23ac",
     "mediaType": "short-non-fiction",
-    "title": "‘Not Pleasant’ but ‘Necessary’: Support at Trump Rally for Public Execution",
-    "creator": "The New York Times",
+    "title": "“Chuck Murphy’s Last Run,” by Kevin Barry",
+    "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-11",
-    "notes": "A sample of people at the president’s midterm stump speech in Tennessee defended the Pentagon’s announcement that it would livestream the execution of a mass shooter.",
+    "notes": "How could you give up the throb of urgent throttle and the surge of roaring power that take you through the gates of fear to a state of nerveless bliss?",
     "tags": [
-      "the-new-york-times",
-      "shawn-mccreesh"
+      "the-new-yorker",
+      "kevin-barry"
     ],
-    "url": "https://www.nytimes.com/2026/10/10/us/politics/trump-rally-tennessee-public-execution.html",
+    "url": "https://www.newyorker.com/magazine/2026/10/19/chuck-murphys-last-run-fiction-kevin-barry",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-6ffda4820c01",
+    "id": "feed-8c1f220ab0a1",
     "mediaType": "short-non-fiction",
-    "title": "Justice Dept. Is Investigating TV Networks Over Trump Pool Coverage",
-    "creator": "The New York Times",
+    "title": "13 Best Gifts for Every Traveler Should Have (2026)",
+    "creator": "WIRED",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-11",
-    "notes": "Major TV networks were notified on Friday that the department was examining whether they violated antitrust laws when they suspended pool coverage of President Trump.",
+    "notes": "Travel smarter with gifts packed by WIRED’s globe-trotting staffers.",
     "tags": [
-      "the-new-york-times",
-      "david-mccabe-michael-m-grynbaum-benjamin-mullin-lauren-hirsch-and-glenn-thrush"
+      "wired",
+      "boutayna-chokrane"
     ],
-    "url": "https://www.nytimes.com/2026/10/10/business/media/trump-justice-department-tv-networks.html",
+    "url": "https://www.wired.com/story/best-gifts-for-travelers/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-8bc05b7198c0",
+    "id": "feed-7e2b67c868e8",
     "mediaType": "short-non-fiction",
-    "title": "Pentagon Again Increases Number of U.S. Casualties in Iran War",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-11",
-    "notes": "In an unannounced change, the Defense Department is now acknowledging troops who died or were wounded in support roles.",
-    "tags": [
-      "the-new-york-times",
-      "john-ismay"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/us/politics/pentagon-casualties-iran-war.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ecab9dd712f1",
-    "mediaType": "short-non-fiction",
-    "title": "Saudi Arabia’s Riyadh Airport Attacked Again, After Days of Houthi Strikes",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-11",
-    "notes": "The strike on Saturday was the deadliest attack in a Gulf Arab country since the U.S.-Israeli war with Iran began in February, and forced the airport to temporarily suspend operations.",
-    "tags": [
-      "the-new-york-times",
-      "vivian-nereim-and-euan-ward"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/world/middleeast/riyadh-airport-attack-energy-congress.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ba8c714ac8a2",
-    "mediaType": "short-non-fiction",
-    "title": "‘Elon Is a Nuke’",
+    "title": "A Left-Wing Politics Based on Calling People Names",
     "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "A new documentary makes the case that Elon Musk is a human of mass destruction.",
+    "consumed": "2026-10-11",
+    "notes": "For Jennifer Welch, moving left and reviling Republicans are the keys to victory.",
     "tags": [
       "the-atlantic",
-      "megan-garber"
+      "james-kirchick"
     ],
-    "url": "https://www.theatlantic.com/culture/2026/10/elon-musk-documentary-alex-gibney/688942/?utm_source=feed",
+    "url": "https://www.theatlantic.com/ideas/2026/10/influencer-who-wants-democrats-fight-dirty/688965/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e8f1c6c7e8d3",
+    "mediaType": "short-non-fiction",
+    "title": "A Reporter Returns to China to Find it Richer, but Also Highly Paranoid.",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "Returning to China after decades away, a correspondent finds bullet trains, dazzling skylines — and a surveillance state more paranoid and pervasive than ever.",
+    "tags": [
+      "the-new-york-times",
+      "andrew-higgins-and-gilles-sabri"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/world/asia/china-essay-higgins-surveillance.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-0d69fc1d3184",
+    "mediaType": "short-non-fiction",
+    "title": "A Russian Spy’s Lone Regret: ‘I Got Caught’",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "Though born in Ukraine, Alexsander supports the Russian cause. He wishes he had deleted one photo from his phone.",
+    "tags": [
+      "the-new-york-times",
+      "maria-varenikova"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/world/europe/russia-spy-ukraine.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-dbfb2cac72f3",
+    "mediaType": "short-non-fiction",
+    "title": "After Many Threats, an Arizona Lawmaker Asks: ‘Is It Really Worth It?’",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "Threats have altered the lives of State Representative Alma Hernandez, her family, friends and neighbors. They have even transformed her policymaking.",
+    "tags": [
+      "the-new-york-times",
+      "reis-thebault"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/us/arizona-alma-hernandez-threats-violence.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1f2f0b82e7f5",
+    "mediaType": "short-non-fiction",
+    "title": "All the Things You’re Not Allowed to Say In Texas",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "The state now controls what professors can teach.",
+    "tags": [
+      "the-atlantic",
+      "adam-serwer"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/10/texas-university-censorship-free-speech/688827/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-3236701f3ca1",
+    "mediaType": "short-non-fiction",
+    "title": "Betty Gilpin Is Having a Moment",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "On the heels of her Emmy win for “Widow’s Bay,” the “GLOW” star reflects on her slew of new projects, growing up with actor parents, taking on Cole Escola’s role in “Oh, Mary!,” and the importance of performing with your whole heart.",
+    "tags": [
+      "the-new-yorker",
+      "sarah-larson"
+    ],
+    "url": "https://www.newyorker.com/culture/the-new-yorker-interview/betty-gilpin-is-having-a-moment",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-8435239b7ac3",
+    "mediaType": "short-non-fiction",
+    "title": "California’s Tallest and Most Iconic Trees Are Getting Heatstroke",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "Redwoods adapted to a cool, foggy climate. Now a new study shows they slow down photosynthesis when their environment warms.",
+    "tags": [
+      "wired",
+      "neel-dhanesha"
+    ],
+    "url": "https://www.wired.com/story/californias-tallest-and-most-iconic-trees-are-getting-heat-stroke/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-440c57ab1a0a",
+    "mediaType": "short-non-fiction",
+    "title": "Democrats Press Pentagon on Iran Civilian Deaths",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "A new letter from 74 lawmakers suggests that civilian casualties will become a focus of investigation if Democrats take control of Congress.",
+    "tags": [
+      "the-new-york-times",
+      "julian-e-barnes"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/us/politics/democrats-press-pentagon-on-iran-civilian-deaths.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-fb2d246c3c6f",
+    "mediaType": "short-non-fiction",
+    "title": "Do Human Beings Have Souls?",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "The philosopher Shelly Kagan has gained millions of fans online while arguing that we can embrace physicalism without giving up meaning, morality, or human exceptionalism.",
+    "tags": [
+      "the-atlantic",
+      "david-brooks"
+    ],
+    "url": "https://www.theatlantic.com/podcasts/2026/10/do-human-beings-have-souls/688931/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e238fabd6e24",
+    "mediaType": "short-non-fiction",
+    "title": "Donald Trump After the Midterms",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "If the coming election does result in a blue wave, Trump will be faced with the fact of his diminishment. The rest of us will be faced with the wreckage.",
+    "tags": [
+      "the-new-yorker",
+      "david-remnick"
+    ],
+    "url": "https://www.newyorker.com/magazine/2026/10/19/donald-trump-after-the-midterms",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-3d941f2e915e",
+    "mediaType": "short-non-fiction",
+    "title": "How the 2026 Super El Niño and Climate Change Are Related",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "Here’s what we know about the record-setting El Niño on a record-hot planet, and the most important questions scientists are trying to answer.",
+    "tags": [
+      "wired",
+      "fernanda-gonz-lez"
+    ],
+    "url": "https://www.wired.com/story/super-el-nino-climate-change-connections/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-2e5d8215fcb5",
+    "mediaType": "short-non-fiction",
+    "title": "How the White House Manufactured a Narrative About a Trump Aide’s Call Logs",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "A release of selected records from the classified documents inquiry is a case study in how omitting context can create political ammunition.",
+    "tags": [
+      "the-new-york-times",
+      "charlie-savage"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/us/politics/white-house-manufactured-narrative-solomon.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-049a6aa3c6fc",
+    "mediaType": "short-non-fiction",
+    "title": "I Made Terrible Games With Google’s AI Playground",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "A long day’s haul in the video game slop mines.",
+    "tags": [
+      "wired",
+      "boone-ashworth"
+    ],
+    "url": "https://www.wired.com/story/i-made-terrible-games-with-googles-ai-playground/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-7ad25398c4d3",
+    "mediaType": "short-non-fiction",
+    "title": "I Thought I Was Good at Something",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "A poem",
+    "tags": [
+      "the-atlantic",
+      "robert-wood-lynn"
+    ],
+    "url": "https://www.theatlantic.com/books/2026/10/poem-robert-wood-lynn-i-thought/688936/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-00bf4c4e555a",
+    "mediaType": "short-non-fiction",
+    "title": "Inside the Muslim Manosphere Policing Women Online",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "From Red Pill coaches to “Dawah Bros,” influencers are dressing up hypermasculinity and misogyny in religious language—and finding audiences across social platforms.",
+    "tags": [
+      "wired",
+      "maysaa-ajjan"
+    ],
+    "url": "https://www.wired.com/story/inside-the-muslim-manosphere-policing-women-online/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b2294323cd8f",
+    "mediaType": "short-non-fiction",
+    "title": "Kevin Barry on Giving Thanks to the Short-Story Gods",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "The author discusses his story “Chuck Murphy’s Last Run.”",
+    "tags": [
+      "the-new-yorker",
+      "cressida-leyshon"
+    ],
+    "url": "https://www.newyorker.com/books/this-week-in-fiction/kevin-barry-10-19-26",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-aa17b69e995d",
+    "mediaType": "short-non-fiction",
+    "title": "Kevin Barry Reads “Chuck Murphy’s Last Run”",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "The author reads his story from the October 19, 2026, issue of the magazine.",
+    "tags": [
+      "the-new-yorker"
+    ],
+    "url": "https://www.newyorker.com/podcast/the-writers-voice/kevin-barry-reads-chuck-murphys-last-run",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-fd4210744d83",
+    "mediaType": "short-non-fiction",
+    "title": "Restaurant Review: Creola",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "At Creola, the chef Lana Lagomarsini puts French technique to work exploring Black American foodways—and overhauls her prix-fixe menu every few weeks.",
+    "tags": [
+      "the-new-yorker",
+      "helen-rosner"
+    ],
+    "url": "https://www.newyorker.com/culture/the-food-scene/creola-an-ever-changing-supper-club-rises-uptown",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-42d5f8b80d1f",
+    "mediaType": "short-non-fiction",
+    "title": "Saudi Arabia Has Few Options as Houthis Aim at Heart of Its Ambitions",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "Three deadly attacks by the Iran-backed Houthis in Yemen on an airport in the Saudi capital underscored the asymmetrical nature of their conflict with the kingdom.",
+    "tags": [
+      "the-new-york-times",
+      "vivian-nereim"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/world/middleeast/saudi-arabia-options-houthis.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-7ca18736c1bc",
+    "mediaType": "short-non-fiction",
+    "title": "Six of the Best First Lines in Modern Literature",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "It is a truth universally acknowledged that every great book must be in want of a great first line.",
+    "tags": [
+      "the-atlantic",
+      "stephanie-bai"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/10/six-of-the-best-first-lines-in-modern-literature/688958/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-0063ace92f36",
+    "mediaType": "short-non-fiction",
+    "title": "The limits of India’s diaspora power",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "As the West closes its doors, India must make staying home more attractive",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/asia/2026/10/11/the-limits-of-indias-diaspora-power",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-98144216328f",
+    "mediaType": "short-non-fiction",
+    "title": "These Midterm Races Will Decide Data Centers’ Political Fate",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "From the Senate to governors’ mansions, candidates are trying to outcompete each other to be the most anti–data center in races across the US.",
+    "tags": [
+      "wired",
+      "molly-taft"
+    ],
+    "url": "https://www.wired.com/story/midterm-races-decide-data-centers-political-fate/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-2b4ed3419044",
+    "mediaType": "short-non-fiction",
+    "title": "Threats of Political Violence Have America’s Elected Officials Living in Fear",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "A Times investigation has found that violent threats have become a new normal among public officials, reshaped private lives, cost millions in security and pushed people out of office.",
+    "tags": [
+      "the-new-york-times",
+      "nick-corasaniti-and-haiyun-jiang"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/us/politics/elections-political-violence-harassment.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-df9166f4d742",
+    "mediaType": "short-non-fiction",
+    "title": "Ukraine Shrugs Off Trump Call to Ditch Zelensky for Energy Strikes",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "President Trump lashed out at President Volodymyr Zelensky for striking Russian oil refineries. Mr. Zelensky said he’ll stop — if Russia does too.",
+    "tags": [
+      "the-new-york-times",
+      "maria-varenikova-dzvinka-pinchuk-and-ivan-nechepurenko"
+    ],
+    "url": "https://www.nytimes.com/2026/10/11/world/europe/trump-zelensky-diesel-energy-russia-.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-8dd6aa971753",
+    "mediaType": "short-non-fiction",
+    "title": "Yet Another Literary Prizewinner Seems to Be AI",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "The prestigious Caine Prize, announced last week, went to a story with many red flags.",
+    "tags": [
+      "the-atlantic",
+      "vauhini-vara"
+    ],
+    "url": "https://www.theatlantic.com/books/2026/10/caine-prize-winning-short-story-seems-be-ai/688967/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -143,24 +537,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-404474ae6830",
-    "mediaType": "short-non-fiction",
-    "title": "At Cornell, a Sorority Finds Itself Sued by One of Its Own",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Some Delta Delta Delta members are asking if the sorority shares blame in the bombshell case — or if the group is a scapegoat.",
-    "tags": [
-      "the-new-york-times",
-      "julie-bosman-and-andrea-barnes"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/nyregion/at-cornell-a-sorority-finds-itself-sued-by-one-of-its-own.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-6de1ab37a36d",
     "mediaType": "short-non-fiction",
     "title": "Best Lego Gifts for Brick Builders (2026): Smart Bricks, Video Games, and More",
@@ -174,24 +550,6 @@
       "simon-hill"
     ],
     "url": "https://www.wired.com/gallery/gifts-for-lego-lovers/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-71a1db301f11",
-    "mediaType": "short-non-fiction",
-    "title": "Even Good Friends Can Be Bad Texters",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "The time someone takes to reply may say little about your relationship.",
-    "tags": [
-      "the-atlantic",
-      "rafaela-jinich"
-    ],
-    "url": "https://www.theatlantic.com/newsletters/2026/10/good-friends-bad-texters/688957/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -215,132 +573,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-7c3327749353",
-    "mediaType": "short-non-fiction",
-    "title": "How Cornell University Chi Phi Fraternity Members Responded After Rape Accusation",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Records reveal how fraternity members responded when a fellow student accused them of sexual assault.",
-    "tags": [
-      "the-new-york-times",
-      "michael-wilson"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/nyregion/cornell-rape-lawsuit-fraternity-brothers.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-5361b5924863",
-    "mediaType": "short-non-fiction",
-    "title": "How I Became a Lock Picker",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "For those who appreciate “locksport,” a well-crafted lock may be more interesting than whatever it locks up.",
-    "tags": [
-      "the-new-yorker",
-      "shayla-love"
-    ],
-    "url": "https://www.newyorker.com/culture/the-weekend-essay/how-i-became-a-lock-picker",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2c1c73e83f44",
-    "mediaType": "short-non-fiction",
-    "title": "How This Tiny Startup Built the World’s Safest Bike Helmet",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Inspired by head-banging woodpeckers, Vancouver-based Pikio Labs has discovered a new approach to skull protection.",
-    "tags": [
-      "wired",
-      "chris-haslam"
-    ],
-    "url": "https://www.wired.com/story/how-this-tiny-startup-pikio-built-the-worlds-safest-bike-helmet/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-96ca4ceb834c",
-    "mediaType": "short-non-fiction",
-    "title": "Humans Watched This Supernova Explode Nearly a Millennium Ago. Now You Can See It in High Definition",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "The new image isn’t just stunning—it may also provide clues about how this star survived its own explosion.",
-    "tags": [
-      "wired",
-      "jorge-garay"
-    ],
-    "url": "https://www.wired.com/story/humans-watched-this-supernova-explode-nearly-a-millennium-ago-now-you-can-see-it-in-high-definition/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-4067a4ed061d",
-    "mediaType": "short-non-fiction",
-    "title": "Kash Patel’s Slap Shot",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "The F.B.I. director’s hockey team, the Dons, faced their rivals in a beer league. With rogue slap shots and hovering security agents, Patel was in the zone—or, at least, next to it.",
-    "tags": [
-      "the-new-yorker",
-      "richie-mcginniss"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/10/19/kash-patels-slap-shot",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3a4240bffd29",
-    "mediaType": "short-non-fiction",
-    "title": "Megyn Kelly’s Extreme Makeover",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Does the TV host turned YouTube polemicist really believe what she’s saying?",
-    "tags": [
-      "the-atlantic",
-      "sophie-gilbert"
-    ],
-    "url": "https://www.theatlantic.com/culture/2026/10/megyn-kelly-youtube-cornell-allegations/688951/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-0a1d2419560d",
-    "mediaType": "short-non-fiction",
-    "title": "Rebuking Ukraine Over Oil Strikes, Trump Says It Should ‘Get a New President’",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Hours after President Trump said the United States would buy Russian diesel, the Kremlin said there would be no immediate resumption of discussions to end the war.",
-    "tags": [
-      "the-new-york-times",
-      "marc-santora-and-andrew-e-kramer"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/world/europe/ukraine-russia-trump-diesel-talks.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-6a171ca2ff89",
     "mediaType": "short-non-fiction",
     "title": "Richard Avedon’s Defining Early Fashion Shoots",
@@ -359,132 +591,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-c28b369988e1",
-    "mediaType": "short-non-fiction",
-    "title": "Some Republicans Reject Trump’s Move to Import Diesel Fuel From Russia",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "High diesel costs have posed a problem for Republicans in the midterms, but President Trump’s decision did not satisfy some candidates in key Senate races.",
-    "tags": [
-      "the-new-york-times",
-      "tim-balk-and-evan-gorelick"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/us/politics/republicans-midterms-trump-diesel-russia.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cd23df2c45b1",
-    "mediaType": "short-non-fiction",
-    "title": "The Best Protein Source Is Hiding in Plain Sight",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Just have some yogurt.",
-    "tags": [
-      "the-atlantic",
-      "matteo-wong"
-    ],
-    "url": "https://www.theatlantic.com/health/2026/10/yogurt-best-protein-source/688950/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-f448a50428ea",
-    "mediaType": "short-non-fiction",
-    "title": "The Best Smart Scales for Tracking Weight and Body Composition (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Whether you want a weight log on your phone or a bathroom gadget packed with sensors, I’ve found an option for you.",
-    "tags": [
-      "wired",
-      "christopher-null"
-    ],
-    "url": "https://www.wired.com/gallery/best-smart-scales/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b7890366825d",
-    "mediaType": "short-non-fiction",
-    "title": "The Blistering Hollywood Satire of “Misty Green”",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "In Chris Rock’s film, Rosalind Eleazar gives a tremendous performance as a fast-fading TV veteran with a talent for acting, singing, and self-sabotage.",
-    "tags": [
-      "the-new-yorker",
-      "justin-chang"
-    ],
-    "url": "https://www.newyorker.com/culture/the-current-cinema/the-blistering-hollywood-satire-of-misty-green",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-04bfc3e11d8c",
-    "mediaType": "short-non-fiction",
-    "title": "The French Are Very Worried, and That’s Making Things Worse",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "The belief that the country is on a downward slope fuels the appeal of radicalism.",
-    "tags": [
-      "the-atlantic",
-      "robert-zaretsky"
-    ],
-    "url": "https://www.theatlantic.com/international/2026/10/french-decline-politics-extremism/688953/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-66e818fd04f9",
-    "mediaType": "short-non-fiction",
-    "title": "The Good-Hang Economy",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "The comedy-podcast boom is changing our idea of what it means to be funny.",
-    "tags": [
-      "the-new-yorker",
-      "dan-brooks"
-    ],
-    "url": "https://www.newyorker.com/culture/critics-notebook/the-good-hang-economy",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-5ad69bab9641",
-    "mediaType": "short-non-fiction",
-    "title": "Those Books of Smut and Wonder",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "How Sarah J. Maas became the queen of romantasy",
-    "tags": [
-      "the-atlantic",
-      "honor-jones"
-    ],
-    "url": "https://www.theatlantic.com/magazine/2026/11/sarah-j-maas-romantasy/688680/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-87eb42e07f5e",
     "mediaType": "short-non-fiction",
     "title": "Trump Is an Easy Mark for Putin",
@@ -498,76 +604,6 @@
       "david-frum"
     ],
     "url": "https://www.theatlantic.com/ideas/2026/10/trumps-diesel-deal-sells-out-ukraine/688964/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-28b9cb70b7f1",
-    "mediaType": "short-non-fiction",
-    "title": "Who Won the Redistricting War?",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Democrats and Republicans are in a race to the bottom—and the worst consequences will extend far beyond next month’s midterms.",
-    "tags": [
-      "the-new-yorker",
-      "jon-allsop"
-    ],
-    "url": "https://www.newyorker.com/news/the-political-scene/who-won-the-redistricting-war",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-76de0913355e",
-    "mediaType": "short-non-fiction",
-    "title": "Will Donald Trump’s Corruption Matter in November?",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "The President’s self-dealing has been well documented. Do voters care—and will anyone ever pay?",
-    "tags": [
-      "the-new-yorker"
-    ],
-    "url": "https://www.newyorker.com/podcast/political-scene/will-donald-trumps-corruption-matter-in-november",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ee203b95187e",
-    "mediaType": "short-non-fiction",
-    "title": "Belarus is becoming increasingly Russian",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-09",
-    "notes": "As the country stamps out its national heritage, its neighbour’s propaganda is taking over",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/interactive/europe/2026/10/09/belarus-is-becoming-increasingly-russian",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-9f656b4d5f81",
-    "mediaType": "short-non-fiction",
-    "title": "Book Publishers Are Quietly Using More AI. Staff Are Revolting",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-09",
-    "notes": "Workers at three major publishing houses tell WIRED that LLMs are being used for publicity, cover art, back cover copy, and emails, as some execs push junior staff to champion the tech.",
-    "tags": [
-      "wired",
-      "adam-morgan"
-    ],
-    "url": "https://www.wired.com/story/book-publishers-are-quietly-using-more-ai-staff-are-revolting/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -624,24 +660,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-c2d94a4d5dbb",
-    "mediaType": "short-non-fiction",
-    "title": "NASA Just Made Nearly 1 TB of Artemis II Data Available to the Public",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-09",
-    "notes": "The data drop includes photographs, audio, video, and astronauts’ notes that will be used to study the moon and prepare for future human missions.",
-    "tags": [
-      "wired",
-      "jorge-garay"
-    ],
-    "url": "https://www.wired.com/story/nasa-just-made-nearly-1-tb-of-artemis-ii-data-available-to-the-public/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-60a4eae7f3e5",
     "mediaType": "short-non-fiction",
     "title": "Plot Twist newsletter: Silicon Valley is taking over your screen",
@@ -671,24 +689,6 @@
       "the-economist"
     ],
     "url": "https://www.economist.com/united-states/2026/10/09/professional-sumo-wrestling-comes-to-america",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c194535ad715",
-    "mediaType": "short-non-fiction",
-    "title": "Tesla’s ‘Full Self-Driving’ Becomes ‘Assisted Driving’ in Europe",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-09",
-    "notes": "The automaker has been criticized for misleading drivers with the feature’s name. Now it’s renaming it for European regulators.",
-    "tags": [
-      "wired",
-      "aarian-marshall"
-    ],
-    "url": "https://www.wired.com/story/tesla-full-self-driving-becomes-assisted-driving-in-europe/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
