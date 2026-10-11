@@ -234,7 +234,8 @@ select.suggest-input{cursor:pointer}
   border:1px solid var(--ink);
   background:var(--paper);
 }
-.rail-item--album .ri-cover img{aspect-ratio:1/1}
+.rail-item--album .ri-cover img,
+.rail-item--podcast .ri-cover img{aspect-ratio:1/1}
 .rail-item.is-expanded .ri-cover{width:84px}
 .ri-cover:hover img{outline:2px solid var(--accent);outline-offset:-2px}
 

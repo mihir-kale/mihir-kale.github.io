@@ -160,30 +160,84 @@ async function itunesAlbumCandidates(title, artist) {
   }
 }
 
+async function itunesPodcastSearch(term) {
+  try {
+    const params = new URLSearchParams({ media: "podcast", entity: "podcast", term, limit: "5", country: "US" });
+    const data = await fetchJson(`https://itunes.apple.com/search?${params}`);
+    const needle = term.toLowerCase();
+    const hit = (data.results || []).find((result) => {
+      const name = (result.collectionName || "").toLowerCase();
+      const art = result.artworkUrl600 || result.artworkUrl100;
+      return art && (name === needle || name.includes(needle));
+    });
+    if (!hit) return null;
+    const art = hit.artworkUrl600 || upscaleItunesArtwork(hit.artworkUrl100);
+    return art ? [art] : null;
+  } catch {
+    return null;
+  }
+}
+
+// Show names are often decorated ("Critics at Large | The New Yorker",
+// "Statecraft — Santi Ruiz"); trim to the core name for matching.
+function coreShowName(value) {
+  return (value || "").split(/[|—–]/)[0].trim();
+}
+
+async function itunesPodcastCandidates(title, show) {
+  const terms = [coreShowName(show), show, coreShowName(title), title];
+  for (const term of terms) {
+    const query = (term || "").trim();
+    if (!query) continue;
+    const found = await itunesPodcastSearch(query);
+    if (found) return found;
+  }
+  return [];
+}
+
+// Spotify links (episodes, shows, albums, tracks) resolve to their exact cover
+// via the oEmbed endpoint (CORS is open).
+async function spotifyOembedCover(url) {
+  if (!/open\.spotify\.com\/(?:episode|show|album|track)\//.test(url || "")) return null;
+  try {
+    const data = await fetchJson(`https://open.spotify.com/oembed?url=${encodeURIComponent(url)}`);
+    return data.thumbnail_url ? [data.thumbnail_url] : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function resolveCover(item) {
   const key = cacheKey(item);
   const cached = readCache(key);
   if (cached !== undefined) return cached || null;
 
-  let candidates = [];
-  switch (item.mediaType) {
-    case "book": {
-      const [google, library] = await Promise.all([
-        googleBookCandidates(item.title, item.creator),
-        openLibraryCandidates(item.title, item.creator)
-      ]);
-      candidates = [...google, ...library];
-      break;
+  // A Spotify link resolves to its exact cover regardless of type; otherwise
+  // fall back to the per-type sources below.
+  let candidates = await spotifyOembedCover(item.url);
+  if (!candidates) {
+    switch (item.mediaType) {
+      case "book": {
+        const [google, library] = await Promise.all([
+          googleBookCandidates(item.title, item.creator),
+          openLibraryCandidates(item.title, item.creator)
+        ]);
+        candidates = [...google, ...library];
+        break;
+      }
+      case "film":
+      case "tv":
+        candidates = await tmdbCandidates(item.title, item.mediaType);
+        break;
+      case "album":
+        candidates = await itunesAlbumCandidates(item.title, item.creator);
+        break;
+      case "podcast":
+        candidates = await itunesPodcastCandidates(item.title, item.creator);
+        break;
+      default:
+        return null;
     }
-    case "film":
-    case "tv":
-      candidates = await tmdbCandidates(item.title, item.mediaType);
-      break;
-    case "album":
-      candidates = await itunesAlbumCandidates(item.title, item.creator);
-      break;
-    default:
-      return null;
   }
 
   const url = await firstLoadable(candidates);

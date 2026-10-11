@@ -27,7 +27,7 @@ export const KIND_LABELS = {
   podcast: "Podcasts"
 };
 
-export const COVER_TYPES = new Set(["book", "film", "album"]);
+export const COVER_TYPES = new Set(["book", "film", "album", "podcast"]);
 
 export const LISTS = ["recommend", "shelf"];
 
