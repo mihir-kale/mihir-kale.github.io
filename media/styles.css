@@ -124,6 +124,7 @@ input,textarea,select,button{text-transform:lowercase}
   gap:1rem;
   padding:.55rem .85rem;
   border-bottom:1px solid var(--ink);
+  background:#eceae1;
   font-size:.58rem;
   font-weight:400;
   letter-spacing:.2em;
