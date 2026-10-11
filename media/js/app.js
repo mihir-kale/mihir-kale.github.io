@@ -27,7 +27,7 @@ const listButtons = new Map();
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
 const SHELF_LIMIT = 5;
-const MIN_COL = 380;
+const MIN_COL = 280;
 const GAP_MIN = 14;
 const GAP_MAX = 22;
 
