@@ -7,18 +7,19 @@ const railsEl = document.getElementById("rails");
 
 const SUGGEST_KEY = "media:suggestions:v1";
 const DISMISS_KEY = "media:dismissed:v1";
+const PROMOTE_KEY = "media:promoted:v1";
 
 // Public by design (RLS-protected); the media catalogue itself stays a static JSON file.
 const SUPABASE_URL = "https://gzwhuwzmrrmtswyhjheu.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E";
 
-const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set() };
+const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set(), promoted: new Set() };
 const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
-const SHELF_LIMIT = 15;
+const SHELF_LIMIT = 5;
 const MIN_COL = 280;
 const GAP_MIN = 14;
 const GAP_MAX = 22;
@@ -104,17 +105,31 @@ function buildItem(item) {
     headMain.append(el("span", `ri-status ri-status--${item.status}`, STATUS_GLYPHS[item.status]));
   }
   head.append(headMain);
+
+  const list = effectiveList(item);
   if (item.source === "feed") {
-    const dismiss = el("button", "ri-dismiss", "\u00D7");
-    dismiss.type = "button";
-    dismiss.title = "not interested";
-    dismiss.setAttribute("aria-label", `Not interested: ${item.title}`);
-    dismiss.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      dismissItem(item.id);
-    });
-    head.append(dismiss);
+    const actions = el("span", "ri-actions");
+    const checked = state.promoted.has(item.id);
+    const box = el("input", "ri-check");
+    box.type = "checkbox";
+    box.checked = checked;
+    box.title = checked ? "move back to shelf" : "save to my recommendations";
+    box.setAttribute("aria-label", `Save "${item.title}" to my recommendations`);
+    box.addEventListener("change", () => promoteItem(item.id));
+    actions.append(box);
+    if (list === "shelf") {
+      const dismiss = el("button", "ri-dismiss", "\u00D7");
+      dismiss.type = "button";
+      dismiss.title = "not interested";
+      dismiss.setAttribute("aria-label", `Not interested: ${item.title}`);
+      dismiss.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dismissItem(item.id);
+      });
+      actions.append(dismiss);
+    }
+    head.append(actions);
   }
   main.append(head);
 
@@ -145,7 +160,7 @@ function buildItem(item) {
   const row = el("div", "ri-row");
   row.append(main);
 
-  if (COVER_TYPES.has(item.mediaType) && item.list === "recommend") {
+  if (COVER_TYPES.has(item.mediaType) && list === "recommend") {
     const frame = coverWrap(item);
     row.append(frame);
     hydrateCover(frame, item, li);
@@ -215,6 +230,36 @@ function dismissItem(id) {
   state.dismissed.add(id);
   persistDismissed();
   render();
+}
+
+function readPromoted() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PROMOTE_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistPromoted() {
+  try {
+    localStorage.setItem(PROMOTE_KEY, JSON.stringify([...state.promoted]));
+  } catch {
+    /* storage unavailable — keep in-memory only */
+  }
+}
+
+function promoteItem(id) {
+  if (!id) return;
+  if (state.promoted.has(id)) state.promoted.delete(id);
+  else state.promoted.add(id);
+  persistPromoted();
+  render();
+}
+
+function effectiveList(item) {
+  if (item.source === "feed" && state.promoted.has(item.id)) return "recommend";
+  return item.list;
 }
 
 function persistSuggestions() {
@@ -435,7 +480,7 @@ function render() {
   const byType = new Map();
 
   for (const item of ordered(state.items)) {
-    if (item.list !== state.list) continue;
+    if (effectiveList(item) !== state.list) continue;
     if (state.dismissed.has(item.id)) continue;
     if (!matches(item, query)) continue;
     if (!byType.has(item.mediaType)) byType.set(item.mediaType, []);
@@ -469,6 +514,7 @@ buildToggle();
 formRail = buildFormRail();
 state.suggestions = readSuggestions();
 state.dismissed = new Set(readDismissed());
+state.promoted = new Set(readPromoted());
 renderSuggestions();
 
 Promise.all([loadLibrary(), loadFeeds()])
