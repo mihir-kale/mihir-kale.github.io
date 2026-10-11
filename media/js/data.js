@@ -14,7 +14,7 @@ export const TYPE_LABELS = {
   essay: "Essay",
   book: "Book",
   film: "Film",
-  album: "Album",
+  album: "Music",
   podcast: "Podcast"
 };
 
@@ -23,7 +23,7 @@ export const KIND_LABELS = {
   essay: "Essays",
   book: "Books",
   film: "Films",
-  album: "Albums",
+  album: "Music",
   podcast: "Podcasts"
 };
 
