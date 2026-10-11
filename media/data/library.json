@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "id": "42e927ead8044c8485160",
+    "mediaType": "article",
+    "title": "Currency policy options for the Palestinian economy",
+    "creator": "Avia Liberman",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-08-21",
+    "tags": [
+      "atlantic council",
+      "palestine",
+      "monetary policy"
+    ],
+    "url": "https://www.atlanticcouncil.org/in-depth-research-reports/issue-brief/currency-policy-options-for-the-palestinian-economy/",
+    "spotlight": false,
+    "list": "recommend"
+  }
+]
