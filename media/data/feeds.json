@@ -1,5 +1,77 @@
 [
   {
+    "id": "feed-e3a9514e7d6f",
+    "mediaType": "article",
+    "title": "‘Not Pleasant’ but ‘Necessary’: Support at Trump Rally for Public Execution",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "A sample of people at the president’s midterm stump speech in Tennessee defended the Pentagon’s announcement that it would livestream the execution of a mass shooter.",
+    "tags": [
+      "the-new-york-times",
+      "shawn-mccreesh"
+    ],
+    "url": "https://www.nytimes.com/2026/10/10/us/politics/trump-rally-tennessee-public-execution.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6ffda4820c01",
+    "mediaType": "article",
+    "title": "Justice Dept. Is Investigating TV Networks Over Trump Pool Coverage",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "Major TV networks were notified on Friday that the department was examining whether they violated antitrust laws when they suspended pool coverage of President Trump.",
+    "tags": [
+      "the-new-york-times",
+      "david-mccabe-michael-m-grynbaum-benjamin-mullin-lauren-hirsch-and-glenn-thrush"
+    ],
+    "url": "https://www.nytimes.com/2026/10/10/business/media/trump-justice-department-tv-networks.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-8bc05b7198c0",
+    "mediaType": "article",
+    "title": "Pentagon Again Increases Number of U.S. Casualties in Iran War",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "In an unannounced change, the Defense Department is now acknowledging troops who died or were wounded in support roles.",
+    "tags": [
+      "the-new-york-times",
+      "john-ismay"
+    ],
+    "url": "https://www.nytimes.com/2026/10/10/us/politics/pentagon-casualties-iran-war.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-ecab9dd712f1",
+    "mediaType": "article",
+    "title": "Saudi Arabia’s Riyadh Airport Attacked Again, After Days of Houthi Strikes",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-11",
+    "notes": "The strike on Saturday was the deadliest attack in a Gulf Arab country since the U.S.-Israeli war with Iran began in February, and forced the airport to temporarily suspend operations.",
+    "tags": [
+      "the-new-york-times",
+      "vivian-nereim-and-euan-ward"
+    ],
+    "url": "https://www.nytimes.com/2026/10/10/world/middleeast/riyadh-airport-attack-energy-congress.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
     "id": "feed-ba8c714ac8a2",
     "mediaType": "article",
     "title": "‘Elon Is a Nuke’",
@@ -102,42 +174,6 @@
       "simon-hill"
     ],
     "url": "https://www.wired.com/gallery/gifts-for-lego-lovers/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ea24cb5ac914",
-    "mediaType": "article",
-    "title": "Christa Pike Discharged From Hospital After Surviving Execution Attempt",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Ms. Pike, 50 and convicted of the 1995 murder of a classmate, survived two doses of the drug pentobarbital late last month.",
-    "tags": [
-      "the-new-york-times",
-      "emily-cochrane"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/us/politics/christa-pike-discharged-hospital-survive-execution.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-fc8b9921af20",
-    "mediaType": "article",
-    "title": "Economic Pain and an Unpopular Trump Put G.O.P. on its Heels With Three Weeks to Go",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Inflation has hurt Americans at many levels: Farmers, truckers, consumers. It has also expanded the electoral map into what was safely Republican country just a few months ago.",
-    "tags": [
-      "the-new-york-times",
-      "patricia-mazzei-and-shane-goldmacher"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/us/politics/trump-inflation-midterms-republicans.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -251,24 +287,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-74020e2db290",
-    "mediaType": "article",
-    "title": "Hurricane Simon and Tropical Storm Rachel Target Mexico as Isaias Hits Gulf",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Hurricane Simon and Tropical Storm Rachel are both expected to make landfall in the coming days. Rachel could also affect Southern California.",
-    "tags": [
-      "the-new-york-times",
-      "judson-jones"
-    ],
-    "url": "https://www.nytimes.com/2026/10/09/weather/hurricane-simon-rachel-california.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-4067a4ed061d",
     "mediaType": "article",
     "title": "Kash Patel’s Slap Shot",
@@ -341,19 +359,19 @@
     "source": "feed"
   },
   {
-    "id": "feed-ecab9dd712f1",
+    "id": "feed-c28b369988e1",
     "mediaType": "article",
-    "title": "Saudi Arabia’s Riyadh Airport Attacked Again, After Days of Houthi Strikes",
+    "title": "Some Republicans Reject Trump’s Move to Import Diesel Fuel From Russia",
     "creator": "The New York Times",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-10",
-    "notes": "The strike on Saturday was the deadliest attack in a Gulf Arab country since the U.S.-Israeli war with Iran began in February, and forced the airport to temporarily suspend operations.",
+    "notes": "High diesel costs have posed a problem for Republicans in the midterms, but President Trump’s decision did not satisfy some candidates in key Senate races.",
     "tags": [
       "the-new-york-times",
-      "vivian-nereim-and-euan-ward"
+      "tim-balk-and-evan-gorelick"
     ],
-    "url": "https://www.nytimes.com/2026/10/10/world/middleeast/riyadh-airport-attack-energy-congress.html",
+    "url": "https://www.nytimes.com/2026/10/10/us/politics/republicans-midterms-trump-diesel-russia.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -503,24 +521,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-743e687ee62c",
-    "mediaType": "article",
-    "title": "Why Ketamine Immobilizes Some Users",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-10",
-    "notes": "Potent powders can produce a nearly catatonic state, particularly in those who have not tried the drug before.",
-    "tags": [
-      "the-new-york-times",
-      "andrew-jacobs"
-    ],
-    "url": "https://www.nytimes.com/2026/10/10/science/ketamine-cornell-anesthesia.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-76de0913355e",
     "mediaType": "article",
     "title": "Will Donald Trump’s Corruption Matter in November?",
@@ -642,23 +642,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-284b74710c7d",
-    "mediaType": "podcast",
-    "title": "People Who Lie and People Who Die (w/ Sam Roberts) Members Only #349",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-09",
-    "notes": "“There are no ordinary lives and everyone has a story” -Sam Roberts’ father takes him to see the Rosenbergs’ funeral -Fifty years in journalism and an unexpected career writing obituaries -Anna Nicole Smith and the brutality of British obituaries -Charlie Rangel’s complicated…",
-    "tags": [
-      "the-fifth-column"
-    ],
-    "url": "https://www.wethefifth.com/p/people-who-lie-and-people-who-die",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-60a4eae7f3e5",
     "mediaType": "article",
     "title": "Plot Twist newsletter: Silicon Valley is taking over your screen",
@@ -688,23 +671,6 @@
       "the-economist"
     ],
     "url": "https://www.economist.com/united-states/2026/10/09/professional-sumo-wrestling-comes-to-america",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-188d5b55fa50",
-    "mediaType": "podcast",
-    "title": "Second Sunday Coordinates 10/11",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-09",
-    "notes": "Kmele is the King of Halloween, did you know that? Below find the link for this month’s Second Sunday, taking place LIVE on Zoom at 6PM Eastern Time (on Sunday ) Paid subscribers get the link below the fold. Read more",
-    "tags": [
-      "the-fifth-column"
-    ],
-    "url": "https://www.wethefifth.com/p/second-sunday-coordinates-1011",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -745,145 +711,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-acc418b9d0f8",
-    "mediaType": "podcast",
-    "title": "Europe Is Melting, Meritocracy Is Racist, and Everyone Gets Dignity",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-07",
-    "notes": "Did we mention we’re nominated…did you vote yet? If not, what in the actual fuck is your problem? -all the bad words are here -come to Fairfield on November 12th! (https://quickcenter.fairfield.edu/2026-27-season-calendar/lectures/the-fifth-column-podcast.html) -Trump in…",
-    "tags": [
-      "the-fifth-column"
-    ],
-    "url": "https://www.wethefifth.com/p/europe-is-melting-meritocracy-is",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e8617b4744f6",
-    "mediaType": "podcast",
-    "title": "Addiction, Faith, and the Limits of Willpower (with Meghan O’Gieblyn)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-05",
-    "notes": "Why do we keep doing things we know we shouldn’t? And is that really a failure of will? Author Meghan O’Gieblyn spent years trying to answer that question, first in response to her struggle with alcoholism and her loss of faith, and then by means of Simone Weil, William James,…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/addiction-faith-and-the-limits-of-willpower-with-meghan-ogieblyn/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-5623956236ee",
-    "mediaType": "podcast",
-    "title": "Firehose #215: Fall Forward",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-04",
-    "notes": "In this house barn we celebrate the annual arboreal costume change, and the busy season of work & televised sports it portends. Sure, you could put on your A.I.-generated screen saver of autumn leaves and crackling fires, but ain’t it grander to touch grass and breathe in the…",
-    "tags": [
-      "the-fifth-column",
-      "matt-welch"
-    ],
-    "url": "https://www.wethefifth.com/p/firehose-215-fall-forward",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1e58b2faffba",
-    "mediaType": "podcast",
-    "title": "One Hitter: Why Oil Prices Could Get Much Worse (w/ Marshall Adkins) Members Only #348",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-03",
-    "notes": "Marshall spent 25 years covering oil and gas at Raymond James before retiring this week. He joins the guys to explain what’s actually driving prices higher, why diesel matters more than most people realize, and how war, refinery outages, and shrinking reserves have left the…",
-    "tags": [
-      "the-fifth-column"
-    ],
-    "url": "https://www.wethefifth.com/p/one-hitter-why-oil-prices-could-get",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ead4feab4d86",
-    "mediaType": "podcast",
-    "title": "Vote for The Fifth Column in the Signal Awards!",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-03",
-    "notes": "In what is surely the crowning achievement of our careers, The Fifth Column has been nominated for a Signal Award in the news & politics category. A secretive “judging academy” will apparently decide if we will take home the gold (or silver, or bronze) headphones, but oh–what’s…",
-    "tags": [
-      "the-fifth-column"
-    ],
-    "url": "https://www.wethefifth.com/p/vote-for-the-fifth-column-in-the",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c4026740d5d4",
-    "mediaType": "podcast",
-    "title": "The Weave Within the Weave (#577)",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-02",
-    "notes": "…and Moynihan discusses Harvard’s artist in residence. Also, we’ve been nominated for something! vote for us in for the Signal Awards! -Kmele’s Cross-Country Trail of Tears -Trump Praises the Latinos -Yukon Cornelius and the Bumble -Coming Soon: Jason’s Weird Fetishes -Trump…",
-    "tags": [
-      "the-fifth-column"
-    ],
-    "url": "https://www.wethefifth.com/p/the-weave-within-the-weave",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1d96a0a899bd",
-    "mediaType": "podcast",
-    "title": "Sarah Hepola and the Life You Didn’t Choose (Members Only #347)",
-    "creator": "The Fifth Column",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-09-29",
-    "notes": "Finally, a break from politics and a discussion about…love. If you like Sarah, check out her podcast with friend of The Fifth Column Nancy Rommelmann -Sarah is back on the wagon (not really!) -The married man, the younger man, and the New Orleans homicide detective -Women’s…",
-    "tags": [
-      "the-fifth-column"
-    ],
-    "url": "https://www.wethefifth.com/p/sarah-hepola-and-the-life-you-didnt",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b79d3670ad98",
-    "mediaType": "podcast",
-    "title": "Public Choice and Politics Without Romance (with Mike Munger)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-09-28",
-    "notes": "Before you give the government new powers, try the Munger Test: cross out “government” and insert the name of the politician you trust least. Then see if you still like the idea. In his 52nd EconTalk appearance, Mike Munger talks with host Russ Roberts about public choice,…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/public-choice-and-politics-without-romance-with-mike-munger/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-a67e55588482",
     "mediaType": "podcast",
     "title": "Luis Garicano",
@@ -897,42 +724,6 @@
       "dallas-floer"
     ],
     "url": "https://conversationswithtyler.com/episodes/luis-garicano/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-398cb7bc9daa",
-    "mediaType": "podcast",
-    "title": "The Death of Reading (with James Marriott)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-09-21",
-    "notes": "Are we living in the new Dark Ages? Despite vast technological advances, our societies are increasingly looking like those that preceded the advent of literacy. So argues journalist James Marriott , who sees in our abandonment of reading a threat to democracy and a reversal of…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/the-death-of-reading-with-james-marriott/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2c4c1373a4df",
-    "mediaType": "podcast",
-    "title": "Incentives Are for Losers (with Adam Mastroianni)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-09-14",
-    "notes": "Incentives matter, sure. But what should you do when following the incentives means quietly participating in something wrong? Psychologist Adam Mastroianni argues that obeying bad incentives–shading a headline for clicks, keeping the found wallet because no one’s watching–is…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/incentives-are-for-losers-with-adam-mastroianni/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -956,24 +747,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-22fcf7adba09",
-    "mediaType": "podcast",
-    "title": "Meritocracy, Exams, and the Knowledge That Matters (with Daisy Christodoulou)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-09-07",
-    "notes": "What does a failed 19th-century Chinese civil exam and one of the deadliest wars in history have to do with how we hire, educate, and test people today? In this EconTalk conversation, Russ Roberts and education expert Daisy Christodoulou trace a surprising thread from the…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/meritocracy-exams-and-the-knowledge-that-matters-with-daisy-christodoulou/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-c6b4607dfe11",
     "mediaType": "podcast",
     "title": "Annie Lowrey",
@@ -992,24 +765,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-1366fda4cf9a",
-    "mediaType": "podcast",
-    "title": "Hamas and the Future of Gaza (with Ahmed Fouad Alkhatib)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-08-31",
-    "notes": "He lost his childhood homes, dozens of family members, and most of his hearing in his left ear to Israeli bombs, yet Ahmed Fouad Alkhatib insists that Palestinians must also take responsibility for Gaza’s destruction and for peace. Most Gazans, he insists, have turned against…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/hamas-and-the-future-of-gaza-with-ahmed-fouad-alkhatib/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-c654a957eb88",
     "mediaType": "podcast",
     "title": "Jared Diamond",
@@ -1023,42 +778,6 @@
       "dallas-floer"
     ],
     "url": "https://conversationswithtyler.com/episodes/jared-diamond/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-fc2850baaad4",
-    "mediaType": "podcast",
-    "title": "Are We Alone? Cosmic Loneliness and the Longing to Believe (with Adam Kirsch)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-08-24",
-    "notes": "Has the earth been visited by extraterrestrials? Are we alone? Despite no formal evidence for conscious life outside of earth, the belief that we are not alone has become more common among both scientists and everyday people. Listen as author Adam Kirsch talks to EconTalk host…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/are-we-alone-cosmic-loneliness-and-the-longing-to-believe-with-adam-kirsch/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c1310990c68e",
-    "mediaType": "podcast",
-    "title": "The Hidden Cause of the Industrial Revolution (with Ben Southwood)",
-    "creator": "EconTalk",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-08-17",
-    "notes": "What if the Industrial Revolution wasn’t sparked by the steam engine, but by a quiet legal revolution in how England handled property rights? Ben Southwood of Works in Progress argues that the Glorious Revolution of the 1680s unleashed British growth by empowering a Parliament…",
-    "tags": [
-      "econtalk",
-      "lauren-landsburg"
-    ],
-    "url": "https://www.econtalk.org/the-hidden-cause-of-the-industrial-revolution-with-ben-southwood/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
