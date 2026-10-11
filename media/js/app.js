@@ -1,6 +1,6 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
-import { resolveCover } from "./covers.js";
-import { signIn, signOut, getSession } from "./auth.js";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js?v=20261011";
+import { resolveCover } from "./covers.js?v=20261011";
+import { signIn, signOut, getSession } from "./auth.js?v=20261011";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
