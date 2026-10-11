@@ -127,6 +127,7 @@ input,textarea,select,button{text-transform:lowercase}
   font-size:.58rem;
   font-weight:700;
   letter-spacing:.2em;
+  text-transform:none;
 }
 .rail-title::before{content:"\25B8";color:var(--accent);margin-right:.4rem}
 .rail-count{color:var(--ink-soft);font-weight:400}
@@ -318,6 +319,7 @@ select.suggest-input{cursor:pointer}
   font-weight:700;
   line-height:1.4;
   overflow-wrap:anywhere;
+  text-transform:none;
 }
 .ri-title a{color:inherit}
 .ri-title a:hover{color:var(--accent)}
