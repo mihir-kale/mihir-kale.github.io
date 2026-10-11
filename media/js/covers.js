@@ -237,7 +237,8 @@ export async function resolveCover(item) {
   let candidates = await spotifyOembedCover(item.url);
   if (!candidates) {
     switch (item.mediaType) {
-      case "book": {
+      case "fiction":
+      case "non-fiction": {
         const [google, library] = await Promise.all([
           googleBookCandidates(item.title, item.creator),
           openLibraryCandidates(item.title, item.creator)
@@ -246,7 +247,6 @@ export async function resolveCover(item) {
         break;
       }
       case "film":
-      case "tv":
         candidates = await tmdbCandidates(item.title, item.mediaType);
         break;
       case "album":

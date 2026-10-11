@@ -3,12 +3,12 @@
   "per_source_limit": 8,
   "title_exclude": ["promo code", "coupon", "discount code", "deal of the day"],
   "sources": [
-    { "name": "The New Yorker", "type": "article", "url": "https://www.newyorker.com/feed/everything" },
-    { "name": "The Atlantic", "type": "article", "url": "https://www.theatlantic.com/feed/all/" },
-    { "name": "WIRED", "type": "article", "url": "https://www.wired.com/feed/rss" },
-    { "name": "The Economist", "type": "article", "url": "https://www.economist.com/latest/rss.xml" },
-    { "name": "The New York Times", "type": "article", "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" },
-    { "name": "The Yale Review", "type": "article", "url": "", "enabled": false, "note": "yalereview.org publishes no RSS feed (sitemap only); set a url to enable." },
+    { "name": "The New Yorker", "type": "short-non-fiction", "url": "https://www.newyorker.com/feed/everything" },
+    { "name": "The Atlantic", "type": "short-non-fiction", "url": "https://www.theatlantic.com/feed/all/" },
+    { "name": "WIRED", "type": "short-non-fiction", "url": "https://www.wired.com/feed/rss" },
+    { "name": "The Economist", "type": "short-non-fiction", "url": "https://www.economist.com/latest/rss.xml" },
+    { "name": "The New York Times", "type": "short-non-fiction", "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" },
+    { "name": "The Yale Review", "type": "short-non-fiction", "url": "", "enabled": false, "note": "yalereview.org publishes no RSS feed (sitemap only); set a url to enable." },
     { "name": "Conversations with Tyler", "type": "podcast", "url": "https://conversationswithtyler.com/episodes/feed/" }
   ]
 }

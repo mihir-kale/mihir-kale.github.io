@@ -662,7 +662,7 @@ function openEditor(item) {
   editorEditing = item || null;
   editorError.textContent = "";
   const f = editorFields;
-  f.mediaType.value = item ? item.mediaType : "book";
+  f.mediaType.value = item ? item.mediaType : "non-fiction";
   f.title.value = item ? item.title : "";
   f.creator.value = item ? item.creator : "";
   f.year.value = item && item.year ? item.year : "";

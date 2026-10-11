@@ -7,27 +7,37 @@ export const SUPABASE_ANON_KEY =
 const REST = `${SUPABASE_URL}/rest/v1`;
 const AUTH_HEADERS = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` };
 
-export const MEDIA_TYPES = ["article", "essay", "book", "film", "album", "podcast"];
+export const MEDIA_TYPES = [
+  "fiction",
+  "non-fiction",
+  "short-fiction",
+  "short-non-fiction",
+  "film",
+  "album",
+  "podcast"
+];
 
 export const TYPE_LABELS = {
-  article: "Article",
-  essay: "Essay",
-  book: "Book",
+  fiction: "Fiction",
+  "non-fiction": "Non-fiction",
+  "short-fiction": "Short fiction",
+  "short-non-fiction": "Short non-fiction",
   film: "Film",
   album: "Music",
   podcast: "Podcast"
 };
 
 export const KIND_LABELS = {
-  article: "Articles",
-  essay: "Essays",
-  book: "Books",
+  fiction: "Fiction",
+  "non-fiction": "Non-fiction",
+  "short-fiction": "Short fiction",
+  "short-non-fiction": "Short non-fiction",
   film: "Films",
   album: "Music",
   podcast: "Podcasts"
 };
 
-export const COVER_TYPES = new Set(["book", "film", "album", "podcast"]);
+export const COVER_TYPES = new Set(["fiction", "non-fiction", "film", "album", "podcast"]);
 
 export const LISTS = ["recommend", "shelf"];
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // sync_feeds.mjs — fetch the RSS/Atom feeds in media/data/feed-sources.json and
-// write normalized article/podcast entries to media/data/feeds.json.
+// write normalized short-non-fiction/podcast entries to media/data/feeds.json.
 //
 //   node media/scripts/sync_feeds.mjs
 //
 // Dependency-free (Node 18+ global fetch). Feed items always land in the
-// "shelf" list; books/films/albums/essays stay manual in library.json. If a
-// source fails to fetch, its previously-cached items are kept.
+// "shelf" list; fiction/non-fiction/films/albums stay manual in library.json.
+// If a source fails to fetch, its previously-cached items are kept.
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";

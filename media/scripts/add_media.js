@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // add_media.js — append an entry to media/data/library.json
 //
-//   node scripts/add_media.js --type book --title "The Great Gatsby" \
+//   node scripts/add_media.js --type fiction --title "The Great Gatsby" \
 //     --creator "F. Scott Fitzgerald" --year 1925 --rating 4.5 \
 //     --consumed 2026-08-01 --notes "..." --tag classic --url "..." --spotlight
 //
-//   echo '{"mediaType":"book","title":"..."}' | node scripts/add_media.js
+//   echo '{"mediaType":"non-fiction","title":"..."}' | node scripts/add_media.js
 //
 // Flags repeat for multiple tags: --tag sci-fi --tag fiction
 
@@ -13,9 +13,23 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { resolve } from "node:path";
 
-const MEDIA_TYPES = ["article", "essay", "book", "film", "album", "podcast"];
+const MEDIA_TYPES = [
+  "fiction",
+  "non-fiction",
+  "short-fiction",
+  "short-non-fiction",
+  "film",
+  "album",
+  "podcast"
+];
 const STATUSES = ["backlog", "in-progress", "finished"];
-const TYPE_ALIASES = { movie: "film", music: "album" };
+const TYPE_ALIASES = {
+  movie: "film",
+  music: "album",
+  nonfiction: "non-fiction",
+  shortfiction: "short-fiction",
+  shortnonfiction: "short-non-fiction"
+};
 
 const args = parseArgs(process.argv.slice(2));
 const file = resolve(args.file || "media/data/library.json");
@@ -123,6 +137,6 @@ function parseArgs(argv) {
 
 function fail(message) {
   console.error(`\u2717 ${message}`);
-  console.error("Usage: node scripts/add_media.js --type <article|essay|book|film|album|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
+  console.error("Usage: node scripts/add_media.js --type <fiction|non-fiction|short-fiction|short-non-fiction|film|album|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
   process.exit(1);
 }
