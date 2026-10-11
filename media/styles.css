@@ -125,7 +125,7 @@ input,textarea,select,button{text-transform:lowercase}
   padding:.55rem .85rem;
   border-bottom:1px solid var(--ink);
   font-size:.58rem;
-  font-weight:700;
+  font-weight:400;
   letter-spacing:.2em;
   text-transform:uppercase;
 }
