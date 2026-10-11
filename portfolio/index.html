@@ -81,6 +81,11 @@
       font-size: clamp(16px, 1.2vw, 22px);
       color: inherit;
     }
+    #rotate {
+      color: #fff;
+      transition: opacity .3s ease;
+    }
+    #rotate.fade { opacity: 0; }
     @media (max-width: 640px) {
       .container {
         flex-direction: column;
@@ -106,9 +111,24 @@
         <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
       </div>
       <div class="demos">
-        <a href="media/">the commonplace — books · films · music & more</a>
+        <a href="https://mihir-kale.github.io/media/">looking for <span id="rotate">books</span> recommendations?</a>
       </div>
     </div>
   </div>
+  <script>
+    (function () {
+      var words = ['books', 'films', 'music'];
+      var el = document.getElementById('rotate');
+      var i = 0;
+      setInterval(function () {
+        el.classList.add('fade');
+        setTimeout(function () {
+          i = (i + 1) % words.length;
+          el.textContent = words[i];
+          el.classList.remove('fade');
+        }, 300);
+      }, 2000);
+    })();
+  </script>
 </body>
 </html>
