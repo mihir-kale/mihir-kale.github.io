@@ -1,9 +1,11 @@
-import { loadEntries, loadFeeds, loadMarks, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
+import { loadEntries, loadFeeds, loadMarks, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
 import { resolveCover } from "./covers.js";
+import { signIn, signOut, getSession } from "./auth.js";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
+const authEl = document.getElementById("auth");
 
 const SUGGEST_KEY = "media:suggestions:v1";
 const DISMISS_KEY = "media:dismissed:v1";
@@ -19,7 +21,7 @@ const WRITE_HEADERS = {
   "Content-Type": "application/json"
 };
 
-const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set(), promoted: new Set() };
+const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set(), promoted: new Set(), session: null };
 const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
@@ -112,8 +114,8 @@ function buildItem(item) {
   head.append(headMain);
 
   const list = effectiveList(item);
+  const actions = el("span", "ri-actions");
   if (item.source === "feed") {
-    const actions = el("span", "ri-actions");
     const checked = state.promoted.has(item.id);
     const box = el("input", "ri-check");
     box.type = "checkbox";
@@ -134,8 +136,29 @@ function buildItem(item) {
       });
       actions.append(dismiss);
     }
-    head.append(actions);
   }
+  if (state.session && item.source !== "feed") {
+    const edit = el("button", "ri-edit", "edit");
+    edit.type = "button";
+    edit.title = "edit entry";
+    edit.setAttribute("aria-label", `Edit ${item.title}`);
+    edit.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openEditor(item);
+    });
+    const del = el("button", "ri-del", "del");
+    del.type = "button";
+    del.title = "delete entry";
+    del.setAttribute("aria-label", `Delete ${item.title}`);
+    del.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      deleteEntryPrompt(item);
+    });
+    actions.append(edit, del);
+  }
+  if (actions.childElementCount) head.append(actions);
   main.append(head);
 
   const title = el("p", "ri-title");
@@ -312,10 +335,44 @@ function renderSuggestions() {
   if (suggestCountEl) suggestCountEl.textContent = String(state.suggestions.length);
 }
 
-function buildField(labelText, control) {
-  const label = el("label", "suggest-field");
-  label.append(el("span", "suggest-label", labelText), control);
+function buildField(labelText, control, fieldClass = "suggest-field", labelClass = "suggest-label") {
+  const label = el("label", fieldClass);
+  label.append(el("span", labelClass, labelText), control);
   return label;
+}
+
+function makeInput(placeholder, type, required) {
+  const node = document.createElement("input");
+  node.className = "editor-input";
+  node.type = type || "text";
+  if (placeholder) node.placeholder = placeholder;
+  if (required) node.required = true;
+  return node;
+}
+
+function makeTextarea(placeholder) {
+  const node = document.createElement("textarea");
+  node.className = "editor-input";
+  node.rows = 3;
+  if (placeholder) node.placeholder = placeholder;
+  return node;
+}
+
+function makeSelect(entries) {
+  const node = document.createElement("select");
+  node.className = "editor-input";
+  for (const [value, label] of entries) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    node.append(option);
+  }
+  return node;
+}
+
+function genId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(10));
+  return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 function buildFormRail() {
@@ -416,6 +473,269 @@ function buildFormRail() {
   suggestListEl = el("ul", "rail-list");
   rail.append(suggestListEl);
   return rail;
+}
+
+/* ---------------------------------- auth ---------------------------------- */
+
+let authDialog = null;
+let authForm = null;
+let authEmail = null;
+let authPassword = null;
+let authError = null;
+let authSubmit = null;
+
+function buildAuthDialog() {
+  authDialog = el("dialog", "auth-dialog");
+  authDialog.setAttribute("aria-label", "Sign in");
+
+  authForm = el("form", "auth-form");
+
+  authEmail = makeInput("email", "email", true);
+  authEmail.className = "auth-input";
+  authEmail.autocomplete = "username";
+
+  authPassword = makeInput("password", "password", true);
+  authPassword.className = "auth-input";
+  authPassword.autocomplete = "current-password";
+
+  authError = el("p", "auth-error", "");
+
+  const cancel = el("button", "auth-cancel", "cancel");
+  cancel.type = "button";
+  cancel.addEventListener("click", () => authDialog.close());
+  authSubmit = el("button", "auth-submit", "sign in");
+  authSubmit.type = "submit";
+
+  const row = el("div", "auth-row");
+  row.append(cancel, authSubmit);
+
+  authForm.append(
+    el("p", "auth-title", "sign in"),
+    buildField("email", authEmail, "auth-field", "auth-label"),
+    buildField("password", authPassword, "auth-field", "auth-label"),
+    authError,
+    row
+  );
+
+  authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    authError.textContent = "";
+    authSubmit.disabled = true;
+    authSubmit.textContent = "\u2026";
+    try {
+      state.session = await signIn(authEmail.value.trim(), authPassword.value);
+      authDialog.close();
+      authForm.reset();
+      buildAuth();
+      render();
+    } catch (error) {
+      authError.textContent = error.message;
+    } finally {
+      authSubmit.disabled = false;
+      authSubmit.textContent = "sign in";
+    }
+  });
+
+  authDialog.append(authForm);
+  document.body.append(authDialog);
+}
+
+function buildAuth() {
+  if (!authEl) return;
+  authEl.replaceChildren();
+  if (state.session) {
+    authEl.append(el("span", "auth-email", state.session.email || "signed in"));
+    const add = el("button", "auth-btn", "+ new");
+    add.type = "button";
+    add.title = "add an entry";
+    add.addEventListener("click", () => openEditor(null));
+    const out = el("button", "auth-btn", "sign out");
+    out.type = "button";
+    out.addEventListener("click", async () => {
+      await signOut();
+      state.session = null;
+      buildAuth();
+      render();
+    });
+    authEl.append(add, out);
+  } else {
+    const signin = el("button", "auth-btn", "sign in");
+    signin.type = "button";
+    signin.addEventListener("click", () => {
+      authError.textContent = "";
+      authDialog.showModal();
+      authEmail.focus();
+    });
+    authEl.append(signin);
+  }
+}
+
+/* --------------------------------- editor --------------------------------- */
+
+let editorDialog = null;
+let editorForm = null;
+let editorError = null;
+let editorTitleEl = null;
+let editorSubmit = null;
+let editorDelete = null;
+let editorFields = null;
+let editorEditing = null;
+
+function buildEditor() {
+  editorDialog = el("dialog", "editor-dialog");
+  editorDialog.setAttribute("aria-label", "Edit entry");
+  editorForm = el("form", "editor-form");
+
+  const mediaType = makeSelect(MEDIA_TYPES.map((t) => [t, TYPE_LABELS[t]]));
+  const title = makeInput("title", "text", true);
+  const creator = makeInput("creator");
+  const year = makeInput("year", "number");
+  const status = makeSelect([
+    ["finished", "consumed"],
+    ["in-progress", "in progress"],
+    ["backlog", "on the list"]
+  ]);
+  const consumed = makeInput("", "date");
+  const url = makeInput("url", "url");
+  const tags = makeInput("tags (comma separated)");
+  const notes = makeTextarea("notes");
+  const list = makeSelect(LISTS.map((id) => [id, LIST_LABELS[id]]));
+
+  const spotlight = document.createElement("input");
+  spotlight.type = "checkbox";
+
+  editorFields = { mediaType, title, creator, year, status, consumed, url, tags, notes, list, spotlight };
+  for (const [name, control] of Object.entries(editorFields)) control.name = name;
+
+  const grid = el("div", "editor-grid");
+  grid.append(
+    buildField("category", mediaType, "editor-field", "editor-label"),
+    buildField("status", status, "editor-field", "editor-label"),
+    buildField("title", title, "editor-field editor-span", "editor-label"),
+    buildField("creator", creator, "editor-field", "editor-label"),
+    buildField("year", year, "editor-field", "editor-label"),
+    buildField("consumed", consumed, "editor-field", "editor-label"),
+    buildField("list", list, "editor-field", "editor-label"),
+    buildField("url", url, "editor-field editor-span", "editor-label"),
+    buildField("tags", tags, "editor-field editor-span", "editor-label"),
+    buildField("notes", notes, "editor-field editor-span", "editor-label")
+  );
+
+  const check = el("label", "editor-check");
+  check.append(spotlight, el("span", null, "spotlight (pin to top)"));
+
+  editorError = el("p", "editor-error", "");
+  editorTitleEl = el("p", "editor-title", "new entry");
+
+  const cancel = el("button", "editor-cancel", "cancel");
+  cancel.type = "button";
+  cancel.addEventListener("click", () => editorDialog.close());
+  editorDelete = el("button", "editor-delete hidden", "delete");
+  editorDelete.type = "button";
+  editorDelete.addEventListener("click", () => deleteEntryPrompt(editorEditing));
+  editorSubmit = el("button", "editor-submit", "add");
+  editorSubmit.type = "submit";
+
+  const row = el("div", "editor-row");
+  row.append(editorDelete, cancel, editorSubmit);
+
+  editorForm.append(editorTitleEl, grid, check, editorError, row);
+
+  editorForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    editorError.textContent = "";
+    const raw = {
+      id: editorEditing ? editorEditing.id : genId(),
+      mediaType: editorFields.mediaType.value,
+      title: editorFields.title.value.trim(),
+      creator: editorFields.creator.value.trim(),
+      year: editorFields.year.value ? Number(editorFields.year.value) : null,
+      status: editorFields.status.value,
+      consumed: editorFields.consumed.value || null,
+      url: editorFields.url.value.trim(),
+      tags: editorFields.tags.value.split(",").map((s) => s.trim()).filter(Boolean),
+      notes: editorFields.notes.value.trim(),
+      spotlight: editorFields.spotlight.checked,
+      list: editorFields.list.value,
+      source: editorEditing ? editorEditing.source : "manual"
+    };
+    let item;
+    try {
+      item = normalizeItem(raw);
+    } catch (error) {
+      editorError.textContent = error.message;
+      return;
+    }
+    const session = await getSession();
+    if (!session) {
+      editorError.textContent = "session expired \u2014 sign in again";
+      return;
+    }
+    editorSubmit.disabled = true;
+    try {
+      await saveEntry(item, session.accessToken);
+    } catch (error) {
+      editorError.textContent = error.message;
+      editorSubmit.disabled = false;
+      return;
+    }
+    editorSubmit.disabled = false;
+    const index = state.items.findIndex((x) => x.id === item.id);
+    if (index >= 0) state.items[index] = item;
+    else state.items.unshift(item);
+    editorDialog.close();
+    render();
+  });
+
+  editorDialog.append(editorForm);
+  document.body.append(editorDialog);
+}
+
+function openEditor(item) {
+  editorEditing = item || null;
+  editorError.textContent = "";
+  const f = editorFields;
+  f.mediaType.value = item ? item.mediaType : "book";
+  f.title.value = item ? item.title : "";
+  f.creator.value = item ? item.creator : "";
+  f.year.value = item && item.year ? item.year : "";
+  f.status.value = item ? item.status : "finished";
+  f.consumed.value = item && item.consumed ? item.consumed : "";
+  f.url.value = item ? item.url : "";
+  f.tags.value = item ? item.tags.join(", ") : "";
+  f.notes.value = item ? item.notes : "";
+  f.spotlight.checked = item ? item.spotlight : false;
+  f.list.value = item ? item.list : state.list;
+  editorDelete.classList.toggle("hidden", !item);
+  editorTitleEl.textContent = item ? "edit entry" : "new entry";
+  editorSubmit.textContent = item ? "save" : "add";
+  editorDialog.showModal();
+  f.title.focus();
+}
+
+function removeEntry(id) {
+  state.items = state.items.filter((x) => x.id !== id);
+  state.dismissed.delete(id);
+  state.promoted.delete(id);
+}
+
+async function deleteEntryPrompt(item) {
+  if (!item) return;
+  if (!window.confirm(`delete \u201C${item.title}\u201D?`)) return;
+  const session = await getSession();
+  if (!session) {
+    window.alert("session expired \u2014 sign in again");
+    return;
+  }
+  try {
+    await deleteEntry(item.id, session.accessToken);
+  } catch (error) {
+    window.alert(error.message);
+    return;
+  }
+  removeEntry(item.id);
+  if (editorDialog.open) editorDialog.close();
+  render();
 }
 
 /* --------------------------------- layout --------------------------------- */
@@ -528,10 +848,19 @@ if (document.fonts && document.fonts.ready) {
 
 buildToggle();
 formRail = buildFormRail();
+buildAuthDialog();
+buildEditor();
+buildAuth();
 state.suggestions = readSuggestions();
 state.dismissed = new Set(readDismissed());
 state.promoted = new Set(readPromoted());
 renderSuggestions();
+
+getSession().then((session) => {
+  state.session = session;
+  buildAuth();
+  render();
+});
 
 Promise.all([loadEntries(), loadFeeds(), loadMarks()])
   .then(([entries, feeds, marks]) => {

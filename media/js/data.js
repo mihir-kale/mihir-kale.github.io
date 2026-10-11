@@ -131,6 +131,49 @@ export async function loadMarks() {
   }
 }
 
+function toRow(entry) {
+  return {
+    id: entry.id,
+    media_type: entry.mediaType,
+    title: entry.title,
+    creator: entry.creator || "",
+    year: entry.year ?? null,
+    status: entry.status || "finished",
+    consumed: entry.consumed || null,
+    notes: entry.notes || "",
+    tags: entry.tags || [],
+    url: entry.url || "",
+    spotlight: Boolean(entry.spotlight),
+    list: entry.list || "shelf",
+    source: entry.source || "manual",
+    updated_at: new Date().toISOString()
+  };
+}
+
+// Create or update a curated entry. Requires a signed-in session token; RLS
+// only lets authenticated (owner) writes through.
+export async function saveEntry(entry, token) {
+  const response = await fetch(`${REST}/media_entries?on_conflict=id`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      Prefer: "resolution=merge-duplicates,return=minimal"
+    },
+    body: JSON.stringify(toRow(entry))
+  });
+  if (!response.ok) throw new Error(`could not save (HTTP ${response.status})`);
+}
+
+export async function deleteEntry(id, token) {
+  const response = await fetch(`${REST}/media_entries?id=eq.${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
+  });
+  if (!response.ok) throw new Error(`could not delete (HTTP ${response.status})`);
+}
+
 export async function loadFeeds(url = "data/feeds.json") {
   let response;
   try {
