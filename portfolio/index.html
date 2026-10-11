@@ -63,24 +63,24 @@
       gap: 24px;
       margin-bottom: 24px;
     }
-    .links a {
+    .links a, .demos a {
       color: inherit;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      transition: color .2s;
+      text-decoration: none;
+      background-image: linear-gradient(currentColor, currentColor);
+      background-size: 0% 1px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      padding-bottom: 2px;
+      transition: color .2s, background-size .3s ease;
     }
-    .links a:hover { color: #fff; }
+    .links a:hover, .demos a:hover {
+      color: #fff;
+      background-size: 100% 1px;
+    }
     .demos {
       font-size: clamp(16px, 1.2vw, 22px);
       color: inherit;
     }
-    .demos a {
-      color: inherit;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      transition: color .2s;
-    }
-    .demos a:hover { color: #fff; }
     @media (max-width: 640px) {
       .container {
         flex-direction: column;
