@@ -1,4 +1,4 @@
-import { loadLibrary, loadFeeds, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
+import { loadEntries, loadFeeds, loadMarks, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js";
 import { resolveCover } from "./covers.js";
 
 const searchInput = document.getElementById("search");
@@ -9,10 +9,15 @@ const SUGGEST_KEY = "media:suggestions:v1";
 const DISMISS_KEY = "media:dismissed:v1";
 const PROMOTE_KEY = "media:promoted:v1";
 
-// Public by design (RLS-protected); the media catalogue itself stays a static JSON file.
-const SUPABASE_URL = "https://gzwhuwzmrrmtswyhjheu.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E";
+// Curated entries (media_entries) and shelf marks (media_marks) live in
+// Supabase; the RSS shelf stays a generated JSON file. Both keys are public and
+// RLS-protected (anon read; owner writes entries; the board writes its marks).
+const REST = `${SUPABASE_URL}/rest/v1`;
+const WRITE_HEADERS = {
+  apikey: SUPABASE_ANON_KEY,
+  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+  "Content-Type": "application/json"
+};
 
 const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set(), promoted: new Set() };
 const listButtons = new Map();
@@ -225,10 +230,25 @@ function persistDismissed() {
   }
 }
 
+function pushMark(id) {
+  const body = {
+    item_id: id,
+    dismissed: state.dismissed.has(id),
+    promoted: state.promoted.has(id),
+    updated_at: new Date().toISOString()
+  };
+  return fetch(`${REST}/media_marks?on_conflict=item_id`, {
+    method: "POST",
+    headers: { ...WRITE_HEADERS, Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify(body)
+  }).catch(() => null);
+}
+
 function dismissItem(id) {
   if (!id) return;
   state.dismissed.add(id);
   persistDismissed();
+  pushMark(id);
   render();
 }
 
@@ -254,6 +274,7 @@ function promoteItem(id) {
   if (state.promoted.has(id)) state.promoted.delete(id);
   else state.promoted.add(id);
   persistPromoted();
+  pushMark(id);
   render();
 }
 
@@ -272,14 +293,9 @@ function persistSuggestions() {
 
 async function sendSuggestion(entry) {
   try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/media_suggestions`, {
+    const response = await fetch(`${REST}/media_suggestions`, {
       method: "POST",
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal"
-      },
+      headers: { ...WRITE_HEADERS, Prefer: "return=minimal" },
       body: JSON.stringify({ media_type: entry.mediaType, title: entry.title, notes: entry.notes || null })
     });
     return response.ok;
@@ -517,9 +533,16 @@ state.dismissed = new Set(readDismissed());
 state.promoted = new Set(readPromoted());
 renderSuggestions();
 
-Promise.all([loadLibrary(), loadFeeds()])
-  .then(([library, feeds]) => {
-    state.items = [...library, ...feeds];
+Promise.all([loadEntries(), loadFeeds(), loadMarks()])
+  .then(([entries, feeds, marks]) => {
+    state.items = [...entries, ...feeds];
+    if (marks) {
+      // The backend is authoritative once it answers; cache it locally.
+      state.dismissed = new Set(marks.filter((m) => m.dismissed).map((m) => m.item_id));
+      state.promoted = new Set(marks.filter((m) => m.promoted).map((m) => m.item_id));
+      persistDismissed();
+      persistPromoted();
+    }
     render();
   })
   .catch((error) => {

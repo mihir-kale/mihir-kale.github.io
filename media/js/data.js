@@ -1,3 +1,12 @@
+export const SUPABASE_URL = "https://gzwhuwzmrrmtswyhjheu.supabase.co";
+
+// Public by design (RLS-protected).
+export const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E";
+
+const REST = `${SUPABASE_URL}/rest/v1`;
+const AUTH_HEADERS = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` };
+
 export const MEDIA_TYPES = ["article", "essay", "book", "film", "album", "podcast"];
 
 export const TYPE_LABELS = {
@@ -66,6 +75,60 @@ export function normalizeItem(raw) {
     throw new Error("missing title");
   }
   return item;
+}
+
+function fromRow(row) {
+  return normalizeItem({
+    id: row.id,
+    mediaType: row.media_type,
+    title: row.title,
+    creator: row.creator,
+    year: row.year,
+    status: row.status,
+    consumed: row.consumed,
+    notes: row.notes,
+    tags: row.tags,
+    url: row.url,
+    spotlight: row.spotlight,
+    list: row.list,
+    source: row.source
+  });
+}
+
+// Curated entries live in Supabase (media_entries); fall back to the static
+// JSON file if the backend is unreachable.
+export async function loadEntries() {
+  try {
+    const response = await fetch(`${REST}/media_entries?select=*`, { headers: AUTH_HEADERS });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+    if (!Array.isArray(rows)) throw new Error("unexpected payload");
+    const items = [];
+    rows.forEach((row, index) => {
+      try {
+        items.push(fromRow(row));
+      } catch (error) {
+        console.warn(`Skipping media_entries row ${index + 1}: ${error.message}`);
+      }
+    });
+    return items;
+  } catch (error) {
+    console.warn(`media_entries unavailable (${error.message}); using data/library.json`);
+    return loadLibrary();
+  }
+}
+
+// Shelf marks (dismiss / promote) keyed by feed item id. Returns null when the
+// backend is unreachable so the caller can fall back to localStorage.
+export async function loadMarks() {
+  try {
+    const response = await fetch(`${REST}/media_marks?select=item_id,dismissed,promoted`, { headers: AUTH_HEADERS });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+    return Array.isArray(rows) ? rows : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function loadFeeds(url = "data/feeds.json") {
