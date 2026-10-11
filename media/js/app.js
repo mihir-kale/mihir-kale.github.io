@@ -1,6 +1,6 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js?v=20261011";
-import { resolveCover } from "./covers.js?v=20261011";
-import { signIn, signOut, getSession } from "./auth.js?v=20261011";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js?v=20261012";
+import { resolveCover } from "./covers.js?v=20261012";
+import { signIn, signOut, getSession } from "./auth.js?v=20261012";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -715,7 +715,7 @@ function layout() {
   const width = railsEl.clientWidth;
   if (!width || !railEls.length) return;
   const gap = currentGap();
-  const cols = Math.max(1, Math.floor((width + gap) / (MIN_COL + gap)));
+  const cols = Math.min(4, Math.max(1, Math.floor((width + gap) / (MIN_COL + gap))));
 
   const columns = [];
   railsEl.replaceChildren();
