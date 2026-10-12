@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012d";
-import { resolveCover } from "./covers.js?v=20261012d";
-import { signIn, signOut, getSession } from "./auth.js?v=20261012d";
-import { loadNowPlaying } from "./spotify.js?v=20261012d";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012e";
+import { resolveCover } from "./covers.js?v=20261012e";
+import { signIn, signOut, getSession } from "./auth.js?v=20261012e";
+import { loadNowPlaying } from "./spotify.js?v=20261012e";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -10,6 +10,10 @@ const authEl = document.getElementById("auth");
 const themeToggle = document.getElementById("themeToggle");
 
 const THEME_KEY = "media:theme:v1";
+
+// Live Spotify now-playing hits the Premium-only /me/player endpoints, so it
+// stays off until a Premium account is available. Flip on to re-enable.
+const SPOTIFY_LIVE = false;
 
 const DISMISS_KEY = "media:dismissed:v1";
 const PROMOTE_KEY = "media:promoted:v1";
@@ -240,6 +244,7 @@ function buildRail(type, items) {
 // A plain text line for the latest Spotify track (no album art), fed by the
 // now-playing edge function. Null when nothing is playing or unreachable.
 function listeningLiveItem() {
+  if (!SPOTIFY_LIVE) return null;
   const np = state.nowPlaying;
   if (!np || !np.name) return null;
   const li = el("li", "rail-item ri-live");
@@ -938,11 +943,13 @@ buildAuth();
 state.dismissed = new Set(readDismissed());
 state.promoted = new Set(readPromoted());
 
-refreshNowPlaying();
-setInterval(refreshNowPlaying, 30_000);
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) refreshNowPlaying();
-});
+if (SPOTIFY_LIVE) {
+  refreshNowPlaying();
+  setInterval(refreshNowPlaying, 30_000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refreshNowPlaying();
+  });
+}
 
 getSession().then(async (session) => {
   state.session = session;

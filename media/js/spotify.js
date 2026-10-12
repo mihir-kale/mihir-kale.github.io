@@ -1,4 +1,4 @@
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./data.js?v=20261012d";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./data.js?v=20261012e";
 
 // Live Spotify "latest played" for the now rail, served by the public
 // `now-playing` Supabase Edge Function. Returns null when unavailable so the
