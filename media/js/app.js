@@ -1,11 +1,15 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, COVER_TYPES } from "./data.js?v=20261012";
-import { resolveCover } from "./covers.js?v=20261012";
-import { signIn, signOut, getSession } from "./auth.js?v=20261012";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012d";
+import { resolveCover } from "./covers.js?v=20261012d";
+import { signIn, signOut, getSession } from "./auth.js?v=20261012d";
+import { loadNowPlaying } from "./spotify.js?v=20261012d";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
 const authEl = document.getElementById("auth");
+const themeToggle = document.getElementById("themeToggle");
+
+const THEME_KEY = "media:theme:v1";
 
 const DISMISS_KEY = "media:dismissed:v1";
 const PROMOTE_KEY = "media:promoted:v1";
@@ -20,12 +24,21 @@ const WRITE_HEADERS = {
   "Content-Type": "application/json"
 };
 
-const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set(), promoted: new Set(), session: null };
+const state = { items: [], query: "", list: "recommend", suggestions: [], dismissed: new Set(), promoted: new Set(), session: null, nowPlaying: null };
 const listButtons = new Map();
 
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
 const SHELF_LIMIT = 5;
+
+// The special "now" rail groups the dedicated now list into what you're actively
+// reading, watching, and listening to.
+const NOW_GROUPS = [
+  { id: "reading", label: "currently reading", types: ["fiction", "non-fiction", "short-fiction", "short-non-fiction"] },
+  { id: "watching", label: "currently watching", types: ["film"] },
+  { id: "listening", label: "currently listening to", types: ["album", "podcast"] }
+];
+
 const MIN_COL = 280;
 const GAP_MIN = 14;
 const GAP_MAX = 22;
@@ -185,7 +198,7 @@ function buildItem(item) {
   const row = el("div", "ri-row");
   row.append(main);
 
-  if (COVER_TYPES.has(item.mediaType) && list === "recommend") {
+  if (COVER_TYPES.has(item.mediaType) && list !== "shelf") {
     const frame = coverWrap(item);
     row.append(frame);
     hydrateCover(frame, item, li);
@@ -219,6 +232,61 @@ function buildRail(type, items) {
   if (items.length) items.forEach((item) => list.append(buildItem(item)));
   else list.append(el("li", "rail-empty", "nothing here yet"));
   rail.append(list);
+  return rail;
+}
+
+/* --------------------------------- now rail -------------------------------- */
+
+// A plain text line for the latest Spotify track (no album art), fed by the
+// now-playing edge function. Null when nothing is playing or unreachable.
+function listeningLiveItem() {
+  const np = state.nowPlaying;
+  if (!np || !np.name) return null;
+  const li = el("li", "rail-item ri-live");
+  const line = el("span", "ri-live-line");
+  line.append(el("span", "ri-live-glyph", "\u266B"));
+  const label = np.artists.length ? `${np.name} \u2014 ${np.artists.join(", ")}` : np.name;
+  if (isHttpUrl(np.url)) {
+    const link = el("a", null, label);
+    link.href = np.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    line.append(link);
+  } else {
+    line.append(document.createTextNode(label));
+  }
+  line.append(el("span", "ri-live-state", np.playing ? "now playing" : "last played"));
+  li.append(line);
+  return li;
+}
+
+// Headerless and tinted like a rail header: it lists what's currently being
+// read / watched / listened to, independent of the recommend/shelf toggle.
+function buildNowRail(items) {
+  const rail = el("section", "rail rail--now");
+  rail.setAttribute("aria-label", "currently reading, watching, and listening to");
+
+  const live = listeningLiveItem();
+  const groups = NOW_GROUPS.map((group) => ({
+    id: group.id,
+    label: group.label,
+    items: items.filter((item) => group.types.includes(item.mediaType))
+  })).filter((group) => group.items.length || (group.id === "listening" && live));
+
+  if (!groups.length) {
+    rail.append(el("p", "now-empty", "nothing here yet"));
+    return rail;
+  }
+
+  for (const group of groups) {
+    const wrap = el("div", "now-group");
+    wrap.append(el("p", "now-label", group.label));
+    const list = el("ul", "rail-list");
+    if (group.id === "listening" && live) list.append(live);
+    group.items.forEach((item) => list.append(buildItem(item)));
+    wrap.append(list);
+    rail.append(wrap);
+  }
   return rail;
 }
 
@@ -755,7 +823,7 @@ function scheduleLayout() {
 function buildToggle() {
   listsEl.replaceChildren();
   listButtons.clear();
-  for (const id of LISTS) {
+  for (const id of TOGGLE_LISTS) {
     const button = el("button", "list-button", LIST_LABELS[id]);
     button.type = "button";
     button.setAttribute("aria-pressed", String(state.list === id));
@@ -805,8 +873,48 @@ function render() {
     categoryRails.push(buildRail(type, shown));
   }
 
-  railEls = [...categoryRails, formRail];
+  const nowItems = ordered(pool).filter(
+    (item) => effectiveList(item) === "now" && !state.dismissed.has(item.id) && matches(item, query)
+  );
+  const nowRail = buildNowRail(nowItems);
+
+  railEls = [nowRail, ...categoryRails, formRail];
   layout();
+}
+
+/* ---------------------------------- theme --------------------------------- */
+
+function applyTheme(dark) {
+  if (dark) document.documentElement.setAttribute("data-theme", "dark");
+  else document.documentElement.removeAttribute("data-theme");
+  if (themeToggle) {
+    themeToggle.textContent = dark ? "light" : "dark";
+    themeToggle.setAttribute("aria-pressed", String(dark));
+    themeToggle.title = dark ? "switch to light mode" : "switch to dark mode";
+  }
+}
+
+function setupTheme() {
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark");
+  if (!themeToggle) return;
+  themeToggle.addEventListener("click", () => {
+    const dark = document.documentElement.getAttribute("data-theme") !== "dark";
+    applyTheme(dark);
+    try {
+      localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+    } catch {
+      /* storage unavailable — theme still applies for this session */
+    }
+  });
+}
+
+/* ------------------------------ now playing ------------------------------- */
+
+async function refreshNowPlaying() {
+  const next = await loadNowPlaying();
+  const changed = JSON.stringify(next) !== JSON.stringify(state.nowPlaying);
+  state.nowPlaying = next;
+  if (changed) render();
 }
 
 /* ---------------------------------- init ---------------------------------- */
@@ -821,6 +929,7 @@ if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => layout());
 }
 
+setupTheme();
 buildToggle();
 formRail = buildFormRail();
 buildAuthDialog();
@@ -828,6 +937,12 @@ buildEditor();
 buildAuth();
 state.dismissed = new Set(readDismissed());
 state.promoted = new Set(readPromoted());
+
+refreshNowPlaying();
+setInterval(refreshNowPlaying, 30_000);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) refreshNowPlaying();
+});
 
 getSession().then(async (session) => {
   state.session = session;

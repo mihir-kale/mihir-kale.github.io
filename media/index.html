@@ -10,6 +10,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    try {
+      if (localStorage.getItem("media:theme:v1") === "dark") document.documentElement.setAttribute("data-theme", "dark");
+    } catch (e) {}
+  </script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,6 +25,7 @@
       <span class="search-glyph" aria-hidden="true">&gt;</span>
       <input id="search" type="search" placeholder="search" autocomplete="off">
     </label>
+    <button id="themeToggle" class="theme-btn" type="button">dark</button>
     <div class="auth" id="auth"></div>
   </header>
 
@@ -31,6 +37,6 @@
     <p class="notice">This board needs JavaScript. Enable it and reload.</p>
   </noscript>
 
-  <script type="module" src="js/app.js?v=20261012"></script>
+  <script type="module" src="js/app.js?v=20261012d"></script>
 </body>
 </html>

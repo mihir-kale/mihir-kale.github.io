@@ -5,9 +5,24 @@
   --ink-soft:#73727e;
   --grid-soft:rgba(76,102,158,.14);
   --grid:rgba(76,102,158,.30);
+  --head:#eceae1;
   --accent:#2437cc;
   --amber:#9a5f14;
+  --topbar:rgba(243,242,236,.94);
   --mono:"Space Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+:root[data-theme="dark"]{
+  --paper:#12141a;
+  --card:#191c24;
+  --ink:#e7e8ef;
+  --ink-soft:#888b98;
+  --grid-soft:rgba(150,170,220,.10);
+  --grid:rgba(150,170,220,.22);
+  --head:#222634;
+  --accent:#8398ff;
+  --amber:#d9a441;
+  --topbar:rgba(18,20,26,.94);
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -46,7 +61,7 @@ input,textarea,select,button{text-transform:lowercase}
   flex-wrap:wrap;
   padding:.8rem clamp(1rem,3vw,2rem);
   border-bottom:1px solid var(--ink);
-  background:rgba(243,242,236,.94);
+  background:var(--topbar);
   position:sticky;
   top:0;
   z-index:10;
@@ -124,7 +139,7 @@ input,textarea,select,button{text-transform:lowercase}
   gap:1rem;
   padding:.55rem .85rem;
   border-bottom:1px solid var(--ink);
-  background:#eceae1;
+  background:var(--head);
   font-size:.58rem;
   font-weight:400;
   letter-spacing:.2em;
@@ -132,6 +147,33 @@ input,textarea,select,button{text-transform:lowercase}
 }
 .rail-title::before{content:"\25B8";color:var(--ink);margin-right:.4rem}
 .rail-count{color:var(--ink);font-weight:400}
+
+/* now rail — headerless, tinted like a rail header, always shows what's current */
+
+.rail--now{background:var(--head)}
+.now-group+.now-group{border-top:1px dotted var(--grid)}
+.now-label{
+  margin:0;
+  padding:.6rem .85rem 0;
+  font-size:.5rem;
+  letter-spacing:.18em;
+  color:var(--ink);
+}
+.now-label::before{content:"\25B8";color:var(--ink);margin-right:.4rem}
+.rail--now .rail-list{padding-top:.05rem}
+.now-empty{
+  margin:0;
+  padding:1.2rem .85rem;
+  font-size:.68rem;
+  color:var(--ink);
+}
+
+/* live Spotify line inside the "currently listening to" group */
+.ri-live-line{display:block;font-size:.68rem;line-height:1.4}
+.ri-live-glyph{margin-right:.4rem;color:var(--ink)}
+.ri-live-line a{color:inherit}
+.ri-live-line a:hover{text-decoration:underline;text-underline-offset:2px}
+.ri-live-state{margin-left:.5rem;font-size:.5rem;letter-spacing:.16em;color:var(--ink-soft)}
 
 /* recommend-me-something rail */
 
@@ -382,7 +424,7 @@ select.suggest-input{cursor:pointer}
 
 .auth{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap}
 .auth-email{font-size:.56rem;letter-spacing:.12em;color:var(--ink)}
-.auth-btn{
+.auth-btn,.theme-btn{
   appearance:none;
   font-family:inherit;
   font-size:.56rem;
@@ -393,7 +435,7 @@ select.suggest-input{cursor:pointer}
   padding:.15rem .45rem;
   cursor:pointer;
 }
-.auth-btn:hover{color:var(--ink);border-color:var(--ink)}
+.auth-btn:hover,.theme-btn:hover{color:var(--ink);border-color:var(--ink)}
 
 .auth-dialog,.editor-dialog{
   width:100%;
