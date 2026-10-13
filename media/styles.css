@@ -173,6 +173,8 @@ input,textarea,select,button{text-transform:lowercase}
 .ri-live-line a{color:inherit}
 .ri-live-line a:hover{text-decoration:underline;text-underline-offset:2px}
 .ri-live-state{margin-left:.5rem;font-size:.5rem;letter-spacing:.16em;color:var(--ink-soft)}
+.ri-live-line .ri-edit{margin-left:.6rem}
+.ri-live-line .ri-del{margin-left:.4rem}
 
 /* recommend-me-something rail */
 

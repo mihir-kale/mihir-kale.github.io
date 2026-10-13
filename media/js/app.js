@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012h";
-import { resolveCover } from "./covers.js?v=20261012h";
-import { signIn, signOut, getSession } from "./auth.js?v=20261012h";
-import { loadNowPlaying } from "./lastfm.js?v=20261012h";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012i";
+import { resolveCover } from "./covers.js?v=20261012i";
+import { signIn, signOut, getSession } from "./auth.js?v=20261012i";
+import { loadNowPlaying } from "./lastfm.js?v=20261012i";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -265,6 +265,46 @@ function listeningLiveItem() {
   return li;
 }
 
+// A curated now-list entry rendered as a plain text line (title — creator, no
+// cover art or card styling), matching the live line above.
+function nowLineItem(item) {
+  const li = el("li", "rail-item ri-live");
+  const line = el("span", "ri-live-line");
+  const label = item.creator ? `${item.title} \u2014 ${item.creator}` : item.title;
+  if (isHttpUrl(item.url)) {
+    const link = el("a", null, label);
+    link.href = item.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    line.append(link);
+  } else {
+    line.append(document.createTextNode(label));
+  }
+  if (state.session && item.source !== "feed" && item.source !== "suggestion") {
+    const edit = el("button", "ri-edit", "edit");
+    edit.type = "button";
+    edit.title = "edit entry";
+    edit.setAttribute("aria-label", `Edit ${item.title}`);
+    edit.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openEditor(item);
+    });
+    const del = el("button", "ri-del", "del");
+    del.type = "button";
+    del.title = "delete entry";
+    del.setAttribute("aria-label", `Delete ${item.title}`);
+    del.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      deleteEntryPrompt(item);
+    });
+    line.append(edit, del);
+  }
+  li.append(line);
+  return li;
+}
+
 // Headerless and tinted like a rail header: it lists what's currently being
 // read / watched / listened to, independent of the recommend/shelf toggle.
 function buildNowRail(items) {
@@ -288,7 +328,7 @@ function buildNowRail(items) {
     wrap.append(el("p", "now-label", group.label));
     const list = el("ul", "rail-list");
     if (group.id === "listening" && live) list.append(live);
-    group.items.forEach((item) => list.append(buildItem(item)));
+    group.items.forEach((item) => list.append(nowLineItem(item)));
     wrap.append(list);
     rail.append(wrap);
   }
