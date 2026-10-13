@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012i";
-import { resolveCover } from "./covers.js?v=20261012i";
-import { signIn, signOut, getSession } from "./auth.js?v=20261012i";
-import { loadNowPlaying } from "./lastfm.js?v=20261012i";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012j";
+import { resolveCover } from "./covers.js?v=20261012j";
+import { signIn, signOut, getSession } from "./auth.js?v=20261012j";
+import { loadNowPlaying } from "./lastfm.js?v=20261012j";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -15,6 +15,8 @@ const THEME_KEY = "media:theme:v1";
 // user.getrecenttracks API (see js/lastfm.js). Flip off to show curated
 // listening items only.
 const LIVE_LISTENING = true;
+
+const LASTFM_PROFILE = `https://www.last.fm/user/${LASTFM_USERNAME}`;
 
 const DISMISS_KEY = "media:dismissed:v1";
 const PROMOTE_KEY = "media:promoted:v1";
@@ -260,7 +262,15 @@ function listeningLiveItem() {
   } else {
     line.append(document.createTextNode(label));
   }
-  line.append(el("span", "ri-live-state", np.playing ? "now playing" : "last played"));
+  if (np.playing) {
+    line.append(el("span", "ri-live-state", "now playing"));
+  } else {
+    const source = el("a", "ri-live-state", "last.fm");
+    source.href = LASTFM_PROFILE;
+    source.target = "_blank";
+    source.rel = "noopener noreferrer";
+    line.append(source);
+  }
   li.append(line);
   return li;
 }
