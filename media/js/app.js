@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012g";
-import { resolveCover } from "./covers.js?v=20261012g";
-import { signIn, signOut, getSession } from "./auth.js?v=20261012g";
-import { loadNowPlaying } from "./lastfm.js?v=20261012g";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012h";
+import { resolveCover } from "./covers.js?v=20261012h";
+import { signIn, signOut, getSession } from "./auth.js?v=20261012h";
+import { loadNowPlaying } from "./lastfm.js?v=20261012h";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -250,7 +250,6 @@ function listeningLiveItem() {
   if (!np || !np.name) return null;
   const li = el("li", "rail-item ri-live");
   const line = el("span", "ri-live-line");
-  line.append(el("span", "ri-live-glyph", "\u266B"));
   const label = np.artists.length ? `${np.name} \u2014 ${np.artists.join(", ")}` : np.name;
   if (isHttpUrl(np.url)) {
     const link = el("a", null, label);

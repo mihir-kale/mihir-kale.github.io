@@ -5,6 +5,9 @@
 //     --creator "F. Scott Fitzgerald" --year 1925 --rating 4.5 \
 //     --consumed 2026-08-01 --notes "..." --tag classic --url "..." --spotlight
 //
+//   --list recommend|shelf|now   ("now" feeds the now rail: reading/watching/
+//                                 listening to)
+//
 //   echo '{"mediaType":"non-fiction","title":"..."}' | node scripts/add_media.js
 //
 // Flags repeat for multiple tags: --tag sci-fi --tag fiction
@@ -23,6 +26,7 @@ const MEDIA_TYPES = [
   "podcast"
 ];
 const STATUSES = ["backlog", "in-progress", "finished"];
+const LISTS = ["recommend", "shelf", "now"];
 const TYPE_ALIASES = {
   movie: "film",
   music: "album",
@@ -105,7 +109,7 @@ function normalize(raw) {
     tags: [...new Set((raw.tags || []).map((tag) => String(tag).trim()).filter(Boolean))],
     url: String(raw.url || "").trim(),
     spotlight: Boolean(raw.spotlight),
-    list: raw.list === "recommend" ? "recommend" : "shelf"
+    list: LISTS.includes(raw.list) ? raw.list : "shelf"
   };
   for (const key of Object.keys(item)) {
     if (item[key] === null || item[key] === "" || (Array.isArray(item[key]) && !item[key].length)) delete item[key];
@@ -137,6 +141,6 @@ function parseArgs(argv) {
 
 function fail(message) {
   console.error(`\u2717 ${message}`);
-  console.error("Usage: node scripts/add_media.js --type <fiction|non-fiction|short-fiction|short-non-fiction|film|album|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
+  console.error("Usage: node scripts/add_media.js --type <fiction|non-fiction|short-fiction|short-non-fiction|film|album|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--list recommend|shelf|now] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
   process.exit(1);
 }

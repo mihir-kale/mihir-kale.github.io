@@ -170,7 +170,6 @@ input,textarea,select,button{text-transform:lowercase}
 
 /* live Spotify line inside the "currently listening to" group */
 .ri-live-line{display:block;font-size:.68rem;line-height:1.4}
-.ri-live-glyph{margin-right:.4rem;color:var(--ink)}
 .ri-live-line a{color:inherit}
 .ri-live-line a:hover{text-decoration:underline;text-underline-offset:2px}
 .ri-live-state{margin-left:.5rem;font-size:.5rem;letter-spacing:.16em;color:var(--ink-soft)}
