@@ -4,6 +4,14 @@ export const SUPABASE_URL = "https://gzwhuwzmrrmtswyhjheu.supabase.co";
 export const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E";
 
+// Last.fm read-only credentials for the live "currently listening to" line.
+// Public by design: a Last.fm API key is a client identifier, not a signing
+// secret — only the shared secret (kept server-side in .env) can authorize
+// writes, and none are made here. Last.fm serves recent tracks with CORS open,
+// so the board reads them directly (see js/lastfm.js).
+export const LASTFM_API_KEY = "94fa29d52e72dc7361dce8bc5f33e3bc";
+export const LASTFM_USERNAME = "mihirpkale";
+
 const REST = `${SUPABASE_URL}/rest/v1`;
 const AUTH_HEADERS = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` };
 

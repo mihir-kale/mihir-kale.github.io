@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012e";
-import { resolveCover } from "./covers.js?v=20261012e";
-import { signIn, signOut, getSession } from "./auth.js?v=20261012e";
-import { loadNowPlaying } from "./spotify.js?v=20261012e";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012g";
+import { resolveCover } from "./covers.js?v=20261012g";
+import { signIn, signOut, getSession } from "./auth.js?v=20261012g";
+import { loadNowPlaying } from "./lastfm.js?v=20261012g";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -11,9 +11,10 @@ const themeToggle = document.getElementById("themeToggle");
 
 const THEME_KEY = "media:theme:v1";
 
-// Live Spotify now-playing hits the Premium-only /me/player endpoints, so it
-// stays off until a Premium account is available. Flip on to re-enable.
-const SPOTIFY_LIVE = false;
+// Live "currently listening to" line, sourced from Last.fm's public
+// user.getrecenttracks API (see js/lastfm.js). Flip off to show curated
+// listening items only.
+const LIVE_LISTENING = true;
 
 const DISMISS_KEY = "media:dismissed:v1";
 const PROMOTE_KEY = "media:promoted:v1";
@@ -241,10 +242,10 @@ function buildRail(type, items) {
 
 /* --------------------------------- now rail -------------------------------- */
 
-// A plain text line for the latest Spotify track (no album art), fed by the
-// now-playing edge function. Null when nothing is playing or unreachable.
+// A plain text line for the latest Last.fm track (no album art). Null when
+// nothing has scrobbled yet or the API is unreachable.
 function listeningLiveItem() {
-  if (!SPOTIFY_LIVE) return null;
+  if (!LIVE_LISTENING) return null;
   const np = state.nowPlaying;
   if (!np || !np.name) return null;
   const li = el("li", "rail-item ri-live");
@@ -881,9 +882,11 @@ function render() {
   const nowItems = ordered(pool).filter(
     (item) => effectiveList(item) === "now" && !state.dismissed.has(item.id) && matches(item, query)
   );
-  const nowRail = buildNowRail(nowItems);
+  // The now rail belongs with your recommendations; the shelf view stays free
+  // of it.
+  const nowRail = state.list === "shelf" ? null : buildNowRail(nowItems);
 
-  railEls = [nowRail, ...categoryRails, formRail];
+  railEls = [...(nowRail ? [nowRail] : []), ...categoryRails, formRail];
   layout();
 }
 
@@ -943,7 +946,7 @@ buildAuth();
 state.dismissed = new Set(readDismissed());
 state.promoted = new Set(readPromoted());
 
-if (SPOTIFY_LIVE) {
+if (LIVE_LISTENING) {
   refreshNowPlaying();
   setInterval(refreshNowPlaying, 30_000);
   document.addEventListener("visibilitychange", () => {
