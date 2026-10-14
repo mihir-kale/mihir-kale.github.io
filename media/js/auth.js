@@ -1,4 +1,4 @@
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./data.js?v=20261012j";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./data.js?v=20261014a";
 
 // Email/password auth against Supabase Auth over REST (no supabase-js). The
 // session is cached in localStorage and refreshed when it nears expiry.

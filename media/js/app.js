@@ -1,13 +1,14 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261012j";
-import { resolveCover } from "./covers.js?v=20261012j";
-import { signIn, signOut, getSession } from "./auth.js?v=20261012j";
-import { loadNowPlaying } from "./lastfm.js?v=20261012j";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261014a";
+import { resolveCover } from "./covers.js?v=20261014a";
+import { signIn, signOut, getSession } from "./auth.js?v=20261014a";
+import { loadNowPlaying } from "./lastfm.js?v=20261014a";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
 const railsEl = document.getElementById("rails");
 const authEl = document.getElementById("auth");
 const themeToggle = document.getElementById("themeToggle");
+const helpToggle = document.getElementById("helpToggle");
 
 const THEME_KEY = "media:theme:v1";
 
@@ -660,6 +661,60 @@ function buildAuth() {
   }
 }
 
+/* ---------------------------------- help ---------------------------------- */
+
+let helpDialog = null;
+
+function buildHelpDialog() {
+  helpDialog = el("dialog", "help-dialog");
+  helpDialog.setAttribute("aria-label", "What is this?");
+
+  const body = el("div", "help-body");
+  body.append(
+    el("p", "auth-title", "what is this?"),
+    el(
+      "p",
+      null,
+      "my commonplace book \u2014 a running catalogue of the fiction, non-fiction, short fiction, short non-fiction, films, music, and podcasts i've consumed, plus the things i still want to get to."
+    )
+  );
+
+  const terms = [
+    ["shelf", "what i've consumed \u2014 finished, in progress, or on the list. feed items are capped at 5 per category."],
+    ["recommend", "what i'd actually recommend to someone else. flip the top-bar toggle to switch every rail between the shelf and my recommendations."],
+    ["now", "what i'm currently reading, watching, and listening to \u2014 pinned above the rails, with a live last.fm line for the latest track."],
+    ["spotlight", "pins an entry to the top of its rail."],
+    ["search", "filters by title, creator, tags, year, and category."]
+  ];
+  const dl = el("dl");
+  for (const [term, desc] of terms) {
+    dl.append(el("dt", null, term), el("dd", null, desc));
+  }
+  body.append(dl);
+
+  body.append(
+    el(
+      "p",
+      null,
+      "the sitting owner can sign in to edit entries; everyone else can use the \u201crecommend me something\u201d rail to send me a suggestion."
+    )
+  );
+
+  const close = el("button", "help-close", "close");
+  close.type = "button";
+  close.addEventListener("click", () => helpDialog.close());
+  body.append(close);
+
+  helpDialog.append(body);
+  document.body.append(helpDialog);
+}
+
+function setupHelp() {
+  if (!helpToggle) return;
+  buildHelpDialog();
+  helpToggle.addEventListener("click", () => helpDialog.showModal());
+}
+
 /* --------------------------------- editor --------------------------------- */
 
 let editorDialog = null;
@@ -987,6 +1042,7 @@ if (document.fonts && document.fonts.ready) {
 }
 
 setupTheme();
+setupHelp();
 buildToggle();
 formRail = buildFormRail();
 buildAuthDialog();

@@ -438,7 +438,14 @@ select.suggest-input{cursor:pointer}
 }
 .auth-btn:hover,.theme-btn:hover{color:var(--ink);border-color:var(--ink)}
 
-.auth-dialog,.editor-dialog{
+.help-btn{
+  font-size:.72rem;
+  line-height:1;
+  padding:.1rem .42rem;
+  border-radius:50%;
+}
+
+.auth-dialog,.editor-dialog,.help-dialog{
   width:100%;
   max-width:min(92vw,26rem);
   margin:auto;
@@ -450,7 +457,44 @@ select.suggest-input{cursor:pointer}
   border:1px solid var(--ink);
   text-transform:lowercase;
 }
-.auth-dialog::backdrop,.editor-dialog::backdrop{background:rgba(22,22,29,.35)}
+.auth-dialog::backdrop,.editor-dialog::backdrop,.help-dialog::backdrop{background:rgba(22,22,29,.35)}
+
+.help-dialog{max-width:min(92vw,34rem)}
+.help-body{
+  display:flex;
+  flex-direction:column;
+  gap:.7rem;
+  padding:1rem;
+}
+.help-body p{margin:0;line-height:1.6;color:var(--ink)}
+.help-body strong{font-weight:700}
+.help-body dl{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:.4rem .7rem;
+  margin:0;
+}
+.help-body dt{
+  font-size:.5rem;
+  letter-spacing:.14em;
+  color:var(--ink);
+  padding-top:.15rem;
+}
+.help-body dd{margin:0;line-height:1.6;color:var(--ink)}
+.help-close{
+  appearance:none;
+  align-self:flex-end;
+  font-family:inherit;
+  font-size:.56rem;
+  font-weight:700;
+  letter-spacing:.16em;
+  color:var(--card);
+  background:var(--ink);
+  border:1px solid var(--ink);
+  padding:.3rem .7rem;
+  cursor:pointer;
+}
+.help-close:hover{background:var(--accent);border-color:var(--accent)}
 .auth-form,.editor-form{
   display:flex;
   flex-direction:column;
