@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261014a";
-import { resolveCover } from "./covers.js?v=20261014a";
-import { signIn, signOut, getSession } from "./auth.js?v=20261014a";
-import { loadNowPlaying } from "./lastfm.js?v=20261014a";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261014b";
+import { resolveCover } from "./covers.js?v=20261014b";
+import { signIn, signOut, getSession } from "./auth.js?v=20261014b";
+import { loadNowPlaying } from "./lastfm.js?v=20261014b";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -681,8 +681,9 @@ function buildHelpDialog() {
 
   const terms = [
     ["shelf", "what i've consumed \u2014 finished, in progress, or on the list. feed items are capped at 5 per category."],
-    ["recommend", "what i'd actually recommend to someone else. flip the top-bar toggle to switch every rail between the shelf and my recommendations."],
+    ["recommend", "what i'd actually recommend to someone else. flip the top-bar toggle to switch every rail between the shelf, my recommendations, and syllabi."],
     ["now", "what i'm currently reading, watching, and listening to \u2014 pinned above the rails, with a live last.fm line for the latest track."],
+    ["syllabi", "reading and viewing lists i've assembled \u2014 courses, curricula, and self-directed study, laid out in the same category rails."],
     ["spotlight", "pins an entry to the top of its rail."],
     ["search", "filters by title, creator, tags, year, and category."]
   ];
@@ -986,11 +987,11 @@ function render() {
   const nowItems = ordered(pool).filter(
     (item) => effectiveList(item) === "now" && !state.dismissed.has(item.id) && matches(item, query)
   );
-  // The now rail belongs with your recommendations; the shelf view stays free
-  // of it.
-  const nowRail = state.list === "shelf" ? null : buildNowRail(nowItems);
+  // The now rail belongs with your recommendations; the shelf and syllabi views
+  // stay free of it.
+  const nowRail = state.list === "recommend" ? buildNowRail(nowItems) : null;
 
-  railEls = [...(nowRail ? [nowRail] : []), ...categoryRails, formRail];
+  railEls = [...(nowRail ? [nowRail] : []), ...categoryRails, ...(state.list === "syllabi" ? [] : [formRail])];
   layout();
 }
 

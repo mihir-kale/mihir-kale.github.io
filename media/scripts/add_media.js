@@ -5,8 +5,9 @@
 //     --creator "F. Scott Fitzgerald" --year 1925 --rating 4.5 \
 //     --consumed 2026-08-01 --notes "..." --tag classic --url "..." --spotlight
 //
-//   --list recommend|shelf|now   ("now" feeds the now rail: reading/watching/
-//                                 listening to)
+//   --list recommend|shelf|now|syllabi   ("now" feeds the now rail: reading/
+//                                 watching/listening to; "syllabi" feeds the
+//                                 syllabi tab)
 //
 //   echo '{"mediaType":"non-fiction","title":"..."}' | node scripts/add_media.js
 //
@@ -26,7 +27,7 @@ const MEDIA_TYPES = [
   "podcast"
 ];
 const STATUSES = ["backlog", "in-progress", "finished"];
-const LISTS = ["recommend", "shelf", "now"];
+const LISTS = ["recommend", "shelf", "now", "syllabi"];
 const TYPE_ALIASES = {
   movie: "film",
   music: "album",
@@ -141,6 +142,6 @@ function parseArgs(argv) {
 
 function fail(message) {
   console.error(`\u2717 ${message}`);
-  console.error("Usage: node scripts/add_media.js --type <fiction|non-fiction|short-fiction|short-non-fiction|film|album|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--list recommend|shelf|now] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
+  console.error("Usage: node scripts/add_media.js --type <fiction|non-fiction|short-fiction|short-non-fiction|film|album|podcast> --title \"...\" [--creator ...] [--year ...] [--status backlog|in-progress|finished] [--rating 0-5] [--consumed YYYY-MM-DD] [--list recommend|shelf|now|syllabi] [--notes ...] [--tag ...] [--url ...] [--spotlight]");
   process.exit(1);
 }

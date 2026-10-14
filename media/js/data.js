@@ -47,16 +47,17 @@ export const KIND_LABELS = {
 
 export const COVER_TYPES = new Set(["fiction", "non-fiction", "film", "album", "podcast"]);
 
-export const LISTS = ["recommend", "shelf", "now"];
+export const LISTS = ["recommend", "shelf", "now", "syllabi"];
 
-// The top-bar toggle only switches between these two; "now" powers a dedicated
-// headerless rail instead.
-export const TOGGLE_LISTS = ["recommend", "shelf"];
+// The top-bar toggle switches among these; "now" powers a dedicated headerless
+// rail instead.
+export const TOGGLE_LISTS = ["recommend", "shelf", "syllabi"];
 
 export const LIST_LABELS = {
   shelf: "on my shelf",
   recommend: "my recommendations",
-  now: "currently"
+  now: "currently",
+  syllabi: "syllabi"
 };
 
 export const STATUS_LABELS = {
