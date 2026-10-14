@@ -627,7 +627,7 @@
   <!-- App -->
   <div id="os">
     <header class="topbar">
-      Personal OS
+      <span id="topClock"></span>
       <div class="up-next" id="upNext" hidden>
         <span class="up-next-tag" id="upNextTag">NEXT</span>
         <span class="up-next-title" id="upNextTitle"></span>
@@ -1637,6 +1637,17 @@
         return { state: 'next', ev };
       }
       return null;
+    }
+
+    function renderClock() {
+      const el = $('topClock');
+      if (!el) return;
+      const now = new Date();
+      const date = now.toLocaleDateString('en-US',
+        { timeZone: TZ, weekday: 'short', month: 'short', day: 'numeric' });
+      const time = now.toLocaleTimeString('en-US',
+        { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
+      el.textContent = `${date} · ${time}`;
     }
 
     function renderUpNext() {
@@ -2757,6 +2768,8 @@
       setInterval(() => { loadTasks(); }, 60000);
       setInterval(() => { loadCalendar(); }, 300000);
       setInterval(() => { renderUpNext(); }, 30000);
+      renderClock();
+      setInterval(() => { renderClock(); }, 30000);
     }
 
     boot();
