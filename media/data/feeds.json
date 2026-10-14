@@ -1,423 +1,623 @@
 [
   {
-    "id": "feed-ce1a86e19c07",
+    "id": "feed-ad097d2cd0c4",
     "mediaType": "short-non-fiction",
-    "title": "“The Journey” Update: The D.A. Brings Charges",
+    "title": "‘Dune: Part Three’ Cowriter Brian K. Vaughan Has a New Comic on the Way",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Brian K. Vaughan claims he’s seen Dune: Part Three and it’s “a fucking beautiful movie.”",
+    "tags": [
+      "wired",
+      "angela-watercutter"
+    ],
+    "url": "https://www.wired.com/story/new-york-comic-con-interview/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c641f03a6e47",
+    "mediaType": "short-non-fiction",
+    "title": "A Trump Backlash Endangers Susan Collins in the Maine Senate Race",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "The race in Maine, which could decide Senate control, is testing whether there is still room for Ms. Collins’s brand of moderation during a sharply polarizing presidency.",
+    "tags": [
+      "the-new-york-times",
+      "tim-balk"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/us/politics/susan-collins-trump-maine-senate.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-065f18515e9b",
+    "mediaType": "short-non-fiction",
+    "title": "Breville Eye Q Toaster Review: Neat Sensors, but Less-Than-Perfect Toast",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "The Breville Eye Q uses optical sensors to measure the darkness of your toast. Cool tech, but the toasting quality needs improvement.",
+    "tags": [
+      "wired",
+      "joe-ray"
+    ],
+    "url": "https://www.wired.com/review/breville-eye-q-toaster/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-30ca19e5a45b",
+    "mediaType": "short-non-fiction",
+    "title": "Daily Cartoon: Wednesday, October 14th",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Three weeks after we released “The Journey,” Guojun Xuan and Silvia Zhang were arrested, and local prosecutors charged them with child abuse.",
+    "consumed": "2026-10-14",
+    "notes": "A drawing that riffs on the latest news and happenings.",
     "tags": [
-      "the-new-yorker"
+      "the-new-yorker",
+      "drew-dernavich"
     ],
-    "url": "https://www.newyorker.com/podcast/in-the-dark/the-journey-update-the-da-brings-charges",
+    "url": "https://www.newyorker.com/cartoons/daily-cartoon/wednesday-october-14th-national-park",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-0386a57e7875",
+    "id": "feed-7a1542824a74",
     "mediaType": "short-non-fiction",
-    "title": "<em>The Atlantic</em>’s November Cover: Josh Tyrangiel Profiles Jeff Bezos and Elon Musk on Their Race to Control Outer Space—And Measures Who Is Ahead",
-    "creator": "The Atlantic",
+    "title": "Dr. Becky and Emily Oster on Thirteen Books for Parenthood",
+    "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "“They may be the only ones who can check the other’s power.”",
+    "consumed": "2026-10-14",
+    "notes": "The experts recommend favorite titles for kids and their grownups.",
     "tags": [
-      "the-atlantic"
+      "the-new-yorker",
+      "hannah-jocelyn"
     ],
-    "url": "https://www.theatlantic.com/press-releases/2026/10/the-atlantics-november-cover-story-by-josh-tyrangiel/688976/?utm_source=feed",
+    "url": "https://www.newyorker.com/books/what-were-reading/dr-becky-and-emily-oster-on-thirteen-books-for-parenthood",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-91b114511efd",
+    "id": "feed-ce010d01c024",
     "mediaType": "short-non-fiction",
-    "title": "30 Best Tech Books to Gift in 2026: Biographies, Startup Histories, Exposés",
+    "title": "Earth’s Condition Is ‘Serious and Getting Worse’ as Climate Change Intensifies",
     "creator": "WIRED",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Give the techie in your life access to the inner workings of the companies and characters shaping Big Tech.",
+    "consumed": "2026-10-14",
+    "notes": "Seven of 16 planetary vital signs are in their most extreme state ever recorded, and El Niño is here to make matters even worse.",
     "tags": [
       "wired",
-      "simon-hill"
+      "brian-kahn"
     ],
-    "url": "https://www.wired.com/gallery/best-tech-books-to-gift/",
+    "url": "https://www.wired.com/story/climate-change-is-getting-worse-el-nino-looms/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-89615e8750e0",
+    "id": "feed-91747e2c1132",
     "mediaType": "short-non-fiction",
-    "title": "40 Gifts Under $100 That Will Delight Any Tech Enthusiast (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Score a great gift for everyone on your list without breaking the bank. Every one of these gifts comes WIRED-recommended.",
-    "tags": [
-      "wired",
-      "simon-hill"
-    ],
-    "url": "https://www.wired.com/gallery/best-gifts-under-100/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-593fe01c7af9",
-    "mediaType": "short-non-fiction",
-    "title": "A plan to break up Pakistan",
+    "title": "European museums are seeing a spike in high-value art theft",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
+    "consumed": "2026-10-14",
+    "notes": "Forget cat burglars. Today’s thieves smash, grab and run",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/europe/2026/10/14/european-museums-are-seeing-a-spike-in-high-value-art-theft",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-834d201e214a",
+    "mediaType": "short-non-fiction",
+    "title": "Formlabs Has a 3D Printer for Normies",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "The Form Studio 1 is a $699 desktop-sized printer that fits on a desk and only stinks a little bit.",
+    "tags": [
+      "wired",
+      "boone-ashworth"
+    ],
+    "url": "https://www.wired.com/story/formlabs-has-a-3d-printer-for-normies/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-de2597924211",
+    "mediaType": "short-non-fiction",
+    "title": "He’s Played It Safe. But He Could Make California History as Governor.",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Xavier Becerra is a heavy favorite to become California’s first Latino governor in the modern era, though he does not talk much about the milestone.",
+    "tags": [
+      "the-new-york-times",
+      "laurel-rosenhall-jennifer-medina-and-orlando-mayorqu-n"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/us/xavier-becerra-latino-california-governor.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-562ff1dafd0c",
+    "mediaType": "short-non-fiction",
+    "title": "Israel’s election overseer on how to stop AI distorting votes",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Chatbots can help inform citizens but should not be allowed to make choices for them, says Dean Livne",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/by-invitation/2026/10/14/israels-election-overseer-on-how-to-stop-ai-distorting-votes",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f21de6c64ba3",
+    "mediaType": "short-non-fiction",
+    "title": "JackRabbit MG Cargo Bike Review (2026): Compact and Powerful",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "This compact, plucky ride is the cargo ebike for people who don’t want a cargo ebike. It’s even fun to ride.",
+    "tags": [
+      "wired",
+      "matthew-korfhage"
+    ],
+    "url": "https://www.wired.com/review/jackrabbit-mg-cargo-electric-bicycle/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f064091c9685",
+    "mediaType": "short-non-fiction",
+    "title": "Kemi Badenoch tries to unite Britain’s right",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
     "notes": "A handpicked article read aloud from the latest issue of The Economist",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/podcasts/2026/10/13/a-plan-to-break-up-pakistan",
+    "url": "https://www.economist.com/podcasts/2026/10/14/kemi-badenoch-tries-to-unite-britains-right",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-bdedd5eceb4b",
+    "id": "feed-913bb958c478",
     "mediaType": "short-non-fiction",
-    "title": "Alex Gibney’s ‘Musk’ Has a Unique Perspective on Daddy Issues",
+    "title": "Kicking Kyiv: Trump’s doubtful deals",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Also on the daily podcast: India’s defiant Cockroach party and time to start singing",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/podcasts/2026/10/14/kicking-kyiv-trumps-doubtful-deals",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a67a023a1745",
+    "mediaType": "short-non-fiction",
+    "title": "Marco Rubio’s Wild, Wild West",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "In Greece, the Secretary of State cast the West as a civilization defined by its warriors and conquerors, not by its democracies.",
+    "tags": [
+      "the-new-yorker",
+      "ishaan-tharoor"
+    ],
+    "url": "https://www.newyorker.com/news/global-notes/marco-rubios-wild-wild-west",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-7e24cd2b3dd6",
+    "mediaType": "short-non-fiction",
+    "title": "My Friend Has No Soul",
     "creator": "WIRED",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Elon Musk’s father, Errol Musk, agreed to be interviewed immediately.",
+    "consumed": "2026-10-14",
+    "notes": "The second iteration of the viral Friend AI necklace is louder and less interesting.",
     "tags": [
       "wired",
-      "zo-schiffer"
+      "boone-ashworth"
     ],
-    "url": "https://www.wired.com/story/the-big-interview-podcast-alex-gibney-musk-doc/",
+    "url": "https://www.wired.com/story/my-friend-has-no-soul/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-0c004a740be6",
+    "id": "feed-5adcc22021e6",
     "mediaType": "short-non-fiction",
-    "title": "America’s election officials are ready for trouble",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Donald Trump has failed to change voting rules. Cities and states are preparing for mischief anyway",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/united-states/2026/10/13/americas-election-officials-are-ready-for-trouble",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-7dc7cb6a7896",
-    "mediaType": "short-non-fiction",
-    "title": "An Unlikely Taylor Swift Fan Gets Out of Prison, in “Daylight”",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Joe Garcia, who wrote about finding Swift’s music after a murder conviction, searches for redemption in a new short film by Jon Kasbe.",
-    "tags": [
-      "the-new-yorker"
-    ],
-    "url": "https://www.newyorker.com/culture/the-new-yorker-documentary/an-unlikely-taylor-swift-fan-gets-out-of-prison-in-daylight",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-08a3f946042e",
-    "mediaType": "short-non-fiction",
-    "title": "Analysing Africa newsletter: A Nobel and ignoble day for the rule of law",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Friday in South Africa brought a gobsmacking juxtaposition, writes John McDermott, our Chief Africa correspondent",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/middle-east-and-africa/2026/10/13/analysing-africa-newsletter-a-nobel-and-ignoble-day-for-the-rule-of-law",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a683c21aced0",
-    "mediaType": "short-non-fiction",
-    "title": "Apple Reboots Its Smart-Home Strategy With New Hardware and a ‘Home Collection’",
+    "title": "Nothing Headphone (1) Pro: Studio Quality",
     "creator": "WIRED",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "I got an early glimpse of Apple’s biggest push into the smart home in years.",
+    "consumed": "2026-10-14",
+    "notes": "Nothing’s best headphones yet double down on design, comfort, sound quality, and highly adjustable EQ settings.",
     "tags": [
       "wired",
-      "julian-chokkattu"
+      "harry-rabinowitz"
     ],
-    "url": "https://www.wired.com/story/apple-overhauls-its-smart-home-play-with-new-hardware-and-a-home-collection/",
+    "url": "https://www.wired.com/review/nothing-headphone-1-pro/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-b1afa61b1676",
+    "id": "feed-5a8927c6e224",
     "mediaType": "short-non-fiction",
-    "title": "Café Europa newsletter: Marco Rubio’s questionable history lesson",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Matt Steinglass, our Europe editor, identifies the continent’s Spartans",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/europe/2026/10/13/cafe-europa-newsletter-marco-rubios-questionable-history-lesson",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-8ec747e79544",
-    "mediaType": "short-non-fiction",
-    "title": "China is turning trash into treasure on a vast scale",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "EV batteries, especially, will help it secure supplies of critical minerals",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/china/2026/10/13/china-is-turning-trash-into-treasure-on-a-vast-scale",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ef32c13653c9",
-    "mediaType": "short-non-fiction",
-    "title": "China’s rising political stars",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Our weekly podcast on China. This week, what makes the seventh generation of Communist Party leaders different—and how could they shape the country?",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/podcasts/2026/10/13/chinas-rising-political-stars",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-4745c40acbee",
-    "mediaType": "short-non-fiction",
-    "title": "Daily Cartoon: Tuesday, October 13th",
+    "title": "Reasons You Might Be Calling Me Instead of Texting",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "A drawing that riffs on the latest news and happenings.",
+    "consumed": "2026-10-14",
+    "notes": "You’re feeling too lazy to text, and you know perfectly well that I’m just going to let it go to voice mail and then text my response anyway.",
     "tags": [
       "the-new-yorker",
-      "ellis-rosen"
+      "talia-argondezzi"
     ],
-    "url": "https://www.newyorker.com/cartoons/daily-cartoon/tuesday-october-13th-kelly-clarkson",
+    "url": "https://www.newyorker.com/humor/shouts-murmurs/reasons-you-might-be-calling-me-instead-of-texting",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-684606d79f3e",
+    "id": "feed-64399b31ee97",
     "mediaType": "short-non-fiction",
-    "title": "Encountering the Past in “Music Against the Night”",
+    "title": "Rising Costs Push Necessities Out of Reach for Nearly Half of Americans",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Inflation has made basic goods hard to afford and attitudes toward inequality have changed, studies from the Pew Research Center showed.",
+    "tags": [
+      "the-new-york-times",
+      "sydney-ember"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/business/economy/high-prices-cost-of-living-pew-research.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-dee4f7d191b9",
+    "mediaType": "short-non-fiction",
+    "title": "Social Security COLA for 2027 Will Be 3.6%",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "The cost of living adjustment, or COLA, for next year will be the largest since 2023. Retirees will see the extra money in their benefit checks starting in January.",
+    "tags": [
+      "the-new-york-times",
+      "mark-miller"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/business/social-security-cola-retirees.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6c28b31b3db0",
+    "mediaType": "short-non-fiction",
+    "title": "Surging Inflation Complicates Trump’s Final Push to Sell Voters on Strong Economy",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "The final inflation report before the 2026 election — showing price increases and stagnant wages — spelled bad political news for the White House.",
+    "tags": [
+      "the-new-york-times",
+      "tony-romm"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/business/economy/inflation-economy-midterms.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-4c92645760d7",
+    "mediaType": "short-non-fiction",
+    "title": "The Downfall of Trump’s Ambassador to Greece, and the Pope’s Cancer Diagnosis",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Plus, the antique apples making a comeback.",
+    "tags": [
+      "the-new-york-times",
+      "tracy-mumford-will-jarvis-margaret-kadifa-jake-lucas-and-ian-stewart"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/podcasts/the-headlines/kimberly-guilfoyle-pope-cancer.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-364325ad8be9",
+    "mediaType": "short-non-fiction",
+    "title": "The Most Cursed Team in American Sports",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Why Buffalo Bills fans are convinced this is finally their year",
+    "tags": [
+      "the-atlantic",
+      "kaitlyn-tiffany"
+    ],
+    "url": "https://www.theatlantic.com/magazine/2026/12/josh-allen-buffalo-bills-curse/688982/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-377c2eb259ac",
+    "mediaType": "short-non-fiction",
+    "title": "The Politics of Solar Energy Are Getting Weird, Mean, and a Little MAGA",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "A mysterious super PAC that doubles as a pro-solar-energy outfit is funding some of the most knives-out attack ads of the midterms season.",
+    "tags": [
+      "wired",
+      "noah-shachtman"
+    ],
+    "url": "https://www.wired.com/story/the-politics-of-solar-energy-are-getting-weird-mean-and-a-little-maga/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1772fc47c5eb",
+    "mediaType": "short-non-fiction",
+    "title": "The Secret History of Lee Krasner and Jackson Pollock",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "John Field and Adelaide Percheron, the protagonists in my new book, were born in the eighteenth century. Was I writing a historical novel?",
+    "consumed": "2026-10-14",
+    "notes": "At the Met, a landmark exhibition doesn’t just show that the painters were equals. It makes it impossible to imagine their art existing without their marriage.",
     "tags": [
       "the-new-yorker",
-      "yiyun-li"
+      "zachary-fine"
     ],
-    "url": "https://www.newyorker.com/books/page-turner/encountering-the-past-in-music-against-the-night",
+    "url": "https://www.newyorker.com/magazine/2026/10/26/the-secret-history-of-lee-krasner-and-jackson-pollock",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-7f4c30d57bb5",
+    "id": "feed-8cde1978ad5b",
     "mediaType": "short-non-fiction",
-    "title": "Good Villains Are Hard to Come By. This One’s Great.",
+    "title": "Tom McCarthy’s Meaningless Men",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "For decades, the novelist has dismantled the tropes of realist fiction, writing about mysterious individuals trapped in byzantine systems. In “The Rhyl Poster,” that approach may have reached its limit.",
+    "tags": [
+      "the-new-yorker",
+      "max-callimanopulos"
+    ],
+    "url": "https://www.newyorker.com/books/under-review/tom-mccarthys-meaningless-men",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-693557710ca5",
+    "mediaType": "short-non-fiction",
+    "title": "Ukraine’s Vulnerability Grows as Starlink Is Restricted and Russia Escalates",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "A huge attack cut power to 600,000 people in Kyiv, and a Pentagon-funded satellite internet program appeared to be curbed without warning.",
+    "tags": [
+      "the-new-york-times",
+      "constant-m-heut"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/world/europe/ukraine-starlink-energy.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-4f8d46daefb2",
+    "mediaType": "short-non-fiction",
+    "title": "Vivek Ramaswamy is too MAGA and not MAGA enough",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "A candidate once considered a rising star gets stuck in Ohio",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/united-states/2026/10/14/vivek-ramaswamy-is-too-maga-and-not-maga-enough",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-2bd4788fb57f",
+    "mediaType": "short-non-fiction",
+    "title": "What a Public Execution Looks Like",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "Dexter Filkins on Pete Hegseth’s planned public execution of Nidal Hasan and his memory of a public execution by the Taliban in Kabul.",
+    "tags": [
+      "the-new-yorker",
+      "dexter-filkins"
+    ],
+    "url": "https://www.newyorker.com/news/the-lede/what-a-public-execution-looks-like",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-034bc5dc4d58",
+    "mediaType": "short-non-fiction",
+    "title": "Zelensky to Visit U.K. as Ukraine Presses Allies on Intelligence Sharing",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-14",
+    "notes": "President Volodymyr Zelensky said Ukraine received “no early warning from our partners” about a Russian attack. President Trump has said Washington is still “sharing intel.”",
+    "tags": [
+      "the-new-york-times",
+      "michael-d-shear-and-lara-jakes"
+    ],
+    "url": "https://www.nytimes.com/2026/10/14/world/europe/ukraine-intelligence-sharing-zelensky-uk.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-54a9471c5544",
+    "mediaType": "short-non-fiction",
+    "title": "A Novel That Turns the Tables on AI",
     "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "A fascinating new novel pits a small Appalachian community against a very online foe.",
+    "notes": "Joanna Kavenna’s book about the battle of man versus machine is both funny and deadly serious.",
     "tags": [
       "the-atlantic",
-      "lily-meyer"
+      "rhian-sasseen"
     ],
-    "url": "https://www.theatlantic.com/books/2026/10/avalon-rise-madeline-ffitch-book-review/688939/?utm_source=feed",
+    "url": "https://www.theatlantic.com/books/2026/10/joanna-kavenna-seven-review/688078/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-0e9212d7cca6",
+    "id": "feed-db995d1c83a0",
     "mediaType": "short-non-fiction",
-    "title": "Kimberly Guilfoyle Resigns as Ambassador to Greece",
-    "creator": "The New York Times",
+    "title": "Elon Musk's foundation is opaque, miserly and self-serving",
+    "creator": "The Economist",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "Ms. Guilfoyle was asked to quit by the White House after a string of damaging reports, including that she had asked a Republican donor to pay off a credit card.",
+    "notes": "The world’s richest man disdains charity. His money is where his mouth is",
     "tags": [
-      "the-new-york-times",
-      "tyler-pager"
+      "the-economist"
     ],
-    "url": "https://www.nytimes.com/2026/10/13/us/politics/kimberly-guilfoyle-resign.html",
+    "url": "https://www.economist.com/business/2026/10/13/elon-musks-foundation-is-opaque-miserly-and-self-serving",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-c5b7e8d883b5",
+    "id": "feed-582118f92609",
     "mediaType": "short-non-fiction",
-    "title": "Pity the Poor Passport",
+    "title": "Hi, I’m Your New Press Secretary, and It’s My First Time Reading Words Out Loud",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-13",
+    "notes": "A very uncomfortable 14 minutes",
+    "tags": [
+      "the-atlantic",
+      "alexandra-petri"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/10/press-secretary-katie-zacharia-first-briefing/688988/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-9e0653e847bb",
+    "mediaType": "short-non-fiction",
+    "title": "Is This the Beginning of the End of Indian Democracy?",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "Americans’ most valued official document is the latest national treasure to get a Trump makeover.",
+    "notes": "The Modi government has removed more than a hundred million people from voter rolls and is cracking down on a vigorous protest movement.",
     "tags": [
       "the-new-yorker",
-      "adam-gopnik"
+      "isaac-chotiner"
     ],
-    "url": "https://www.newyorker.com/news/the-lede/pity-the-poor-passport",
+    "url": "https://www.newyorker.com/news/q-and-a/is-this-the-beginning-of-the-end-of-indian-democracy",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-5ac4efbb58b1",
+    "id": "feed-b2c133db6d02",
     "mediaType": "short-non-fiction",
-    "title": "Rising Interest Rates Bite Some Wall Street Banks",
-    "creator": "The New York Times",
+    "title": "Middle East Dispatch: Flying through the Gulf is complicated",
+    "creator": "The Economist",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "JPMorgan released surprisingly spotty earnings results for the third quarter, while Goldman Sachs and Citi posted better-than-expected results, reflecting a choppy trading environment.",
+    "notes": "Gregg Carlstrom, our Middle East correspondent, looks at how war has affected aviation in the region",
     "tags": [
-      "the-new-york-times",
-      "rob-copeland"
+      "the-economist"
     ],
-    "url": "https://www.nytimes.com/2026/10/13/business/bank-earnings-jpmorgan-chase-interest-rates.html",
+    "url": "https://www.economist.com/middle-east-and-africa/2026/10/13/middle-east-dispatch-flying-through-the-gulf-is-complicated",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-6585aed5c050",
+    "id": "feed-b17d2df6a1c8",
     "mediaType": "short-non-fiction",
-    "title": "Some Mangled Foreign Title Translations",
-    "creator": "The New Yorker",
+    "title": "Photos: Fall Is in the Air",
+    "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "“Dune: Part Two” to “Those Mad Worms Won’t Stop, Mate” (Australia): You think those dodgy snakes in the outback are devo? You ain’t seen nothing, mate!",
+    "notes": "Autumn, the best season, has arrived once again—the season of harvests, festivals, migrations, and, of course, spectacular fall colors. Collected here are early images from this year.",
     "tags": [
-      "the-new-yorker",
-      "jay-martel-jonathan-stern"
+      "the-atlantic",
+      "alan-taylor"
     ],
-    "url": "https://www.newyorker.com/humor/shouts-murmurs/some-mangled-foreign-title-translations",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6171abe54b0e",
-    "mediaType": "short-non-fiction",
-    "title": "The ‘Godzilla Minus Zero’ Filmmakers Terrified Bystanders With Their Monster Sounds",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "The team behind director Takashi Yamazaki’s new film created their kaiju roars by setting up speakers on top of an outdoor dam. The people walking by weren’t prepared for what they heard.",
-    "tags": [
-      "wired",
-      "max-evry"
-    ],
-    "url": "https://www.wired.com/story/new-york-comic-con-panel/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-090acd582c30",
-    "mediaType": "short-non-fiction",
-    "title": "The Apple HomeView Is Like a Giant Apple Watch for the Home",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "With customizable “faces,” this 7-inch smart display is a unique hybrid between an iPhone and an Apple Watch.",
-    "tags": [
-      "wired",
-      "julian-chokkattu"
-    ],
-    "url": "https://www.wired.com/story/apple-homeview-smart-display/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c5ad26db9e2e",
-    "mediaType": "short-non-fiction",
-    "title": "The Biggest Pro-AI Super PAC Network Has Poured Millions Into Nevada Shell Companies",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Backed by Silicon Valley titans, Leading the Future has raised huge sums to promote pro-AI candidates on both side of the aisle.",
-    "tags": [
-      "wired",
-      "tess-owen"
-    ],
-    "url": "https://www.wired.com/story/the-biggest-pro-ai-super-pac-network-has-poured-millions-into-nevada-shell-companies/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e21c9ff136dd",
-    "mediaType": "short-non-fiction",
-    "title": "The Forces Driving Up Bond Yields Take a Troubling Turn",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Some analysts say investors are demanding a higher “term premium” to buy government debt, reflecting growing worries about debt levels and deficits.",
-    "tags": [
-      "the-new-york-times",
-      "joe-rennison"
-    ],
-    "url": "https://www.nytimes.com/2026/10/13/business/term-premium-bond-yields.html",
+    "url": "https://www.theatlantic.com/photography/2026/10/photos-fall-colors/688983/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -441,161 +641,37 @@
     "source": "feed"
   },
   {
-    "id": "feed-ee23f1578aa6",
+    "id": "feed-203d40309de1",
     "mediaType": "short-non-fiction",
-    "title": "The Journalist and the Manipulator",
+    "title": "Trump’s Affection for Russia Is No Mystery",
     "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "Janet Malcolm policed the literary ruses of others, but wasn’t afraid to deploy them herself.",
+    "notes": "The best explanation is the least complicated one.",
     "tags": [
       "the-atlantic",
-      "thomas-mallon"
+      "jonathan-chait"
     ],
-    "url": "https://www.theatlantic.com/magazine/2026/11/absent-woman-janet-malcolm-eve-sneider/688701/?utm_source=feed",
+    "url": "https://www.theatlantic.com/ideas/2026/10/trump-russia-putin-oil/688986/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-b1be8999a598",
+    "id": "feed-7ed9b9c22fab",
     "mediaType": "short-non-fiction",
-    "title": "The Man Who Wanted to Understand Every Aspect of Jewish Life",
+    "title": "Trump’s Dubious Claim About the Ilhan Omar Search",
     "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "In the Pale of Settlement, the writer S. An-Sky made an ecstatic, obsessive attempt to wrap his arms around an entire people just as it was disappearing.",
+    "notes": "The president proclaims unfettered power to go after his critics, but then disclaims any involvement once a prominent critic is actually the subject of a search.",
     "tags": [
       "the-atlantic",
-      "gal-beckerman"
+      "david-a-graham"
     ],
-    "url": "https://www.theatlantic.com/magazine/2026/11/an-sky-jewish-ethnography-ukraine/688697/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c6a551ae7417",
-    "mediaType": "short-non-fiction",
-    "title": "The Rise of the IRL Influencer",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Americans need to party more. A new class of “community builders” is ready to help.",
-    "tags": [
-      "the-atlantic",
-      "nancy-walecki"
-    ],
-    "url": "https://www.theatlantic.com/health/2026/10/community-builders/688947/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-217f0cc120d0",
-    "mediaType": "short-non-fiction",
-    "title": "There’s Worlds Out There More Habitable Than Earth",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Scientists believe there are planets outside our solar system where life is even more abundant and sustainable.",
-    "tags": [
-      "the-new-york-times",
-      "natalie-wolchover"
-    ],
-    "url": "https://www.nytimes.com/2026/10/13/science/inhabitable-planets-solar-system.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6e38ea79d3b9",
-    "mediaType": "short-non-fiction",
-    "title": "Top G.O.P. Groups Pull Support From First House Incumbents",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Two major Republican super PACs are said to be withdrawing cash from the races of the incumbent Representatives Thomas H. Kean Jr. of New Jersey and Mariannette Miller-Meeks of Iowa in an effort to triage the midterm map.",
-    "tags": [
-      "the-new-york-times",
-      "shane-goldmacher"
-    ],
-    "url": "https://www.nytimes.com/2026/10/13/us/politics/top-gop-groups-pull-support-from-first-house-incumbents.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-26fe1f8bcfe0",
-    "mediaType": "short-non-fiction",
-    "title": "Trump Hands Victories to Putin, Who Offers More War in Return",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Russia has reaped a diesel deal and an increase in U.S. pressure on Ukraine as President Trump’s political needs align with his longstanding inclinations toward Russia.",
-    "tags": [
-      "the-new-york-times",
-      "paul-sonne"
-    ],
-    "url": "https://www.nytimes.com/2026/10/13/world/europe/russia-putin-trump-diesel-ukraine.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-612f171cd9c9",
-    "mediaType": "short-non-fiction",
-    "title": "U.K. and Europe Recoil From Trump’s Diesel Deal With Putin",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Shocked by the U.S. agreement with Russia, which Ukraine has called “a gift” to President Putin, officials in Europe have coalesced around a cautious diplomatic message.",
-    "tags": [
-      "the-new-york-times",
-      "michael-d-shear-and-jeanna-smialek"
-    ],
-    "url": "https://www.nytimes.com/2026/10/13/world/europe/trump-putin-diesel-uk-europe-gift.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-94405919657e",
-    "mediaType": "short-non-fiction",
-    "title": "Unrest in peace: misery in Gaza",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Also on the daily podcast: discord over AI music and Japan’s matcha farmers",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/podcasts/2026/10/13/unrest-in-peace-misery-in-gaza",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-8dab71e9e9c0",
-    "mediaType": "short-non-fiction",
-    "title": "What Congress can do to prevent an AI catastrophe",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "Lawrence Lessig and Yoshua Bengio suggest how to reduce serious risks without abandoning American technological leadership",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/by-invitation/2026/10/13/what-congress-can-do-to-prevent-an-ai-catastrophe",
+    "url": "https://www.theatlantic.com/newsletters/2026/10/trump-doj-ilhan-omar-search/688984/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -619,91 +695,36 @@
     "source": "feed"
   },
   {
-    "id": "feed-6752127b21db",
+    "id": "feed-e9c18ad130ec",
     "mediaType": "short-non-fiction",
-    "title": "Why the Intelligence Gap Really Matters",
-    "creator": "The Atlantic",
+    "title": "What’s behind the big interest in miniatures?",
+    "creator": "The Economist",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-13",
-    "notes": "Great thinkers and artists throughout history have argued that you can’t have true romance without a meeting of the minds.",
+    "notes": "Nostalgia and a desire for control are fuelling a boom in small things",
     "tags": [
-      "the-atlantic",
-      "amy-carleton"
+      "the-economist"
     ],
-    "url": "https://www.theatlantic.com/family/2026/10/intelligence-gap-relationships/688978/?utm_source=feed",
+    "url": "https://www.economist.com/culture/2026/10/13/whats-behind-the-big-interest-in-miniatures",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-3036491eaf5c",
-    "mediaType": "short-non-fiction",
-    "title": "Wikipedians Believed AI Would Come and Go. They Were Wrong",
-    "creator": "WIRED",
+    "id": "feed-cb195ca96900",
+    "mediaType": "podcast",
+    "title": "Liaquat Ahamed",
+    "creator": "Conversations with Tyler",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "In a world of AI Overviews, Wikipedia usage declines. But the real loss may be far more existential than website traffic.",
+    "consumed": "2026-09-25",
+    "notes": "",
     "tags": [
-      "wired",
-      "richard-cooke"
+      "conversations-with-tyler",
+      "dallas-floer"
     ],
-    "url": "https://www.wired.com/story/book-excerpt-the-last-best-place-on-the-internet-wikipedia-artificial-intelligence/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cd23cbddc238",
-    "mediaType": "short-non-fiction",
-    "title": "Zelensky Comment Raises Fears Over U.S. Intelligence Sharing",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-13",
-    "notes": "The Ukrainian leader said Kyiv received no early warning before a Russian ballistic missile attack. President Trump said the U.S. continued to share intelligence.",
-    "tags": [
-      "the-new-york-times",
-      "constant-m-heut-and-carlotta-gall"
-    ],
-    "url": "https://www.nytimes.com/2026/10/13/world/europe/ukraine-trump-intelligence.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3887dbb6a46d",
-    "mediaType": "short-non-fiction",
-    "title": "Cinema of Wayward Souls",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-12",
-    "notes": "The director Lee Chang-dong excavates the traumas of contemporary Korean history in starkly personal terms.",
-    "tags": [
-      "the-new-yorker",
-      "e-tammy-kim"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/10/19/lee-chang-dong-profile",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a653deb5c967",
-    "mediaType": "short-non-fiction",
-    "title": "Daily Cartoon: Monday, October 12th",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-12",
-    "notes": "A drawing that riffs on the latest news and happenings.",
-    "tags": [
-      "the-new-yorker",
-      "adam-douglas-thompson"
-    ],
-    "url": "https://www.newyorker.com/cartoons/daily-cartoon/monday-october-12th-trump-o-lantern",
+    "url": "https://conversationswithtyler.com/episodes/liaquat-ahamed/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -830,24 +851,6 @@
       "dallas-floer"
     ],
     "url": "https://conversationswithtyler.com/episodes/luke-burgis/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e676d413769c",
-    "mediaType": "podcast",
-    "title": "Julia Ioffe",
-    "creator": "Conversations with Tyler",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-07-15",
-    "notes": "",
-    "tags": [
-      "conversations-with-tyler",
-      "web-admin"
-    ],
-    "url": "https://conversationswithtyler.com/episodes/julia-ioffe/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
