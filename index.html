@@ -15,14 +15,30 @@
       color: #fff;
       min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: flex-start;
       -webkit-font-smoothing: antialiased;
     }
     .container {
+      width: min(1040px, 92vw);
+      padding-bottom: 56px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 5vw;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* photo centre sits 70% of the way up from the bottom of the viewport */
+      margin-top: max(24px, calc(30vh - max(72px, 9vw)));
+    }
+    .columns {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(24px, 5vw, 72px);
+      margin-top: clamp(28px, 5vh, 56px);
     }
     .photo-ring {
       width: 18vw;
@@ -47,7 +63,8 @@
       font-size: clamp(24px, 1.4vw, 28px);
       font-weight: 400;
       color: inherit;
-      margin-bottom: 12px;
+      text-align: center;
+      margin-top: 18px;
     }
     .subtitle {
       font-size: clamp(16px, 1.2vw, 22px);
@@ -103,10 +120,9 @@
       will-change: transform;
     }
     @media (max-width: 640px) {
-      .container {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 40px 24px;
+      .columns {
+        grid-template-columns: 1fr;
+        gap: 32px;
       }
       .links {
         justify-content: center;
@@ -116,29 +132,35 @@
 </head>
 <body>
   <div class="container">
-    <div class="photo-ring">
-      <img src="profile.jpg" alt="mihir kale">
-    </div>
-    <div class="text-block">
+    <div class="hero">
+      <div class="photo-ring">
+        <img src="profile.jpg" alt="mihir kale">
+      </div>
       <h1>hi, i'm mihir!</h1>
-      <div class="subtitle">i'm interested in data, product, and policy</div>
-      <div class="subtitle">currently:<br>📍 swe @ siemens<br>📍 product @ john locke foundation<br>📍 cs & business @ unc</div>
-      <div class="subtitle">prev:<br>📍 econ @ scpo paris</div>
-      <div class="label">some links:</div>
-      <div class="links">
-        <a href="https://linkedin.com/in/mihirpkale" target="_blank" rel="noopener">linkedin</a>
-        <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
-        <a href="https://www.strava.com/athletes/125404561" target="_blank" rel="noopener">strava</a>
+    </div>
+    <div class="columns">
+      <div class="col">
+        <div class="subtitle">currently:<br>📍 swe @ siemens<br>📍 product @ john locke foundation<br>📍 cs & business @ unc</div>
+        <div class="subtitle">prev:<br>📍 econ @ scpo paris</div>
       </div>
-      <div class="label">some projects:</div>
-      <div class="demos">
-        <a href="https://mihir-kale.github.io/media/">looking for <span class="roller"><span id="rotate">book</span></span> recommendations?</a>
-      </div>
-      <div class="demos">
-        <a href="https://mihir-kale.github.io/dashboard/">the calendar/tracker/planner i wish existed</a>
-      </div>
-      <div class="demos">
-        <a href="https://devpost.com/software/know-your-loan" target="_blank" rel="noopener">bayesian modeling for predatory lenders</a>
+      <div class="col">
+        <div class="subtitle">i'm interested in data, product, and policy</div>
+        <div class="label">some links:</div>
+        <div class="links">
+          <a href="https://linkedin.com/in/mihirpkale" target="_blank" rel="noopener">linkedin</a>
+          <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
+          <a href="https://www.strava.com/athletes/125404561" target="_blank" rel="noopener">strava</a>
+        </div>
+        <div class="label">some projects:</div>
+        <div class="demos">
+          <a href="https://mihir-kale.github.io/media/">looking for <span class="roller"><span id="rotate">book</span></span> recommendations?</a>
+        </div>
+        <div class="demos">
+          <a href="https://mihir-kale.github.io/dashboard/">the calendar/tracker/planner i wish existed</a>
+        </div>
+        <div class="demos">
+          <a href="https://devpost.com/software/know-your-loan" target="_blank" rel="noopener">bayesian modeling for predatory lenders</a>
+        </div>
       </div>
     </div>
   </div>
