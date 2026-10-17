@@ -92,6 +92,7 @@
     #rotate {
       display: inline-block;
       color: #0a84ff;
+      white-space: nowrap;
       will-change: transform;
     }
     @media (max-width: 640px) {
@@ -114,7 +115,7 @@
     <div class="text-block">
       <h1>hi, i'm mihir!</h1>
       <div class="subtitle">i'm interested in data, product, and policy</div>
-      <div class="subtitle">📍 swe intern @ siemens<br>📍 swe intern @ john locke foundation<br>📍 cs & business @ unc</div>
+      <div class="subtitle">📍 swe @ siemens<br>📍 product @ john locke foundation<br>📍 cs & business @ unc</div>
       <div class="links">
         <a href="https://linkedin.com/in/mihirpkale" target="_blank" rel="noopener">linkedin</a>
         <a href="https://github.com/mihir-kale" target="_blank" rel="noopener">github</a>
@@ -132,6 +133,22 @@
       var words = ['book', 'movie', 'music'];
       var el = document.getElementById('rotate');
       var i = 0;
+      // Pin the roller to the width of the widest word so "recommendations?"
+      // never shifts as the word cycles.
+      function fitRoller() {
+        var roller = el.parentNode;
+        var widest = 0;
+        var current = el.textContent;
+        for (var w = 0; w < words.length; w++) {
+          el.textContent = words[w];
+          widest = Math.max(widest, el.getBoundingClientRect().width);
+        }
+        el.textContent = current;
+        roller.style.width = Math.ceil(widest) + 'px';
+      }
+      fitRoller();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitRoller);
+      window.addEventListener('resize', fitRoller);
       setInterval(function () {
         el.animate(
           [{ transform: 'translateY(0)' }, { transform: 'translateY(100%)' }],
