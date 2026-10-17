@@ -57,6 +57,7 @@ const rows = library.map((item) => ({
   url: item.url || "",
   spotlight: Boolean(item.spotlight),
   list: item.list || "shelf",
+  ...(item.topic ? { topic: item.topic } : {}),
   source: item.source || "manual",
   updated_at: new Date().toISOString()
 }));

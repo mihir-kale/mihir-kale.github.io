@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261014b";
-import { resolveCover } from "./covers.js?v=20261014b";
-import { signIn, signOut, getSession } from "./auth.js?v=20261014b";
-import { loadNowPlaying } from "./lastfm.js?v=20261014b";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261017";
+import { resolveCover } from "./covers.js?v=20261017";
+import { signIn, signOut, getSession } from "./auth.js?v=20261017";
+import { loadNowPlaying } from "./lastfm.js?v=20261017";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -84,7 +84,7 @@ function ordered(items) {
 
 function matches(item, query) {
   if (!query) return true;
-  const haystack = [item.title, item.creator, item.tags.join(" "), item.year, TYPE_LABELS[item.mediaType]]
+  const haystack = [item.title, item.creator, item.tags.join(" "), item.year, TYPE_LABELS[item.mediaType], item.topic]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
@@ -225,13 +225,13 @@ function finalizeClamps() {
 
 /* ---------------------------------- rails --------------------------------- */
 
-function buildRail(type, items) {
+function buildRail(title, items) {
   const rail = el("section", "rail");
-  rail.setAttribute("aria-label", `${KIND_LABELS[type]} entries`);
+  rail.setAttribute("aria-label", `${title} entries`);
 
   const head = el("header", "rail-head");
   head.append(
-    el("span", "rail-title", KIND_LABELS[type].toLowerCase()),
+    el("span", "rail-title", title),
     el("span", "rail-count", String(items.length))
   );
   rail.append(head);
@@ -683,7 +683,7 @@ function buildHelpDialog() {
     ["shelf", "what i've consumed \u2014 finished, in progress, or on the list. feed items are capped at 5 per category."],
     ["recommend", "what i'd actually recommend to someone else. flip the top-bar toggle to switch every rail between the shelf, my recommendations, and syllabi."],
     ["now", "what i'm currently reading, watching, and listening to \u2014 pinned above the rails, with a live last.fm line for the latest track."],
-    ["syllabi", "reading and viewing lists i've assembled \u2014 courses, curricula, and self-directed study, laid out in the same category rails."],
+    ["syllabi", "reading and viewing lists i've assembled \u2014 courses, curricula, and self-directed study, grouped into rails by topic rather than category. name an entry's rail with the \u201csyllabi topic\u201d field in the editor."],
     ["spotlight", "pins an entry to the top of its rail."],
     ["search", "filters by title, creator, tags, year, and category."]
   ];
@@ -746,11 +746,12 @@ function buildEditor() {
   const tags = makeInput("tags (comma separated)");
   const notes = makeTextarea("notes");
   const list = makeSelect(LISTS.map((id) => [id, LIST_LABELS[id]]));
+  const topic = makeInput("e.g. cold war");
 
   const spotlight = document.createElement("input");
   spotlight.type = "checkbox";
 
-  editorFields = { mediaType, title, creator, year, status, consumed, url, tags, notes, list, spotlight };
+  editorFields = { mediaType, title, creator, year, status, consumed, url, tags, notes, list, topic, spotlight };
   for (const [name, control] of Object.entries(editorFields)) control.name = name;
 
   const grid = el("div", "editor-grid");
@@ -762,6 +763,7 @@ function buildEditor() {
     buildField("year", year, "editor-field", "editor-label"),
     buildField("consumed", consumed, "editor-field", "editor-label"),
     buildField("list", list, "editor-field", "editor-label"),
+    buildField("syllabi topic", topic, "editor-field", "editor-label"),
     buildField("url", url, "editor-field editor-span", "editor-label"),
     buildField("tags", tags, "editor-field editor-span", "editor-label"),
     buildField("notes", notes, "editor-field editor-span", "editor-label")
@@ -803,6 +805,7 @@ function buildEditor() {
       notes: editorFields.notes.value.trim(),
       spotlight: editorFields.spotlight.checked,
       list: editorFields.list.value,
+      topic: editorFields.topic.value.trim(),
       source: editorEditing ? editorEditing.source : "manual"
     };
     let item;
@@ -852,6 +855,7 @@ function openEditor(item) {
   f.notes.value = item ? item.notes : "";
   f.spotlight.checked = item ? item.spotlight : false;
   f.list.value = item ? item.list : state.list;
+  f.topic.value = item ? item.topic || "" : "";
   editorDelete.classList.toggle("hidden", !item);
   editorTitleEl.textContent = item ? "edit entry" : "new entry";
   editorSubmit.textContent = item ? "save" : "add";
@@ -971,17 +975,38 @@ function render() {
   }
 
   const categoryRails = [];
-  for (const type of MEDIA_TYPES) {
-    const items = byType.get(type) || [];
-    let shown = items;
-    if (state.list === "shelf") {
-      // Incoming recommendations stay pinned above the shelf cap so they are
-      // never pushed out by feed items.
-      const incoming = items.filter((item) => item.source === "suggestion");
-      const rest = items.filter((item) => item.source !== "suggestion");
-      shown = [...incoming, ...rest.slice(0, SHELF_LIMIT)];
+  if (state.list === "syllabi") {
+    // Syllabi are curated around topics, not media type: every syllabi entry
+    // names the rail it belongs to ("syllabi topic" in the editor). Rails are
+    // laid out in the order their first entry appears in the catalogue (newest
+    // first); entries without a topic keep their category header.
+    const rails = new Map();
+    for (const item of pool) {
+      if (effectiveList(item) !== "syllabi" || state.dismissed.has(item.id)) continue;
+      const topic = item.topic.trim();
+      const key = topic ? `topic:${topic.toLowerCase()}` : `type:${item.mediaType}`;
+      const label = topic || KIND_LABELS[item.mediaType].toLowerCase();
+      if (!rails.has(key)) rails.set(key, { label, items: [] });
+      if (matches(item, query)) rails.get(key).items.push(item);
     }
-    categoryRails.push(buildRail(type, shown));
+    if (rails.size) {
+      for (const rail of rails.values()) categoryRails.push(buildRail(rail.label, ordered(rail.items)));
+    } else {
+      categoryRails.push(buildRail("syllabi", []));
+    }
+  } else {
+    for (const type of MEDIA_TYPES) {
+      const items = byType.get(type) || [];
+      let shown = items;
+      if (state.list === "shelf") {
+        // Incoming recommendations stay pinned above the shelf cap so they are
+        // never pushed out by feed items.
+        const incoming = items.filter((item) => item.source === "suggestion");
+        const rest = items.filter((item) => item.source !== "suggestion");
+        shown = [...incoming, ...rest.slice(0, SHELF_LIMIT)];
+      }
+      categoryRails.push(buildRail(KIND_LABELS[type].toLowerCase(), shown));
+    }
   }
 
   const nowItems = ordered(pool).filter(

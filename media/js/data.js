@@ -90,6 +90,7 @@ export function normalizeItem(raw) {
     url: clean(raw && raw.url),
     spotlight: Boolean(raw && raw.spotlight),
     list: LISTS.includes(clean(raw && raw.list).toLowerCase()) ? clean(raw && raw.list).toLowerCase() : "shelf",
+    topic: clean(raw && raw.topic),
     source: clean(raw && raw.source)
   };
   if (!MEDIA_TYPES.includes(item.mediaType)) {
@@ -115,6 +116,7 @@ function fromRow(row) {
     url: row.url,
     spotlight: row.spotlight,
     list: row.list,
+    topic: row.topic,
     source: row.source
   });
 }
@@ -123,7 +125,9 @@ function fromRow(row) {
 // JSON file if the backend is unreachable.
 export async function loadEntries() {
   try {
-    const response = await fetch(`${REST}/media_entries?select=*`, { headers: AUTH_HEADERS });
+    // Newest first: the syllabi view lays its topic rails out in the order
+    // their first entry appears, so a fresh topic floats to the top.
+    const response = await fetch(`${REST}/media_entries?select=*&order=created_at.desc`, { headers: AUTH_HEADERS });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const rows = await response.json();
     if (!Array.isArray(rows)) throw new Error("unexpected payload");
@@ -205,6 +209,7 @@ function toRow(entry) {
     url: entry.url || "",
     spotlight: Boolean(entry.spotlight),
     list: entry.list || "shelf",
+    topic: entry.topic || null,
     source: entry.source || "manual",
     updated_at: new Date().toISOString()
   };
