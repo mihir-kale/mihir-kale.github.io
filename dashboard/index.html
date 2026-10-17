@@ -588,6 +588,14 @@
       .panels, .panels.projects-open { grid-template-columns: 1fr; }
       .panel + .panel { margin-top: 14px; }
       .now-panel { display: block; }
+
+      /* Header: wrap instead of squeezing, keep labels on one line, and park
+         the up-next chip on its own full-width row below the controls. */
+      .topbar { flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
+      .topbar button { white-space: nowrap; }
+      .topbar #topClock { font-size: 13px; letter-spacing: 1px; }
+      .up-next { order: 5; flex: 1 1 100%; margin-left: 0; }
+      .up-next-title { max-width: none; flex: 1 1 auto; }
     }
   </style>
 </head>
