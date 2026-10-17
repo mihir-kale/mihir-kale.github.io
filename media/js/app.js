@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261017";
-import { resolveCover } from "./covers.js?v=20261017";
-import { signIn, signOut, getSession } from "./auth.js?v=20261017";
-import { loadNowPlaying } from "./lastfm.js?v=20261017";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261017b";
+import { resolveCover } from "./covers.js?v=20261017b";
+import { signIn, signOut, getSession } from "./auth.js?v=20261017b";
+import { loadNowPlaying } from "./lastfm.js?v=20261017b";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -897,6 +897,9 @@ function currentGap() {
 function layout() {
   const width = railsEl.clientWidth;
   if (!width || !railEls.length) return;
+  // Capture before the rebuild: emptying #rails collapses the document, which
+  // clamps scroll to the top mid-function. Restored at the end.
+  const scrollY = window.scrollY;
   const gap = currentGap();
   const cols = Math.min(4, Math.max(1, Math.floor((width + gap) / (MIN_COL + gap))));
 
@@ -925,9 +928,12 @@ function layout() {
   });
 
   finalizeClamps();
+  lastLayoutWidth = window.innerWidth;
+  if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
 }
 
 let resizeTimer = null;
+let lastLayoutWidth = null;
 function scheduleLayout() {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(layout, 120);
@@ -1062,7 +1068,13 @@ searchInput.addEventListener("input", () => {
   render();
 });
 
-window.addEventListener("resize", scheduleLayout);
+window.addEventListener("resize", () => {
+  // Mobile browsers fire resize while scrolling (URL bar collapsing/expanding).
+  // Only a width change can alter the column count or gap, so leave the DOM
+  // (and the reader's scroll position) alone for height-only events.
+  if (window.innerWidth === lastLayoutWidth) return;
+  scheduleLayout();
+});
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => layout());
 }
