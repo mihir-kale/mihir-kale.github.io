@@ -20,9 +20,11 @@
     --on-accent: #06100a; --shadow: 0 0 0 1px rgba(51,255,102,.06), 0 0 18px rgba(0,0,0,.6);
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: var(--mono); font-size: 13px; line-height: 1.5;
+    display: flex; flex-direction: column; overflow: hidden;
   }
   button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
   a { color: var(--accent); }
@@ -34,14 +36,14 @@
   .gate-card .muted { text-align: center; margin: 0; }
 
   /* ---------- chrome ---------- */
-  .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 10px 20px; background: var(--bg-2); border-bottom: 1px solid var(--border); }
+  .topbar { flex: none; display: flex; align-items: center; gap: 16px; padding: 8px 16px; background: var(--bg-2); border-bottom: 1px solid var(--border); }
   .brand { font-size: 13px; font-weight: 700; letter-spacing: 3px; }
-  .tabs { display: flex; gap: 4px; flex: 1; }
-  .tab { background: none; border: 1px solid transparent; padding: 5px 12px; cursor: pointer; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--accent); border-color: var(--accent); }
-  .top-actions { display: flex; gap: 6px; align-items: center; }
-  main { max-width: 1240px; margin: 0 auto; padding: 20px; }
+  .top-actions { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+  .toolbar { flex: none; display: flex; align-items: center; gap: 12px; padding: 5px 16px; background: var(--bg); border-bottom: 1px solid var(--border); min-height: 34px; }
+  .toolbar .title { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .toolbar .count { color: var(--muted); font-size: 11px; }
+  #app { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  main { flex: 1; overflow: auto; }
 
   .btn { background: var(--card); border: 1px solid var(--border); padding: 6px 12px; cursor: pointer; color: var(--text); }
   .btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -63,39 +65,66 @@
   h2.section { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 24px 0 10px; }
   h2.section:first-child { margin-top: 0; }
 
+  /* ---------- spreadsheet ---------- */
+  .sheet { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+  .sheet th, .sheet td {
+    border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 3px 8px; height: 27px; background: var(--card);
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: left;
+    vertical-align: middle; font-weight: inherit;
+  }
+  .sheet thead th {
+    position: sticky; z-index: 10; background: var(--bg-2); color: var(--muted);
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; user-select: none;
+  }
+  .sheet thead tr.hdr th { top: 0; height: 28px; }
+  .sheet thead tr.filters th { top: 28px; height: 30px; padding: 2px 4px; cursor: default; }
+  .sheet thead tr.filters th.rn, .sheet thead tr.hdr th.rn { z-index: 12; }
+  .sheet th .si { color: var(--accent); font-size: 9px; }
+  .sheet th .rz { position: absolute; top: 0; right: -3px; width: 7px; height: 100%; cursor: col-resize; z-index: 20; }
+  .sheet th, .sheet td.rn, .sheet td.acts { position: relative; }
+  .sheet td.rn, .sheet th.rn { position: sticky; left: 0; z-index: 6; width: 38px; text-align: center; color: var(--muted); font-size: 11px; background: var(--bg-2); }
+  .sheet td.acts, .sheet th.acts { position: sticky; right: 0; z-index: 6; width: 78px; text-align: center; background: var(--bg-2); border-left: 1px solid var(--border); }
+  .sheet tbody tr:nth-child(even) td { background: var(--panel); }
+  .sheet tbody tr:hover td { background: var(--bg-2); }
+  .sheet tbody tr:nth-child(even) td.rn, .sheet tbody tr:nth-child(even) td.acts { background: var(--bg-2); }
+  .sheet tbody tr:hover td.rn, .sheet tbody tr:hover td.acts { background: var(--border); }
+  .sheet td.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .sheet td.editing { background: var(--card) !important; padding: 0; overflow: visible; }
+  .sheet td.editing .celledit {
+    width: 100%; height: 25px; border: 2px solid var(--accent); padding: 0 6px;
+    background: var(--card); color: var(--text); outline: none; font-size: 12px;
+  }
+  .sheet td.editing select.celledit { padding: 0 2px; }
+  .sheet td a { pointer-events: auto; }
+  .sheet tfoot td.addrow { color: var(--muted); cursor: pointer; background: var(--bg-2); }
+  .sheet tfoot td.addrow:hover { color: var(--accent); }
+  .sheet .ib { background: none; border: none; cursor: pointer; color: var(--muted); padding: 2px 4px; font-size: 12px; }
+  .sheet .ib:hover { color: var(--accent); }
+  .sheet .ib.danger:hover { color: var(--warn); }
+  .sheet thead tr.filters th input, .sheet thead tr.filters th select {
+    width: 100%; height: 22px; border: 1px solid var(--border); background: var(--card);
+    padding: 0 4px; font-size: 11px; color: var(--text);
+  }
+  .sheet.mini { table-layout: auto; width: 100%; margin-bottom: 6px; }
+  .sheet.mini thead th { position: static; }
+  .sheet.mini tbody tr { cursor: pointer; }
+  .sheet.mini td { height: 26px; }
+  .sheet.mini td.rn { position: static; width: auto; }
+
   /* ---------- overview ---------- */
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; padding: 14px 16px 4px; }
   .stat { background: var(--card); border: 1px solid var(--border); padding: 12px 14px; }
   .stat .n { font-size: 22px; font-weight: 700; color: var(--accent); }
   .stat .l { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-  .panel { background: var(--card); border: 1px solid var(--border); padding: 14px; }
-  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .panel { background: var(--card); border: 1px solid var(--border); padding: 10px 12px; margin: 12px 16px; }
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
   @media (max-width: 900px) { .cols-2 { grid-template-columns: 1fr; } }
-
   .row-item { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px dashed var(--border); }
   .row-item:last-child { border-bottom: none; }
   .row-item .grow { flex: 1; min-width: 0; }
   .clickable { cursor: pointer; }
   .clickable:hover { color: var(--accent); }
-
-  /* ---------- pipeline ---------- */
-  .board { display: grid; grid-template-columns: repeat(5, minmax(210px, 1fr)); gap: 12px; overflow-x: auto; }
-  .col-hdr { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 6px 8px; border-bottom: 2px solid var(--border); margin-bottom: 10px; display: flex; justify-content: space-between; }
-  .job-card { background: var(--card); border: 1px solid var(--border); padding: 10px; margin-bottom: 10px; box-shadow: var(--shadow); }
-  .job-card:hover { border-color: var(--accent); }
-  .job-card .t { font-weight: 700; }
-  .job-card .f { color: var(--muted); font-size: 12px; }
-  .job-card .meta { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
-
-  /* ---------- cards grid ---------- */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
-  .card { background: var(--card); border: 1px solid var(--border); padding: 12px 14px; box-shadow: var(--shadow); }
-  .card:hover { border-color: var(--accent-dim); }
-  .card .name { font-weight: 700; }
-  .card .sub { color: var(--muted); font-size: 12px; }
-  .card .foot { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .toolbar { display: flex; gap: 10px; margin-bottom: 14px; }
-  .toolbar input { max-width: 320px; }
 
   /* ---------- badges ---------- */
   .badge { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; border: 1px solid var(--border); color: var(--muted); }
@@ -111,12 +140,18 @@
   .dot.medium { background: var(--done); }
   .dot.high { background: var(--accent); }
 
-  /* ---------- activity ---------- */
+  /* ---------- activity rows (detail modals / overview) ---------- */
   .int-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
   .int-row:last-child { border-bottom: none; }
   .int-when { width: 130px; flex-shrink: 0; color: var(--muted); font-size: 12px; }
   .int-body { flex: 1; min-width: 0; }
   .int-actions { display: flex; gap: 4px; align-items: flex-start; }
+
+  /* ---------- sheet tabs (bottom, Excel-style) ---------- */
+  .sheettabs { flex: none; display: flex; gap: 2px; padding: 4px 10px; background: var(--bg-2); border-top: 1px solid var(--border); }
+  .sheettab { background: var(--card); border: 1px solid var(--border); border-bottom: none; padding: 4px 16px; cursor: pointer; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .sheettab:hover { color: var(--text); }
+  .sheettab.active { color: var(--accent); border-color: var(--accent); background: var(--bg); font-weight: 700; }
 
   /* ---------- modal ---------- */
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 50; overflow-y: auto; }
@@ -135,7 +170,7 @@
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin: 12px 0; }
   .detail-grid .k { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
   .prose { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--border); padding: 10px 12px; margin: 8px 0; }
-  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: var(--on-accent); padding: 10px 16px; z-index: 200; box-shadow: var(--shadow); }
+  .toast { position: fixed; bottom: 44px; right: 20px; background: var(--accent); color: var(--on-accent); padding: 10px 16px; z-index: 200; box-shadow: var(--shadow); }
   .toast.err { background: var(--warn); color: #fff; }
   .loading { color: var(--muted); padding: 40px; text-align: center; }
   [hidden] { display: none !important; }
@@ -157,23 +192,25 @@
 <div id="app" hidden>
   <header class="topbar">
     <div class="brand">RECRUITING</div>
-    <nav class="tabs" id="tabs">
-      <button class="tab" data-tab="overview">Overview</button>
-      <button class="tab" data-tab="pipeline">Pipeline</button>
-      <button class="tab" data-tab="firms">Firms</button>
-      <button class="tab" data-tab="people">People</button>
-      <button class="tab" data-tab="activity">Activity</button>
-    </nav>
     <div class="top-actions">
       <button class="btn small" data-act="new-firm">+ Firm</button>
       <button class="btn small" data-act="new-job">+ Job</button>
       <button class="btn small" data-act="new-person">+ Person</button>
       <button class="btn small primary" data-act="new-interaction">+ Log</button>
+      <button class="icon-btn" id="refreshBtn" title="Refresh">&#8635;</button>
       <button class="icon-btn" id="themeToggle" title="Toggle theme">&#9680;</button>
       <button class="icon-btn" id="signOutBtn" title="Sign out">&#9211;</button>
     </div>
   </header>
+  <div class="toolbar" id="sheetToolbar"></div>
   <main id="main"><div class="loading">Loading&hellip;</div></main>
+  <footer class="sheettabs" id="sheetTabs">
+    <button class="sheettab" data-sheet="overview">Overview</button>
+    <button class="sheettab" data-sheet="jobs">Jobs</button>
+    <button class="sheettab" data-sheet="firms">Firms</button>
+    <button class="sheettab" data-sheet="people">People</button>
+    <button class="sheettab" data-sheet="activity">Activity</button>
+  </footer>
 </div>
 
 <div id="modalRoot"></div>
@@ -212,10 +249,17 @@ const DELETE_MSG = {
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const state = {
   session: null,
-  tab: 'pipeline',
-  loading: false,
+  sheet: 'jobs',
   data: { firms: [], jobs: [], people: [], interactions: [], jobPeople: [], personFirms: [] },
-  filter: { channel: '', person: '', q: '' },
+  // per-sheet grid UI: sort, column filters, selection, column widths
+  ui: {
+    overview: { sort: null, filters: {}, sel: null, widths: {} },
+    jobs:     { sort: { k: 'application_deadline', dir: 1 }, filters: {}, sel: null, widths: {} },
+    firms:    { sort: { k: 'name', dir: 1 }, filters: {}, sel: null, widths: {} },
+    people:   { sort: { k: 'name', dir: 1 }, filters: {}, sel: null, widths: {} },
+    activity: { sort: { k: 'occurred_at', dir: -1 }, filters: {}, sel: null, widths: {} },
+  },
+  editing: null, // { td, sheet, k, rowId }
 };
 const $ = id => document.getElementById(id);
 
@@ -445,7 +489,427 @@ $('themeToggle').addEventListener('click', () => {
   document.documentElement.setAttribute('data-theme', cur);
   localStorage.setItem('personalOSTheme', cur);
 });
+// ============================================================
+// SHEET DEFINITIONS (column model per sheet)
+// col: { k, label, w, type, values?, ref?, required?, calc?, sortable? }
+//   type: text | url | tags | enum | date | datetime | number | fk | calc
+//   ref:  related table for fk selects (firms/people/jobs)
+//   calc: read-only computed display fn
+// ============================================================
+const SHEETS = {
+  jobs: {
+    label: 'Jobs', table: 'jobs', list: 'jobs',
+    newAct: 'new-job', viewAct: 'view-job', editAct: 'edit-job', delAct: 'del-job', delLabel: 'job',
+    columns: [
+      { k: 'title', label: 'Title', w: 240, type: 'text', required: true },
+      { k: 'firm_id', label: 'Firm', w: 150, type: 'fk', ref: 'firms', refLabel: 'name', required: true },
+      { k: 'application_status', label: 'Status', w: 120, type: 'enum', values: APP_STATUS, required: true, badge: true },
+      { k: 'posting_status', label: 'Posting', w: 100, type: 'enum', values: POSTING, required: true },
+      { k: 'interest_level', label: 'Interest', w: 90, type: 'enum', values: INTEREST, required: true, dot: true },
+      { k: 'application_deadline', label: 'Deadline', w: 130, type: 'datetime', deadline: true },
+      { k: 'applied_at', label: 'Applied', w: 130, type: 'datetime' },
+      { k: 'posted_at', label: 'Posted', w: 110, type: 'date' },
+      { k: 'program_year', label: 'Year', w: 70, type: 'number' },
+      { k: 'department', label: 'Department', w: 130, type: 'text' },
+      { k: 'location', label: 'Location', w: 140, type: 'text' },
+      { k: 'work_arrangement', label: 'Arrangement', w: 110, type: 'enum', values: WORK_ARR },
+      { k: 'employment_type', label: 'Type', w: 110, type: 'enum', values: EMP_TYPE },
+      { k: 'tags', label: 'Tags', w: 160, type: 'tags' },
+      { k: 'fit_notes', label: 'Fit notes', w: 220, type: 'text' },
+      { k: 'notes', label: 'Notes', w: 200, type: 'text' },
+    ],
+  },
+  firms: {
+    label: 'Firms', table: 'firms', list: 'firms',
+    newAct: 'new-firm', viewAct: 'view-firm', editAct: 'edit-firm', delAct: 'del-firm', delLabel: 'firm',
+    columns: [
+      { k: 'name', label: 'Name', w: 220, type: 'text', required: true },
+      { k: 'industry', label: 'Industry', w: 150, type: 'text' },
+      { k: 'location', label: 'Location', w: 150, type: 'text' },
+      { k: 'interest_level', label: 'Interest', w: 90, type: 'enum', values: INTEREST, required: true, dot: true },
+      { k: '_jobs', label: 'Jobs', w: 60, type: 'calc', calc: f => state.data.jobs.filter(j => j.firm_id === f.id).length },
+      { k: '_contacts', label: 'Contacts', w: 80, type: 'calc', calc: f => state.data.personFirms.filter(p => p.firm_id === f.id).length },
+      { k: 'website_url', label: 'Website', w: 180, type: 'url' },
+      { k: 'careers_url', label: 'Careers', w: 180, type: 'url' },
+      { k: 'linkedin_url', label: 'LinkedIn', w: 180, type: 'url' },
+      { k: 'tags', label: 'Tags', w: 150, type: 'tags' },
+      { k: 'description', label: 'Description', w: 220, type: 'text' },
+      { k: 'interest_reason', label: 'Why interested', w: 220, type: 'text' },
+      { k: 'notes', label: 'Notes', w: 200, type: 'text' },
+    ],
+  },
+  people: {
+    label: 'People', table: 'people', list: 'people',
+    newAct: 'new-person', viewAct: 'view-person', editAct: 'edit-person', delAct: 'del-person', delLabel: 'person',
+    columns: [
+      { k: 'name', label: 'Name', w: 180, type: 'text', required: true },
+      { k: 'contact', label: 'Role', w: 160, type: 'text' },
+      { k: '_firms', label: 'Firms', w: 180, type: 'calc', calc: p => (p.firms || []).map(x => x.firm ? x.firm.name : '').filter(Boolean).join(', ') },
+      { k: 'email', label: 'Email', w: 190, type: 'text' },
+      { k: 'phone', label: 'Phone', w: 140, type: 'text' },
+      { k: 'linkedin_url', label: 'LinkedIn', w: 180, type: 'url' },
+      { k: 'location', label: 'Location', w: 140, type: 'text' },
+      { k: 'how_met', label: 'How met', w: 150, type: 'text' },
+      { k: 'next_action', label: 'Next action', w: 180, type: 'text' },
+      { k: 'follow_up_after', label: 'Follow up', w: 120, type: 'date', followUp: true },
+      { k: '_last_interaction', label: 'Last interaction', w: 140, type: 'calc', calc: p => p.last_interaction_at ? fmtDateTime(p.last_interaction_at) : '' },
+      { k: 'tags', label: 'Tags', w: 150, type: 'tags' },
+      { k: 'description', label: 'Description', w: 220, type: 'text' },
+      { k: 'relationship_notes', label: 'Relationship notes', w: 220, type: 'text' },
+    ],
+  },
+  activity: {
+    label: 'Activity', table: 'interactions', list: 'interactions',
+    newAct: 'new-interaction', viewAct: null, editAct: 'edit-interaction', delAct: 'del-interaction', delLabel: 'interaction',
+    columns: [
+      { k: 'occurred_at', label: 'When', w: 150, type: 'datetime', required: true },
+      { k: 'person_id', label: 'Person', w: 150, type: 'fk', ref: 'people', refLabel: 'name', required: true },
+      { k: 'firm_id', label: 'Firm', w: 150, type: 'fk', ref: 'firms', refLabel: 'name' },
+      { k: 'job_id', label: 'Job', w: 180, type: 'fk', ref: 'jobs', refLabel: 'title' },
+      { k: 'channel', label: 'Channel', w: 110, type: 'enum', values: CHANNELS, required: true, badge: true },
+      { k: 'direction', label: 'Direction', w: 100, type: 'enum', values: DIRECTIONS, required: true },
+      { k: 'subject', label: 'Subject', w: 200, type: 'text' },
+      { k: 'summary', label: 'Summary', w: 280, type: 'text' },
+      { k: 'outcome', label: 'Outcome', w: 180, type: 'text' },
+      { k: 'commitments', label: 'Commitments', w: 180, type: 'text' },
+      { k: 'source', label: 'Source', w: 90, type: 'text' },
+    ],
+  },
+};
 
+// ============================================================
+// CELL VALUE / DISPLAY
+// ============================================================
+function rawValue(col, row) {
+  if (col.type === 'calc') return col.calc(row);
+  return row[col.k];
+}
+
+function refRow(col, id) {
+  if (!id) return null;
+  return state.data[col.ref].find(r => r.id === id) || null;
+}
+
+function cellDisplay(col, row) {
+  const v = rawValue(col, row);
+  if (col.type === 'calc') return esc(str(v));
+  if (v === null || v === undefined || v === '') return '';
+  if (col.type === 'fk') {
+    const r = refRow(col, v);
+    return esc(r ? str(r[col.refLabel]) : str(v));
+  }
+  if (col.type === 'enum') {
+    if (col.badge) return badge(v);
+    if (col.dot) return dot(v);
+    return esc(fmtEnum(v));
+  }
+  if (col.type === 'tags') return chips(v);
+  if (col.type === 'url') return '<a href="' + esc(v) + '" target="_blank" rel="noopener" title="' + esc(v) + '">' + esc(String(v).replace(/^https?:\/\//, '').slice(0, 40)) + '</a>';
+  if (col.type === 'date') {
+    if (col.followUp) {
+      const over = daysUntil(v + 'T12:00') < 0;
+      return '<span class="chip' + (over ? ' overdue' : '') + '">' + esc(fmtDate(v)) + '</span>';
+    }
+    return esc(fmtDate(v));
+  }
+  if (col.type === 'datetime') {
+    if (col.deadline) return deadlineChip(v) || esc(fmtDateTime(v));
+    return esc(fmtDateTime(v));
+  }
+  return esc(str(v));
+}
+
+// Text used for filtering + sorting (strip markup, normalize enums).
+function cellSortKey(col, row) {
+  const v = rawValue(col, row);
+  if (v === null || v === undefined) return '';
+  if (col.type === 'fk') { const r = refRow(col, v); return r ? str(r[col.refLabel]) : str(v); }
+  if (col.type === 'tags') return (v || []).join(' ');
+  if (col.type === 'calc') return str(v);
+  if (col.type === 'enum') return str(v);
+  return str(v);
+}
+
+function sortRows(sheet, rows) {
+  const ui = state.ui[sheet];
+  if (!ui.sort) return rows;
+  const col = SHEETS[sheet].columns.find(c => c.k === ui.sort.k);
+  if (!col) return rows;
+  const dir = ui.sort.dir;
+  return [...rows].sort((a, b) => {
+    let va = cellSortKey(col, a), vb = cellSortKey(col, b);
+    if (col.type === 'number') { va = Number(va) || 0; vb = Number(vb) || 0; return (va - vb) * dir; }
+    if (col.type === 'date' || col.type === 'datetime') {
+      // raw value for reliable date compare
+      const ra = rawValue(col, a), rb = rawValue(col, b);
+      if (!ra && !rb) return 0;
+      if (!ra) return 1; // nulls last always
+      if (!rb) return -1;
+      return (new Date(ra) - new Date(rb)) * dir;
+    }
+    return va.localeCompare(vb, undefined, { numeric: true, sensitivity: 'base' }) * dir;
+  });
+}
+
+function filterRows(sheet, rows) {
+  const ui = state.ui[sheet];
+  const active = Object.entries(ui.filters).filter(([, v]) => v !== '' && v != null);
+  if (!active.length) return rows;
+  return rows.filter(row =>
+    active.every(([k, fv]) => {
+      const col = SHEETS[sheet].columns.find(c => c.k === k);
+      if (!col) return true;
+      const hay = cellSortKey(col, row).toLowerCase();
+      return hay.includes(String(fv).toLowerCase());
+    })
+  );
+}
+
+// ============================================================
+// GRID RENDER
+// ============================================================
+const ROW_H = 27;
+
+function renderSheet(main) {
+  const sheet = state.sheet;
+  const def = SHEETS[sheet];
+  const ui = state.ui[sheet];
+  const all = state.data[def.list];
+  const rows = sortRows(sheet, filterRows(sheet, all));
+
+  // toolbar
+  $('sheetToolbar').innerHTML =
+    '<span class="title">' + esc(def.label) + '</span>' +
+    '<span class="count">' + rows.length + (rows.length !== all.length ? ' of ' + all.length : '') + ' rows</span>' +
+    (rows.length !== all.length ? '<button class="btn small ghost" data-act="clear-filters">Clear filters</button>' : '') +
+    '<span style="flex:1"></span>' +
+    '<button class="btn small primary" data-act="' + def.newAct + '">+ New</button>';
+
+  const cols = def.columns;
+  let html = '<table class="sheet" id="grid" style="min-width:' + (cols.reduce((s, c) => s + (ui.widths[c.k] || c.w), 0) + 38 + 78) + 'px">';
+  html += '<colgroup><col style="width:38px">' +
+    cols.map(c => '<col data-col="' + esc(c.k) + '" style="width:' + (ui.widths[c.k] || c.w) + 'px">').join('') +
+    '<col style="width:78px"></colgroup>';
+
+  // header row (sortable, resizable)
+  html += '<thead><tr class="hdr"><th class="rn"></th>';
+  for (const c of cols) {
+    const active = ui.sort && ui.sort.k === c.k;
+    const arrow = active ? (ui.sort.dir === 1 ? ' &#9650;' : ' &#9660;') : '';
+    html += '<th data-col="' + esc(c.k) + '" title="Click to sort · drag edge to resize">' +
+      esc(c.label) + '<span class="si">' + arrow + '</span>' +
+      '<span class="rz" data-col="' + esc(c.k) + '"></span></th>';
+  }
+  html += '<th class="acts"></th></tr>';
+
+  // filter row
+  html += '<tr class="filters"><th class="rn"></th>';
+  for (const c of cols) {
+    const fv = str(ui.filters[c.k] || '');
+    if (c.type === 'enum' || c.type === 'fk') {
+      const options = c.type === 'enum'
+        ? c.values.map(v => ({ v, l: fmtEnum(v) }))
+        : state.data[c.ref].map(r => ({ v: r[c.refLabel] || r.id, l: r[c.refLabel] || r.id }));
+      html += '<th><select data-filter="' + esc(c.k) + '"><option value=""></option>' +
+        options.map(o => '<option value="' + esc(o.l) + '"' + (fv === o.l ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') +
+        '</select></th>';
+    } else {
+      html += '<th><input data-filter="' + esc(c.k) + '" value="' + esc(fv) + '" placeholder=" "></th>';
+    }
+  }
+  html += '<th class="acts"></th></tr></thead>';
+
+  // body
+  html += '<tbody>';
+  rows.forEach((row, ri) => {
+    html += '<tr data-rid="' + esc(row.id) + '">';
+    html += '<td class="rn">' + (ri + 1) + '</td>';
+    for (const c of cols) {
+      html += '<td class="cell" data-col="' + esc(c.k) + '" data-rid="' + esc(row.id) + '"' +
+        (c.type === 'calc' ? ' data-ro="1"' : '') + '>' + cellDisplay(c, row) + '</td>';
+    }
+    html += '<td class="acts">';
+    if (def.viewAct) html += '<button class="ib" data-act="' + def.viewAct + '" data-id="' + esc(row.id) + '" title="View">&#128065;</button>';
+    html += '<button class="ib" data-act="' + def.editAct + '" data-id="' + esc(row.id) + '" title="Edit form">&#9998;</button>';
+    html += '<button class="ib danger" data-act="' + def.delAct + '" data-id="' + esc(row.id) + '" title="Delete">&#10005;</button>';
+    html += '</td></tr>';
+  });
+  html += '</tbody>';
+
+  // add-row footer
+  html += '<tfoot><tr><td class="rn">+</td><td colspan="' + (cols.length + 1) + '" class="addrow" data-act="' + def.newAct + '">+ Add row</td></tr></tfoot>';
+  html += '</table>';
+
+  main.innerHTML = html;
+  applySelection();
+}
+
+// ---------- selection ----------
+function applySelection() {
+  document.querySelectorAll('#grid td.sel').forEach(td => td.classList.remove('sel'));
+  const ui = state.ui[state.sheet];
+  if (!ui.sel) return;
+  const td = document.querySelector('#grid td.cell[data-rid="' + ui.sel.rid + '"][data-col="' + ui.sel.col + '"]');
+  if (td) {
+    td.classList.add('sel');
+    td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  } else {
+    ui.sel = null;
+  }
+}
+
+function selectCell(rid, col, scroll) {
+  state.ui[state.sheet].sel = { rid, col };
+  const td = document.querySelector('#grid td.cell[data-rid="' + rid + '"][data-col="' + col + '"]');
+  document.querySelectorAll('#grid td.sel').forEach(x => x.classList.remove('sel'));
+  if (td) {
+    td.classList.add('sel');
+    if (scroll) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+}
+
+function visibleCells() {
+  return Array.from(document.querySelectorAll('#grid tbody td.cell'));
+}
+
+function moveSelection(dRow, dCol) {
+  const ui = state.ui[state.sheet];
+  const cells = visibleCells();
+  if (!cells.length) return;
+  const def = SHEETS[state.sheet];
+  const cols = def.columns.map(c => c.k);
+  if (!ui.sel) { selectCell(cells[0].dataset.rid, cols[0], true); return; }
+  const rowIds = [...new Set(cells.map(c => c.dataset.rid))];
+  let ri = rowIds.indexOf(ui.sel.rid);
+  let ci = cols.indexOf(ui.sel.col);
+  if (ri < 0) ri = 0;
+  if (ci < 0) ci = 0;
+  ri = Math.max(0, Math.min(rowIds.length - 1, ri + dRow));
+  ci = Math.max(0, Math.min(cols.length - 1, ci + dCol));
+  selectCell(rowIds[ri], cols[ci], true);
+}
+
+// ============================================================
+// INLINE EDITING (single-cell PATCH)
+// ============================================================
+function beginEdit(td, initialKey) {
+  if (!td || td.dataset.ro) return;
+  if (state.editing) commitEdit(false);
+  const sheet = state.sheet;
+  const def = SHEETS[sheet];
+  const col = def.columns.find(c => c.k === td.dataset.col);
+  if (!col || col.type === 'calc') return;
+  const row = state.data[def.list].find(r => r.id === td.dataset.rid);
+  if (!row) return;
+
+  const raw = row[col.k];
+  let editor;
+  if (col.type === 'enum' || col.type === 'fk') {
+    editor = document.createElement('select');
+    const options = col.type === 'enum'
+      ? col.values.map(v => ({ v, l: fmtEnum(v) }))
+      : state.data[col.ref].map(r => ({ v: r.id, l: r[col.refLabel] }));
+    if (!col.required) editor.add(new Option('—', ''), null);
+    for (const o of options) editor.add(new Option(o.l, o.v), null);
+    editor.value = raw == null ? '' : String(raw);
+  } else if (col.type === 'datetime') {
+    editor = document.createElement('input');
+    editor.type = 'datetime-local';
+    editor.value = toLocalInput(raw);
+  } else if (col.type === 'date') {
+    editor = document.createElement('input');
+    editor.type = 'date';
+    editor.value = str(raw);
+  } else if (col.type === 'number') {
+    editor = document.createElement('input');
+    editor.type = 'number';
+    editor.value = str(raw);
+  } else {
+    editor = document.createElement('input');
+    editor.type = 'text';
+    editor.value = col.type === 'tags' ? (raw || []).join(', ') : str(raw);
+  }
+  editor.className = 'celledit';
+  td.classList.add('editing');
+  td.textContent = '';
+  td.appendChild(editor);
+  editor.focus();
+  if (initialKey && editor.tagName === 'INPUT') {
+    editor.value = initialKey;
+    editor.setSelectionRange(editor.value.length, editor.value.length);
+  } else if (editor.tagName === 'INPUT') {
+    editor.select();
+  }
+  state.editing = { td, sheet, k: col.k, rowId: row.id };
+
+  editor.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
+    else if (e.key === 'Enter') { e.preventDefault(); commitEdit(true); moveSelection(1, 0); }
+    else if (e.key === 'Tab') { e.preventDefault(); commitEdit(true); moveSelection(0, e.shiftKey ? -1 : 1); }
+    e.stopPropagation();
+  });
+  editor.addEventListener('blur', () => { if (state.editing && state.editing.td === td) commitEdit(false); });
+  if (editor.tagName === 'SELECT') editor.addEventListener('change', () => commitEdit(true));
+}
+
+function cancelEdit() {
+  if (!state.editing) return;
+  const { td } = state.editing;
+  state.editing = null;
+  td.classList.remove('editing');
+  td.textContent = '';
+  const sheet = state.sheet;
+  const def = SHEETS[sheet];
+  const col = def.columns.find(c => c.k === td.dataset.col);
+  const row = state.data[def.list].find(r => r.id === td.dataset.rid);
+  if (col && row) td.innerHTML = cellDisplay(col, row);
+}
+
+function commitEdit(andRender) {
+  if (!state.editing) return Promise.resolve();
+  const { td, k, rowId } = state.editing;
+  const sheet = state.editing.sheet;
+  state.editing = null;
+  const def = SHEETS[sheet];
+  const col = def.columns.find(c => c.k === k);
+  const row = state.data[def.list].find(r => r.id === rowId);
+  const editor = td.querySelector('.celledit');
+  td.classList.remove('editing');
+  if (!col || !row || !editor) return Promise.resolve();
+
+  // coerce
+  let val;
+  if (col.type === 'enum' || col.type === 'fk') val = editor.value === '' ? null : editor.value;
+  else if (col.type === 'datetime') val = editor.value === '' ? null : new Date(editor.value).toISOString();
+  else if (col.type === 'date') val = editor.value === '' ? null : editor.value;
+  else if (col.type === 'number') val = editor.value === '' ? null : Number(editor.value);
+  else if (col.type === 'tags') val = editor.value.split(/[,\n]/).map(s => s.trim()).filter(Boolean);
+  else val = editor.value.trim(); // text/url: '' safe for NOT NULL text cols
+
+  const oldRaw = row[k];
+  const same = JSON.stringify(oldRaw == null ? null : oldRaw) === JSON.stringify(val);
+  if (same) {
+    td.innerHTML = cellDisplay(col, row);
+    return Promise.resolve();
+  }
+  if (col.required && (val === null || val === '')) {
+    toast(col.label + ' is required', true);
+    td.innerHTML = cellDisplay(col, row);
+    return Promise.resolve();
+  }
+
+  td.innerHTML = cellDisplay(col, row); // optimistic
+  state.lastTable = def.table;
+  return saveRow(def.table, { [k]: val }, rowId).then(() => {
+    row[k] = val;
+    if (sheet === 'people' && (k === 'name')) { /* label propagates via fk lookup next load */ }
+    toast('Saved ' + col.label.toLowerCase());
+    if (andRender) render();
+  }).catch(err => {
+    td.innerHTML = cellDisplay(col, row); // revert
+    toast(friendlyError(err), true);
+  });
+}
 // ============================================================
 // MODAL
 // ============================================================
@@ -670,7 +1134,6 @@ function personFirmFields(r, preset) {
     { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
   ];
 }
-
 // ============================================================
 // DETAIL MODALS
 // ============================================================
@@ -851,14 +1314,19 @@ function openPersonDetail(id) {
     '<button class="btn" data-act="new-interaction" data-person="' + esc(p.id) + '">+ Log</button>' +
     '<button class="btn primary" data-act="edit-person" data-id="' + esc(p.id) + '">Edit</button>');
 }
-
 // ============================================================
 // RENDER
 // ============================================================
 function render() {
-  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === state.tab));
+  document.querySelectorAll('.sheettab').forEach(b => b.classList.toggle('active', b.dataset.sheet === state.sheet));
   const main = $('main');
-  ({ overview: renderOverview, pipeline: renderPipeline, firms: renderFirms, people: renderPeople, activity: renderActivity })[state.tab](main);
+  if (state.sheet === 'overview') {
+    $('sheetToolbar').innerHTML = '<span class="title">Overview</span><span style="flex:1"></span>' +
+      '<button class="btn small primary" data-act="new-interaction">+ Log interaction</button>';
+    renderOverview(main);
+  } else {
+    renderSheet(main);
+  }
 }
 
 function renderOverview(main) {
@@ -876,144 +1344,181 @@ function renderOverview(main) {
   html += '</div>';
 
   const upcoming = jobs.filter(j => j.application_deadline && !['rejected', 'withdrawn'].includes(j.application_status))
-    .sort((a, b) => new Date(a.application_deadline) - new Date(b.application_deadline)).slice(0, 7);
+    .sort((a, b) => new Date(a.application_deadline) - new Date(b.application_deadline)).slice(0, 10);
   const stale = jobs.filter(j => j.application_status === 'interested' &&
     !state.data.interactions.some(i => i.job_id === j.id));
-  const recent = interactions.slice(0, 6);
+  const recent = interactions.slice(0, 8);
 
-  html += '<div class="cols-2" style="margin-top:16px">';
+  // Upcoming deadlines — mini table
   html += '<div class="panel"><h2 class="section">Upcoming deadlines</h2>';
-  html += upcoming.length ? upcoming.map(j =>
-    '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(j.id) + '">' + esc(j.title) + '</span>' +
-    '<span class="muted">' + esc(j.firm ? j.firm.name : '') + '</span>' + deadlineChip(j.application_deadline) + '</div>').join('')
-    : '<div class="muted">No deadlines set.</div>';
-  html += '<h2 class="section">Interested, no contact yet (' + stale.length + ')</h2>';
-  html += stale.length ? stale.map(j =>
-    '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(j.id) + '">' + esc(j.title) + '</span>' +
-    '<span class="muted">' + esc(j.firm ? j.firm.name : '') + '</span></div>').join('')
-    : '<div class="muted">All interested jobs have activity.</div>';
-  html += '</div>';
-
-  html += '<div class="panel"><h2 class="section">Recent activity</h2>';
-  html += recent.length ? recent.map(i => interactionRowHtml(i, false)).join('') : '<div class="muted">Nothing logged yet.</div>';
-  html += '</div></div>';
-  main.innerHTML = html;
-}
-
-function renderPipeline(main) {
-  const cols = [
-    { label: 'Interested', match: j => j.application_status === 'interested' },
-    { label: 'Applied', match: j => j.application_status === 'applied' },
-    { label: 'Interviewing', match: j => j.application_status === 'interviewing' },
-    { label: 'Offer', match: j => j.application_status === 'offer' },
-    { label: 'Closed', match: j => ['rejected', 'withdrawn'].includes(j.application_status) },
-  ];
-  let html = '<div class="board">';
-  for (const c of cols) {
-    const list = state.data.jobs.filter(c.match)
-      .sort((a, b) => (a.application_deadline || '9999') < (b.application_deadline || '9999') ? -1 : 1);
-    html += '<div><div class="col-hdr"><span>' + esc(c.label) + '</span><span>' + list.length + '</span></div>';
-    for (const j of list) {
-      html += '<div class="job-card clickable" data-act="view-job" data-id="' + esc(j.id) + '">' +
-        '<div class="t">' + esc(j.title) + '</div>' +
-        '<div class="f">' + esc(j.firm ? j.firm.name : '') + (j.location ? ' · ' + esc(j.location) : '') + '</div>' +
-        '<div class="meta">' + deadlineChip(j.application_deadline) + dot(j.interest_level) + (j.tags || []).map(t => '<span class="chip">' + esc(t) + '</span>').join('') + '</div>' +
-      '</div>';
+  if (upcoming.length) {
+    html += '<table class="sheet mini"><thead><tr><th>Job</th><th>Firm</th><th>Status</th><th>Deadline</th></tr></thead><tbody>';
+    for (const j of upcoming) {
+      html += '<tr data-act="view-job" data-id="' + esc(j.id) + '">' +
+        '<td>' + esc(j.title) + '</td>' +
+        '<td>' + esc(j.firm ? j.firm.name : '') + '</td>' +
+        '<td>' + badge(j.application_status) + '</td>' +
+        '<td>' + deadlineChip(j.application_deadline) + '</td></tr>';
     }
-    if (!list.length) html += '<div class="muted" style="padding:8px">—</div>';
-    html += '</div>';
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="muted">No deadlines set.</div>';
   }
   html += '</div>';
-  main.innerHTML = html;
-}
 
-function renderFirms(main) {
-  const firms = [...state.data.firms].sort((a, b) => a.name.localeCompare(b.name));
-  let html = '<div class="toolbar"><input id="firmSearch" type="search" placeholder="Filter firms…"></div><div class="grid" id="firmGrid">';
-  for (const f of firms) {
-    const nj = state.data.jobs.filter(j => j.firm_id === f.id).length;
-    const np = state.data.personFirms.filter(p => p.firm_id === f.id).length;
-    const hay = [f.name, f.industry, f.location, (f.tags || []).join(' ')].join(' ').toLowerCase();
-    html += '<div class="card clickable" data-act="view-firm" data-id="' + esc(f.id) + '" data-search="' + esc(hay) + '">' +
-      '<div class="name">' + esc(f.name) + '</div>' +
-      '<div class="sub">' + esc([f.industry, f.location].filter(Boolean).join(' · ')) + '</div>' +
-      '<div class="foot">' + dot(f.interest_level) + '<span class="chip">' + nj + ' job' + (nj === 1 ? '' : 's') + '</span><span class="chip">' + np + ' contact' + (np === 1 ? '' : 's') + '</span></div>' +
-    '</div>';
+  // Stale interested — mini table
+  html += '<div class="panel"><h2 class="section">Interested, no contact yet (' + stale.length + ')</h2>';
+  if (stale.length) {
+    html += '<table class="sheet mini"><thead><tr><th>Job</th><th>Firm</th><th>Year</th></tr></thead><tbody>';
+    for (const j of stale) {
+      html += '<tr data-act="view-job" data-id="' + esc(j.id) + '">' +
+        '<td>' + esc(j.title) + '</td>' +
+        '<td>' + esc(j.firm ? j.firm.name : '') + '</td>' +
+        '<td>' + esc(str(j.program_year)) + '</td></tr>';
+    }
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="muted">All interested jobs have activity.</div>';
   }
   html += '</div>';
-  main.innerHTML = html;
-  main.querySelector('#firmSearch').addEventListener('input', e => {
-    const v = e.target.value.toLowerCase();
-    main.querySelectorAll('#firmGrid .card').forEach(c => { c.hidden = v && !c.dataset.search.includes(v); });
-  });
-}
 
-function renderPeople(main) {
-  const people = [...state.data.people].sort((a, b) => a.name.localeCompare(b.name));
-  let html = '<div class="toolbar"><input id="peopleSearch" type="search" placeholder="Filter people…"></div><div class="grid" id="peopleGrid">';
-  for (const p of people) {
-    const firmNames = (p.firms || []).map(x => x.firm ? x.firm.name : '').filter(Boolean).join(', ');
-    const overdue = p.follow_up_after && daysUntil(p.follow_up_after + 'T12:00') < 0;
-    const hay = [p.name, p.contact, p.location, firmNames, (p.tags || []).join(' '), p.how_met].join(' ').toLowerCase();
-    html += '<div class="card clickable" data-act="view-person" data-id="' + esc(p.id) + '" data-search="' + esc(hay) + '">' +
-      '<div class="name">' + esc(p.name) + '</div>' +
-      '<div class="sub">' + esc([p.contact, firmNames].filter(Boolean).join(' · ')) + '</div>' +
-      '<div class="foot">' +
-        (p.last_interaction_at ? '<span class="chip">last ' + esc(fmtDate(p.last_interaction_at)) + '</span>' : '') +
-        (p.follow_up_after ? '<span class="chip ' + (overdue ? 'overdue' : '') + '">follow up ' + esc(fmtDate(p.follow_up_after)) + '</span>' : '') +
-        (p.next_action ? '<span class="chip">' + esc(p.next_action) + '</span>' : '') +
-      '</div>' +
-    '</div>';
+  // Recent activity — mini table
+  html += '<div class="panel"><h2 class="section">Recent activity</h2>';
+  if (recent.length) {
+    html += '<table class="sheet mini"><thead><tr><th>When</th><th>Person</th><th>Channel</th><th>Summary</th></tr></thead><tbody>';
+    for (const i of recent) {
+      html += '<tr data-act="view-person" data-id="' + esc(i.person_id) + '">' +
+        '<td>' + esc(fmtDateTime(i.occurred_at)) + '</td>' +
+        '<td>' + esc(i.person ? i.person.name : '?') + '</td>' +
+        '<td>' + badge(i.channel) + '</td>' +
+        '<td style="white-space:normal">' + esc((i.summary || '').slice(0, 120)) + '</td></tr>';
+    }
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="muted">Nothing logged yet.</div>';
   }
   html += '</div>';
+
   main.innerHTML = html;
-  main.querySelector('#peopleSearch').addEventListener('input', e => {
-    const v = e.target.value.toLowerCase();
-    main.querySelectorAll('#peopleGrid .card').forEach(c => { c.hidden = v && !c.dataset.search.includes(v); });
-  });
 }
 
-function renderActivity(main) {
-  const f = state.filter;
-  const personOpts = [{ v: '', l: 'All people' }].concat(state.data.people.map(p => ({ v: p.id, l: p.name })));
-  const channelOpts = [{ v: '', l: 'All channels' }].concat(opts(CHANNELS));
-  let html = '<div class="toolbar">' +
-    '<input id="actSearch" type="search" placeholder="Search interactions…" value="' + esc(f.q) + '">' +
-    '<select id="actPerson" style="max-width:200px">' + personOpts.map(o => '<option value="' + esc(o.v) + '"' + (o.v === f.person ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') + '</select>' +
-    '<select id="actChannel" style="max-width:200px">' + channelOpts.map(o => '<option value="' + esc(o.v) + '"' + (o.v === f.channel ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') + '</select>' +
-  '</div><div class="panel" id="actList">';
-  const list = state.data.interactions;
-  html += list.length ? list.map(i => {
-    const hay = [i.summary, i.subject, i.outcome, i.commitments, i.person ? i.person.name : '', i.firm ? i.firm.name : '', i.job ? i.job.title : ''].join(' ').toLowerCase();
-    return '<div data-channel="' + esc(i.channel) + '" data-person="' + esc(i.person_id) + '" data-search="' + esc(hay) + '">' + interactionRowHtml(i, true) + '</div>';
-  }).join('') : '<div class="muted">No interactions logged. Use <b>+ Log</b> to record one.</div>';
-  html += '</div>';
-  main.innerHTML = html;
+// ============================================================
+// GRID INTERACTION (delegated — survives re-renders)
+// ============================================================
+// sheet tab switching
+$('sheetTabs').addEventListener('click', e => {
+  const b = e.target.closest('.sheettab');
+  if (!b) return;
+  if (state.editing) commitEdit(false);
+  state.sheet = b.dataset.sheet;
+  render();
+});
 
-  const applyFilter = () => {
-    const q = $('actSearch').value.toLowerCase();
-    const ch = $('actChannel').value;
-    const per = $('actPerson').value;
-    state.filter = { q, channel: ch, person: per };
-    main.querySelectorAll('#actList > div[data-search]').forEach(row => {
-      row.hidden = (ch && row.dataset.channel !== ch) || (per && row.dataset.person !== per) || (q && !row.dataset.search.includes(q));
-    });
-  };
-  main.querySelector('#actSearch').addEventListener('input', applyFilter);
-  main.querySelector('#actChannel').addEventListener('change', applyFilter);
-  main.querySelector('#actPerson').addEventListener('change', applyFilter);
-}
+$('refreshBtn').addEventListener('click', () => refresh().catch(e => toast(friendlyError(e), true)));
+
+// sort by header click
+document.addEventListener('click', e => {
+  const th = e.target.closest('#grid thead tr.hdr th[data-col]');
+  if (!th || !state.session) return;
+  if (state.editing) commitEdit(false);
+  const ui = state.ui[state.sheet];
+  const k = th.dataset.col;
+  if (ui.sort && ui.sort.k === k) {
+    ui.sort = ui.sort.dir === 1 ? { k, dir: -1 } : null;
+  } else {
+    ui.sort = { k, dir: 1 };
+  }
+  render();
+});
+
+// column filter inputs
+let filterTimer = null;
+document.addEventListener('input', e => {
+  const inp = e.target.closest('#grid thead [data-filter]');
+  if (!inp || !state.session) return;
+  const k = inp.dataset.filter;
+  clearTimeout(filterTimer);
+  filterTimer = setTimeout(() => {
+    state.ui[state.sheet].filters[k] = inp.value;
+    const pos = inp.selectionStart;
+    render();
+    const again = document.querySelector('#grid thead [data-filter="' + k + '"]');
+    if (again) { again.focus(); try { again.setSelectionRange(pos, pos); } catch (_) {} }
+  }, 220);
+});
+document.addEventListener('change', e => {
+  const sel = e.target.closest('#grid thead select[data-filter]');
+  if (!sel || !state.session) return;
+  state.ui[state.sheet].filters[sel.dataset.filter] = sel.value;
+  render();
+});
+
+// cell click = select; dblclick = edit
+document.addEventListener('click', e => {
+  const td = e.target.closest('#grid tbody td.cell');
+  if (!td || !state.session) return;
+  if (e.target.closest('a')) return; // let links work
+  selectCell(td.dataset.rid, td.dataset.col, false);
+});
+
+document.addEventListener('dblclick', e => {
+  const td = e.target.closest('#grid tbody td.cell');
+  if (!td || !state.session) return;
+  beginEdit(td);
+});
+
+// keyboard: arrows move, Enter edits, typing starts edit, Esc commits/cancels
+document.addEventListener('keydown', e => {
+  if (!state.session || state.editing) return;
+  if ($('modalRoot').innerHTML) return;
+  if (e.target.closest('input, select, textarea')) return;
+  const ui = state.ui[state.sheet];
+  if (state.sheet === 'overview') return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); moveSelection(1, 0); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); moveSelection(-1, 0); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); moveSelection(0, 1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); moveSelection(0, -1); }
+  else if (e.key === 'Enter' && ui.sel) {
+    e.preventDefault();
+    const td = document.querySelector('#grid td.cell[data-rid="' + ui.sel.rid + '"][data-col="' + ui.sel.col + '"]');
+    beginEdit(td);
+  } else if (e.key === 'Delete' && ui.sel && e.shiftKey) {
+    e.preventDefault();
+    const def = SHEETS[state.sheet];
+    const row = state.data[def.list].find(r => r.id === ui.sel.rid);
+    if (row) doDelete(def.table, row.id, def.delLabel);
+  } else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && ui.sel) {
+    const td = document.querySelector('#grid td.cell[data-rid="' + ui.sel.rid + '"][data-col="' + ui.sel.col + '"]');
+    if (td && !td.dataset.ro) { e.preventDefault(); beginEdit(td, e.key); }
+  }
+});
+
+// column resize (drag header edge)
+let resizing = null;
+document.addEventListener('mousedown', e => {
+  const rz = e.target.closest('#grid th .rz');
+  if (!rz || !state.session) return;
+  e.preventDefault();
+  const k = rz.dataset.col;
+  const col = document.querySelector('#grid col[data-col="' + k + '"]');
+  resizing = { k, col, startX: e.clientX, startW: parseInt(col.style.width, 10) || 100 };
+  document.body.style.cursor = 'col-resize';
+});
+document.addEventListener('mousemove', e => {
+  if (!resizing) return;
+  const w = Math.max(60, resizing.startW + (e.clientX - resizing.startX));
+  resizing.col.style.width = w + 'px';
+  state.ui[state.sheet].widths[resizing.k] = w;
+});
+document.addEventListener('mouseup', () => {
+  if (!resizing) return;
+  resizing = null;
+  document.body.style.cursor = '';
+});
 
 // ============================================================
 // ACTION ROUTER
 // ============================================================
-$('tabs').addEventListener('click', e => {
-  const b = e.target.closest('.tab');
-  if (!b) return;
-  state.tab = b.dataset.tab;
-  render();
-});
-
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
   if (!el || !state.session) return;
@@ -1023,6 +1528,7 @@ document.addEventListener('click', e => {
 
   switch (act) {
     case 'close': closeModal(); break;
+    case 'clear-filters': state.ui[state.sheet].filters = {}; render(); break;
 
     case 'new-firm':
       openFormModal({ title: 'New firm', table: 'firms', fields: firmFields(null), submitLabel: 'Add firm' });
@@ -1084,7 +1590,7 @@ document.addEventListener('click', e => {
   }
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !state.editing) closeModal(); });
 
 // ============================================================
 // BOOT
