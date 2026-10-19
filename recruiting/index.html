@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recruiting · mihirOS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #f4f5f7; --bg-2: #eceef1; --card: #ffffff; --panel: #fafbfc;
+    --border: #dfe1e6; --text: #1f2933; --muted: #6b7280;
+    --accent: #0a7e3d; --accent-dim: #4aa06b; --warn: #d64545; --done: #b8860b;
+    --on-accent: #ffffff; --shadow: 0 1px 3px rgba(0,0,0,.12);
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  :root[data-theme="dark"] {
+    --bg: #101310; --bg-2: #151a15; --card: #0d100d; --panel: #141914;
+    --border: #2b352b; --text: #c8d6c8; --muted: #6f8070;
+    --accent: #33ff66; --accent-dim: #1f7a3a; --warn: #ff5a3c; --done: #ffb000;
+    --on-accent: #06100a; --shadow: 0 0 0 1px rgba(51,255,102,.06), 0 0 18px rgba(0,0,0,.6);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--mono); font-size: 13px; line-height: 1.5;
+  }
+  button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  a { color: var(--accent); }
+
+  /* ---------- gate ---------- */
+  .gate { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 100; }
+  .gate-card { background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 32px; width: 340px; display: flex; flex-direction: column; gap: 12px; }
+  .gate-card h1 { margin: 0; font-size: 16px; letter-spacing: 3px; text-align: center; }
+  .gate-card .muted { text-align: center; margin: 0; }
+
+  /* ---------- chrome ---------- */
+  .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 10px 20px; background: var(--bg-2); border-bottom: 1px solid var(--border); }
+  .brand { font-size: 13px; font-weight: 700; letter-spacing: 3px; }
+  .tabs { display: flex; gap: 4px; flex: 1; }
+  .tab { background: none; border: 1px solid transparent; padding: 5px 12px; cursor: pointer; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-color: var(--accent); }
+  .top-actions { display: flex; gap: 6px; align-items: center; }
+  main { max-width: 1240px; margin: 0 auto; padding: 20px; }
+
+  .btn { background: var(--card); border: 1px solid var(--border); padding: 6px 12px; cursor: pointer; color: var(--text); }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  .btn.primary:hover { opacity: .9; color: var(--on-accent); }
+  .btn.danger { color: var(--warn); }
+  .btn.danger:hover { border-color: var(--warn); }
+  .btn.small { padding: 3px 8px; font-size: 11px; }
+  .btn.ghost { background: none; border-color: transparent; color: var(--muted); }
+  .btn.wide { width: 100%; }
+  .icon-btn { background: none; border: 1px solid transparent; cursor: pointer; color: var(--muted); padding: 4px 8px; }
+  .icon-btn:hover { color: var(--text); border-color: var(--border); }
+  input, select, textarea {
+    background: var(--card); border: 1px solid var(--border); padding: 7px 10px; width: 100%; border-radius: 0;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; }
+  .muted { color: var(--muted); }
+  h2.section { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 24px 0 10px; }
+  h2.section:first-child { margin-top: 0; }
+
+  /* ---------- overview ---------- */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+  .stat { background: var(--card); border: 1px solid var(--border); padding: 12px 14px; }
+  .stat .n { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat .l { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .panel { background: var(--card); border: 1px solid var(--border); padding: 14px; }
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 900px) { .cols-2 { grid-template-columns: 1fr; } }
+
+  .row-item { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px dashed var(--border); }
+  .row-item:last-child { border-bottom: none; }
+  .row-item .grow { flex: 1; min-width: 0; }
+  .clickable { cursor: pointer; }
+  .clickable:hover { color: var(--accent); }
+
+  /* ---------- pipeline ---------- */
+  .board { display: grid; grid-template-columns: repeat(5, minmax(210px, 1fr)); gap: 12px; overflow-x: auto; }
+  .col-hdr { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 6px 8px; border-bottom: 2px solid var(--border); margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .job-card { background: var(--card); border: 1px solid var(--border); padding: 10px; margin-bottom: 10px; box-shadow: var(--shadow); }
+  .job-card:hover { border-color: var(--accent); }
+  .job-card .t { font-weight: 700; }
+  .job-card .f { color: var(--muted); font-size: 12px; }
+  .job-card .meta { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* ---------- cards grid ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); padding: 12px 14px; box-shadow: var(--shadow); }
+  .card:hover { border-color: var(--accent-dim); }
+  .card .name { font-weight: 700; }
+  .card .sub { color: var(--muted); font-size: 12px; }
+  .card .foot { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 14px; }
+  .toolbar input { max-width: 320px; }
+
+  /* ---------- badges ---------- */
+  .badge { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.applied, .badge.interviewing { border-color: var(--accent-dim); color: var(--accent); }
+  .badge.offer { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .badge.rejected, .badge.withdrawn, .badge.expired, .badge.closed { border-color: var(--warn); color: var(--warn); }
+  .badge.referral-requested, .badge.referral-sent { border-color: var(--done); color: var(--done); }
+  .chip { display: inline-block; font-size: 11px; padding: 1px 7px; border: 1px solid var(--border); color: var(--muted); }
+  .chip.due-soon { border-color: var(--done); color: var(--done); }
+  .chip.overdue { border-color: var(--warn); color: var(--warn); }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .dot.low { background: var(--muted); }
+  .dot.medium { background: var(--done); }
+  .dot.high { background: var(--accent); }
+
+  /* ---------- activity ---------- */
+  .int-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+  .int-row:last-child { border-bottom: none; }
+  .int-when { width: 130px; flex-shrink: 0; color: var(--muted); font-size: 12px; }
+  .int-body { flex: 1; min-width: 0; }
+  .int-actions { display: flex; gap: 4px; align-items: flex-start; }
+
+  /* ---------- modal ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 50; overflow-y: auto; }
+  .modal { background: var(--bg); border: 1px solid var(--border); box-shadow: var(--shadow); width: 100%; max-width: 640px; }
+  .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .modal-head h2 { margin: 0; font-size: 15px; }
+  .modal-body { padding: 18px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field.span2 { grid-column: 1 / -1; }
+  .field label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .field .req { color: var(--warn); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 18px; border-top: 1px solid var(--border); }
+  .modal-actions .left { margin-right: auto; }
+  .modal-error { background: var(--warn); color: #fff; padding: 8px 12px; margin: 12px 18px 0; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin: 12px 0; }
+  .detail-grid .k { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .prose { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--border); padding: 10px 12px; margin: 8px 0; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: var(--on-accent); padding: 10px 16px; z-index: 200; box-shadow: var(--shadow); }
+  .toast.err { background: var(--warn); color: #fff; }
+  .loading { color: var(--muted); padding: 40px; text-align: center; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate" hidden>
+  <form id="gateForm" class="gate-card">
+    <h1>RECRUITING</h1>
+    <p class="muted">Sign in to continue</p>
+    <input id="gateEmail" type="email" placeholder="Email" required autocomplete="username">
+    <input id="gatePass" type="password" placeholder="Password" required autocomplete="current-password">
+    <div id="gateError" class="modal-error" hidden></div>
+    <button type="submit" class="btn primary wide" id="gateBtn">Sign in</button>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header class="topbar">
+    <div class="brand">RECRUITING</div>
+    <nav class="tabs" id="tabs">
+      <button class="tab" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="pipeline">Pipeline</button>
+      <button class="tab" data-tab="firms">Firms</button>
+      <button class="tab" data-tab="people">People</button>
+      <button class="tab" data-tab="activity">Activity</button>
+    </nav>
+    <div class="top-actions">
+      <button class="btn small" data-act="new-firm">+ Firm</button>
+      <button class="btn small" data-act="new-job">+ Job</button>
+      <button class="btn small" data-act="new-person">+ Person</button>
+      <button class="btn small primary" data-act="new-interaction">+ Log</button>
+      <button class="icon-btn" id="themeToggle" title="Toggle theme">&#9680;</button>
+      <button class="icon-btn" id="signOutBtn" title="Sign out">&#9211;</button>
+    </div>
+  </header>
+  <main id="main"><div class="loading">Loading&hellip;</div></main>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+'use strict';
+// ============================================================
+// CONFIG
+// ============================================================
+const SUPABASE_URL = 'https://gzwhuwzmrrmtswyhjheu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjE0NDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E';
+const TZ = 'America/New_York';
+
+// Client vocabularies (DB columns are free text; no constraints).
+const APP_STATUS   = ['interested', 'applied', 'interviewing', 'offer', 'rejected', 'withdrawn'];
+const POSTING      = ['open', 'unknown', 'closed', 'expired'];
+const INTEREST     = ['low', 'medium', 'high'];
+const CHANNELS     = ['email', 'phone', 'linkedin', 'coffee', 'meeting', 'referral', 'career_fair', 'other'];
+const DIRECTIONS   = ['inbound', 'outbound', 'mutual'];
+const JOB_REL      = ['contact', 'recruiter', 'referrer', 'interviewer', 'referral'];
+const REF_STATUS   = ['not_requested', 'requested', 'sent', 'accepted', 'declined'];
+const FIRM_REL     = ['employee', 'former_employee', 'alum', 'recruiter', 'contact', 'other'];
+const WORK_ARR     = ['remote', 'hybrid', 'onsite', 'unknown'];
+const EMP_TYPE     = ['full_time', 'part_time', 'internship', 'contract', 'unknown'];
+
+const DELETE_MSG = {
+  people: 'Cannot delete this person — they still have interactions logged. Delete those interactions first.',
+  firms:  'Cannot delete this firm — it still has jobs. Delete those jobs first.',
+  jobs:   'Cannot delete this job — it still has people linked. Remove those links first.',
+};
+
+// ============================================================
+// STATE + AUTH
+// ============================================================
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const state = {
+  session: null,
+  tab: 'pipeline',
+  loading: false,
+  data: { firms: [], jobs: [], people: [], interactions: [], jobPeople: [], personFirms: [] },
+  filter: { channel: '', person: '', q: '' },
+};
+const $ = id => document.getElementById(id);
+
+function showGate(msg) {
+  state.session = null;
+  stopPolling();
+  closeModal();
+  $('app').hidden = true;
+  $('gate').hidden = false;
+  const err = $('gateError');
+  if (msg) { err.textContent = msg; err.hidden = false; } else { err.hidden = true; }
+}
+
+async function enterApp(session) {
+  state.session = session;
+  $('gate').hidden = true;
+  $('app').hidden = false;
+  $('main').innerHTML = '<div class="loading">Loading&hellip;</div>';
+  try {
+    await loadAll();
+    render();
+    startPolling();
+  } catch (e) {
+    if (e && e.status === 401) { await client.auth.signOut(); return; }
+    toast(e.message || 'Failed to load', true);
+  }
+}
+
+$('gateForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('gateBtn');
+  btn.disabled = true;
+  $('gateError').hidden = true;
+  try {
+    const { data, error } = await client.auth.signInWithPassword({
+      email: $('gateEmail').value.trim(),
+      password: $('gatePass').value,
+    });
+    if (error) throw error;
+    localStorage.setItem('recruitingEmail', $('gateEmail').value.trim());
+    $('gatePass').value = '';
+    await enterApp(data.session);
+  } catch (err) {
+    $('gateError').textContent = err.message || 'Sign in failed';
+    $('gateError').hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('signOutBtn').addEventListener('click', async () => {
+  await client.auth.signOut();
+  showGate();
+});
+
+client.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT') showGate();
+});
+
+// ============================================================
+// REST helpers — no fetch happens without a session.
+// ============================================================
+async function q(path) {
+  if (!state.session) throw new Error('Not signed in');
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + state.session.access_token },
+  });
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      await client.auth.signOut();
+      const e = new Error('Session expired — sign in again.');
+      e.status = res.status;
+      throw e;
+    }
+    const body = await res.text();
+    const e = new Error('Query failed (' + res.status + '): ' + body.slice(0, 200));
+    e.status = res.status;
+    throw e;
+  }
+  return res.json();
+}
+
+async function restError(res) {
+  let msg = res.statusText, code = null;
+  try { const b = await res.json(); msg = b.message || msg; code = b.code || null; } catch (_) {}
+  const e = new Error(msg);
+  e.code = code;
+  e.status = res.status;
+  return e;
+}
+
+async function saveRow(table, payload, id) {
+  if (!state.session) throw new Error('Not signed in');
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + (id ? '?id=eq.' + encodeURIComponent(id) : ''), {
+    method: id ? 'PATCH' : 'POST',
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: 'Bearer ' + state.session.access_token,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw await restError(res);
+}
+
+async function deleteRow(table, id) {
+  if (!state.session) throw new Error('Not signed in');
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + encodeURIComponent(id), {
+    method: 'DELETE',
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + state.session.access_token },
+  });
+  if (!res.ok) throw await restError(res);
+}
+
+function friendlyError(e) {
+  if (!e) return 'Something went wrong.';
+  if (e.code === '23503') return DELETE_MSG[state.lastTable] || 'Cannot delete — other records still reference this. Remove those first.';
+  if (e.code === '23502') return 'A required field is missing.';
+  if (e.code === '22P02') return 'Invalid value in a field.';
+  if (e.status === 401) return 'Session expired — sign in again.';
+  return e.message || 'Something went wrong.';
+}
+
+async function loadAll() {
+  const [firms, jobs, people, interactions, jobPeople, personFirms] = await Promise.all([
+    q('firms?select=*'),
+    q('jobs?select=*,firm:firms(id,name)'),
+    q('people_context?select=*'),
+    q('interactions?select=*,person:people(id,name),firm:firms(id,name),job:jobs(id,title)&order=occurred_at.desc'),
+    q('job_people?select=*,person:people(id,name),job:jobs(id,title)'),
+    q('person_firms?select=*,firm:firms(id,name),person:people(id,name)'),
+  ]);
+  state.data = { firms, jobs, people, interactions, jobPeople, personFirms };
+}
+
+async function refresh() {
+  await loadAll();
+  render();
+}
+
+// ============================================================
+// POLLING (no realtime available on this project)
+// ============================================================
+let pollTimer = null;
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(() => {
+    if (state.session && document.visibilityState === 'visible') {
+      loadAll().then(render).catch(() => {});
+    }
+  }, 60000);
+}
+function stopPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+// ============================================================
+// HELPERS
+// ============================================================
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const str = v => (v === null || v === undefined ? '' : String(v));
+const fmtEnum = v => String(v || '').replace(/_/g, ' ');
+const opts = arr => arr.map(v => ({ v, l: fmtEnum(v) }));
+
+function fmtDate(v) {
+  if (!v) return '—';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    const [y, m, d] = v.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  return new Date(v).toLocaleDateString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function fmtDateTime(v) {
+  if (!v) return '—';
+  return new Date(v).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function daysUntil(iso) {
+  if (!iso) return null;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d = new Date(iso);
+  const due = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  return Math.round((due - today) / 86400000);
+}
+
+function deadlineChip(iso) {
+  if (!iso) return '';
+  const d = daysUntil(iso);
+  let cls = 'chip', lbl = fmtDate(iso);
+  if (d < 0) { cls += ' overdue'; lbl += ' · ' + (-d) + 'd late'; }
+  else if (d === 0) { cls += ' due-soon'; lbl += ' · today'; }
+  else if (d <= 7) { cls += ' due-soon'; lbl += ' · ' + d + 'd'; }
+  return '<span class="' + cls + '">' + esc(lbl) + '</span>';
+}
+
+const badge = v => v ? '<span class="badge ' + esc(String(v).replace(/_/g, '-')) + '">' + esc(fmtEnum(v)) + '</span>' : '';
+const dot = v => v ? '<span class="dot ' + esc(v) + '"></span>' + esc(v) : '';
+const chips = arr => (arr && arr.length) ? arr.map(t => '<span class="chip">' + esc(t) + '</span>').join(' ') : '';
+
+function toLocalInput(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+let toastTimer = null;
+function toast(msg, isErr) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.toggle('err', !!isErr);
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 3200);
+}
+
+// ============================================================
+// THEME (shares key with dashboard)
+// ============================================================
+(function initTheme() {
+  const t = localStorage.getItem('personalOSTheme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+$('themeToggle').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', cur);
+  localStorage.setItem('personalOSTheme', cur);
+});
+
+// ============================================================
+// MODAL
+// ============================================================
+function closeModal() { $('modalRoot').innerHTML = ''; }
+
+function openOverlay(inner) {
+  $('modalRoot').innerHTML = '<div class="overlay" id="overlay"><div class="modal">' + inner + '</div></div>';
+  $('overlay').addEventListener('mousedown', e => { if (e.target.id === 'overlay') closeModal(); });
+}
+
+function openInfoModal(title, bodyHtml, actionsHtml) {
+  openOverlay(
+    '<div class="modal-head"><h2>' + esc(title) + '</h2><button class="icon-btn" data-act="close">&times;</button></div>' +
+    '<div class="modal-body">' + bodyHtml + '</div>' +
+    (actionsHtml ? '<div class="modal-actions">' + actionsHtml + '</div>' : '')
+  );
+}
+
+// ---------- form builder ----------
+function fieldHtml(f) {
+  const id = 'f_' + f.name;
+  const cls = f.type === 'textarea' ? 'field span2' : 'field';
+  const req = f.required ? ' required' : '';
+  const reqMark = f.required ? ' <span class="req">*</span>' : '';
+  let control;
+  if (f.type === 'textarea') {
+    control = '<textarea id="' + id + '" name="' + f.name + '" rows="' + (f.rows || 3) + '"' + req + ' placeholder="' + esc(f.placeholder || '') + '">' + esc(str(f.value)) + '</textarea>';
+  } else if (f.type === 'select') {
+    control = '<select id="' + id + '" name="' + f.name + '"' + req + '>' +
+      f.options.map(o => '<option value="' + esc(String(o.v)) + '"' + (String(o.v) === String(f.value == null ? '' : f.value) ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') +
+      '</select>';
+  } else if (f.type === 'tags') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="text" value="' + esc(Array.isArray(f.value) ? f.value.join(', ') : str(f.value)) + '" placeholder="comma, separated">';
+  } else if (f.type === 'datetime') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="datetime-local" value="' + esc(toLocalInput(f.value)) + '"' + req + '>';
+  } else if (f.type === 'date') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="date" value="' + esc(str(f.value)) + '"' + req + '>';
+  } else if (f.type === 'number') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="number" step="1" value="' + esc(str(f.value)) + '"' + req + '>';
+  } else {
+    control = '<input id="' + id + '" name="' + f.name + '" type="text" value="' + esc(str(f.value)) + '"' + req + ' placeholder="' + esc(f.placeholder || '') + '">';
+  }
+  return '<div class="' + cls + '"><label for="' + id + '">' + esc(f.label) + reqMark + '</label>' + control + '</div>';
+}
+
+function collectForm(fields) {
+  const out = {};
+  for (const f of fields) {
+    const el = document.querySelector('#modalRoot [name="' + f.name + '"]');
+    if (!el) continue;
+    if (f.type === 'tags') { out[f.name] = el.value.split(/[,\n]/).map(s => s.trim()).filter(Boolean); continue; }
+    if (f.type === 'select') { out[f.name] = el.value === '' ? null : el.value; continue; }
+    if (f.type === 'number') { out[f.name] = el.value === '' ? null : Number(el.value); continue; }
+    if (f.type === 'date') { out[f.name] = el.value === '' ? null : el.value; continue; }
+    if (f.type === 'datetime') { out[f.name] = el.value === '' ? null : new Date(el.value).toISOString(); continue; }
+    // text / textarea: send '' for empty — safe for NOT NULL text columns.
+    out[f.name] = el.value.trim();
+  }
+  return out;
+}
+
+// opts for selects with a nullable leading blank
+const optsN = arr => [{ v: '', l: '—' }].concat(opts(arr));
+
+function openFormModal(cfg) {
+  // cfg: { title, fields, values, submitLabel, table, id, extraActionsHtml, afterSave }
+  const fields = cfg.fields;
+  openOverlay(
+    '<div class="modal-head"><h2>' + esc(cfg.title) + '</h2><button class="icon-btn" data-act="close">&times;</button></div>' +
+    '<form id="modalForm"><div class="modal-body"><div class="form-grid">' + fields.map(fieldHtml).join('') + '</div></div>' +
+    '<div id="modalError" class="modal-error" hidden></div>' +
+    '<div class="modal-actions">' +
+      (cfg.extraActionsHtml || '') +
+      '<button type="button" class="btn ghost" data-act="close">Cancel</button>' +
+      '<button type="submit" class="btn primary" id="modalSave">' + esc(cfg.submitLabel || 'Save') + '</button>' +
+    '</div></form>'
+  );
+  $('modalForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errEl = $('modalError');
+    errEl.hidden = true;
+    $('modalSave').disabled = true;
+    try {
+      const payload = collectForm(fields);
+      state.lastTable = cfg.table;
+      await saveRow(cfg.table, payload, cfg.id);
+      await refresh();
+      closeModal();
+      toast(cfg.id ? 'Saved' : 'Added');
+      if (cfg.afterSave) cfg.afterSave();
+    } catch (err) {
+      errEl.textContent = friendlyError(err);
+      errEl.hidden = false;
+      $('modalSave').disabled = false;
+    }
+  });
+}
+
+async function doDelete(table, id, label) {
+  if (!confirm('Delete ' + label + '? This cannot be undone.')) return;
+  state.lastTable = table;
+  try {
+    await deleteRow(table, id);
+    await refresh();
+    closeModal();
+    toast('Deleted');
+  } catch (err) {
+    toast(friendlyError(err), true);
+  }
+}
+
+// ============================================================
+// FORM FIELD SETS
+// ============================================================
+function firmFields(r) {
+  r = r || {};
+  return [
+    { name: 'name', label: 'Name', required: true, value: r.name, placeholder: 'Firm name' },
+    { name: 'interest_level', label: 'Interest', type: 'select', required: true, value: r.interest_level || 'medium', options: opts(INTEREST) },
+    { name: 'industry', label: 'Industry', value: r.industry },
+    { name: 'location', label: 'Location', value: r.location },
+    { name: 'website_url', label: 'Website', value: r.website_url, placeholder: 'https://' },
+    { name: 'careers_url', label: 'Careers page', value: r.careers_url, placeholder: 'https://' },
+    { name: 'linkedin_url', label: 'LinkedIn', value: r.linkedin_url, placeholder: 'https://' },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+    { name: 'description', label: 'Description', type: 'textarea', value: r.description },
+    { name: 'interest_reason', label: 'Why interested', type: 'textarea', value: r.interest_reason },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+    { name: 'tags', label: 'Tags', type: 'tags', value: r.tags },
+  ];
+}
+
+function jobFields(r, presetFirmId) {
+  r = r || {};
+  return [
+    { name: 'firm_id', label: 'Firm', type: 'select', required: true, value: r.firm_id || presetFirmId || '', options: state.data.firms.map(f => ({ v: f.id, l: f.name })) },
+    { name: 'title', label: 'Title', required: true, value: r.title },
+    { name: 'application_status', label: 'Application status', type: 'select', required: true, value: r.application_status || 'interested', options: opts(APP_STATUS) },
+    { name: 'posting_status', label: 'Posting status', type: 'select', required: true, value: r.posting_status || 'unknown', options: opts(POSTING) },
+    { name: 'interest_level', label: 'Interest', type: 'select', required: true, value: r.interest_level || 'medium', options: opts(INTEREST) },
+    { name: 'application_deadline', label: 'Deadline', type: 'datetime', value: r.application_deadline },
+    { name: 'applied_at', label: 'Applied at', type: 'datetime', value: r.applied_at },
+    { name: 'posted_at', label: 'Posted on', type: 'date', value: r.posted_at },
+    { name: 'program_year', label: 'Program year', type: 'number', value: r.program_year, placeholder: '2027' },
+    { name: 'department', label: 'Department', value: r.department },
+    { name: 'location', label: 'Location', value: r.location },
+    { name: 'work_arrangement', label: 'Work arrangement', type: 'select', value: r.work_arrangement || '', options: optsN(WORK_ARR) },
+    { name: 'employment_type', label: 'Employment type', type: 'select', value: r.employment_type || '', options: optsN(EMP_TYPE) },
+    { name: 'requisition_id', label: 'Requisition ID', value: r.requisition_id },
+    { name: 'job_description', label: 'Job description', type: 'textarea', rows: 6, value: r.job_description },
+    { name: 'requirements', label: 'Requirements', type: 'tags', value: r.requirements },
+    { name: 'skills', label: 'Skills', type: 'tags', value: r.skills },
+    { name: 'compensation_notes', label: 'Compensation', type: 'textarea', value: r.compensation_notes },
+    { name: 'eligibility_notes', label: 'Eligibility notes', type: 'textarea', value: r.eligibility_notes },
+    { name: 'fit_notes', label: 'Fit notes', type: 'textarea', value: r.fit_notes },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+    { name: 'tags', label: 'Tags', type: 'tags', value: r.tags },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+  ];
+}
+
+function personFields(r) {
+  r = r || {};
+  return [
+    { name: 'name', label: 'Name', required: true, value: r.name },
+    { name: 'contact', label: 'Role / title', value: r.contact },
+    { name: 'email', label: 'Email', value: r.email },
+    { name: 'phone', label: 'Phone', value: r.phone },
+    { name: 'linkedin_url', label: 'LinkedIn', value: r.linkedin_url },
+    { name: 'location', label: 'Location', value: r.location },
+    { name: 'how_met', label: 'How met', value: r.how_met },
+    { name: 'next_action', label: 'Next action', value: r.next_action },
+    { name: 'follow_up_after', label: 'Follow up after', type: 'date', value: r.follow_up_after },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+    { name: 'description', label: 'Description', type: 'textarea', value: r.description },
+    { name: 'background_notes', label: 'Background', type: 'textarea', value: r.background_notes },
+    { name: 'relationship_notes', label: 'Relationship notes', type: 'textarea', value: r.relationship_notes },
+    { name: 'interests', label: 'Interests', type: 'tags', value: r.interests },
+    { name: 'tags', label: 'Tags', type: 'tags', value: r.tags },
+  ];
+}
+
+function interactionFields(r, preset) {
+  r = r || {}; preset = preset || {};
+  return [
+    { name: 'person_id', label: 'Person', type: 'select', required: true, value: r.person_id || preset.person_id || '', options: state.data.people.map(p => ({ v: p.id, l: p.name })) },
+    { name: 'firm_id', label: 'Firm', type: 'select', value: r.firm_id || preset.firm_id || '', options: optsN([]).concat(state.data.firms.map(f => ({ v: f.id, l: f.name }))) },
+    { name: 'job_id', label: 'Job', type: 'select', value: r.job_id || preset.job_id || '', options: optsN([]).concat(state.data.jobs.map(j => ({ v: j.id, l: j.title + ' (' + (j.firm ? j.firm.name : '?') + ')' }))) },
+    { name: 'occurred_at', label: 'Occurred at', type: 'datetime', required: true, value: r.occurred_at || new Date().toISOString() },
+    { name: 'channel', label: 'Channel', type: 'select', required: true, value: r.channel || 'email', options: opts(CHANNELS) },
+    { name: 'direction', label: 'Direction', type: 'select', required: true, value: r.direction || 'outbound', options: opts(DIRECTIONS) },
+    { name: 'subject', label: 'Subject', value: r.subject },
+    { name: 'source', label: 'Source', required: true, value: r.source || 'manual' },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+    { name: 'summary', label: 'Summary', type: 'textarea', required: true, rows: 4, value: r.summary },
+    { name: 'content', label: 'Content / details', type: 'textarea', rows: 4, value: r.content },
+    { name: 'outcome', label: 'Outcome', value: r.outcome },
+    { name: 'commitments', label: 'Commitments', type: 'textarea', value: r.commitments },
+  ];
+}
+
+function jobPersonFields(r, presetJobId) {
+  r = r || {};
+  return [
+    { name: 'job_id', label: 'Job', type: 'select', required: true, value: r.job_id || presetJobId || '', options: state.data.jobs.map(j => ({ v: j.id, l: j.title + ' (' + (j.firm ? j.firm.name : '?') + ')' })) },
+    { name: 'person_id', label: 'Person', type: 'select', required: true, value: r.person_id || '', options: state.data.people.map(p => ({ v: p.id, l: p.name })) },
+    { name: 'relationship_type', label: 'Relationship', type: 'select', required: true, value: r.relationship_type || 'contact', options: opts(JOB_REL) },
+    { name: 'referral_status', label: 'Referral status', type: 'select', required: true, value: r.referral_status || 'not_requested', options: opts(REF_STATUS) },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+  ];
+}
+
+function personFirmFields(r, preset) {
+  r = r || {}; preset = preset || {};
+  return [
+    { name: 'person_id', label: 'Person', type: 'select', required: true, value: r.person_id || preset.person_id || '', options: state.data.people.map(p => ({ v: p.id, l: p.name })) },
+    { name: 'firm_id', label: 'Firm', type: 'select', required: true, value: r.firm_id || preset.firm_id || '', options: state.data.firms.map(f => ({ v: f.id, l: f.name })) },
+    { name: 'relationship_type', label: 'Relationship', type: 'select', required: true, value: r.relationship_type || 'employee', options: opts(FIRM_REL) },
+    { name: 'title', label: 'Title at firm', value: r.title },
+    { name: 'started_on', label: 'Started', type: 'date', value: r.started_on },
+    { name: 'ended_on', label: 'Ended', type: 'date', value: r.ended_on },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+  ];
+}
+
+// ============================================================
+// DETAIL MODALS
+// ============================================================
+function detailGrid(pairs) {
+  return '<div class="detail-grid">' + pairs.filter(p => p[1]).map(p =>
+    '<div><div class="k">' + esc(p[0]) + '</div><div>' + (p[2] ? p[1] : esc(p[1])) + '</div></div>').join('') + '</div>';
+}
+
+function interactionRowHtml(i, showActions) {
+  const person = i.person ? i.person.name : '?';
+  const firm = i.firm ? ' · ' + i.firm.name : '';
+  const job = i.job ? ' · ' + i.job.title : '';
+  return '<div class="int-row">' +
+    '<div class="int-when">' + esc(fmtDateTime(i.occurred_at)) + '</div>' +
+    '<div class="int-body">' +
+      '<div>' + badge(i.channel) + ' ' + badge(i.direction) +
+        ' <b class="clickable" data-act="view-person" data-id="' + esc(i.person_id) + '">' + esc(person) + '</b>' +
+        esc(firm) + esc(job) +
+        (i.subject ? ' <span class="muted">&mdash; ' + esc(i.subject) + '</span>' : '') + '</div>' +
+      '<div>' + esc(i.summary || '') + '</div>' +
+      (i.outcome ? '<div class="muted">Outcome: ' + esc(i.outcome) + '</div>' : '') +
+      (i.commitments ? '<div class="muted">Commitments: ' + esc(i.commitments) + '</div>' : '') +
+    '</div>' +
+    (showActions ? '<div class="int-actions">' +
+      '<button class="btn small" data-act="edit-interaction" data-id="' + esc(i.id) + '">Edit</button>' +
+      '<button class="btn small danger" data-act="del-interaction" data-id="' + esc(i.id) + '">Del</button>' +
+    '</div>' : '') +
+  '</div>';
+}
+
+function openJobDetail(id) {
+  const j = state.data.jobs.find(x => x.id === id);
+  if (!j) return;
+  const contacts = state.data.jobPeople.filter(x => x.job_id === id);
+  const ints = state.data.interactions.filter(x => x.job_id === id);
+  let body = '';
+  body += '<div>' + badge(j.application_status) + ' ' + badge(j.posting_status) + ' ' + dot(j.interest_level) + '</div>';
+  body += detailGrid([
+    ['Firm', j.firm ? j.firm.name : '', true],
+    ['Deadline', j.application_deadline ? fmtDate(j.application_deadline) : ''],
+    ['Applied', j.applied_at ? fmtDate(j.applied_at) : ''],
+    ['Posted', j.posted_at ? fmtDate(j.posted_at) : ''],
+    ['Program year', j.program_year],
+    ['Department', j.department],
+    ['Location', j.location],
+    ['Work arrangement', j.work_arrangement],
+    ['Employment type', j.employment_type],
+    ['Requisition', j.requisition_id],
+  ]);
+  if (j.requirements && j.requirements.length) body += '<div class="k muted">Requirements</div><div>' + chips(j.requirements) + '</div>';
+  if (j.skills && j.skills.length) body += '<div class="k muted">Skills</div><div>' + chips(j.skills) + '</div>';
+  if (j.job_description) body += '<div class="k muted" style="margin-top:10px">Description</div><div class="prose">' + esc(j.job_description) + '</div>';
+  if (j.fit_notes) body += '<div class="k muted">Fit notes</div><div class="prose">' + esc(j.fit_notes) + '</div>';
+  if (j.eligibility_notes) body += '<div class="k muted">Eligibility</div><div class="prose">' + esc(j.eligibility_notes) + '</div>';
+  if (j.compensation_notes) body += '<div class="k muted">Compensation</div><div class="prose">' + esc(j.compensation_notes) + '</div>';
+  if (j.notes) body += '<div class="k muted">Notes</div><div class="prose">' + esc(j.notes) + '</div>';
+  if (j.source_url) body += '<div><a href="' + esc(j.source_url) + '" target="_blank" rel="noopener">Job posting &#8599;</a></div>';
+
+  body += '<h2 class="section">Contacts (' + contacts.length + ')</h2>';
+  if (contacts.length) {
+    body += contacts.map(c =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-person" data-id="' + esc(c.person_id) + '">' + esc(c.person ? c.person.name : '?') + '</span>' +
+      badge(c.relationship_type) + (c.referral_status && c.referral_status !== 'not_requested' ? ' ' + badge('referral-' + c.referral_status) : '') +
+      '<button class="btn small" data-act="edit-jobperson" data-id="' + esc(c.id) + '">Edit</button>' +
+      '<button class="btn small danger" data-act="del-jobperson" data-id="' + esc(c.id) + '">Del</button></div>').join('');
+  } else {
+    body += '<div class="muted">No contacts linked.</div>';
+  }
+
+  body += '<h2 class="section">Interactions (' + ints.length + ')</h2>';
+  body += ints.length ? ints.map(i => interactionRowHtml(i, true)).join('') : '<div class="muted">None logged.</div>';
+
+  openInfoModal(j.title, body,
+    '<button class="btn danger left" data-act="del-job" data-id="' + esc(j.id) + '">Delete</button>' +
+    '<button class="btn" data-act="link-person" data-id="' + esc(j.id) + '">+ Contact</button>' +
+    '<button class="btn" data-act="new-interaction" data-job="' + esc(j.id) + '" data-firm="' + esc(j.firm_id) + '">+ Log</button>' +
+    '<button class="btn primary" data-act="edit-job" data-id="' + esc(j.id) + '">Edit</button>');
+}
+
+function openFirmDetail(id) {
+  const f = state.data.firms.find(x => x.id === id);
+  if (!f) return;
+  const jobs = state.data.jobs.filter(j => j.firm_id === id);
+  const people = state.data.personFirms.filter(x => x.firm_id === id);
+  const ints = state.data.interactions.filter(x => x.firm_id === id);
+  let body = '';
+  body += '<div>' + dot(f.interest_level) + ' ' + badge(f.interest_level) + '</div>';
+  body += detailGrid([
+    ['Industry', f.industry],
+    ['Location', f.location],
+    ['Website', f.website_url ? '<a href="' + esc(f.website_url) + '" target="_blank" rel="noopener">' + esc(f.website_url) + '</a>' : '', true],
+    ['Careers', f.careers_url ? '<a href="' + esc(f.careers_url) + '" target="_blank" rel="noopener">' + esc(f.careers_url) + '</a>' : '', true],
+    ['LinkedIn', f.linkedin_url ? '<a href="' + esc(f.linkedin_url) + '" target="_blank" rel="noopener">' + esc(f.linkedin_url) + '</a>' : '', true],
+  ]);
+  if (f.tags && f.tags.length) body += '<div>' + chips(f.tags) + '</div>';
+  if (f.description) body += '<div class="k muted" style="margin-top:10px">Description</div><div class="prose">' + esc(f.description) + '</div>';
+  if (f.interest_reason) body += '<div class="k muted">Why interested</div><div class="prose">' + esc(f.interest_reason) + '</div>';
+  if (f.notes) body += '<div class="k muted">Notes</div><div class="prose">' + esc(f.notes) + '</div>';
+
+  body += '<h2 class="section">Jobs (' + jobs.length + ')</h2>';
+  if (jobs.length) {
+    body += jobs.map(j =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(j.id) + '">' + esc(j.title) + '</span>' +
+      badge(j.application_status) + deadlineChip(j.application_deadline) + '</div>').join('');
+  } else {
+    body += '<div class="muted">No jobs tracked.</div>';
+  }
+
+  body += '<h2 class="section">People (' + people.length + ')</h2>';
+  if (people.length) {
+    body += people.map(p =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-person" data-id="' + esc(p.person_id) + '">' + esc(p.person ? p.person.name : '?') + (p.title ? ' <span class="muted">' + esc(p.title) + '</span>' : '') + '</span>' +
+      badge(p.relationship_type) +
+      '<button class="btn small" data-act="edit-personfirm" data-id="' + esc(p.id) + '">Edit</button>' +
+      '<button class="btn small danger" data-act="del-personfirm" data-id="' + esc(p.id) + '">Del</button></div>').join('');
+  } else {
+    body += '<div class="muted">No people linked.</div>';
+  }
+
+  body += '<h2 class="section">Interactions (' + ints.length + ')</h2>';
+  body += ints.length ? ints.map(i => interactionRowHtml(i, true)).join('') : '<div class="muted">None logged.</div>';
+
+  openInfoModal(f.name, body,
+    '<button class="btn danger left" data-act="del-firm" data-id="' + esc(f.id) + '">Delete</button>' +
+    '<button class="btn" data-act="link-to-firm" data-id="' + esc(f.id) + '">+ Person</button>' +
+    '<button class="btn" data-act="new-job" data-firm="' + esc(f.id) + '">+ Job</button>' +
+    '<button class="btn primary" data-act="edit-firm" data-id="' + esc(f.id) + '">Edit</button>');
+}
+
+function openPersonDetail(id) {
+  const p = state.data.people.find(x => x.id === id);
+  if (!p) return;
+  const firms = p.firms || [];
+  const jobs = p.jobs || [];
+  const ints = state.data.interactions.filter(x => x.person_id === id);
+  let body = '';
+  body += detailGrid([
+    ['Role', p.contact],
+    ['Email', p.email ? '<a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a>' : '', true],
+    ['Phone', p.phone ? '<a href="tel:' + esc(p.phone) + '">' + esc(p.phone) + '</a>' : '', true],
+    ['LinkedIn', p.linkedin_url ? '<a href="' + esc(p.linkedin_url) + '" target="_blank" rel="noopener">' + esc(p.linkedin_url) + '</a>' : '', true],
+    ['Location', p.location],
+    ['How met', p.how_met],
+    ['Last interaction', p.last_interaction_at ? fmtDate(p.last_interaction_at) : ''],
+    ['Follow up after', p.follow_up_after ? fmtDate(p.follow_up_after) : ''],
+    ['Next action', p.next_action],
+  ]);
+  if (p.tags && p.tags.length) body += '<div>' + chips(p.tags) + '</div>';
+  if (p.description) body += '<div class="k muted" style="margin-top:10px">Description</div><div class="prose">' + esc(p.description) + '</div>';
+  if (p.background_notes) body += '<div class="k muted">Background</div><div class="prose">' + esc(p.background_notes) + '</div>';
+  if (p.relationship_notes) body += '<div class="k muted">Relationship notes</div><div class="prose">' + esc(p.relationship_notes) + '</div>';
+
+  body += '<h2 class="section">Firms (' + firms.length + ')</h2>';
+  if (firms.length) {
+    body += firms.map(x =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-firm" data-id="' + esc(x.firm ? x.firm.id : '') + '">' + esc(x.firm ? x.firm.name : '?') + (x.relationship && x.relationship.title ? ' <span class="muted">' + esc(x.relationship.title) + '</span>' : '') + '</span>' +
+      badge(x.relationship ? x.relationship.relationship_type : '') + '</div>').join('');
+  } else {
+    body += '<div class="muted">No firm links.</div>';
+  }
+
+  body += '<h2 class="section">Jobs (' + jobs.length + ')</h2>';
+  if (jobs.length) {
+    body += jobs.map(x =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(x.job ? x.job.id : '') + '">' + esc(x.job ? x.job.title : '?') + '</span>' +
+      '<span class="muted">' + esc(x.firm ? x.firm.name : '') + '</span>' +
+      (x.relationship ? badge(x.relationship.relationship_type) + (x.relationship.referral_status !== 'not_requested' ? ' ' + badge('referral-' + x.relationship.referral_status) : '') : '') + '</div>').join('');
+  } else {
+    body += '<div class="muted">No job links.</div>';
+  }
+
+  body += '<h2 class="section">Interactions (' + ints.length + ')</h2>';
+  body += ints.length ? ints.map(i => interactionRowHtml(i, true)).join('') : '<div class="muted">None logged.</div>';
+
+  openInfoModal(p.name, body,
+    '<button class="btn danger left" data-act="del-person" data-id="' + esc(p.id) + '">Delete</button>' +
+    '<button class="btn" data-act="link-to-firm-person" data-id="' + esc(p.id) + '">+ Firm</button>' +
+    '<button class="btn" data-act="new-interaction" data-person="' + esc(p.id) + '">+ Log</button>' +
+    '<button class="btn primary" data-act="edit-person" data-id="' + esc(p.id) + '">Edit</button>');
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === state.tab));
+  const main = $('main');
+  ({ overview: renderOverview, pipeline: renderPipeline, firms: renderFirms, people: renderPeople, activity: renderActivity })[state.tab](main);
+}
+
+function renderOverview(main) {
+  const { firms, jobs, people, interactions } = state.data;
+  const count = s => jobs.filter(j => j.application_status === s).length;
+  const out = count('applied') + count('interviewing') + count('offer');
+  const now = Date.now();
+  const recent30 = interactions.filter(i => i.occurred_at && now - new Date(i.occurred_at).getTime() < 30 * 86400000).length;
+
+  let html = '<div class="stats">';
+  [['Jobs', jobs.length], ['Applications out', out], ['Interviewing', count('interviewing')], ['Offers', count('offer')],
+   ['Firms', firms.length], ['People', people.length], ['Interactions (30d)', recent30]].forEach(([l, n]) => {
+    html += '<div class="stat"><div class="n">' + n + '</div><div class="l">' + esc(l) + '</div></div>';
+  });
+  html += '</div>';
+
+  const upcoming = jobs.filter(j => j.application_deadline && !['rejected', 'withdrawn'].includes(j.application_status))
+    .sort((a, b) => new Date(a.application_deadline) - new Date(b.application_deadline)).slice(0, 7);
+  const stale = jobs.filter(j => j.application_status === 'interested' &&
+    !state.data.interactions.some(i => i.job_id === j.id));
+  const recent = interactions.slice(0, 6);
+
+  html += '<div class="cols-2" style="margin-top:16px">';
+  html += '<div class="panel"><h2 class="section">Upcoming deadlines</h2>';
+  html += upcoming.length ? upcoming.map(j =>
+    '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(j.id) + '">' + esc(j.title) + '</span>' +
+    '<span class="muted">' + esc(j.firm ? j.firm.name : '') + '</span>' + deadlineChip(j.application_deadline) + '</div>').join('')
+    : '<div class="muted">No deadlines set.</div>';
+  html += '<h2 class="section">Interested, no contact yet (' + stale.length + ')</h2>';
+  html += stale.length ? stale.map(j =>
+    '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(j.id) + '">' + esc(j.title) + '</span>' +
+    '<span class="muted">' + esc(j.firm ? j.firm.name : '') + '</span></div>').join('')
+    : '<div class="muted">All interested jobs have activity.</div>';
+  html += '</div>';
+
+  html += '<div class="panel"><h2 class="section">Recent activity</h2>';
+  html += recent.length ? recent.map(i => interactionRowHtml(i, false)).join('') : '<div class="muted">Nothing logged yet.</div>';
+  html += '</div></div>';
+  main.innerHTML = html;
+}
+
+function renderPipeline(main) {
+  const cols = [
+    { label: 'Interested', match: j => j.application_status === 'interested' },
+    { label: 'Applied', match: j => j.application_status === 'applied' },
+    { label: 'Interviewing', match: j => j.application_status === 'interviewing' },
+    { label: 'Offer', match: j => j.application_status === 'offer' },
+    { label: 'Closed', match: j => ['rejected', 'withdrawn'].includes(j.application_status) },
+  ];
+  let html = '<div class="board">';
+  for (const c of cols) {
+    const list = state.data.jobs.filter(c.match)
+      .sort((a, b) => (a.application_deadline || '9999') < (b.application_deadline || '9999') ? -1 : 1);
+    html += '<div><div class="col-hdr"><span>' + esc(c.label) + '</span><span>' + list.length + '</span></div>';
+    for (const j of list) {
+      html += '<div class="job-card clickable" data-act="view-job" data-id="' + esc(j.id) + '">' +
+        '<div class="t">' + esc(j.title) + '</div>' +
+        '<div class="f">' + esc(j.firm ? j.firm.name : '') + (j.location ? ' · ' + esc(j.location) : '') + '</div>' +
+        '<div class="meta">' + deadlineChip(j.application_deadline) + dot(j.interest_level) + (j.tags || []).map(t => '<span class="chip">' + esc(t) + '</span>').join('') + '</div>' +
+      '</div>';
+    }
+    if (!list.length) html += '<div class="muted" style="padding:8px">—</div>';
+    html += '</div>';
+  }
+  html += '</div>';
+  main.innerHTML = html;
+}
+
+function renderFirms(main) {
+  const firms = [...state.data.firms].sort((a, b) => a.name.localeCompare(b.name));
+  let html = '<div class="toolbar"><input id="firmSearch" type="search" placeholder="Filter firms…"></div><div class="grid" id="firmGrid">';
+  for (const f of firms) {
+    const nj = state.data.jobs.filter(j => j.firm_id === f.id).length;
+    const np = state.data.personFirms.filter(p => p.firm_id === f.id).length;
+    const hay = [f.name, f.industry, f.location, (f.tags || []).join(' ')].join(' ').toLowerCase();
+    html += '<div class="card clickable" data-act="view-firm" data-id="' + esc(f.id) + '" data-search="' + esc(hay) + '">' +
+      '<div class="name">' + esc(f.name) + '</div>' +
+      '<div class="sub">' + esc([f.industry, f.location].filter(Boolean).join(' · ')) + '</div>' +
+      '<div class="foot">' + dot(f.interest_level) + '<span class="chip">' + nj + ' job' + (nj === 1 ? '' : 's') + '</span><span class="chip">' + np + ' contact' + (np === 1 ? '' : 's') + '</span></div>' +
+    '</div>';
+  }
+  html += '</div>';
+  main.innerHTML = html;
+  main.querySelector('#firmSearch').addEventListener('input', e => {
+    const v = e.target.value.toLowerCase();
+    main.querySelectorAll('#firmGrid .card').forEach(c => { c.hidden = v && !c.dataset.search.includes(v); });
+  });
+}
+
+function renderPeople(main) {
+  const people = [...state.data.people].sort((a, b) => a.name.localeCompare(b.name));
+  let html = '<div class="toolbar"><input id="peopleSearch" type="search" placeholder="Filter people…"></div><div class="grid" id="peopleGrid">';
+  for (const p of people) {
+    const firmNames = (p.firms || []).map(x => x.firm ? x.firm.name : '').filter(Boolean).join(', ');
+    const overdue = p.follow_up_after && daysUntil(p.follow_up_after + 'T12:00') < 0;
+    const hay = [p.name, p.contact, p.location, firmNames, (p.tags || []).join(' '), p.how_met].join(' ').toLowerCase();
+    html += '<div class="card clickable" data-act="view-person" data-id="' + esc(p.id) + '" data-search="' + esc(hay) + '">' +
+      '<div class="name">' + esc(p.name) + '</div>' +
+      '<div class="sub">' + esc([p.contact, firmNames].filter(Boolean).join(' · ')) + '</div>' +
+      '<div class="foot">' +
+        (p.last_interaction_at ? '<span class="chip">last ' + esc(fmtDate(p.last_interaction_at)) + '</span>' : '') +
+        (p.follow_up_after ? '<span class="chip ' + (overdue ? 'overdue' : '') + '">follow up ' + esc(fmtDate(p.follow_up_after)) + '</span>' : '') +
+        (p.next_action ? '<span class="chip">' + esc(p.next_action) + '</span>' : '') +
+      '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+  main.innerHTML = html;
+  main.querySelector('#peopleSearch').addEventListener('input', e => {
+    const v = e.target.value.toLowerCase();
+    main.querySelectorAll('#peopleGrid .card').forEach(c => { c.hidden = v && !c.dataset.search.includes(v); });
+  });
+}
+
+function renderActivity(main) {
+  const f = state.filter;
+  const personOpts = [{ v: '', l: 'All people' }].concat(state.data.people.map(p => ({ v: p.id, l: p.name })));
+  const channelOpts = [{ v: '', l: 'All channels' }].concat(opts(CHANNELS));
+  let html = '<div class="toolbar">' +
+    '<input id="actSearch" type="search" placeholder="Search interactions…" value="' + esc(f.q) + '">' +
+    '<select id="actPerson" style="max-width:200px">' + personOpts.map(o => '<option value="' + esc(o.v) + '"' + (o.v === f.person ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') + '</select>' +
+    '<select id="actChannel" style="max-width:200px">' + channelOpts.map(o => '<option value="' + esc(o.v) + '"' + (o.v === f.channel ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') + '</select>' +
+  '</div><div class="panel" id="actList">';
+  const list = state.data.interactions;
+  html += list.length ? list.map(i => {
+    const hay = [i.summary, i.subject, i.outcome, i.commitments, i.person ? i.person.name : '', i.firm ? i.firm.name : '', i.job ? i.job.title : ''].join(' ').toLowerCase();
+    return '<div data-channel="' + esc(i.channel) + '" data-person="' + esc(i.person_id) + '" data-search="' + esc(hay) + '">' + interactionRowHtml(i, true) + '</div>';
+  }).join('') : '<div class="muted">No interactions logged. Use <b>+ Log</b> to record one.</div>';
+  html += '</div>';
+  main.innerHTML = html;
+
+  const applyFilter = () => {
+    const q = $('actSearch').value.toLowerCase();
+    const ch = $('actChannel').value;
+    const per = $('actPerson').value;
+    state.filter = { q, channel: ch, person: per };
+    main.querySelectorAll('#actList > div[data-search]').forEach(row => {
+      row.hidden = (ch && row.dataset.channel !== ch) || (per && row.dataset.person !== per) || (q && !row.dataset.search.includes(q));
+    });
+  };
+  main.querySelector('#actSearch').addEventListener('input', applyFilter);
+  main.querySelector('#actChannel').addEventListener('change', applyFilter);
+  main.querySelector('#actPerson').addEventListener('change', applyFilter);
+}
+
+// ============================================================
+// ACTION ROUTER
+// ============================================================
+$('tabs').addEventListener('click', e => {
+  const b = e.target.closest('.tab');
+  if (!b) return;
+  state.tab = b.dataset.tab;
+  render();
+});
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || !state.session) return;
+  const act = el.dataset.act;
+  const id = el.dataset.id;
+  const byId = (arr, x) => state.data[arr].find(r => r.id === x);
+
+  switch (act) {
+    case 'close': closeModal(); break;
+
+    case 'new-firm':
+      openFormModal({ title: 'New firm', table: 'firms', fields: firmFields(null), submitLabel: 'Add firm' });
+      break;
+    case 'edit-firm':
+      openFormModal({ title: 'Edit firm', table: 'firms', id, fields: firmFields(byId('firms', id)), submitLabel: 'Save' });
+      break;
+    case 'del-firm': doDelete('firms', id, 'firm'); break;
+    case 'view-firm': openFirmDetail(id); break;
+
+    case 'new-job':
+      openFormModal({ title: 'New job', table: 'jobs', fields: jobFields(null, el.dataset.firm), submitLabel: 'Add job' });
+      break;
+    case 'edit-job':
+      openFormModal({ title: 'Edit job', table: 'jobs', id, fields: jobFields(byId('jobs', id)), submitLabel: 'Save' });
+      break;
+    case 'del-job': doDelete('jobs', id, 'job'); break;
+    case 'view-job': openJobDetail(id); break;
+
+    case 'new-person':
+      openFormModal({ title: 'New person', table: 'people', fields: personFields(null), submitLabel: 'Add person' });
+      break;
+    case 'edit-person':
+      openFormModal({ title: 'Edit person', table: 'people', id, fields: personFields(byId('people', id)), submitLabel: 'Save' });
+      break;
+    case 'del-person': doDelete('people', id, 'person'); break;
+    case 'view-person': openPersonDetail(id); break;
+
+    case 'new-interaction':
+      openFormModal({
+        title: 'Log interaction', table: 'interactions',
+        fields: interactionFields(null, { person_id: el.dataset.person || '', firm_id: el.dataset.firm || '', job_id: el.dataset.job || '' }),
+        submitLabel: 'Log',
+      });
+      break;
+    case 'edit-interaction':
+      openFormModal({ title: 'Edit interaction', table: 'interactions', id, fields: interactionFields(byId('interactions', id)), submitLabel: 'Save' });
+      break;
+    case 'del-interaction': doDelete('interactions', id, 'interaction'); break;
+
+    case 'link-person':
+      openFormModal({ title: 'Link person to job', table: 'job_people', fields: jobPersonFields(null, id), submitLabel: 'Link' });
+      break;
+    case 'edit-jobperson':
+      openFormModal({ title: 'Edit job link', table: 'job_people', id, fields: jobPersonFields(byId('jobPeople', id)), submitLabel: 'Save' });
+      break;
+    case 'del-jobperson': doDelete('job_people', id, 'job link'); break;
+
+    case 'link-to-firm':
+      openFormModal({ title: 'Link person to firm', table: 'person_firms', fields: personFirmFields(null, { firm_id: id }), submitLabel: 'Link' });
+      break;
+    case 'link-to-firm-person':
+      openFormModal({ title: 'Link person to firm', table: 'person_firms', fields: personFirmFields(null, { person_id: id }), submitLabel: 'Link' });
+      break;
+    case 'edit-personfirm':
+      openFormModal({ title: 'Edit firm link', table: 'person_firms', id, fields: personFirmFields(byId('personFirms', id)), submitLabel: 'Save' });
+      break;
+    case 'del-personfirm': doDelete('person_firms', id, 'firm link'); break;
+  }
+});
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ============================================================
+// BOOT
+// ============================================================
+(function boot() {
+  const saved = localStorage.getItem('recruitingEmail');
+  if (saved) $('gateEmail').value = saved;
+  client.auth.getSession().then(async ({ data }) => {
+    if (data.session) await enterApp(data.session);
+    else showGate();
+  }).catch(() => showGate());
+})();
+</script>
+</body>
+</html>
