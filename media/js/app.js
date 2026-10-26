@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025d";
-import { resolveCover } from "./covers.js?v=20261025d";
-import { signIn, signOut, getSession } from "./auth.js?v=20261025d";
-import { loadNowPlaying } from "./lastfm.js?v=20261025d";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261026a";
+import { resolveCover } from "./covers.js?v=20261026a";
+import { signIn, signOut, getSession } from "./auth.js?v=20261026a";
+import { loadNowPlaying } from "./lastfm.js?v=20261026a";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -255,6 +255,26 @@ function buildRail(title, items) {
 
   const list = el("ul", "rail-list");
   if (items.length) items.forEach((item) => list.append(buildItem(item)));
+  else list.append(el("li", "rail-empty", "nothing here yet"));
+  rail.append(list);
+  return rail;
+}
+
+// A rail whose entries are plain text lines (title — creator), like the
+// "currently" rail — used for the podcasts list.
+function buildSimpleListRail(title, items) {
+  const rail = el("section", "rail");
+  rail.setAttribute("aria-label", `${title} entries`);
+
+  const head = el("header", "rail-head");
+  head.append(
+    el("span", "rail-title", title),
+    el("span", "rail-count", String(items.length))
+  );
+  rail.append(head);
+
+  const list = el("ul", "rail-list");
+  if (items.length) items.forEach((item) => list.append(nowLineItem(item)));
   else list.append(el("li", "rail-empty", "nothing here yet"));
   rail.append(list);
   return rail;
@@ -1034,36 +1054,45 @@ function render() {
       categoryRails.push(buildRail("syllabi", []));
     }
   } else if (state.list === "shelf") {
-    // Shelf is organised by topic when an entry carries one (culture, art,
-    // technology, history, ...); entries without a topic keep their media-type
-    // rail. Topic rails are uncapped; media-type rails keep the feed cap so
-    // incoming suggestions stay pinned and feed items can't crowd them out.
-    const topicRails = new Map();
-    const byTypeNoTopic = new Map();
-    for (const type of MEDIA_TYPES) byTypeNoTopic.set(type, []);
+    // Shelf rails by format: books, films, podcasts (simple list), articles,
+    // essays, plus short fiction and music. Podcasts render as a plain-text
+    // list; everything else is a normal card rail. Articles vs essays split on
+    // a short-non-fiction entry's "essay" tag. Feed cap + pinned suggestions
+    // apply per rail.
+    const buckets = {
+      books: [],
+      films: [],
+      podcasts: [],
+      articles: [],
+      essays: [],
+      "short fiction": [],
+      music: []
+    };
     for (const item of ordered(pool)) {
       if (effectiveList(item) !== "shelf" || state.dismissed.has(item.id)) continue;
       if (!matches(item, query)) continue;
-      const topic = item.topic.trim();
-      if (topic) {
-        const key = `topic:${topic.toLowerCase()}`;
-        if (!topicRails.has(key)) topicRails.set(key, { label: topic.toLowerCase(), items: [] });
-        topicRails.get(key).items.push(item);
-      } else {
-        if (!byTypeNoTopic.has(item.mediaType)) byTypeNoTopic.set(item.mediaType, []);
-        byTypeNoTopic.get(item.mediaType).push(item);
+      if (item.mediaType === "fiction" || item.mediaType === "non-fiction") buckets.books.push(item);
+      else if (item.mediaType === "film") buckets.films.push(item);
+      else if (item.mediaType === "podcast") buckets.podcasts.push(item);
+      else if (item.mediaType === "short-fiction") buckets["short fiction"].push(item);
+      else if (item.mediaType === "album") buckets.music.push(item);
+      else if (item.mediaType === "short-non-fiction") {
+        const isEssay = (item.tags || []).some((t) => String(t).toLowerCase() === "essay");
+        (isEssay ? buckets.essays : buckets.articles).push(item);
       }
     }
-    for (const rail of topicRails.values()) {
-      categoryRails.push(buildRail(rail.label, ordered(rail.items)));
-    }
-    for (const type of MEDIA_TYPES) {
-      const items = byTypeNoTopic.get(type) || [];
+    function cap(items) {
       const incoming = items.filter((item) => item.source === "suggestion");
       const rest = items.filter((item) => item.source !== "suggestion");
-      const shown = [...incoming, ...rest.slice(0, SHELF_LIMIT)];
-      categoryRails.push(buildRail(KIND_LABELS[type].toLowerCase(), shown));
+      return [...incoming, ...rest.slice(0, SHELF_LIMIT)];
     }
+    categoryRails.push(buildRail("books", cap(buckets.books)));
+    categoryRails.push(buildRail("films", cap(buckets.films)));
+    categoryRails.push(buildSimpleListRail("podcasts", cap(buckets.podcasts)));
+    categoryRails.push(buildRail("articles", cap(buckets.articles)));
+    categoryRails.push(buildRail("essays", cap(buckets.essays)));
+    categoryRails.push(buildRail("short fiction", cap(buckets["short fiction"])));
+    categoryRails.push(buildRail("music", cap(buckets.music)));
   } else {
     for (const type of MEDIA_TYPES) {
       const items = byType.get(type) || [];
