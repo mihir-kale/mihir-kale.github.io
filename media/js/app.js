@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025b";
-import { resolveCover } from "./covers.js?v=20261025b";
-import { signIn, signOut, getSession } from "./auth.js?v=20261025b";
-import { loadNowPlaying } from "./lastfm.js?v=20261025b";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025c";
+import { resolveCover } from "./covers.js?v=20261025c";
+import { signIn, signOut, getSession } from "./auth.js?v=20261025c";
+import { loadNowPlaying } from "./lastfm.js?v=20261025c";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -1033,18 +1033,41 @@ function render() {
     } else {
       categoryRails.push(buildRail("syllabi", []));
     }
+  } else if (state.list === "shelf") {
+    // Shelf is organised by topic when an entry carries one (culture, art,
+    // technology, history, ...); entries without a topic keep their media-type
+    // rail. Topic rails are uncapped; media-type rails keep the feed cap so
+    // incoming suggestions stay pinned and feed items can't crowd them out.
+    const topicRails = new Map();
+    const byTypeNoTopic = new Map();
+    for (const type of MEDIA_TYPES) byTypeNoTopic.set(type, []);
+    for (const item of ordered(pool)) {
+      if (effectiveList(item) !== "shelf" || state.dismissed.has(item.id)) continue;
+      if (!matches(item, query)) continue;
+      const topic = item.topic.trim();
+      if (topic) {
+        const key = `topic:${topic.toLowerCase()}`;
+        if (!topicRails.has(key)) topicRails.set(key, { label: topic.toLowerCase(), items: [] });
+        topicRails.get(key).items.push(item);
+      } else {
+        if (!byTypeNoTopic.has(item.mediaType)) byTypeNoTopic.set(item.mediaType, []);
+        byTypeNoTopic.get(item.mediaType).push(item);
+      }
+    }
+    for (const rail of topicRails.values()) {
+      categoryRails.push(buildRail(rail.label, ordered(rail.items)));
+    }
+    for (const type of MEDIA_TYPES) {
+      const items = byTypeNoTopic.get(type) || [];
+      const incoming = items.filter((item) => item.source === "suggestion");
+      const rest = items.filter((item) => item.source !== "suggestion");
+      const shown = [...incoming, ...rest.slice(0, SHELF_LIMIT)];
+      categoryRails.push(buildRail(KIND_LABELS[type].toLowerCase(), shown));
+    }
   } else {
     for (const type of MEDIA_TYPES) {
       const items = byType.get(type) || [];
-      let shown = items;
-      if (state.list === "shelf") {
-        // Incoming recommendations stay pinned above the shelf cap so they are
-        // never pushed out by feed items.
-        const incoming = items.filter((item) => item.source === "suggestion");
-        const rest = items.filter((item) => item.source !== "suggestion");
-        shown = [...incoming, ...rest.slice(0, SHELF_LIMIT)];
-      }
-      categoryRails.push(buildRail(KIND_LABELS[type].toLowerCase(), shown));
+      categoryRails.push(buildRail(KIND_LABELS[type].toLowerCase(), items));
     }
   }
 
