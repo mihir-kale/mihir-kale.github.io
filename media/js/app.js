@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261026b";
-import { resolveCover } from "./covers.js?v=20261026b";
-import { signIn, signOut, getSession } from "./auth.js?v=20261026b";
-import { loadNowPlaying } from "./lastfm.js?v=20261026b";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261026c";
+import { resolveCover } from "./covers.js?v=20261026c";
+import { signIn, signOut, getSession } from "./auth.js?v=20261026c";
+import { loadNowPlaying } from "./lastfm.js?v=20261026c";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -1098,10 +1098,15 @@ function render() {
     categoryRails.push(buildRail("short fiction", cap(buckets["short fiction"])));
     categoryRails.push(buildRail("music", cap(buckets.music)));
   } else {
-    for (const type of MEDIA_TYPES) {
-      const items = byType.get(type) || [];
-      categoryRails.push(buildRail(KIND_LABELS[type].toLowerCase(), items));
-    }
+    // Recommendations: condense both fictions into one "fiction" rail and
+    // rename short non-fiction to "essays".
+    const fictionItems = ordered([...(byType.get("fiction") || []), ...(byType.get("short-fiction") || [])]);
+    categoryRails.push(buildRail("fiction", fictionItems));
+    categoryRails.push(buildRail("non-fiction", ordered(byType.get("non-fiction") || [])));
+    categoryRails.push(buildRail("essays", ordered(byType.get("short-non-fiction") || [])));
+    categoryRails.push(buildRail("films", ordered(byType.get("film") || [])));
+    categoryRails.push(buildRail("music", ordered(byType.get("album") || [])));
+    categoryRails.push(buildRail("podcasts", ordered(byType.get("podcast") || [])));
   }
 
   const nowItems = ordered(pool).filter(
