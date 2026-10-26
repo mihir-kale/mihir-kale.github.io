@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261026a";
-import { resolveCover } from "./covers.js?v=20261026a";
-import { signIn, signOut, getSession } from "./auth.js?v=20261026a";
-import { loadNowPlaying } from "./lastfm.js?v=20261026a";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261026b";
+import { resolveCover } from "./covers.js?v=20261026b";
+import { signIn, signOut, getSession } from "./auth.js?v=20261026b";
+import { loadNowPlaying } from "./lastfm.js?v=20261026b";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -1073,7 +1073,11 @@ function render() {
       if (!matches(item, query)) continue;
       if (item.mediaType === "fiction" || item.mediaType === "non-fiction") buckets.books.push(item);
       else if (item.mediaType === "film") buckets.films.push(item);
-      else if (item.mediaType === "podcast") buckets.podcasts.push(item);
+      else if (item.mediaType === "podcast") {
+        // Feed-sourced podcasts are individual episodes; the shelf podcasts
+        // rail is a simple list of shows listened to regularly, so skip them.
+        if (item.source !== "feed") buckets.podcasts.push(item);
+      }
       else if (item.mediaType === "short-fiction") buckets["short fiction"].push(item);
       else if (item.mediaType === "album") buckets.music.push(item);
       else if (item.mediaType === "short-non-fiction") {
