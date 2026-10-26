@@ -168,6 +168,17 @@ input,textarea,select,button{text-transform:lowercase}
   color:var(--ink);
 }
 
+/* intro rail — matches the "currently" rail: headerless, tinted, grouped notes */
+.rail--intro{background:var(--head)}
+.rail--intro .now-group+.now-group{border-top:1px dotted var(--grid)}
+.intro-body{
+  margin:0;
+  padding:.1rem .85rem 1rem;
+  font-size:.68rem;
+  line-height:1.45;
+  color:var(--ink);
+}
+
 /* live Spotify line inside the "currently listening to" group */
 .ri-live-line{display:block;font-size:.68rem;line-height:1.4}
 .ri-live-line a{color:inherit}

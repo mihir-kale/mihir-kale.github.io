@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261017b";
-import { resolveCover } from "./covers.js?v=20261017b";
-import { signIn, signOut, getSession } from "./auth.js?v=20261017b";
-import { loadNowPlaying } from "./lastfm.js?v=20261017b";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025";
+import { resolveCover } from "./covers.js?v=20261025";
+import { signIn, signOut, getSession } from "./auth.js?v=20261025";
+import { loadNowPlaying } from "./lastfm.js?v=20261025";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -38,6 +38,23 @@ const listButtons = new Map();
 const STATUS_GLYPHS = { "in-progress": "\u25CF", backlog: "\u25CB" };
 
 const SHELF_LIMIT = 5;
+
+// Intro rails: one per section, aesthetically matching the "currently" rail —
+// headerless and tinted, explaining each section's intention and design inspo.
+const INTRO_RAILS = {
+  recommend: [
+    { label: "intention", body: "what i'd actually hand to someone else \u2014 not everything i've consumed, only the ones worth passing on. the default view, and the one i'd point a friend to first." },
+    { label: "design inspo", body: "a bookseller's shelf-talkers and a personal reading list. cover art resolves only here, since these are the ones worth showing; everything else stays text." }
+  ],
+  shelf: [
+    { label: "intention", body: "everything consumed or queued \u2014 finished, in progress, or on the list. incoming suggestions land here, pinned above the feed cap so they're never pushed out." },
+    { label: "design inspo", body: "a commonplace book / index. dense masonry, text-first, because volume matters more than display; feed items capped at five per category." }
+  ],
+  syllabi: [
+    { label: "intention", body: "reading and viewing lists assembled into courses, curricula, and self-directed study \u2014 grouped by topic rather than by media type. name an entry's rail with the syllabi topic field." },
+    { label: "design inspo", body: "a course reader / syllabus. one rail per topic, ordered by when the topic first appeared." }
+  ]
+};
 
 // The special "now" rail groups the dedicated now list into what you're actively
 // reading, watching, and listening to.
@@ -341,6 +358,22 @@ function buildNowRail(items) {
     if (group.id === "listening" && live) list.append(live);
     group.items.forEach((item) => list.append(nowLineItem(item)));
     wrap.append(list);
+    rail.append(wrap);
+  }
+  return rail;
+}
+
+/* ----------------------------- intro rail --------------------------------- */
+
+// A single rail per section, aesthetically matching the "currently" rail:
+// headerless, tinted like a rail header, with grouped intention/design notes.
+function buildIntroRail(groups) {
+  const rail = el("section", "rail rail--intro");
+  rail.setAttribute("aria-label", "about this section");
+  for (const group of groups) {
+    const wrap = el("div", "now-group");
+    wrap.append(el("p", "now-label", group.label));
+    wrap.append(el("p", "intro-body", group.body));
     rail.append(wrap);
   }
   return rail;
@@ -1022,7 +1055,11 @@ function render() {
   // stay free of it.
   const nowRail = state.list === "recommend" ? buildNowRail(nowItems) : null;
 
-  railEls = [...(nowRail ? [nowRail] : []), ...categoryRails, ...(state.list === "syllabi" ? [] : [formRail])];
+  // Each section carries a single intro rail (matching the "currently" rail)
+  // explaining its intention and design inspo.
+  const introRail = buildIntroRail(INTRO_RAILS[state.list]);
+
+  railEls = [introRail, ...(nowRail ? [nowRail] : []), ...categoryRails, ...(state.list === "syllabi" ? [] : [formRail])];
   layout();
 }
 
