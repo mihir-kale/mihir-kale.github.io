@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025";
-import { resolveCover } from "./covers.js?v=20261025";
-import { signIn, signOut, getSession } from "./auth.js?v=20261025";
-import { loadNowPlaying } from "./lastfm.js?v=20261025";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025b";
+import { resolveCover } from "./covers.js?v=20261025b";
+import { signIn, signOut, getSession } from "./auth.js?v=20261025b";
+import { loadNowPlaying } from "./lastfm.js?v=20261025b";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -47,7 +47,7 @@ const INTRO_RAILS = {
     { label: "design inspo", body: "a bookseller's shelf-talkers and a personal reading list. cover art resolves only here, since these are the ones worth showing; everything else stays text." }
   ],
   shelf: [
-    { label: "intention", body: "everything consumed or queued \u2014 finished, in progress, or on the list. incoming suggestions land here, pinned above the feed cap so they're never pushed out." },
+    { label: "intention", body: "everything i intend to consume \u2014 finished, in progress, or still on the list. incoming suggestions land here, pinned above the feed cap so they're never pushed out." },
     { label: "design inspo", body: "a commonplace book / index. dense masonry, text-first, because volume matters more than display; feed items capped at five per category." }
   ],
   syllabi: [
