@@ -1,4 +1,4 @@
-import { LASTFM_API_KEY, LASTFM_USERNAME } from "./data.js?v=20261026c";
+import { LASTFM_API_KEY, LASTFM_USERNAME } from "./data.js?v=20261026d";
 
 // Latest track from Last.fm's public `user.getrecenttracks` API — the free,
 // read-only source for the now rail's "currently listening to" line. Returns
