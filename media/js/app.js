@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025c";
-import { resolveCover } from "./covers.js?v=20261025c";
-import { signIn, signOut, getSession } from "./auth.js?v=20261025c";
-import { loadNowPlaying } from "./lastfm.js?v=20261025c";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261025d";
+import { resolveCover } from "./covers.js?v=20261025d";
+import { signIn, signOut, getSession } from "./auth.js?v=20261025d";
+import { loadNowPlaying } from "./lastfm.js?v=20261025d";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -796,7 +796,7 @@ function buildEditor() {
     buildField("year", year, "editor-field", "editor-label"),
     buildField("consumed", consumed, "editor-field", "editor-label"),
     buildField("list", list, "editor-field", "editor-label"),
-    buildField("syllabi topic", topic, "editor-field", "editor-label"),
+    buildField("topic", topic, "editor-field", "editor-label"),
     buildField("url", url, "editor-field editor-span", "editor-label"),
     buildField("tags", tags, "editor-field editor-span", "editor-label"),
     buildField("notes", notes, "editor-field editor-span", "editor-label")
