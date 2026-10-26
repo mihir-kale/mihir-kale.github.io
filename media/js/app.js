@@ -1,7 +1,7 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261026d";
-import { resolveCover } from "./covers.js?v=20261026d";
-import { signIn, signOut, getSession } from "./auth.js?v=20261026d";
-import { loadNowPlaying } from "./lastfm.js?v=20261026d";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, KIND_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261026e";
+import { resolveCover } from "./covers.js?v=20261026e";
+import { signIn, signOut, getSession } from "./auth.js?v=20261026e";
+import { loadNowPlaying } from "./lastfm.js?v=20261026e";
 
 const searchInput = document.getElementById("search");
 const listsEl = document.getElementById("lists");
@@ -1064,8 +1064,7 @@ function render() {
       films: [],
       podcasts: [],
       articles: [],
-      essays: [],
-      music: []
+      essays: []
     };
     for (const item of ordered(pool)) {
       if (effectiveList(item) !== "shelf" || state.dismissed.has(item.id)) continue;
@@ -1078,7 +1077,7 @@ function render() {
         if (item.source !== "feed") buckets.podcasts.push(item);
       }
       else if (item.mediaType === "short-fiction") buckets.essays.push(item);
-      else if (item.mediaType === "album") buckets.music.push(item);
+      // Music is intentionally omitted from the shelf.
       else if (item.mediaType === "short-non-fiction") {
         const isEssay = (item.tags || []).some((t) => String(t).toLowerCase() === "essay");
         (isEssay ? buckets.essays : buckets.articles).push(item);
@@ -1094,7 +1093,6 @@ function render() {
     categoryRails.push(buildSimpleListRail("podcasts", cap(buckets.podcasts)));
     categoryRails.push(buildRail("articles", cap(buckets.articles)));
     categoryRails.push(buildRail("essays", cap(buckets.essays)));
-    categoryRails.push(buildRail("music", cap(buckets.music)));
   } else {
     // Recommendations: condense both fictions into one "fiction" rail and
     // rename short non-fiction to "essays".
