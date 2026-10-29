@@ -6,6 +6,8 @@
 <title>Jobs · mihirOS</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
 <style>
   :root {
     --bg: #f4f5f7; --bg-2: #eceef1; --card: #ffffff; --panel: #fafbfc;
@@ -1423,62 +1425,108 @@ function statusLabel(s) {
 }
 
 function renderSankey(main) {
-  main.innerHTML = '<div class="loading">Loading chart&hellip;</div>';
-  ensureSankeyLoaded(function () {
-    const jobs = state.data.jobs || [];
-    if (!jobs.length) {
-      main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs tracked yet. Add a job to see the pipeline.</div>';
-      return;
-    }
-    const count = (st) => jobs.filter(j => j.application_status === st).length;
-    const interested = count('interested');
-    const applied = count('applied');
-    const screened = count('screened');
-    const interviewing = count('interviewing');
-    const offer = count('offer');
-    const rejected = count('rejected');
-    const withdrawn = count('withdrawn');
+  const jobs = state.data.jobs || [];
+  if (!jobs.length) {
+    main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs tracked yet. Add a job to see the pipeline.</div>';
+    return;
+  }
+  const count = (st) => jobs.filter(j => j.application_status === st).length;
+  const interested = count('interested');
+  const applied = count('applied');
+  const screened = count('screened');
+  const interviewing = count('interviewing');
+  const offer = count('offer');
+  const rejected = count('rejected');
+  const withdrawn = count('withdrawn');
 
-    const appliedBeyond = applied + screened + interviewing + offer + rejected + withdrawn;
+  const interestedBeyond = applied + screened + interviewing + offer + rejected + withdrawn;
+  const screenedBeyond = screened + interviewing + offer + rejected;
+  const interviewBeyond = interviewing + offer + rejected;
 
-    const rows = [];
-    const interestedBeyond = applied + screened + interviewing + offer + rejected + withdrawn;
-    const screenedBeyond = screened + interviewing + offer + rejected;
-    const interviewBeyond = interviewing + offer + rejected;
-    // Offer/rejected at top
-    if (offer > 0) rows.push(['Interview rounds', 'Offer', offer]);
-    if (rejected > 0) rows.push(['Interview rounds', 'Rejected', rejected]);
-    if (interviewBeyond > 0) rows.push(['Screened', 'Interview rounds', interviewBeyond]);
-    if (screenedBeyond > 0) rows.push(['Applied', 'Screened', screenedBeyond]);
-    if (withdrawn > 0) rows.push(['Applied', 'Withdrawn', withdrawn]);
-    if (applied > 0) rows.push(['Applied', 'Waiting for response', applied]);
-    if (interestedBeyond > 0) rows.push(['Interested', 'Applied', interestedBeyond]);
-    if (interested > 0) rows.push(['Interested', 'Not applied', interested]);
+  const links = [];
+  if (offer > 0) links.push({ source: 'Interview rounds', target: 'Offer', value: offer });
+  if (rejected > 0) links.push({ source: 'Interview rounds', target: 'Rejected', value: rejected });
+  if (interviewBeyond > 0) links.push({ source: 'Screened', target: 'Interview rounds', value: interviewBeyond });
+  if (screenedBeyond > 0) links.push({ source: 'Applied', target: 'Screened', value: screenedBeyond });
+  if (withdrawn > 0) links.push({ source: 'Applied', target: 'Withdrawn', value: withdrawn });
+  if (applied > 0) links.push({ source: 'Applied', target: 'Waiting for response', value: applied });
+  if (interestedBeyond > 0) links.push({ source: 'Interested', target: 'Applied', value: interestedBeyond });
+  if (interested > 0) links.push({ source: 'Interested', target: 'Not applied', value: interested });
 
-    if (!rows.length) {
-      main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs yet.</div>';
-      return;
-    }
+  if (!links.length) {
+    main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No applied jobs yet.</div>';
+    return;
+  }
 
-    main.innerHTML = '<div id="sankeyChart" style="width:100%;height:560px;"></div>';
-    const data = new google.visualization.DataTable();
-    data.addColumn('string', 'From');
-    data.addColumn('string', 'To');
-    data.addColumn('number', 'Weight');
-    data.addRows(rows);
+  // Desired top-to-bottom node order (preserved within each column).
+  const nodeOrder = ['Offer', 'Rejected', 'Interview rounds', 'Waiting for response', 'Screened', 'Withdrawn', 'Applied', 'Interested', 'Not applied'];
+  const nodeSet = new Set();
+  links.forEach(l => { nodeSet.add(l.source); nodeSet.add(l.target); });
+  const nodes = nodeOrder.filter(n => nodeSet.has(n)).map(name => ({ name }));
 
-    const options = {
-      width: (document.getElementById('sankeyChart') ? document.getElementById('sankeyChart').clientWidth : (main.clientWidth || 900)) - 4,
-      height: 560,
-      sankey: {
-        node: { colors: ['#0a7e3d', '#4aa06b', '#b8860b', '#d64545', '#6b7280'] },
-        link: { colorMode: 'gradient' },
-      },
-    };
-    const chart = new google.visualization.Sankey(document.getElementById('sankeyChart'));
-    chart.draw(data, options);
+  const width = Math.max(600, main.clientWidth || 900);
+  const height = 520;
+  main.innerHTML = '<div id="sankeyChart"></div>';
+  const container = document.getElementById('sankeyChart');
+
+  const svg = d3.select(container).append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .style('color', getComputedStyle(document.documentElement).getPropertyValue('--text').trim());
+
+  const sankey = d3.sankey()
+    .nodeWidth(18)
+    .nodePadding(12)
+    .extent([[1, 1], [width - 1, height - 5]])
+    .nodeId(d => d.name)
+    .nodeSort(null);
+
+  const graph = sankey({
+    nodes: nodes.map(d => ({ ...d })),
+    links: links.map(d => ({ ...d }))
   });
+
+  const color = d3.scaleOrdinal()
+    .domain(['Offer','Rejected','Interview rounds','Waiting for response','Screened','Withdrawn','Applied','Interested','Not applied'])
+    .range(['#0a7e3d','#d64545','#4aa06b','#9ca3af','#b8860b','#6b7280','#6b7280','#0a7e3d','#9ca3af']);
+
+  svg.append('g')
+    .selectAll('rect')
+    .data(graph.nodes)
+    .join('rect')
+    .attr('x', d => d.x0)
+    .attr('y', d => d.y0)
+    .attr('height', d => Math.max(1, d.y1 - d.y0))
+    .attr('width', d => d.x1 - d.x0)
+    .attr('fill', d => color(d.name))
+    .append('title')
+    .text(d => `${d.name}\n${d.value}`);
+
+  svg.append('g')
+    .attr('fill', 'none')
+    .selectAll('g')
+    .data(graph.links)
+    .join('g')
+    .attr('stroke-opacity', 0.5)
+    .append('path')
+    .attr('d', d3.sankeyLinkHorizontal())
+    .attr('stroke', d => color(d.source.name))
+    .attr('stroke-width', d => Math.max(1, d.width));
+
+  svg.append('g')
+    .selectAll('text')
+    .data(graph.nodes)
+    .join('text')
+    .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+    .attr('y', d => (d.y1 + d.y0) / 2)
+    .attr('dy', '0.35em')
+    .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
+    .text(d => d.name)
+    .attr('font-size', 12)
+    .attr('fill', 'currentColor');
 }
+
 
 
 
