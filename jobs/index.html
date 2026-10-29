@@ -288,6 +288,11 @@ const state = {
     activity: { sort: { k: 'occurred_at', dir: -1 }, filters: {}, sel: null, widths: {} },
   },
   editing: null, // { td, sheet, k, rowId }
+  jobView: localStorage.getItem('jobsJobView') || 'sankey',
+  alumniData: null,
+  alumniQuery: '',
+  employerData: null,
+  employerQuery: '',
 };
 const $ = id => document.getElementById(id);
 
@@ -308,7 +313,7 @@ async function enterApp(session) {
   $('main').innerHTML = '<div class="loading">Loading&hellip;</div>';
   try {
     await loadAll();
-    render();
+    try { render(); } catch (e) { console.error(e); toast('Render error: ' + (e && e.message ? e.message : e), true); }
     startPolling();
   } catch (e) {
     if (e && e.status === 401) { await client.auth.signOut(); return; }
