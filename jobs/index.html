@@ -1708,10 +1708,25 @@ function renderSettingsWidget() {
     '<div class="muted" style="font-size:10px;margin-top:4px">Stored locally in your browser.</div>';
 }
 
+function renderResumeWidget() {
+  const el = document.getElementById('wResume');
+  if (!el) return;
+  const job = (state.data.jobs || []).find(j => j.id === state.selectedJobId) || (state.data.jobs || [])[0];
+  const jd = (job && job.job_description) ? job.job_description : '';
+  el.innerHTML =
+    '<div class="muted" style="font-size:10px;margin-bottom:4px">Job description</div>' +
+    '<textarea class="widget-ta" id="resumeJd" placeholder="Paste or edit a job description...">' + esc(jd) + '</textarea>' +
+    '<button class="btn small run" data-act="resume-extract" style="margin-top:6px">Extract keywords</button>' +
+    '<div class="muted" style="font-size:10px;margin:8px 0 4px">Keywords</div>' +
+    '<textarea class="widget-ta" id="resumeKw" placeholder="Generated keywords will appear here..."></textarea>' +
+    '<button class="btn small primary" data-act="resume-customize" style="margin-top:6px">Customize resume</button>';
+}
+
 function renderWidgets() {
   renderSourcedWidget();
   renderStatsWidget();
   renderPeopleWidget();
+  renderConnectWidget();
   renderResumeWidget();
 }
 
