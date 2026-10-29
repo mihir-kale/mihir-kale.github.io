@@ -1404,40 +1404,28 @@ function statusLabel(s) {
 function renderSankey(main) {
   main.innerHTML = '<div class="loading">Loading chart&hellip;</div>';
   ensureSankeyLoaded(function () {
-    const { jobs, firms } = state.data;
-    const firmById = new Map((firms || []).map(f => [f.id, f]));
-    if (!jobs || !jobs.length) {
+    const jobs = state.data.jobs || [];
+    if (!jobs.length) {
       main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs tracked yet. Add a job to see the pipeline.</div>';
       return;
     }
-    // top firms by job count
-    const counts = new Map();
-    for (const j of jobs) {
-      const fid = j.firm_id || '__none__';
-      counts.set(fid, (counts.get(fid) || 0) + 1);
-    }
-    const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
-    const top = new Set(sorted.slice(0, 8).map(([id]) => id));
-
-    const agg = new Map();
-    for (const j of jobs) {
-      let src = j.firm_id || '__none__';
-      if (!top.has(src)) src = src === '__none__' ? '__none__' : '__other__';
-      const key = src + '||' + (j.application_status || 'interested');
-      agg.set(key, (agg.get(key) || 0) + 1);
-    }
-
-    const srcLabel = (id) => {
-      if (id === '__none__') return '(No firm)';
-      if (id === '__other__') return 'Other firms';
-      const f = firmById.get(id);
-      return f ? f.name : id;
-    };
+    const count = (st) => jobs.filter(j => j.application_status === st).length;
+    const applied = count('applied');
+    const interviewing = count('interviewing');
+    const offer = count('offer');
+    const rejected = count('rejected');
+    const withdrawn = count('withdrawn');
 
     const rows = [];
-    for (const [key, n] of agg) {
-      const [src, status] = key.split('||');
-      rows.push([srcLabel(src), statusLabel(status), n]);
+    if (interviewing + offer > 0) rows.push(['Applied', 'Interview rounds', interviewing + offer]);
+    if (offer > 0) rows.push(['Interview rounds', 'Offer', offer]);
+    if (rejected > 0) rows.push(['Applied', 'Rejected', rejected]);
+    if (withdrawn > 0) rows.push(['Applied', 'Withdrawn', withdrawn]);
+    if (applied > 0) rows.push(['Applied', 'Applied (pending)', applied]);
+
+    if (!rows.length) {
+      main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No applied jobs yet.</div>';
+      return;
     }
 
     main.innerHTML = '<div id="sankeyChart" style="width:100%;height:560px;"></div>';
@@ -1459,6 +1447,7 @@ function renderSankey(main) {
     chart.draw(data, options);
   });
 }
+
 
 
 const SOURCED_MOCK = [
