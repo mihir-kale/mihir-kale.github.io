@@ -290,9 +290,8 @@ const state = {
   editing: null, // { td, sheet, k, rowId }
   jobView: localStorage.getItem('jobsJobView') || 'sankey',
   alumniData: null,
-  alumniQuery: '',
   employerData: null,
-  employerQuery: '',
+  peopleQuery: '',
 };
 const $ = id => document.getElementById(id);
 
@@ -1359,8 +1358,7 @@ function render() {
         '<div class="jobdash">' +
           '<aside class="dash-side dash-left">' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
-            '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
-            '<section class="widget"><div class="widget-head">Employer contacts</div><div class="widget-body" id="wEmployers"></div></section>' +
+            '<section class="widget"><div class="widget-head">People</div><div class="widget-body" id="wPeople"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1382,8 +1380,7 @@ function render() {
         '<div class="jobdash">' +
           '<aside class="dash-side dash-left">' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
-            '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
-            '<section class="widget"><div class="widget-head">Employer contacts</div><div class="widget-body" id="wEmployers"></div></section>' +
+            '<section class="widget"><div class="widget-head">People</div><div class="widget-body" id="wPeople"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1527,59 +1524,65 @@ async function loadEmployerData() {
   return state.employerData;
 }
 
-function renderAlumniWidget() {
-  const el = document.getElementById('wAlumni');
+function renderPeopleWidget() {
+  const el = document.getElementById('wPeople');
   if (!el) return;
-  if (!state.alumniData) {
-    el.innerHTML = '<div class="muted">Loading alumni…</div>';
-    loadAlumniData().then(() => renderAlumniWidget());
+  if (!state.alumniData || !state.employerData) {
+    el.innerHTML = '<div class="muted">Loading people…</div>';
+    Promise.all([loadAlumniData(), loadEmployerData()]).then(() => renderPeopleWidget());
     return;
   }
-  const data = state.alumniData || {};
-  const q = (state.alumniQuery || '').trim().toLowerCase();
-  let results = [];
+  const q = (state.peopleQuery || '').trim().toLowerCase();
+  const alumniData = state.alumniData || {};
+  const employerData = state.employerData || [];
+
+  // alumni matches
+  let alumniMatches = [];
   let matchedEmployer = null;
   if (q) {
-    for (const emp of Object.keys(data)) {
+    for (const emp of Object.keys(alumniData)) {
       if (emp.toLowerCase().includes(q)) {
         matchedEmployer = emp;
-        results = data[emp];
+        alumniMatches = alumniData[emp];
         break;
       }
     }
   }
-  el.innerHTML =
-    '<input id="alumniSearch" placeholder="Search firm…" value="' + esc(state.alumniQuery || '') + '" style="margin-bottom:6px">' +
-    (matchedEmployer ? '<div class="muted" style="font-size:10px;margin-bottom:4px">' + esc(matchedEmployer) + ' · ' + results.length + ' alumni</div>' : '') +
-    (results.length ? results.slice(0, 15).map(a =>
+
+  // employer contact matches
+  const contactMatches = q
+    ? employerData.filter(e =>
+        e.company.toLowerCase().includes(q) ||
+        (e.firstName + ' ' + e.lastName).toLowerCase().includes(q))
+    : [];
+
+  let html = '<input id="peopleSearch" placeholder="Search firm or person…" value="' + esc(state.peopleQuery || '') + '" style="margin-bottom:6px">';
+
+  if (matchedEmployer) {
+    html += '<div class="muted" style="font-size:10px;margin-bottom:4px">' + esc(matchedEmployer) + ' · ' + alumniMatches.length + ' alumni</div>';
+    html += alumniMatches.slice(0, 12).map(a =>
       '<div class="alum-row">' +
         '<div class="alum-name">' + esc(a.name) + ' <span class="muted">' + esc(a.year) + '</span></div>' +
         '<div class="alum-meta">' + esc(a.title) + (a.email ? ' · ' + esc(a.email) : '') + '</div>' +
-      '</div>').join('') : '<div class="muted">Search a firm to see alumni.</div>');
-  const inp = document.getElementById('alumniSearch');
-  if (inp) inp.addEventListener('input', () => { state.alumniQuery = inp.value; renderAlumniWidget(); });
-}
-
-function renderEmployersWidget() {
-  const el = document.getElementById('wEmployers');
-  if (!el) return;
-  if (!state.employerData) {
-    el.innerHTML = '<div class="muted">Loading contacts…</div>';
-    loadEmployerData().then(() => renderEmployersWidget());
-    return;
+      '</div>').join('');
+  } else if (q && alumniMatches.length === 0 && contactMatches.length === 0) {
+    html += '<div class="muted">No matches.</div>';
+  } else if (!q) {
+    html += '<div class="muted">Search a firm or person.</div>';
   }
-  const q = (state.employerQuery || '').trim().toLowerCase();
-  const matches = (state.employerData || []).filter(e =>
-    !q || e.company.toLowerCase().includes(q) || (e.firstName + ' ' + e.lastName).toLowerCase().includes(q));
-  el.innerHTML =
-    '<input id="employerSearch" placeholder="Search company/contact…" value="' + esc(state.employerQuery || '') + '" style="margin-bottom:6px">' +
-    (matches.length ? matches.slice(0, 15).map(e =>
+
+  if (contactMatches.length) {
+    if (matchedEmployer || q) html += '<div class="muted" style="font-size:10px;margin:8px 0 4px">Employer contacts · ' + contactMatches.length + '</div>';
+    html += contactMatches.slice(0, 12).map(e =>
       '<div class="alum-row">' +
         '<div class="alum-name">' + esc(e.firstName + ' ' + e.lastName) + '</div>' +
         '<div class="alum-meta">' + esc(e.company) + ' · ' + esc(e.title) + (e.linkedin ? ' · <a href="' + esc(e.linkedin) + '" target="_blank" rel="noopener">LI</a>' : '') + '</div>' +
-      '</div>').join('') : '<div class="muted">No contacts found.</div>');
-  const inp = document.getElementById('employerSearch');
-  if (inp) inp.addEventListener('input', () => { state.employerQuery = inp.value; renderEmployersWidget(); });
+      '</div>').join('');
+  }
+
+  el.innerHTML = html;
+  const inp = document.getElementById('peopleSearch');
+  if (inp) inp.addEventListener('input', () => { state.peopleQuery = inp.value; renderPeopleWidget(); });
 }
 
 function renderKeywordsWidget() {
@@ -1605,8 +1608,7 @@ function renderResumeWidget() {
 function renderWidgets() {
   renderSourcedWidget();
   renderStatsWidget();
-  renderAlumniWidget();
-  renderEmployersWidget();
+  renderPeopleWidget();
   renderKeywordsWidget();
   renderResumeWidget();
 }
@@ -1625,10 +1627,9 @@ function renderJobDetail(rid) {
   const job = (state.data.jobs || []).find(j => j.id === rid);
   if (!job) { el.innerHTML = 'Select a job row to see details.'; return; }
   const firm = job.firm ? job.firm.name : ((state.data.firms || []).find(f => f.id === job.firm_id) || {}).name || '';
-  if (firm) { state.alumniQuery = firm; state.employerQuery = firm; }
+  if (firm) { state.peopleQuery = firm; }
   // refresh widgets if present
-  if (document.getElementById('wAlumni')) renderAlumniWidget();
-  if (document.getElementById('wEmployers')) renderEmployersWidget();
+  if (document.getElementById('wPeople')) renderPeopleWidget();
   const pairs = [
     ['Firm', firm],
     ['Status', job.application_status],
