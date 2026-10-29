@@ -1459,7 +1459,7 @@ function renderSankey(main) {
   }
 
   // Desired top-to-bottom node order (preserved within each column).
-  const nodeOrder = ['Offer', 'Rejected', 'Interview rounds', 'Waiting for response', 'Screened', 'Withdrawn', 'Applied', 'Interested', 'Not applied'];
+  const nodeOrder = ['Offer', 'Rejected', 'Interview rounds', 'Screened', 'Waiting for response', 'Withdrawn', 'Applied', 'Interested', 'Not applied'];
   const nodeSet = new Set();
   links.forEach(l => { nodeSet.add(l.source); nodeSet.add(l.target); });
   const nodes = nodeOrder.filter(n => nodeSet.has(n)).map(name => ({ name }));
