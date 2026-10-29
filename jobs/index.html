@@ -299,6 +299,7 @@ const state = {
   employerData: null,
   peopleQuery: '',
   selectedJobId: null,
+  cycleFilter: localStorage.getItem('jobsCycleFilter') || 'All',
 };
 const $ = id => document.getElementById(id);
 
@@ -1377,6 +1378,7 @@ function render() {
       const center = document.getElementById('centerMain');
       $('sheetToolbar').innerHTML = '<span class="title">Jobs pipeline</span>' +
         '<span class="count">' + statsBarHtml() + '</span>' +
+        '<select id="cycleFilter" style="margin-left:8px">' + cycleSelectOptions() + '</select>' +
         '<span style="flex:1"></span>' +
         '<button class="btn small" data-act="toggle-job-view">View: Grid</button>' +
         '<button class="btn small primary" data-act="new-job">+ New</button>';
@@ -1397,6 +1399,7 @@ function render() {
       renderWidgets();
       $('sheetToolbar').innerHTML = '<span class="title">Jobs</span>' +
         '<span class="count">' + statsBarHtml() + '</span>' +
+        '<select id="cycleFilter" style="margin-left:8px">' + cycleSelectOptions() + '</select>' +
         '<span style="flex:1"></span>' +
         '<button class="btn small" data-act="toggle-job-view">View: Chart</button>' +
         '<button class="btn small primary" data-act="new-job">+ New</button>';
@@ -1424,7 +1427,7 @@ function statusLabel(s) {
 }
 
 function renderSankey(main) {
-  const jobs = state.data.jobs || [];
+  const jobs = filteredJobs();
   if (!jobs.length) {
     main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs tracked yet. Add a job to see the pipeline.</div>';
     return;
@@ -1724,7 +1727,7 @@ function renderJobDetail(rid) {
 }
 
 function renderJobsTable(main) {
-  const jobs = state.data.jobs || [];
+  const jobs = filteredJobs();
   if (!jobs.length) { main.innerHTML = '<div class="muted" style="padding:20px">No jobs yet.</div>'; return; }
   const liveStatuses = new Set(['interested','preparing','assessment','screened','interviewing']);
   const live = jobs.filter(j => liveStatuses.has(j.application_status));
@@ -1817,6 +1820,24 @@ function statusBadge(job) {
   return '<span class="badge ' + esc(cls) + '">' + esc(fmtEnum(s)) + '</span>';
 }
 
+function jobCycle(job) {
+  const t = (job && job.title) ? job.title : '';
+  const m = t.match(/(Summer|Spring|Fall|Winter)\s*(\d{4})/i);
+  if (m) return m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase() + ' ' + m[2];
+  if (job && job.program_year) return 'Summer ' + job.program_year;
+  return null;
+}
+function filteredJobs() {
+  const all = state.data.jobs || [];
+  if (!state.cycleFilter || state.cycleFilter === 'All') return all;
+  return all.filter(j => jobCycle(j) === state.cycleFilter);
+}
+
+function cycleSelectOptions() {
+  const cycles = ['All','Summer 2027','Spring 2027','Fall 2027','Summer 2028','Spring 2028'];
+  return cycles.map(c => '<option value="' + esc(c) + '"' + (c === state.cycleFilter ? ' selected' : '') + '>' + esc(c) + '</option>').join('');
+}
+
 function renderOverview(main) {
   const { firms, jobs, people, interactions } = state.data;
   const count = s => jobs.filter(j => j.application_status === s).length;
@@ -1904,6 +1925,13 @@ if (sheetTabsEl) {
     render();
   });
 }
+document.addEventListener('change', e => {
+  const sel = e.target.closest('#cycleFilter');
+  if (!sel) return;
+  state.cycleFilter = sel.value;
+  localStorage.setItem('jobsCycleFilter', sel.value);
+  render();
+});
 
 $('refreshBtn').addEventListener('click', () => refresh().catch(e => toast(friendlyError(e), true)));
 
