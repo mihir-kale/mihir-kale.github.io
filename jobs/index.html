@@ -263,6 +263,24 @@
 const SUPABASE_URL = 'https://gzwhuwzmrrmtswyhjheu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E';
 const TZ = 'America/New_York';
+const DEEPSEEK_KEY = () => localStorage.getItem('deepseekKey') || '';
+async function callDeepSeek(system, user) {
+  if (!DEEPSEEK_KEY()) throw new Error('Set your DeepSeek key in Settings');
+  const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + DEEPSEEK_KEY(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        ...(system ? [{ role: 'system', content: system }] : []),
+        { role: 'user', content: user },
+      ],
+      temperature: 0,
+    }),
+  });
+  const data = await res.json();
+  return (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
+}
 
 // Client vocabularies (DB columns are free text; no constraints).
 const APP_STATUS   = ['interested', 'preparing', 'applied', 'assessment', 'screened', 'interviewing', 'offer', 'accepted', 'rejected', 'withdrawn', 'not_pursuing'];
@@ -1373,6 +1391,7 @@ function render() {
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">People</div><div class="widget-body" id="wPeople"></div></section>' +
             '<section class="widget"><div class="widget-head">Connect</div><div class="widget-body" id="wConnect"></div></section>' +
+            '<section class="widget"><div class="widget-head">Settings</div><div class="widget-body" id="wSettings"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1396,6 +1415,7 @@ function render() {
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">People</div><div class="widget-body" id="wPeople"></div></section>' +
             '<section class="widget"><div class="widget-head">Connect</div><div class="widget-body" id="wConnect"></div></section>' +
+            '<section class="widget"><div class="widget-head">Settings</div><div class="widget-body" id="wSettings"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1677,6 +1697,15 @@ function renderConnectWidget() {
     '<button class="btn small run" data-act="connect-draft" style="margin-top:6px">Draft email</button>' +
     '<div class="muted" style="font-size:10px;margin:8px 0 4px">Draft</div>' +
     '<textarea class="widget-ta" id="connectDraft" placeholder="Draft will appear here..." readonly></textarea>';
+}
+
+function renderSettingsWidget() {
+  const el = document.getElementById('wSettings');
+  if (!el) return;
+  el.innerHTML =
+    '<input id="deepseekKeyInput" type="password" placeholder="DeepSeek API key" value="' + esc(localStorage.getItem('deepseekKey') || '') + '" style="margin-bottom:6px">' +
+    '<button class="btn small run" data-act="save-deepseek-key">Save key</button>' +
+    '<div class="muted" style="font-size:10px;margin-top:4px">Stored locally in your browser.</div>';
 }
 
 function renderWidgets() {
@@ -2096,8 +2125,19 @@ document.addEventListener('click', e => {
       const ta = document.getElementById('resumeJd');
       const out = document.getElementById('resumeKw');
       if (!ta || !out) break;
-      const kws = extractKeywords(ta.value || '');
-      out.value = kws.join(', ');
+      (async () => {
+        out.value = 'Extracting...';
+        try {
+          const text = await callDeepSeek(
+            'Extract the most important keywords and skills from the job description. Return only a comma-separated list of keywords, nothing else.',
+            ta.value || ''
+          );
+          out.value = text.trim();
+        } catch (e) {
+          out.value = '';
+          toast('Extraction failed: ' + (e && e.message ? e.message : e), true);
+        }
+      })();
       break;
     }
     case 'resume-customize': {
@@ -2108,12 +2148,29 @@ document.addEventListener('click', e => {
     case 'connect-draft': {
       const type = (document.getElementById('connectType') || {}).value || 'intro';
       const personal = (document.getElementById('connectPersonal') || {}).value || '';
-      const draft = 'Subject: ' + type.charAt(0).toUpperCase() + type.slice(1) + '\n\nHi [Name],\n\n' +
-        'I hope you\'re doing well. ' + (personal ? personal + ' ' : '') +
-        'I\'d love to connect and learn about your experience.\n\nBest,\nMihir';
       const out = document.getElementById('connectDraft');
-      if (out) out.value = draft;
-      toast('Draft generated (LLM wiring pending)');
+      if (out) out.value = 'Drafting...';
+      (async () => {
+        try {
+          const text = await callDeepSeek(
+            'You are an expert networking email writer. Draft a concise, professional ' + type + ' email. ' +
+            'Personalization notes: ' + (personal || 'none') + '. ' +
+            'Output only the email (subject line + body), no commentary.',
+            'Draft the email now.'
+          );
+          if (out) out.value = text.trim();
+          toast('Draft generated');
+        } catch (e) {
+          if (out) out.value = '';
+          toast('Draft failed: ' + (e && e.message ? e.message : e), true);
+        }
+      })();
+      break;
+    }
+    case 'save-deepseek-key': {
+      const inp = document.getElementById('deepseekKeyInput');
+      if (inp) localStorage.setItem('deepseekKey', inp.value.trim());
+      toast('DeepSeek key saved');
       break;
     }
     case 'clear-filters': state.ui[state.sheet].filters = {}; render(); break;
