@@ -1720,7 +1720,6 @@ function renderJobDetail(rid) {
   if (document.getElementById('wPeople')) renderPeopleWidget();
   const pairs = [
     ['Firm', firm],
-    ['Status', statusBadge(job), true],
     ['Posting', job.posting_status],
     ['Interest', job.interest_level],
     ['Deadline', job.application_deadline ? fmtDate(job.application_deadline) : ''],
@@ -1743,6 +1742,7 @@ function renderJobDetail(rid) {
   if (job.source_url) html += '<div style="margin-top:8px"><a href="' + esc(job.source_url) + '" target="_blank" rel="noopener">Job posting \u2197</a></div>';
   const statusOpts = APP_STATUS.map(v => '<option value="' + esc(v) + '"' + (v === job.application_status ? ' selected' : '') + '>' + esc(fmtEnum(v)) + '</option>').join('');
   html += '<div style="margin-top:10px;display:flex;gap:6px;align-items:center">' +
+    '<span class="k" style="margin:0">Status</span>' +
     '<select id="jobDetailStatus" style="flex:1">' + statusOpts + '</select>' +
     '<button class="btn small primary" data-act="save-job-status" data-id="' + esc(job.id) + '">Save status</button>' +
   '</div>';
