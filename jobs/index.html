@@ -298,6 +298,7 @@ const state = {
   alumniData: null,
   employerData: null,
   peopleQuery: '',
+  selectedJobId: null,
 };
 const $ = id => document.getElementById(id);
 
@@ -1369,8 +1370,7 @@ function render() {
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
             '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
-            '<section class="widget"><div class="widget-head">JD → keywords</div><div class="widget-body" id="wKeywords"></div></section>' +
-            '<section class="widget"><div class="widget-head">Resume customize</div><div class="widget-body" id="wResume"></div></section>' +
+            '<section class="widget"><div class="widget-head">Resume</div><div class="widget-body" id="wResume"></div></section>' +
           '</aside>' +
         '</div>';
       renderWidgets();
@@ -1391,8 +1391,7 @@ function render() {
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
             '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
-            '<section class="widget"><div class="widget-head">JD → keywords</div><div class="widget-body" id="wKeywords"></div></section>' +
-            '<section class="widget"><div class="widget-head">Resume customize</div><div class="widget-body" id="wResume"></div></section>' +
+            '<section class="widget"><div class="widget-head">Resume</div><div class="widget-body" id="wResume"></div></section>' +
           '</aside>' +
         '</div>';
       renderWidgets();
@@ -1649,35 +1648,29 @@ function renderPeopleWidget() {
   }
 
   el.innerHTML = html;
+  if (document.getElementById('wResume')) renderResumeWidget();
   const inp = document.getElementById('peopleSearch');
   if (inp) inp.addEventListener('input', () => { state.peopleQuery = inp.value; renderPeopleWidget(); });
-}
-
-function renderKeywordsWidget() {
-  const el = document.getElementById('wKeywords');
-  if (!el) return;
-  el.innerHTML =
-    '<textarea class="widget-ta" id="kwInput" placeholder="Paste a job description..."></textarea>' +
-    '<button class="btn small run" data-act="kw-extract">Extract keywords</button>' +
-    '<div class="chip-row" id="kwOut" style="margin-top:8px"></div>';
 }
 
 function renderResumeWidget() {
   const el = document.getElementById('wResume');
   if (!el) return;
-  const opts = state.data.jobs.map(j => '<option value="' + esc(j.id) + '">' + esc(j.title) + (j.firm ? ' — ' + esc(j.firm.name) : '') + '</option>').join('');
+  const job = (state.data.jobs || []).find(j => j.id === state.selectedJobId) || (state.data.jobs || [])[0];
+  const jd = (job && job.job_description) ? job.job_description : '';
   el.innerHTML =
-    '<div class="muted" style="font-size:11px">Tailor your resume to a job\'s keywords.</div>' +
-    '<select id="resumeJobSel" style="margin-top:6px">' + opts + '</select>' +
-    '<button class="btn small run" data-act="resume-customize">Customize resume</button>' +
-    '<div id="resumeOut" class="muted" style="font-size:11px;margin-top:6px"></div>';
+    '<div class="muted" style="font-size:10px;margin-bottom:4px">Job description</div>' +
+    '<textarea class="widget-ta" id="resumeJd" placeholder="Paste or edit a job description...">' + esc(jd) + '</textarea>' +
+    '<button class="btn small run" data-act="resume-extract" style="margin-top:6px">Extract keywords</button>' +
+    '<div class="muted" style="font-size:10px;margin:8px 0 4px">Keywords</div>' +
+    '<textarea class="widget-ta" id="resumeKw" placeholder="Generated keywords will appear here..."></textarea>' +
+    '<button class="btn small primary" data-act="resume-customize" style="margin-top:6px">Customize resume</button>';
 }
 
 function renderWidgets() {
   renderSourcedWidget();
   renderStatsWidget();
   renderPeopleWidget();
-  renderKeywordsWidget();
   renderResumeWidget();
 }
 
@@ -1693,6 +1686,7 @@ function renderJobDetail(rid) {
   const el = document.getElementById('wJobDetail');
   if (!el) return;
   const job = (state.data.jobs || []).find(j => j.id === rid);
+  if (job) state.selectedJobId = job.id;
   if (!job) { el.innerHTML = 'Select a job row to see details.'; return; }
   const firm = job.firm ? job.firm.name : ((state.data.firms || []).find(f => f.id === job.firm_id) || {}).name || '';
   if (firm) { state.peopleQuery = firm; }
@@ -2049,20 +2043,16 @@ document.addEventListener('click', e => {
       toast('Added to pipeline');
       break;
     }
-    case 'kw-extract': {
-      const ta = document.getElementById('kwInput');
-      const out = document.getElementById('kwOut');
+    case 'resume-extract': {
+      const ta = document.getElementById('resumeJd');
+      const out = document.getElementById('resumeKw');
       if (!ta || !out) break;
       const kws = extractKeywords(ta.value || '');
-      out.innerHTML = kws.length
-        ? kws.map(k => '<span class="kw-chip">' + esc(k) + '</span>').join('')
-        : '<span class="muted">No keywords found.</span>';
+      out.value = kws.join(', ');
       break;
     }
     case 'resume-customize': {
-      const out = document.getElementById('resumeOut');
-      if (out) out.textContent = 'Resume customization queued (backend wiring pending).';
-      toast('Queued');
+      toast('Resume customization queued (backend wiring pending).');
       break;
     }
     case 'save-job-status': updateJobStatus(el.dataset.id); break;
