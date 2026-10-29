@@ -1376,12 +1376,19 @@ function render() {
       renderSankey(center);
     } else {
       main.innerHTML =
-        '<div class="jobdash-grid">' +
+        '<div class="jobdash">' +
+          '<aside class="dash-side dash-left">' +
+            '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
+            '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
+          '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
             '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
+            '<section class="widget"><div class="widget-head">JD → keywords</div><div class="widget-body" id="wKeywords"></div></section>' +
+            '<section class="widget"><div class="widget-head">Resume customize</div><div class="widget-body" id="wResume"></div></section>' +
           '</aside>' +
         '</div>';
+      renderWidgets();
       $('sheetToolbar').innerHTML = '<span class="title">Jobs</span>' +
         '<span class="count">' + (state.data.jobs || []).length + ' jobs</span>' +
         '<span style="flex:1"></span>' +
