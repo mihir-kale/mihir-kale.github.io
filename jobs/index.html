@@ -1,0 +1,1876 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jobs · mihirOS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<style>
+  :root {
+    --bg: #f4f5f7; --bg-2: #eceef1; --card: #ffffff; --panel: #fafbfc;
+    --border: #dfe1e6; --text: #1f2933; --muted: #6b7280;
+    --accent: #0a7e3d; --accent-dim: #4aa06b; --warn: #d64545; --done: #b8860b;
+    --on-accent: #ffffff; --shadow: 0 1px 3px rgba(0,0,0,.12);
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  :root[data-theme="dark"] {
+    --bg: #101310; --bg-2: #151a15; --card: #0d100d; --panel: #141914;
+    --border: #2b352b; --text: #c8d6c8; --muted: #6f8070;
+    --accent: #33ff66; --accent-dim: #1f7a3a; --warn: #ff5a3c; --done: #ffb000;
+    --on-accent: #06100a; --shadow: 0 0 0 1px rgba(51,255,102,.06), 0 0 18px rgba(0,0,0,.6);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--mono); font-size: 13px; line-height: 1.5;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  a { color: var(--accent); }
+
+  /* ---------- gate ---------- */
+  .gate { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 100; }
+  .gate-card { background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 32px; width: 340px; display: flex; flex-direction: column; gap: 12px; }
+  .gate-card h1 { margin: 0; font-size: 16px; letter-spacing: 3px; text-align: center; }
+  .gate-card .muted { text-align: center; margin: 0; }
+
+  /* ---------- chrome ---------- */
+  .topbar { flex: none; display: flex; align-items: center; gap: 16px; padding: 8px 16px; background: var(--bg-2); border-bottom: 1px solid var(--border); }
+  .brand { font-size: 13px; font-weight: 700; letter-spacing: 3px; }
+  .top-actions { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+  .toolbar { flex: none; display: flex; align-items: center; gap: 12px; padding: 5px 16px; background: var(--bg); border-bottom: 1px solid var(--border); min-height: 34px; }
+  .toolbar .title { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+  .toolbar .count { color: var(--muted); font-size: 11px; }
+  #app { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  main { flex: 1; overflow: auto; }
+
+  .btn { background: var(--card); border: 1px solid var(--border); padding: 6px 12px; cursor: pointer; color: var(--text); }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  .btn.primary:hover { opacity: .9; color: var(--on-accent); }
+  .btn.danger { color: var(--warn); }
+  .btn.danger:hover { border-color: var(--warn); }
+  .btn.small { padding: 3px 8px; font-size: 11px; }
+  .btn.ghost { background: none; border-color: transparent; color: var(--muted); }
+  .btn.wide { width: 100%; }
+  .icon-btn { background: none; border: 1px solid transparent; cursor: pointer; color: var(--muted); padding: 4px 8px; }
+  .icon-btn:hover { color: var(--text); border-color: var(--border); }
+  input, select, textarea {
+    background: var(--card); border: 1px solid var(--border); padding: 7px 10px; width: 100%; border-radius: 0;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; }
+  .muted { color: var(--muted); }
+  h2.section { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 24px 0 10px; }
+  h2.section:first-child { margin-top: 0; }
+
+  /* ---------- spreadsheet ---------- */
+  .sheet { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+  .sheet th, .sheet td {
+    border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 3px 8px; height: 27px; background: var(--card);
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: left;
+    vertical-align: middle; font-weight: inherit;
+  }
+  .sheet thead th {
+    position: sticky; z-index: 10; background: var(--bg-2); color: var(--muted);
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; user-select: none;
+  }
+  .sheet thead tr.hdr th { top: 0; height: 28px; }
+  .sheet thead tr.filters th { top: 28px; height: 30px; padding: 2px 4px; cursor: default; }
+  .sheet thead tr.filters th.rn, .sheet thead tr.hdr th.rn { z-index: 12; }
+  .sheet th .si { color: var(--accent); font-size: 9px; }
+  .sheet th .rz { position: absolute; top: 0; right: -3px; width: 7px; height: 100%; cursor: col-resize; z-index: 20; }
+  .sheet th, .sheet td.rn, .sheet td.acts { position: relative; }
+  .sheet td.rn, .sheet th.rn { position: sticky; left: 0; z-index: 6; width: 38px; text-align: center; color: var(--muted); font-size: 11px; background: var(--bg-2); }
+  .sheet td.acts, .sheet th.acts { position: sticky; right: 0; z-index: 6; width: 78px; text-align: center; background: var(--bg-2); border-left: 1px solid var(--border); }
+  .sheet tbody tr:nth-child(even) td { background: var(--panel); }
+  .sheet tbody tr:hover td { background: var(--bg-2); }
+  .sheet tbody tr:nth-child(even) td.rn, .sheet tbody tr:nth-child(even) td.acts { background: var(--bg-2); }
+  .sheet tbody tr:hover td.rn, .sheet tbody tr:hover td.acts { background: var(--border); }
+  .sheet td.sel { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .sheet td.editing { background: var(--card) !important; padding: 0; overflow: visible; }
+  .sheet td.editing .celledit {
+    width: 100%; height: 25px; border: 2px solid var(--accent); padding: 0 6px;
+    background: var(--card); color: var(--text); outline: none; font-size: 12px;
+  }
+  .sheet td.editing select.celledit { padding: 0 2px; }
+  .sheet td a { pointer-events: auto; }
+  .sheet tfoot td.addrow { color: var(--muted); cursor: pointer; background: var(--bg-2); }
+  .sheet tfoot td.addrow:hover { color: var(--accent); }
+  .sheet .ib { background: none; border: none; cursor: pointer; color: var(--muted); padding: 2px 4px; font-size: 12px; }
+  .sheet .ib:hover { color: var(--accent); }
+  .sheet .ib.danger:hover { color: var(--warn); }
+  .sheet thead tr.filters th input, .sheet thead tr.filters th select {
+    width: 100%; height: 22px; border: 1px solid var(--border); background: var(--card);
+    padding: 0 4px; font-size: 11px; color: var(--text);
+  }
+  .sheet.mini { table-layout: auto; width: 100%; margin-bottom: 6px; }
+  .sheet.mini thead th { position: static; }
+  .sheet.mini tbody tr { cursor: pointer; }
+  .sheet.mini td { height: 26px; }
+  .sheet.mini td.rn { position: static; width: auto; }
+
+  /* ---------- overview ---------- */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; padding: 14px 16px 4px; }
+  .stat { background: var(--card); border: 1px solid var(--border); padding: 12px 14px; }
+  .stat .n { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat .l { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .panel { background: var(--card); border: 1px solid var(--border); padding: 10px 12px; margin: 12px 16px; }
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  @media (max-width: 900px) { .cols-2 { grid-template-columns: 1fr; } }
+  .row-item { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px dashed var(--border); }
+  .row-item:last-child { border-bottom: none; }
+  .row-item .grow { flex: 1; min-width: 0; }
+  .clickable { cursor: pointer; }
+  .clickable:hover { color: var(--accent); }
+
+  /* ---------- badges ---------- */
+  .badge { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.applied, .badge.interviewing { border-color: var(--accent-dim); color: var(--accent); }
+  .badge.offer { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .badge.rejected, .badge.withdrawn, .badge.expired, .badge.closed { border-color: var(--warn); color: var(--warn); }
+  .badge.referral-requested, .badge.referral-sent { border-color: var(--done); color: var(--done); }
+  .chip { display: inline-block; font-size: 11px; padding: 1px 7px; border: 1px solid var(--border); color: var(--muted); }
+  .chip.due-soon { border-color: var(--done); color: var(--done); }
+  .chip.overdue { border-color: var(--warn); color: var(--warn); }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .dot.low { background: var(--muted); }
+  .dot.medium { background: var(--done); }
+  .dot.high { background: var(--accent); }
+
+  /* ---------- activity rows (detail modals / overview) ---------- */
+  .int-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+  .int-row:last-child { border-bottom: none; }
+  .int-when { width: 130px; flex-shrink: 0; color: var(--muted); font-size: 12px; }
+  .int-body { flex: 1; min-width: 0; }
+  .int-actions { display: flex; gap: 4px; align-items: flex-start; }
+
+  /* ---------- sheet tabs (bottom, Excel-style) ---------- */
+  .sheettabs { flex: none; display: flex; gap: 2px; padding: 4px 10px; background: var(--bg-2); border-top: 1px solid var(--border); }
+  .sheettab { background: var(--card); border: 1px solid var(--border); border-bottom: none; padding: 4px 16px; cursor: pointer; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .sheettab:hover { color: var(--text); }
+  .sheettab.active { color: var(--accent); border-color: var(--accent); background: var(--bg); font-weight: 700; }
+
+  /* ---------- modal ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 50; overflow-y: auto; }
+  .modal { background: var(--bg); border: 1px solid var(--border); box-shadow: var(--shadow); width: 100%; max-width: 640px; }
+  .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .modal-head h2 { margin: 0; font-size: 15px; }
+  .modal-body { padding: 18px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field.span2 { grid-column: 1 / -1; }
+  .field label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .field .req { color: var(--warn); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 18px; border-top: 1px solid var(--border); }
+  .modal-actions .left { margin-right: auto; }
+  .modal-error { background: var(--warn); color: #fff; padding: 8px 12px; margin: 12px 18px 0; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin: 12px 0; }
+  .detail-grid .k { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .prose { white-space: pre-wrap; background: var(--panel); border: 1px solid var(--border); padding: 10px 12px; margin: 8px 0; }
+  .toast { position: fixed; bottom: 44px; right: 20px; background: var(--accent); color: var(--on-accent); padding: 10px 16px; z-index: 200; box-shadow: var(--shadow); }
+  .toast.err { background: var(--warn); color: #fff; }
+  .loading { color: var(--muted); padding: 40px; text-align: center; }
+  [hidden] { display: none !important; }
+
+  /* ---------- dashboard widgets ---------- */
+  .jobdash { display: grid; grid-template-columns: 300px 1fr 300px; gap: 12px; padding: 12px 16px; align-items: start; min-height: calc(100% - 0px); }
+  @media (max-width: 1100px) { .jobdash { grid-template-columns: 1fr; } }
+  .dash-side { display: flex; flex-direction: column; gap: 12px; }
+  .dash-center { min-width: 0; background: var(--card); border: 1px solid var(--border); padding: 10px; min-height: 400px; }
+  .widget { background: var(--card); border: 1px solid var(--border); padding: 10px 12px; }
+  .widget-head { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .widget-head .sub { font-size: 10px; text-transform: none; letter-spacing: 0; color: var(--muted); }
+  .widget-body { display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow: auto; }
+  .src-job { border: 1px solid var(--border); padding: 8px; background: var(--panel); }
+  .src-job .src-title { font-weight: 700; font-size: 12px; }
+  .src-job .src-meta { font-size: 10px; color: var(--muted); margin: 2px 0 6px; }
+  .src-actions { display: flex; gap: 6px; }
+  .src-actions button { flex: 1; padding: 4px 6px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-size: 11px; }
+  .src-actions .reject { color: var(--warn); }
+  .src-actions .reject:hover { border-color: var(--warn); background: var(--warn); color: #fff; }
+  .src-actions .accept { color: var(--accent); }
+  .src-actions .accept:hover { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+  .alum-row { display: flex; flex-direction: column; gap: 2px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+  .alum-row:last-child { border-bottom: none; }
+  .alum-name { font-weight: 700; font-size: 12px; }
+  .alum-meta { font-size: 10px; color: var(--muted); }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+  .kw-chip { display: inline-block; font-size: 10px; padding: 2px 7px; border: 1px solid var(--accent-dim); color: var(--accent); background: var(--panel); }
+  textarea.widget-ta { width: 100%; min-height: 80px; resize: vertical; font-size: 11px; }
+  .widget button.run { margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate" hidden>
+  <form id="gateForm" class="gate-card">
+    <h1>JOBS</h1>
+    <p class="muted">Sign in to continue</p>
+    <input id="gateEmail" type="email" placeholder="Email" required autocomplete="username">
+    <input id="gatePass" type="password" placeholder="Password" required autocomplete="current-password">
+    <div id="gateError" class="modal-error" hidden></div>
+    <button type="submit" class="btn primary wide" id="gateBtn">Sign in</button>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header class="topbar">
+    <div class="brand">JOBS</div>
+    <div class="top-actions">
+      <button class="btn small" data-act="new-firm">+ Firm</button>
+      <button class="btn small" data-act="new-job">+ Job</button>
+      <button class="btn small" data-act="new-person">+ Person</button>
+      <button class="btn small primary" data-act="new-interaction">+ Log</button>
+      <button class="icon-btn" id="refreshBtn" title="Refresh">&#8635;</button>
+      <button class="icon-btn" id="themeToggle" title="Toggle theme">&#9680;</button>
+      <button class="icon-btn" id="signOutBtn" title="Sign out">&#9211;</button>
+    </div>
+  </header>
+  <div class="toolbar" id="sheetToolbar"></div>
+  <main id="main"><div class="loading">Loading&hellip;</div></main>
+  <footer class="sheettabs" id="sheetTabs">
+    <button class="sheettab" data-sheet="overview">Overview</button>
+    <button class="sheettab" data-sheet="jobs">Jobs</button>
+    <button class="sheettab" data-sheet="firms">Firms</button>
+    <button class="sheettab" data-sheet="people">People</button>
+    <button class="sheettab" data-sheet="activity">Activity</button>
+  </footer>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+'use strict';
+// ============================================================
+// CONFIG
+// ============================================================
+const SUPABASE_URL = 'https://gzwhuwzmrrmtswyhjheu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6d2h1d3ptcnJtdHN3eWhqaGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NDQ1OTUsImV4cCI6MjEwNDIyMDU5NX0.vARmLV7ttdkTXz45IDUydwEENxFFY4d3PsI1kct08_E';
+const TZ = 'America/New_York';
+
+// Client vocabularies (DB columns are free text; no constraints).
+const APP_STATUS   = ['interested', 'applied', 'interviewing', 'offer', 'rejected', 'withdrawn'];
+const POSTING      = ['open', 'unknown', 'closed', 'expired'];
+const INTEREST     = ['low', 'medium', 'high'];
+const CHANNELS     = ['email', 'phone', 'linkedin', 'coffee', 'meeting', 'referral', 'career_fair', 'other'];
+const DIRECTIONS   = ['inbound', 'outbound', 'mutual'];
+const JOB_REL      = ['contact', 'recruiter', 'referrer', 'interviewer', 'referral'];
+const REF_STATUS   = ['not_requested', 'requested', 'sent', 'accepted', 'declined'];
+const FIRM_REL     = ['employee', 'former_employee', 'alum', 'recruiter', 'contact', 'other'];
+const WORK_ARR     = ['remote', 'hybrid', 'onsite', 'unknown'];
+const EMP_TYPE     = ['full_time', 'part_time', 'internship', 'contract', 'unknown'];
+
+const DELETE_MSG = {
+  people: 'Cannot delete this person — they still have interactions logged. Delete those interactions first.',
+  firms:  'Cannot delete this firm — it still has jobs. Delete those jobs first.',
+  jobs:   'Cannot delete this job — it still has people linked. Remove those links first.',
+};
+
+// ============================================================
+// STATE + AUTH
+// ============================================================
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const state = {
+  session: null,
+  sheet: 'jobs',
+  data: { firms: [], jobs: [], people: [], interactions: [], jobPeople: [], personFirms: [] },
+  // per-sheet grid UI: sort, column filters, selection, column widths
+  ui: {
+    overview: { sort: null, filters: {}, sel: null, widths: {} },
+    jobs:     { sort: { k: 'application_deadline', dir: 1 }, filters: {}, sel: null, widths: {} },
+    firms:    { sort: { k: 'name', dir: 1 }, filters: {}, sel: null, widths: {} },
+    people:   { sort: { k: 'name', dir: 1 }, filters: {}, sel: null, widths: {} },
+    activity: { sort: { k: 'occurred_at', dir: -1 }, filters: {}, sel: null, widths: {} },
+  },
+  editing: null, // { td, sheet, k, rowId }
+};
+const $ = id => document.getElementById(id);
+
+function showGate(msg) {
+  state.session = null;
+  stopPolling();
+  closeModal();
+  $('app').hidden = true;
+  $('gate').hidden = false;
+  const err = $('gateError');
+  if (msg) { err.textContent = msg; err.hidden = false; } else { err.hidden = true; }
+}
+
+async function enterApp(session) {
+  state.session = session;
+  $('gate').hidden = true;
+  $('app').hidden = false;
+  $('main').innerHTML = '<div class="loading">Loading&hellip;</div>';
+  try {
+    await loadAll();
+    render();
+    startPolling();
+  } catch (e) {
+    if (e && e.status === 401) { await client.auth.signOut(); return; }
+    toast(e.message || 'Failed to load', true);
+  }
+}
+
+$('gateForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('gateBtn');
+  btn.disabled = true;
+  $('gateError').hidden = true;
+  try {
+    const { data, error } = await client.auth.signInWithPassword({
+      email: $('gateEmail').value.trim(),
+      password: $('gatePass').value,
+    });
+    if (error) throw error;
+    localStorage.setItem('recruitingEmail', $('gateEmail').value.trim());
+    $('gatePass').value = '';
+    await enterApp(data.session);
+  } catch (err) {
+    $('gateError').textContent = err.message || 'Sign in failed';
+    $('gateError').hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('signOutBtn').addEventListener('click', async () => {
+  await client.auth.signOut();
+  showGate();
+});
+
+client.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT') showGate();
+});
+
+// ============================================================
+// REST helpers — no fetch happens without a session.
+// ============================================================
+async function q(path) {
+  if (!state.session) throw new Error('Not signed in');
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + state.session.access_token },
+  });
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      await client.auth.signOut();
+      const e = new Error('Session expired — sign in again.');
+      e.status = res.status;
+      throw e;
+    }
+    const body = await res.text();
+    const e = new Error('Query failed (' + res.status + '): ' + body.slice(0, 200));
+    e.status = res.status;
+    throw e;
+  }
+  return res.json();
+}
+
+async function restError(res) {
+  let msg = res.statusText, code = null;
+  try { const b = await res.json(); msg = b.message || msg; code = b.code || null; } catch (_) {}
+  const e = new Error(msg);
+  e.code = code;
+  e.status = res.status;
+  return e;
+}
+
+async function saveRow(table, payload, id) {
+  if (!state.session) throw new Error('Not signed in');
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + (id ? '?id=eq.' + encodeURIComponent(id) : ''), {
+    method: id ? 'PATCH' : 'POST',
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: 'Bearer ' + state.session.access_token,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw await restError(res);
+}
+
+async function deleteRow(table, id) {
+  if (!state.session) throw new Error('Not signed in');
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + encodeURIComponent(id), {
+    method: 'DELETE',
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + state.session.access_token },
+  });
+  if (!res.ok) throw await restError(res);
+}
+
+function friendlyError(e) {
+  if (!e) return 'Something went wrong.';
+  if (e.code === '23503') return DELETE_MSG[state.lastTable] || 'Cannot delete — other records still reference this. Remove those first.';
+  if (e.code === '23502') return 'A required field is missing.';
+  if (e.code === '22P02') return 'Invalid value in a field.';
+  if (e.status === 401) return 'Session expired — sign in again.';
+  return e.message || 'Something went wrong.';
+}
+
+async function loadAll() {
+  const [firms, jobs, people, interactions, jobPeople, personFirms] = await Promise.all([
+    q('firms?select=*'),
+    q('jobs?select=*,firm:firms(id,name)'),
+    q('people_context?select=*'),
+    q('interactions?select=*,person:people(id,name),firm:firms(id,name),job:jobs(id,title)&order=occurred_at.desc'),
+    q('job_people?select=*,person:people(id,name),job:jobs(id,title)'),
+    q('person_firms?select=*,firm:firms(id,name),person:people(id,name)'),
+  ]);
+  state.data = { firms, jobs, people, interactions, jobPeople, personFirms };
+}
+
+async function refresh() {
+  await loadAll();
+  render();
+}
+
+// ============================================================
+// POLLING (no realtime available on this project)
+// ============================================================
+let pollTimer = null;
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(() => {
+    if (state.session && document.visibilityState === 'visible') {
+      loadAll().then(render).catch(() => {});
+    }
+  }, 60000);
+}
+function stopPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+
+// ============================================================
+// HELPERS
+// ============================================================
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const str = v => (v === null || v === undefined ? '' : String(v));
+const fmtEnum = v => String(v || '').replace(/_/g, ' ');
+const opts = arr => arr.map(v => ({ v, l: fmtEnum(v) }));
+
+function fmtDate(v) {
+  if (!v) return '—';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    const [y, m, d] = v.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  return new Date(v).toLocaleDateString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function fmtDateTime(v) {
+  if (!v) return '—';
+  return new Date(v).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function daysUntil(iso) {
+  if (!iso) return null;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d = new Date(iso);
+  const due = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  return Math.round((due - today) / 86400000);
+}
+
+function deadlineChip(iso) {
+  if (!iso) return '';
+  const d = daysUntil(iso);
+  let cls = 'chip', lbl = fmtDate(iso);
+  if (d < 0) { cls += ' overdue'; lbl += ' · ' + (-d) + 'd late'; }
+  else if (d === 0) { cls += ' due-soon'; lbl += ' · today'; }
+  else if (d <= 7) { cls += ' due-soon'; lbl += ' · ' + d + 'd'; }
+  return '<span class="' + cls + '">' + esc(lbl) + '</span>';
+}
+
+const badge = v => v ? '<span class="badge ' + esc(String(v).replace(/_/g, '-')) + '">' + esc(fmtEnum(v)) + '</span>' : '';
+const dot = v => v ? '<span class="dot ' + esc(v) + '"></span>' + esc(v) : '';
+const chips = arr => (arr && arr.length) ? arr.map(t => '<span class="chip">' + esc(t) + '</span>').join(' ') : '';
+
+function toLocalInput(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+let toastTimer = null;
+function toast(msg, isErr) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.toggle('err', !!isErr);
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 3200);
+}
+
+// ============================================================
+// THEME (shares key with dashboard)
+// ============================================================
+(function initTheme() {
+  const t = localStorage.getItem('personalOSTheme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+$('themeToggle').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', cur);
+  localStorage.setItem('personalOSTheme', cur);
+});
+// ============================================================
+// SHEET DEFINITIONS (column model per sheet)
+// col: { k, label, w, type, values?, ref?, required?, calc?, sortable? }
+//   type: text | url | tags | enum | date | datetime | number | fk | calc
+//   ref:  related table for fk selects (firms/people/jobs)
+//   calc: read-only computed display fn
+// ============================================================
+const SHEETS = {
+  jobs: {
+    label: 'Jobs', table: 'jobs', list: 'jobs',
+    newAct: 'new-job', viewAct: 'view-job', editAct: 'edit-job', delAct: 'del-job', delLabel: 'job',
+    columns: [
+      { k: 'title', label: 'Title', w: 240, type: 'text', required: true },
+      { k: 'firm_id', label: 'Firm', w: 150, type: 'fk', ref: 'firms', refLabel: 'name', required: true },
+      { k: 'application_status', label: 'Status', w: 120, type: 'enum', values: APP_STATUS, required: true, badge: true },
+      { k: 'posting_status', label: 'Posting', w: 100, type: 'enum', values: POSTING, required: true },
+      { k: 'interest_level', label: 'Interest', w: 90, type: 'enum', values: INTEREST, required: true, dot: true },
+      { k: 'application_deadline', label: 'Deadline', w: 130, type: 'datetime', deadline: true },
+      { k: 'applied_at', label: 'Applied', w: 130, type: 'datetime' },
+      { k: 'posted_at', label: 'Posted', w: 110, type: 'date' },
+      { k: 'program_year', label: 'Year', w: 70, type: 'number' },
+      { k: 'department', label: 'Department', w: 130, type: 'text' },
+      { k: 'location', label: 'Location', w: 140, type: 'text' },
+      { k: 'work_arrangement', label: 'Arrangement', w: 110, type: 'enum', values: WORK_ARR },
+      { k: 'employment_type', label: 'Type', w: 110, type: 'enum', values: EMP_TYPE },
+      { k: 'tags', label: 'Tags', w: 160, type: 'tags' },
+      { k: 'fit_notes', label: 'Fit notes', w: 220, type: 'text' },
+      { k: 'notes', label: 'Notes', w: 200, type: 'text' },
+    ],
+  },
+  firms: {
+    label: 'Firms', table: 'firms', list: 'firms',
+    newAct: 'new-firm', viewAct: 'view-firm', editAct: 'edit-firm', delAct: 'del-firm', delLabel: 'firm',
+    columns: [
+      { k: 'name', label: 'Name', w: 220, type: 'text', required: true },
+      { k: 'industry', label: 'Industry', w: 150, type: 'text' },
+      { k: 'location', label: 'Location', w: 150, type: 'text' },
+      { k: 'interest_level', label: 'Interest', w: 90, type: 'enum', values: INTEREST, required: true, dot: true },
+      { k: '_jobs', label: 'Jobs', w: 60, type: 'calc', calc: f => state.data.jobs.filter(j => j.firm_id === f.id).length },
+      { k: '_contacts', label: 'Contacts', w: 80, type: 'calc', calc: f => state.data.personFirms.filter(p => p.firm_id === f.id).length },
+      { k: 'website_url', label: 'Website', w: 180, type: 'url' },
+      { k: 'careers_url', label: 'Careers', w: 180, type: 'url' },
+      { k: 'linkedin_url', label: 'LinkedIn', w: 180, type: 'url' },
+      { k: 'tags', label: 'Tags', w: 150, type: 'tags' },
+      { k: 'description', label: 'Description', w: 220, type: 'text' },
+      { k: 'interest_reason', label: 'Why interested', w: 220, type: 'text' },
+      { k: 'notes', label: 'Notes', w: 200, type: 'text' },
+    ],
+  },
+  people: {
+    label: 'People', table: 'people', list: 'people',
+    newAct: 'new-person', viewAct: 'view-person', editAct: 'edit-person', delAct: 'del-person', delLabel: 'person',
+    columns: [
+      { k: 'name', label: 'Name', w: 180, type: 'text', required: true },
+      { k: 'contact', label: 'Role', w: 160, type: 'text' },
+      { k: '_firms', label: 'Firms', w: 180, type: 'calc', calc: p => (p.firms || []).map(x => x.firm ? x.firm.name : '').filter(Boolean).join(', ') },
+      { k: 'email', label: 'Email', w: 190, type: 'text' },
+      { k: 'phone', label: 'Phone', w: 140, type: 'text' },
+      { k: 'linkedin_url', label: 'LinkedIn', w: 180, type: 'url' },
+      { k: 'location', label: 'Location', w: 140, type: 'text' },
+      { k: 'how_met', label: 'How met', w: 150, type: 'text' },
+      { k: 'next_action', label: 'Next action', w: 180, type: 'text' },
+      { k: 'follow_up_after', label: 'Follow up', w: 120, type: 'date', followUp: true },
+      { k: '_last_interaction', label: 'Last interaction', w: 140, type: 'calc', calc: p => p.last_interaction_at ? fmtDateTime(p.last_interaction_at) : '' },
+      { k: 'tags', label: 'Tags', w: 150, type: 'tags' },
+      { k: 'description', label: 'Description', w: 220, type: 'text' },
+      { k: 'relationship_notes', label: 'Relationship notes', w: 220, type: 'text' },
+    ],
+  },
+  activity: {
+    label: 'Activity', table: 'interactions', list: 'interactions',
+    newAct: 'new-interaction', viewAct: null, editAct: 'edit-interaction', delAct: 'del-interaction', delLabel: 'interaction',
+    columns: [
+      { k: 'occurred_at', label: 'When', w: 150, type: 'datetime', required: true },
+      { k: 'person_id', label: 'Person', w: 150, type: 'fk', ref: 'people', refLabel: 'name', required: true },
+      { k: 'firm_id', label: 'Firm', w: 150, type: 'fk', ref: 'firms', refLabel: 'name' },
+      { k: 'job_id', label: 'Job', w: 180, type: 'fk', ref: 'jobs', refLabel: 'title' },
+      { k: 'channel', label: 'Channel', w: 110, type: 'enum', values: CHANNELS, required: true, badge: true },
+      { k: 'direction', label: 'Direction', w: 100, type: 'enum', values: DIRECTIONS, required: true },
+      { k: 'subject', label: 'Subject', w: 200, type: 'text' },
+      { k: 'summary', label: 'Summary', w: 280, type: 'text' },
+      { k: 'outcome', label: 'Outcome', w: 180, type: 'text' },
+      { k: 'commitments', label: 'Commitments', w: 180, type: 'text' },
+      { k: 'source', label: 'Source', w: 90, type: 'text' },
+    ],
+  },
+};
+
+// ============================================================
+// CELL VALUE / DISPLAY
+// ============================================================
+function rawValue(col, row) {
+  if (col.type === 'calc') return col.calc(row);
+  return row[col.k];
+}
+
+function refRow(col, id) {
+  if (!id) return null;
+  return state.data[col.ref].find(r => r.id === id) || null;
+}
+
+function cellDisplay(col, row) {
+  const v = rawValue(col, row);
+  if (col.type === 'calc') return esc(str(v));
+  if (v === null || v === undefined || v === '') return '';
+  if (col.type === 'fk') {
+    const r = refRow(col, v);
+    return esc(r ? str(r[col.refLabel]) : str(v));
+  }
+  if (col.type === 'enum') {
+    if (col.badge) return badge(v);
+    if (col.dot) return dot(v);
+    return esc(fmtEnum(v));
+  }
+  if (col.type === 'tags') return chips(v);
+  if (col.type === 'url') return '<a href="' + esc(v) + '" target="_blank" rel="noopener" title="' + esc(v) + '">' + esc(String(v).replace(/^https?:\/\//, '').slice(0, 40)) + '</a>';
+  if (col.type === 'date') {
+    if (col.followUp) {
+      const over = daysUntil(v + 'T12:00') < 0;
+      return '<span class="chip' + (over ? ' overdue' : '') + '">' + esc(fmtDate(v)) + '</span>';
+    }
+    return esc(fmtDate(v));
+  }
+  if (col.type === 'datetime') {
+    if (col.deadline) return deadlineChip(v) || esc(fmtDateTime(v));
+    return esc(fmtDateTime(v));
+  }
+  return esc(str(v));
+}
+
+// Text used for filtering + sorting (strip markup, normalize enums).
+function cellSortKey(col, row) {
+  const v = rawValue(col, row);
+  if (v === null || v === undefined) return '';
+  if (col.type === 'fk') { const r = refRow(col, v); return r ? str(r[col.refLabel]) : str(v); }
+  if (col.type === 'tags') return (v || []).join(' ');
+  if (col.type === 'calc') return str(v);
+  if (col.type === 'enum') return str(v);
+  return str(v);
+}
+
+function sortRows(sheet, rows) {
+  const ui = state.ui[sheet];
+  if (!ui.sort) return rows;
+  const col = SHEETS[sheet].columns.find(c => c.k === ui.sort.k);
+  if (!col) return rows;
+  const dir = ui.sort.dir;
+  return [...rows].sort((a, b) => {
+    let va = cellSortKey(col, a), vb = cellSortKey(col, b);
+    if (col.type === 'number') { va = Number(va) || 0; vb = Number(vb) || 0; return (va - vb) * dir; }
+    if (col.type === 'date' || col.type === 'datetime') {
+      // raw value for reliable date compare
+      const ra = rawValue(col, a), rb = rawValue(col, b);
+      if (!ra && !rb) return 0;
+      if (!ra) return 1; // nulls last always
+      if (!rb) return -1;
+      return (new Date(ra) - new Date(rb)) * dir;
+    }
+    return va.localeCompare(vb, undefined, { numeric: true, sensitivity: 'base' }) * dir;
+  });
+}
+
+function filterRows(sheet, rows) {
+  const ui = state.ui[sheet];
+  const active = Object.entries(ui.filters).filter(([, v]) => v !== '' && v != null);
+  if (!active.length) return rows;
+  return rows.filter(row =>
+    active.every(([k, fv]) => {
+      const col = SHEETS[sheet].columns.find(c => c.k === k);
+      if (!col) return true;
+      const hay = cellSortKey(col, row).toLowerCase();
+      return hay.includes(String(fv).toLowerCase());
+    })
+  );
+}
+
+// ============================================================
+// GRID RENDER
+// ============================================================
+const ROW_H = 27;
+
+function renderSheet(main) {
+  const sheet = state.sheet;
+  const def = SHEETS[sheet];
+  const ui = state.ui[sheet];
+  const all = state.data[def.list];
+  const rows = sortRows(sheet, filterRows(sheet, all));
+
+  // toolbar
+  const viewToggle = (sheet === 'jobs')
+    ? '<button class="btn small" data-act="toggle-job-view">View: ' + (state.jobView === 'sankey' ? 'Chart' : 'Grid') + '</button>'
+    : '';
+  $('sheetToolbar').innerHTML =
+    '<span class="title">' + esc(def.label) + '</span>' +
+    '<span class="count">' + rows.length + (rows.length !== all.length ? ' of ' + all.length : '') + ' rows</span>' +
+    (rows.length !== all.length ? '<button class="btn small ghost" data-act="clear-filters">Clear filters</button>' : '') +
+    '<span style="flex:1"></span>' +
+    viewToggle +
+    '<button class="btn small primary" data-act="' + def.newAct + '">+ New</button>';
+
+  const cols = def.columns;
+  let html = '<table class="sheet" id="grid" style="min-width:' + (cols.reduce((s, c) => s + (ui.widths[c.k] || c.w), 0) + 38 + 78) + 'px">';
+  html += '<colgroup><col style="width:38px">' +
+    cols.map(c => '<col data-col="' + esc(c.k) + '" style="width:' + (ui.widths[c.k] || c.w) + 'px">').join('') +
+    '<col style="width:78px"></colgroup>';
+
+  // header row (sortable, resizable)
+  html += '<thead><tr class="hdr"><th class="rn"></th>';
+  for (const c of cols) {
+    const active = ui.sort && ui.sort.k === c.k;
+    const arrow = active ? (ui.sort.dir === 1 ? ' &#9650;' : ' &#9660;') : '';
+    html += '<th data-col="' + esc(c.k) + '" title="Click to sort · drag edge to resize">' +
+      esc(c.label) + '<span class="si">' + arrow + '</span>' +
+      '<span class="rz" data-col="' + esc(c.k) + '"></span></th>';
+  }
+  html += '<th class="acts"></th></tr>';
+
+  // filter row
+  html += '<tr class="filters"><th class="rn"></th>';
+  for (const c of cols) {
+    const fv = str(ui.filters[c.k] || '');
+    if (c.type === 'enum' || c.type === 'fk') {
+      const options = c.type === 'enum'
+        ? c.values.map(v => ({ v, l: fmtEnum(v) }))
+        : state.data[c.ref].map(r => ({ v: r[c.refLabel] || r.id, l: r[c.refLabel] || r.id }));
+      html += '<th><select data-filter="' + esc(c.k) + '"><option value=""></option>' +
+        options.map(o => '<option value="' + esc(o.l) + '"' + (fv === o.l ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') +
+        '</select></th>';
+    } else {
+      html += '<th><input data-filter="' + esc(c.k) + '" value="' + esc(fv) + '" placeholder=" "></th>';
+    }
+  }
+  html += '<th class="acts"></th></tr></thead>';
+
+  // body
+  html += '<tbody>';
+  rows.forEach((row, ri) => {
+    html += '<tr data-rid="' + esc(row.id) + '">';
+    html += '<td class="rn">' + (ri + 1) + '</td>';
+    for (const c of cols) {
+      html += '<td class="cell" data-col="' + esc(c.k) + '" data-rid="' + esc(row.id) + '"' +
+        (c.type === 'calc' ? ' data-ro="1"' : '') + '>' + cellDisplay(c, row) + '</td>';
+    }
+    html += '<td class="acts">';
+    if (def.viewAct) html += '<button class="ib" data-act="' + def.viewAct + '" data-id="' + esc(row.id) + '" title="View">&#128065;</button>';
+    html += '<button class="ib" data-act="' + def.editAct + '" data-id="' + esc(row.id) + '" title="Edit form">&#9998;</button>';
+    html += '<button class="ib danger" data-act="' + def.delAct + '" data-id="' + esc(row.id) + '" title="Delete">&#10005;</button>';
+    html += '</td></tr>';
+  });
+  html += '</tbody>';
+
+  // add-row footer
+  html += '<tfoot><tr><td class="rn">+</td><td colspan="' + (cols.length + 1) + '" class="addrow" data-act="' + def.newAct + '">+ Add row</td></tr></tfoot>';
+  html += '</table>';
+
+  main.innerHTML = html;
+  applySelection();
+}
+
+// ---------- selection ----------
+function applySelection() {
+  document.querySelectorAll('#grid td.sel').forEach(td => td.classList.remove('sel'));
+  const ui = state.ui[state.sheet];
+  if (!ui.sel) return;
+  const td = document.querySelector('#grid td.cell[data-rid="' + ui.sel.rid + '"][data-col="' + ui.sel.col + '"]');
+  if (td) {
+    td.classList.add('sel');
+    td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  } else {
+    ui.sel = null;
+  }
+}
+
+function selectCell(rid, col, scroll) {
+  state.ui[state.sheet].sel = { rid, col };
+  const td = document.querySelector('#grid td.cell[data-rid="' + rid + '"][data-col="' + col + '"]');
+  document.querySelectorAll('#grid td.sel').forEach(x => x.classList.remove('sel'));
+  if (td) {
+    td.classList.add('sel');
+    if (scroll) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+}
+
+function visibleCells() {
+  return Array.from(document.querySelectorAll('#grid tbody td.cell'));
+}
+
+function moveSelection(dRow, dCol) {
+  const ui = state.ui[state.sheet];
+  const cells = visibleCells();
+  if (!cells.length) return;
+  const def = SHEETS[state.sheet];
+  const cols = def.columns.map(c => c.k);
+  if (!ui.sel) { selectCell(cells[0].dataset.rid, cols[0], true); return; }
+  const rowIds = [...new Set(cells.map(c => c.dataset.rid))];
+  let ri = rowIds.indexOf(ui.sel.rid);
+  let ci = cols.indexOf(ui.sel.col);
+  if (ri < 0) ri = 0;
+  if (ci < 0) ci = 0;
+  ri = Math.max(0, Math.min(rowIds.length - 1, ri + dRow));
+  ci = Math.max(0, Math.min(cols.length - 1, ci + dCol));
+  selectCell(rowIds[ri], cols[ci], true);
+}
+
+// ============================================================
+// INLINE EDITING (single-cell PATCH)
+// ============================================================
+function beginEdit(td, initialKey) {
+  if (!td || td.dataset.ro) return;
+  if (state.editing) commitEdit(false);
+  const sheet = state.sheet;
+  const def = SHEETS[sheet];
+  const col = def.columns.find(c => c.k === td.dataset.col);
+  if (!col || col.type === 'calc') return;
+  const row = state.data[def.list].find(r => r.id === td.dataset.rid);
+  if (!row) return;
+
+  const raw = row[col.k];
+  let editor;
+  if (col.type === 'enum' || col.type === 'fk') {
+    editor = document.createElement('select');
+    const options = col.type === 'enum'
+      ? col.values.map(v => ({ v, l: fmtEnum(v) }))
+      : state.data[col.ref].map(r => ({ v: r.id, l: r[col.refLabel] }));
+    if (!col.required) editor.add(new Option('—', ''), null);
+    for (const o of options) editor.add(new Option(o.l, o.v), null);
+    editor.value = raw == null ? '' : String(raw);
+  } else if (col.type === 'datetime') {
+    editor = document.createElement('input');
+    editor.type = 'datetime-local';
+    editor.value = toLocalInput(raw);
+  } else if (col.type === 'date') {
+    editor = document.createElement('input');
+    editor.type = 'date';
+    editor.value = str(raw);
+  } else if (col.type === 'number') {
+    editor = document.createElement('input');
+    editor.type = 'number';
+    editor.value = str(raw);
+  } else {
+    editor = document.createElement('input');
+    editor.type = 'text';
+    editor.value = col.type === 'tags' ? (raw || []).join(', ') : str(raw);
+  }
+  editor.className = 'celledit';
+  td.classList.add('editing');
+  td.textContent = '';
+  td.appendChild(editor);
+  editor.focus();
+  if (initialKey && editor.tagName === 'INPUT') {
+    editor.value = initialKey;
+    editor.setSelectionRange(editor.value.length, editor.value.length);
+  } else if (editor.tagName === 'INPUT') {
+    editor.select();
+  }
+  state.editing = { td, sheet, k: col.k, rowId: row.id };
+
+  editor.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
+    else if (e.key === 'Enter') { e.preventDefault(); commitEdit(true); moveSelection(1, 0); }
+    else if (e.key === 'Tab') { e.preventDefault(); commitEdit(true); moveSelection(0, e.shiftKey ? -1 : 1); }
+    e.stopPropagation();
+  });
+  editor.addEventListener('blur', () => { if (state.editing && state.editing.td === td) commitEdit(false); });
+  if (editor.tagName === 'SELECT') editor.addEventListener('change', () => commitEdit(true));
+}
+
+function cancelEdit() {
+  if (!state.editing) return;
+  const { td } = state.editing;
+  state.editing = null;
+  td.classList.remove('editing');
+  td.textContent = '';
+  const sheet = state.sheet;
+  const def = SHEETS[sheet];
+  const col = def.columns.find(c => c.k === td.dataset.col);
+  const row = state.data[def.list].find(r => r.id === td.dataset.rid);
+  if (col && row) td.innerHTML = cellDisplay(col, row);
+}
+
+function commitEdit(andRender) {
+  if (!state.editing) return Promise.resolve();
+  const { td, k, rowId } = state.editing;
+  const sheet = state.editing.sheet;
+  state.editing = null;
+  const def = SHEETS[sheet];
+  const col = def.columns.find(c => c.k === k);
+  const row = state.data[def.list].find(r => r.id === rowId);
+  const editor = td.querySelector('.celledit');
+  td.classList.remove('editing');
+  if (!col || !row || !editor) return Promise.resolve();
+
+  // coerce
+  let val;
+  if (col.type === 'enum' || col.type === 'fk') val = editor.value === '' ? null : editor.value;
+  else if (col.type === 'datetime') val = editor.value === '' ? null : new Date(editor.value).toISOString();
+  else if (col.type === 'date') val = editor.value === '' ? null : editor.value;
+  else if (col.type === 'number') val = editor.value === '' ? null : Number(editor.value);
+  else if (col.type === 'tags') val = editor.value.split(/[,\n]/).map(s => s.trim()).filter(Boolean);
+  else val = editor.value.trim(); // text/url: '' safe for NOT NULL text cols
+
+  const oldRaw = row[k];
+  const same = JSON.stringify(oldRaw == null ? null : oldRaw) === JSON.stringify(val);
+  if (same) {
+    td.innerHTML = cellDisplay(col, row);
+    return Promise.resolve();
+  }
+  if (col.required && (val === null || val === '')) {
+    toast(col.label + ' is required', true);
+    td.innerHTML = cellDisplay(col, row);
+    return Promise.resolve();
+  }
+
+  td.innerHTML = cellDisplay(col, row); // optimistic
+  state.lastTable = def.table;
+  return saveRow(def.table, { [k]: val }, rowId).then(() => {
+    row[k] = val;
+    if (sheet === 'people' && (k === 'name')) { /* label propagates via fk lookup next load */ }
+    toast('Saved ' + col.label.toLowerCase());
+    if (andRender) render();
+  }).catch(err => {
+    td.innerHTML = cellDisplay(col, row); // revert
+    toast(friendlyError(err), true);
+  });
+}
+// ============================================================
+// MODAL
+// ============================================================
+function closeModal() { $('modalRoot').innerHTML = ''; }
+
+function openOverlay(inner) {
+  $('modalRoot').innerHTML = '<div class="overlay" id="overlay"><div class="modal">' + inner + '</div></div>';
+  $('overlay').addEventListener('mousedown', e => { if (e.target.id === 'overlay') closeModal(); });
+}
+
+function openInfoModal(title, bodyHtml, actionsHtml) {
+  openOverlay(
+    '<div class="modal-head"><h2>' + esc(title) + '</h2><button class="icon-btn" data-act="close">&times;</button></div>' +
+    '<div class="modal-body">' + bodyHtml + '</div>' +
+    (actionsHtml ? '<div class="modal-actions">' + actionsHtml + '</div>' : '')
+  );
+}
+
+// ---------- form builder ----------
+function fieldHtml(f) {
+  const id = 'f_' + f.name;
+  const cls = f.type === 'textarea' ? 'field span2' : 'field';
+  const req = f.required ? ' required' : '';
+  const reqMark = f.required ? ' <span class="req">*</span>' : '';
+  let control;
+  if (f.type === 'textarea') {
+    control = '<textarea id="' + id + '" name="' + f.name + '" rows="' + (f.rows || 3) + '"' + req + ' placeholder="' + esc(f.placeholder || '') + '">' + esc(str(f.value)) + '</textarea>';
+  } else if (f.type === 'select') {
+    control = '<select id="' + id + '" name="' + f.name + '"' + req + '>' +
+      f.options.map(o => '<option value="' + esc(String(o.v)) + '"' + (String(o.v) === String(f.value == null ? '' : f.value) ? ' selected' : '') + '>' + esc(o.l) + '</option>').join('') +
+      '</select>';
+  } else if (f.type === 'tags') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="text" value="' + esc(Array.isArray(f.value) ? f.value.join(', ') : str(f.value)) + '" placeholder="comma, separated">';
+  } else if (f.type === 'datetime') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="datetime-local" value="' + esc(toLocalInput(f.value)) + '"' + req + '>';
+  } else if (f.type === 'date') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="date" value="' + esc(str(f.value)) + '"' + req + '>';
+  } else if (f.type === 'number') {
+    control = '<input id="' + id + '" name="' + f.name + '" type="number" step="1" value="' + esc(str(f.value)) + '"' + req + '>';
+  } else {
+    control = '<input id="' + id + '" name="' + f.name + '" type="text" value="' + esc(str(f.value)) + '"' + req + ' placeholder="' + esc(f.placeholder || '') + '">';
+  }
+  return '<div class="' + cls + '"><label for="' + id + '">' + esc(f.label) + reqMark + '</label>' + control + '</div>';
+}
+
+function collectForm(fields) {
+  const out = {};
+  for (const f of fields) {
+    const el = document.querySelector('#modalRoot [name="' + f.name + '"]');
+    if (!el) continue;
+    if (f.type === 'tags') { out[f.name] = el.value.split(/[,\n]/).map(s => s.trim()).filter(Boolean); continue; }
+    if (f.type === 'select') { out[f.name] = el.value === '' ? null : el.value; continue; }
+    if (f.type === 'number') { out[f.name] = el.value === '' ? null : Number(el.value); continue; }
+    if (f.type === 'date') { out[f.name] = el.value === '' ? null : el.value; continue; }
+    if (f.type === 'datetime') { out[f.name] = el.value === '' ? null : new Date(el.value).toISOString(); continue; }
+    // text / textarea: send '' for empty — safe for NOT NULL text columns.
+    out[f.name] = el.value.trim();
+  }
+  return out;
+}
+
+// opts for selects with a nullable leading blank
+const optsN = arr => [{ v: '', l: '—' }].concat(opts(arr));
+
+function openFormModal(cfg) {
+  // cfg: { title, fields, values, submitLabel, table, id, extraActionsHtml, afterSave }
+  const fields = cfg.fields;
+  openOverlay(
+    '<div class="modal-head"><h2>' + esc(cfg.title) + '</h2><button class="icon-btn" data-act="close">&times;</button></div>' +
+    '<form id="modalForm"><div class="modal-body"><div class="form-grid">' + fields.map(fieldHtml).join('') + '</div></div>' +
+    '<div id="modalError" class="modal-error" hidden></div>' +
+    '<div class="modal-actions">' +
+      (cfg.extraActionsHtml || '') +
+      '<button type="button" class="btn ghost" data-act="close">Cancel</button>' +
+      '<button type="submit" class="btn primary" id="modalSave">' + esc(cfg.submitLabel || 'Save') + '</button>' +
+    '</div></form>'
+  );
+  $('modalForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errEl = $('modalError');
+    errEl.hidden = true;
+    $('modalSave').disabled = true;
+    try {
+      const payload = collectForm(fields);
+      state.lastTable = cfg.table;
+      await saveRow(cfg.table, payload, cfg.id);
+      await refresh();
+      closeModal();
+      toast(cfg.id ? 'Saved' : 'Added');
+      if (cfg.afterSave) cfg.afterSave();
+    } catch (err) {
+      errEl.textContent = friendlyError(err);
+      errEl.hidden = false;
+      $('modalSave').disabled = false;
+    }
+  });
+}
+
+async function doDelete(table, id, label) {
+  if (!confirm('Delete ' + label + '? This cannot be undone.')) return;
+  state.lastTable = table;
+  try {
+    await deleteRow(table, id);
+    await refresh();
+    closeModal();
+    toast('Deleted');
+  } catch (err) {
+    toast(friendlyError(err), true);
+  }
+}
+
+// ============================================================
+// FORM FIELD SETS
+// ============================================================
+function firmFields(r) {
+  r = r || {};
+  return [
+    { name: 'name', label: 'Name', required: true, value: r.name, placeholder: 'Firm name' },
+    { name: 'interest_level', label: 'Interest', type: 'select', required: true, value: r.interest_level || 'medium', options: opts(INTEREST) },
+    { name: 'industry', label: 'Industry', value: r.industry },
+    { name: 'location', label: 'Location', value: r.location },
+    { name: 'website_url', label: 'Website', value: r.website_url, placeholder: 'https://' },
+    { name: 'careers_url', label: 'Careers page', value: r.careers_url, placeholder: 'https://' },
+    { name: 'linkedin_url', label: 'LinkedIn', value: r.linkedin_url, placeholder: 'https://' },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+    { name: 'description', label: 'Description', type: 'textarea', value: r.description },
+    { name: 'interest_reason', label: 'Why interested', type: 'textarea', value: r.interest_reason },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+    { name: 'tags', label: 'Tags', type: 'tags', value: r.tags },
+  ];
+}
+
+function jobFields(r, presetFirmId) {
+  r = r || {};
+  return [
+    { name: 'firm_id', label: 'Firm', type: 'select', required: true, value: r.firm_id || presetFirmId || '', options: state.data.firms.map(f => ({ v: f.id, l: f.name })) },
+    { name: 'title', label: 'Title', required: true, value: r.title },
+    { name: 'application_status', label: 'Application status', type: 'select', required: true, value: r.application_status || 'interested', options: opts(APP_STATUS) },
+    { name: 'posting_status', label: 'Posting status', type: 'select', required: true, value: r.posting_status || 'unknown', options: opts(POSTING) },
+    { name: 'interest_level', label: 'Interest', type: 'select', required: true, value: r.interest_level || 'medium', options: opts(INTEREST) },
+    { name: 'application_deadline', label: 'Deadline', type: 'datetime', value: r.application_deadline },
+    { name: 'applied_at', label: 'Applied at', type: 'datetime', value: r.applied_at },
+    { name: 'posted_at', label: 'Posted on', type: 'date', value: r.posted_at },
+    { name: 'program_year', label: 'Program year', type: 'number', value: r.program_year, placeholder: '2027' },
+    { name: 'department', label: 'Department', value: r.department },
+    { name: 'location', label: 'Location', value: r.location },
+    { name: 'work_arrangement', label: 'Work arrangement', type: 'select', value: r.work_arrangement || '', options: optsN(WORK_ARR) },
+    { name: 'employment_type', label: 'Employment type', type: 'select', value: r.employment_type || '', options: optsN(EMP_TYPE) },
+    { name: 'requisition_id', label: 'Requisition ID', value: r.requisition_id },
+    { name: 'job_description', label: 'Job description', type: 'textarea', rows: 6, value: r.job_description },
+    { name: 'requirements', label: 'Requirements', type: 'tags', value: r.requirements },
+    { name: 'skills', label: 'Skills', type: 'tags', value: r.skills },
+    { name: 'compensation_notes', label: 'Compensation', type: 'textarea', value: r.compensation_notes },
+    { name: 'eligibility_notes', label: 'Eligibility notes', type: 'textarea', value: r.eligibility_notes },
+    { name: 'fit_notes', label: 'Fit notes', type: 'textarea', value: r.fit_notes },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+    { name: 'tags', label: 'Tags', type: 'tags', value: r.tags },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+  ];
+}
+
+function personFields(r) {
+  r = r || {};
+  return [
+    { name: 'name', label: 'Name', required: true, value: r.name },
+    { name: 'contact', label: 'Role / title', value: r.contact },
+    { name: 'email', label: 'Email', value: r.email },
+    { name: 'phone', label: 'Phone', value: r.phone },
+    { name: 'linkedin_url', label: 'LinkedIn', value: r.linkedin_url },
+    { name: 'location', label: 'Location', value: r.location },
+    { name: 'how_met', label: 'How met', value: r.how_met },
+    { name: 'next_action', label: 'Next action', value: r.next_action },
+    { name: 'follow_up_after', label: 'Follow up after', type: 'date', value: r.follow_up_after },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+    { name: 'description', label: 'Description', type: 'textarea', value: r.description },
+    { name: 'background_notes', label: 'Background', type: 'textarea', value: r.background_notes },
+    { name: 'relationship_notes', label: 'Relationship notes', type: 'textarea', value: r.relationship_notes },
+    { name: 'interests', label: 'Interests', type: 'tags', value: r.interests },
+    { name: 'tags', label: 'Tags', type: 'tags', value: r.tags },
+  ];
+}
+
+function interactionFields(r, preset) {
+  r = r || {}; preset = preset || {};
+  return [
+    { name: 'person_id', label: 'Person', type: 'select', required: true, value: r.person_id || preset.person_id || '', options: state.data.people.map(p => ({ v: p.id, l: p.name })) },
+    { name: 'firm_id', label: 'Firm', type: 'select', value: r.firm_id || preset.firm_id || '', options: optsN([]).concat(state.data.firms.map(f => ({ v: f.id, l: f.name }))) },
+    { name: 'job_id', label: 'Job', type: 'select', value: r.job_id || preset.job_id || '', options: optsN([]).concat(state.data.jobs.map(j => ({ v: j.id, l: j.title + ' (' + (j.firm ? j.firm.name : '?') + ')' }))) },
+    { name: 'occurred_at', label: 'Occurred at', type: 'datetime', required: true, value: r.occurred_at || new Date().toISOString() },
+    { name: 'channel', label: 'Channel', type: 'select', required: true, value: r.channel || 'email', options: opts(CHANNELS) },
+    { name: 'direction', label: 'Direction', type: 'select', required: true, value: r.direction || 'outbound', options: opts(DIRECTIONS) },
+    { name: 'subject', label: 'Subject', value: r.subject },
+    { name: 'source', label: 'Source', required: true, value: r.source || 'manual' },
+    { name: 'source_url', label: 'Source URL', value: r.source_url },
+    { name: 'summary', label: 'Summary', type: 'textarea', required: true, rows: 4, value: r.summary },
+    { name: 'content', label: 'Content / details', type: 'textarea', rows: 4, value: r.content },
+    { name: 'outcome', label: 'Outcome', value: r.outcome },
+    { name: 'commitments', label: 'Commitments', type: 'textarea', value: r.commitments },
+  ];
+}
+
+function jobPersonFields(r, presetJobId) {
+  r = r || {};
+  return [
+    { name: 'job_id', label: 'Job', type: 'select', required: true, value: r.job_id || presetJobId || '', options: state.data.jobs.map(j => ({ v: j.id, l: j.title + ' (' + (j.firm ? j.firm.name : '?') + ')' })) },
+    { name: 'person_id', label: 'Person', type: 'select', required: true, value: r.person_id || '', options: state.data.people.map(p => ({ v: p.id, l: p.name })) },
+    { name: 'relationship_type', label: 'Relationship', type: 'select', required: true, value: r.relationship_type || 'contact', options: opts(JOB_REL) },
+    { name: 'referral_status', label: 'Referral status', type: 'select', required: true, value: r.referral_status || 'not_requested', options: opts(REF_STATUS) },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+  ];
+}
+
+function personFirmFields(r, preset) {
+  r = r || {}; preset = preset || {};
+  return [
+    { name: 'person_id', label: 'Person', type: 'select', required: true, value: r.person_id || preset.person_id || '', options: state.data.people.map(p => ({ v: p.id, l: p.name })) },
+    { name: 'firm_id', label: 'Firm', type: 'select', required: true, value: r.firm_id || preset.firm_id || '', options: state.data.firms.map(f => ({ v: f.id, l: f.name })) },
+    { name: 'relationship_type', label: 'Relationship', type: 'select', required: true, value: r.relationship_type || 'employee', options: opts(FIRM_REL) },
+    { name: 'title', label: 'Title at firm', value: r.title },
+    { name: 'started_on', label: 'Started', type: 'date', value: r.started_on },
+    { name: 'ended_on', label: 'Ended', type: 'date', value: r.ended_on },
+    { name: 'notes', label: 'Notes', type: 'textarea', value: r.notes },
+  ];
+}
+// ============================================================
+// DETAIL MODALS
+// ============================================================
+function detailGrid(pairs) {
+  return '<div class="detail-grid">' + pairs.filter(p => p[1]).map(p =>
+    '<div><div class="k">' + esc(p[0]) + '</div><div>' + (p[2] ? p[1] : esc(p[1])) + '</div></div>').join('') + '</div>';
+}
+
+function interactionRowHtml(i, showActions) {
+  const person = i.person ? i.person.name : '?';
+  const firm = i.firm ? ' · ' + i.firm.name : '';
+  const job = i.job ? ' · ' + i.job.title : '';
+  return '<div class="int-row">' +
+    '<div class="int-when">' + esc(fmtDateTime(i.occurred_at)) + '</div>' +
+    '<div class="int-body">' +
+      '<div>' + badge(i.channel) + ' ' + badge(i.direction) +
+        ' <b class="clickable" data-act="view-person" data-id="' + esc(i.person_id) + '">' + esc(person) + '</b>' +
+        esc(firm) + esc(job) +
+        (i.subject ? ' <span class="muted">&mdash; ' + esc(i.subject) + '</span>' : '') + '</div>' +
+      '<div>' + esc(i.summary || '') + '</div>' +
+      (i.outcome ? '<div class="muted">Outcome: ' + esc(i.outcome) + '</div>' : '') +
+      (i.commitments ? '<div class="muted">Commitments: ' + esc(i.commitments) + '</div>' : '') +
+    '</div>' +
+    (showActions ? '<div class="int-actions">' +
+      '<button class="btn small" data-act="edit-interaction" data-id="' + esc(i.id) + '">Edit</button>' +
+      '<button class="btn small danger" data-act="del-interaction" data-id="' + esc(i.id) + '">Del</button>' +
+    '</div>' : '') +
+  '</div>';
+}
+
+function openJobDetail(id) {
+  const j = state.data.jobs.find(x => x.id === id);
+  if (!j) return;
+  const contacts = state.data.jobPeople.filter(x => x.job_id === id);
+  const ints = state.data.interactions.filter(x => x.job_id === id);
+  let body = '';
+  body += '<div>' + badge(j.application_status) + ' ' + badge(j.posting_status) + ' ' + dot(j.interest_level) + '</div>';
+  body += detailGrid([
+    ['Firm', j.firm ? j.firm.name : '', true],
+    ['Deadline', j.application_deadline ? fmtDate(j.application_deadline) : ''],
+    ['Applied', j.applied_at ? fmtDate(j.applied_at) : ''],
+    ['Posted', j.posted_at ? fmtDate(j.posted_at) : ''],
+    ['Program year', j.program_year],
+    ['Department', j.department],
+    ['Location', j.location],
+    ['Work arrangement', j.work_arrangement],
+    ['Employment type', j.employment_type],
+    ['Requisition', j.requisition_id],
+  ]);
+  if (j.requirements && j.requirements.length) body += '<div class="k muted">Requirements</div><div>' + chips(j.requirements) + '</div>';
+  if (j.skills && j.skills.length) body += '<div class="k muted">Skills</div><div>' + chips(j.skills) + '</div>';
+  if (j.job_description) body += '<div class="k muted" style="margin-top:10px">Description</div><div class="prose">' + esc(j.job_description) + '</div>';
+  if (j.fit_notes) body += '<div class="k muted">Fit notes</div><div class="prose">' + esc(j.fit_notes) + '</div>';
+  if (j.eligibility_notes) body += '<div class="k muted">Eligibility</div><div class="prose">' + esc(j.eligibility_notes) + '</div>';
+  if (j.compensation_notes) body += '<div class="k muted">Compensation</div><div class="prose">' + esc(j.compensation_notes) + '</div>';
+  if (j.notes) body += '<div class="k muted">Notes</div><div class="prose">' + esc(j.notes) + '</div>';
+  if (j.source_url) body += '<div><a href="' + esc(j.source_url) + '" target="_blank" rel="noopener">Job posting &#8599;</a></div>';
+
+  body += '<h2 class="section">Contacts (' + contacts.length + ')</h2>';
+  if (contacts.length) {
+    body += contacts.map(c =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-person" data-id="' + esc(c.person_id) + '">' + esc(c.person ? c.person.name : '?') + '</span>' +
+      badge(c.relationship_type) + (c.referral_status && c.referral_status !== 'not_requested' ? ' ' + badge('referral-' + c.referral_status) : '') +
+      '<button class="btn small" data-act="edit-jobperson" data-id="' + esc(c.id) + '">Edit</button>' +
+      '<button class="btn small danger" data-act="del-jobperson" data-id="' + esc(c.id) + '">Del</button></div>').join('');
+  } else {
+    body += '<div class="muted">No contacts linked.</div>';
+  }
+
+  body += '<h2 class="section">Interactions (' + ints.length + ')</h2>';
+  body += ints.length ? ints.map(i => interactionRowHtml(i, true)).join('') : '<div class="muted">None logged.</div>';
+
+  openInfoModal(j.title, body,
+    '<button class="btn danger left" data-act="del-job" data-id="' + esc(j.id) + '">Delete</button>' +
+    '<button class="btn" data-act="link-person" data-id="' + esc(j.id) + '">+ Contact</button>' +
+    '<button class="btn" data-act="new-interaction" data-job="' + esc(j.id) + '" data-firm="' + esc(j.firm_id) + '">+ Log</button>' +
+    '<button class="btn primary" data-act="edit-job" data-id="' + esc(j.id) + '">Edit</button>');
+}
+
+function openFirmDetail(id) {
+  const f = state.data.firms.find(x => x.id === id);
+  if (!f) return;
+  const jobs = state.data.jobs.filter(j => j.firm_id === id);
+  const people = state.data.personFirms.filter(x => x.firm_id === id);
+  const ints = state.data.interactions.filter(x => x.firm_id === id);
+  let body = '';
+  body += '<div>' + dot(f.interest_level) + ' ' + badge(f.interest_level) + '</div>';
+  body += detailGrid([
+    ['Industry', f.industry],
+    ['Location', f.location],
+    ['Website', f.website_url ? '<a href="' + esc(f.website_url) + '" target="_blank" rel="noopener">' + esc(f.website_url) + '</a>' : '', true],
+    ['Careers', f.careers_url ? '<a href="' + esc(f.careers_url) + '" target="_blank" rel="noopener">' + esc(f.careers_url) + '</a>' : '', true],
+    ['LinkedIn', f.linkedin_url ? '<a href="' + esc(f.linkedin_url) + '" target="_blank" rel="noopener">' + esc(f.linkedin_url) + '</a>' : '', true],
+  ]);
+  if (f.tags && f.tags.length) body += '<div>' + chips(f.tags) + '</div>';
+  if (f.description) body += '<div class="k muted" style="margin-top:10px">Description</div><div class="prose">' + esc(f.description) + '</div>';
+  if (f.interest_reason) body += '<div class="k muted">Why interested</div><div class="prose">' + esc(f.interest_reason) + '</div>';
+  if (f.notes) body += '<div class="k muted">Notes</div><div class="prose">' + esc(f.notes) + '</div>';
+
+  body += '<h2 class="section">Jobs (' + jobs.length + ')</h2>';
+  if (jobs.length) {
+    body += jobs.map(j =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(j.id) + '">' + esc(j.title) + '</span>' +
+      badge(j.application_status) + deadlineChip(j.application_deadline) + '</div>').join('');
+  } else {
+    body += '<div class="muted">No jobs tracked.</div>';
+  }
+
+  body += '<h2 class="section">People (' + people.length + ')</h2>';
+  if (people.length) {
+    body += people.map(p =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-person" data-id="' + esc(p.person_id) + '">' + esc(p.person ? p.person.name : '?') + (p.title ? ' <span class="muted">' + esc(p.title) + '</span>' : '') + '</span>' +
+      badge(p.relationship_type) +
+      '<button class="btn small" data-act="edit-personfirm" data-id="' + esc(p.id) + '">Edit</button>' +
+      '<button class="btn small danger" data-act="del-personfirm" data-id="' + esc(p.id) + '">Del</button></div>').join('');
+  } else {
+    body += '<div class="muted">No people linked.</div>';
+  }
+
+  body += '<h2 class="section">Interactions (' + ints.length + ')</h2>';
+  body += ints.length ? ints.map(i => interactionRowHtml(i, true)).join('') : '<div class="muted">None logged.</div>';
+
+  openInfoModal(f.name, body,
+    '<button class="btn danger left" data-act="del-firm" data-id="' + esc(f.id) + '">Delete</button>' +
+    '<button class="btn" data-act="link-to-firm" data-id="' + esc(f.id) + '">+ Person</button>' +
+    '<button class="btn" data-act="new-job" data-firm="' + esc(f.id) + '">+ Job</button>' +
+    '<button class="btn primary" data-act="edit-firm" data-id="' + esc(f.id) + '">Edit</button>');
+}
+
+function openPersonDetail(id) {
+  const p = state.data.people.find(x => x.id === id);
+  if (!p) return;
+  const firms = p.firms || [];
+  const jobs = p.jobs || [];
+  const ints = state.data.interactions.filter(x => x.person_id === id);
+  let body = '';
+  body += detailGrid([
+    ['Role', p.contact],
+    ['Email', p.email ? '<a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a>' : '', true],
+    ['Phone', p.phone ? '<a href="tel:' + esc(p.phone) + '">' + esc(p.phone) + '</a>' : '', true],
+    ['LinkedIn', p.linkedin_url ? '<a href="' + esc(p.linkedin_url) + '" target="_blank" rel="noopener">' + esc(p.linkedin_url) + '</a>' : '', true],
+    ['Location', p.location],
+    ['How met', p.how_met],
+    ['Last interaction', p.last_interaction_at ? fmtDate(p.last_interaction_at) : ''],
+    ['Follow up after', p.follow_up_after ? fmtDate(p.follow_up_after) : ''],
+    ['Next action', p.next_action],
+  ]);
+  if (p.tags && p.tags.length) body += '<div>' + chips(p.tags) + '</div>';
+  if (p.description) body += '<div class="k muted" style="margin-top:10px">Description</div><div class="prose">' + esc(p.description) + '</div>';
+  if (p.background_notes) body += '<div class="k muted">Background</div><div class="prose">' + esc(p.background_notes) + '</div>';
+  if (p.relationship_notes) body += '<div class="k muted">Relationship notes</div><div class="prose">' + esc(p.relationship_notes) + '</div>';
+
+  body += '<h2 class="section">Firms (' + firms.length + ')</h2>';
+  if (firms.length) {
+    body += firms.map(x =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-firm" data-id="' + esc(x.firm ? x.firm.id : '') + '">' + esc(x.firm ? x.firm.name : '?') + (x.relationship && x.relationship.title ? ' <span class="muted">' + esc(x.relationship.title) + '</span>' : '') + '</span>' +
+      badge(x.relationship ? x.relationship.relationship_type : '') + '</div>').join('');
+  } else {
+    body += '<div class="muted">No firm links.</div>';
+  }
+
+  body += '<h2 class="section">Jobs (' + jobs.length + ')</h2>';
+  if (jobs.length) {
+    body += jobs.map(x =>
+      '<div class="row-item"><span class="grow clickable" data-act="view-job" data-id="' + esc(x.job ? x.job.id : '') + '">' + esc(x.job ? x.job.title : '?') + '</span>' +
+      '<span class="muted">' + esc(x.firm ? x.firm.name : '') + '</span>' +
+      (x.relationship ? badge(x.relationship.relationship_type) + (x.relationship.referral_status !== 'not_requested' ? ' ' + badge('referral-' + x.relationship.referral_status) : '') : '') + '</div>').join('');
+  } else {
+    body += '<div class="muted">No job links.</div>';
+  }
+
+  body += '<h2 class="section">Interactions (' + ints.length + ')</h2>';
+  body += ints.length ? ints.map(i => interactionRowHtml(i, true)).join('') : '<div class="muted">None logged.</div>';
+
+  openInfoModal(p.name, body,
+    '<button class="btn danger left" data-act="del-person" data-id="' + esc(p.id) + '">Delete</button>' +
+    '<button class="btn" data-act="link-to-firm-person" data-id="' + esc(p.id) + '">+ Firm</button>' +
+    '<button class="btn" data-act="new-interaction" data-person="' + esc(p.id) + '">+ Log</button>' +
+    '<button class="btn primary" data-act="edit-person" data-id="' + esc(p.id) + '">Edit</button>');
+}
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  document.querySelectorAll('.sheettab').forEach(b => b.classList.toggle('active', b.dataset.sheet === state.sheet));
+  const main = $('main');
+  if (state.sheet === 'overview') {
+    $('sheetToolbar').innerHTML = '<span class="title">Overview</span><span style="flex:1"></span>' +
+      '<button class="btn small primary" data-act="new-interaction">+ Log interaction</button>';
+    renderOverview(main);
+  } else if (state.sheet === 'jobs') {
+    main.innerHTML =
+      '<div class="jobdash">' +
+        '<aside class="dash-side dash-left">' +
+          '<section class="widget"><div class="widget-head">Sourced jobs <span class="sub">potential matches from the web</span></div><div class="widget-body" id="wSourced"></div></section>' +
+          '<section class="widget"><div class="widget-head">Kenan-Flagler alumni <span class="sub">potential matches</span></div><div class="widget-body" id="wAlumni"></div></section>' +
+        '</aside>' +
+        '<section class="dash-center" id="centerMain"></section>' +
+        '<aside class="dash-side dash-right">' +
+          '<section class="widget"><div class="widget-head">JD → keywords <span class="sub">llm extraction</span></div><div class="widget-body" id="wKeywords"></div></section>' +
+          '<section class="widget"><div class="widget-head">Resume customize <span class="sub">tailor to a job</span></div><div class="widget-body" id="wResume"></div></section>' +
+        '</aside>' +
+      '</div>';
+    renderWidgets();
+    const center = document.getElementById('centerMain');
+    if (state.jobView === 'sankey') {
+      $('sheetToolbar').innerHTML = '<span class="title">Jobs pipeline</span>' +
+        '<span class="count">' + state.data.jobs.length + ' jobs</span>' +
+        '<span style="flex:1"></span>' +
+        '<button class="btn small" data-act="toggle-job-view">View: Grid</button>' +
+        '<button class="btn small primary" data-act="new-job">+ New</button>';
+      renderSankey(center);
+    } else {
+      renderSheet(center);
+    }
+  } else {
+    renderSheet(main);
+  }
+}
+
+let sankeyLoaded = false;
+let sankeyLoading = false;
+function ensureSankeyLoaded(cb) {
+  if (sankeyLoaded) { cb(); return; }
+  if (!sankeyLoading) {
+    sankeyLoading = true;
+    google.charts.load('current', { packages: ['sankey'] });
+  }
+  google.charts.setOnLoadCallback(function () { sankeyLoaded = true; cb(); });
+}
+
+function statusLabel(s) {
+  return String(s || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function renderSankey(main) {
+  main.innerHTML = '<div class="loading">Loading chart&hellip;</div>';
+  ensureSankeyLoaded(function () {
+    const { jobs, firms } = state.data;
+    const firmById = new Map((firms || []).map(f => [f.id, f]));
+    if (!jobs || !jobs.length) {
+      main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs tracked yet. Add a job to see the pipeline.</div>';
+      return;
+    }
+    // top firms by job count
+    const counts = new Map();
+    for (const j of jobs) {
+      const fid = j.firm_id || '__none__';
+      counts.set(fid, (counts.get(fid) || 0) + 1);
+    }
+    const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+    const top = new Set(sorted.slice(0, 8).map(([id]) => id));
+
+    const agg = new Map();
+    for (const j of jobs) {
+      let src = j.firm_id || '__none__';
+      if (!top.has(src)) src = src === '__none__' ? '__none__' : '__other__';
+      const key = src + '||' + (j.application_status || 'interested');
+      agg.set(key, (agg.get(key) || 0) + 1);
+    }
+
+    const srcLabel = (id) => {
+      if (id === '__none__') return '(No firm)';
+      if (id === '__other__') return 'Other firms';
+      const f = firmById.get(id);
+      return f ? f.name : id;
+    };
+
+    const rows = [];
+    for (const [key, n] of agg) {
+      const [src, status] = key.split('||');
+      rows.push([srcLabel(src), statusLabel(status), n]);
+    }
+
+    main.innerHTML = '<div id="sankeyChart" style="width:100%;height:560px;"></div>';
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Weight');
+    data.addRows(rows);
+
+    const options = {
+      width: main.clientWidth || 900,
+      height: 560,
+      sankey: {
+        node: { colors: ['#0a7e3d', '#4aa06b', '#b8860b', '#d64545', '#6b7280'] },
+        link: { colorMode: 'gradient' },
+      },
+    };
+    const chart = new google.visualization.Sankey(document.getElementById('sankeyChart'));
+    chart.draw(data, options);
+  });
+}
+
+
+const SOURCED_MOCK = [
+  { id: 's1', title: 'Data Analyst Intern', company: 'Acme Corp', location: 'Remote', url: '#' },
+  { id: 's2', title: 'Strategy Associate', company: 'Globex', location: 'New York, NY', url: '#' },
+  { id: 's3', title: 'Product Manager Intern', company: 'Initech', location: 'Hybrid', url: '#' },
+  { id: 's4', title: 'Economic Consultant', company: 'Umbrella', location: 'Chicago, IL', url: '#' },
+];
+
+function loadSourcedJobs() {
+  try {
+    const raw = localStorage.getItem('jobsSourcedJobs');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return SOURCED_MOCK.map(x => ({ ...x }));
+}
+function saveSourcedJobs(list) {
+  localStorage.setItem('jobsSourcedJobs', JSON.stringify(list));
+}
+
+function renderSourcedWidget() {
+  const el = document.getElementById('wSourced');
+  if (!el) return;
+  const list = loadSourcedJobs();
+  if (!list.length) { el.innerHTML = '<div class="muted">No sourced jobs right now.</div>'; return; }
+  el.innerHTML = list.map(j =>
+    '<div class="src-job">' +
+      '<div class="src-title">' + esc(j.title) + '</div>' +
+      '<div class="src-meta">' + esc(j.company) + ' · ' + esc(j.location) + '</div>' +
+      '<div class="src-actions">' +
+        '<button class="reject" data-act="src-reject" data-id="' + esc(j.id) + '">✕ remove</button>' +
+        '<button class="accept" data-act="src-accept" data-id="' + esc(j.id) + '">✓ add</button>' +
+      '</div>' +
+    '</div>').join('');
+}
+
+function renderAlumniWidget() {
+  const el = document.getElementById('wAlumni');
+  if (!el) return;
+  const mock = [
+    { name: 'Jane Doe', role: 'Consultant', firm: 'Deloitte', linkedin: '#' },
+    { name: 'John Smith', role: 'Associate', firm: 'McKinsey', linkedin: '#' },
+    { name: 'Ava Lee', role: 'Analyst', firm: 'Goldman Sachs', linkedin: '#' },
+  ];
+  el.innerHTML = mock.map(a =>
+    '<div class="alum-row">' +
+      '<div class="alum-name">' + esc(a.name) + '</div>' +
+      '<div class="alum-meta">' + esc(a.role) + ' · ' + esc(a.firm) + '</div>' +
+    '</div>').join('');
+}
+
+function renderKeywordsWidget() {
+  const el = document.getElementById('wKeywords');
+  if (!el) return;
+  el.innerHTML =
+    '<textarea class="widget-ta" id="kwInput" placeholder="Paste a job description..."></textarea>' +
+    '<button class="btn small run" data-act="kw-extract">Extract keywords</button>' +
+    '<div class="chip-row" id="kwOut" style="margin-top:8px"></div>';
+}
+
+function renderResumeWidget() {
+  const el = document.getElementById('wResume');
+  if (!el) return;
+  const opts = state.data.jobs.map(j => '<option value="' + esc(j.id) + '">' + esc(j.title) + (j.firm ? ' — ' + esc(j.firm.name) : '') + '</option>').join('');
+  el.innerHTML =
+    '<div class="muted" style="font-size:11px">Tailor your resume to a job\'s keywords.</div>' +
+    '<select id="resumeJobSel" style="margin-top:6px">' + opts + '</select>' +
+    '<button class="btn small run" data-act="resume-customize">Customize resume</button>' +
+    '<div id="resumeOut" class="muted" style="font-size:11px;margin-top:6px"></div>';
+}
+
+function renderWidgets() {
+  renderSourcedWidget();
+  renderAlumniWidget();
+  renderKeywordsWidget();
+  renderResumeWidget();
+}
+
+function extractKeywords(text) {
+  const stop = new Set(['the','and','for','with','you','will','this','that','are','our','your','have','has','job','role','team','work','about','from','into','their','they','them','these','those','a','an','to','of','in','on','at','as','by','or','is','be','we','us']);
+  const words = text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 3 && !stop.has(w));
+  const counts = new Map();
+  for (const w of words) counts.set(w, (counts.get(w) || 0) + 1);
+  return [...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,18).map(([w])=>w);
+}
+
+function renderOverview(main) {
+  const { firms, jobs, people, interactions } = state.data;
+  const count = s => jobs.filter(j => j.application_status === s).length;
+  const out = count('applied') + count('interviewing') + count('offer');
+  const now = Date.now();
+  const recent30 = interactions.filter(i => i.occurred_at && now - new Date(i.occurred_at).getTime() < 30 * 86400000).length;
+
+  let html = '<div class="stats">';
+  [['Jobs', jobs.length], ['Applications out', out], ['Interviewing', count('interviewing')], ['Offers', count('offer')],
+   ['Firms', firms.length], ['People', people.length], ['Interactions (30d)', recent30]].forEach(([l, n]) => {
+    html += '<div class="stat"><div class="n">' + n + '</div><div class="l">' + esc(l) + '</div></div>';
+  });
+  html += '</div>';
+
+  const upcoming = jobs.filter(j => j.application_deadline && !['rejected', 'withdrawn'].includes(j.application_status))
+    .sort((a, b) => new Date(a.application_deadline) - new Date(b.application_deadline)).slice(0, 10);
+  const stale = jobs.filter(j => j.application_status === 'interested' &&
+    !state.data.interactions.some(i => i.job_id === j.id));
+  const recent = interactions.slice(0, 8);
+
+  // Upcoming deadlines — mini table
+  html += '<div class="panel"><h2 class="section">Upcoming deadlines</h2>';
+  if (upcoming.length) {
+    html += '<table class="sheet mini"><thead><tr><th>Job</th><th>Firm</th><th>Status</th><th>Deadline</th></tr></thead><tbody>';
+    for (const j of upcoming) {
+      html += '<tr data-act="view-job" data-id="' + esc(j.id) + '">' +
+        '<td>' + esc(j.title) + '</td>' +
+        '<td>' + esc(j.firm ? j.firm.name : '') + '</td>' +
+        '<td>' + badge(j.application_status) + '</td>' +
+        '<td>' + deadlineChip(j.application_deadline) + '</td></tr>';
+    }
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="muted">No deadlines set.</div>';
+  }
+  html += '</div>';
+
+  // Stale interested — mini table
+  html += '<div class="panel"><h2 class="section">Interested, no contact yet (' + stale.length + ')</h2>';
+  if (stale.length) {
+    html += '<table class="sheet mini"><thead><tr><th>Job</th><th>Firm</th><th>Year</th></tr></thead><tbody>';
+    for (const j of stale) {
+      html += '<tr data-act="view-job" data-id="' + esc(j.id) + '">' +
+        '<td>' + esc(j.title) + '</td>' +
+        '<td>' + esc(j.firm ? j.firm.name : '') + '</td>' +
+        '<td>' + esc(str(j.program_year)) + '</td></tr>';
+    }
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="muted">All interested jobs have activity.</div>';
+  }
+  html += '</div>';
+
+  // Recent activity — mini table
+  html += '<div class="panel"><h2 class="section">Recent activity</h2>';
+  if (recent.length) {
+    html += '<table class="sheet mini"><thead><tr><th>When</th><th>Person</th><th>Channel</th><th>Summary</th></tr></thead><tbody>';
+    for (const i of recent) {
+      html += '<tr data-act="view-person" data-id="' + esc(i.person_id) + '">' +
+        '<td>' + esc(fmtDateTime(i.occurred_at)) + '</td>' +
+        '<td>' + esc(i.person ? i.person.name : '?') + '</td>' +
+        '<td>' + badge(i.channel) + '</td>' +
+        '<td style="white-space:normal">' + esc((i.summary || '').slice(0, 120)) + '</td></tr>';
+    }
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="muted">Nothing logged yet.</div>';
+  }
+  html += '</div>';
+
+  main.innerHTML = html;
+}
+
+// ============================================================
+// GRID INTERACTION (delegated — survives re-renders)
+// ============================================================
+// sheet tab switching
+$('sheetTabs').addEventListener('click', e => {
+  const b = e.target.closest('.sheettab');
+  if (!b) return;
+  if (state.editing) commitEdit(false);
+  state.sheet = b.dataset.sheet;
+  render();
+});
+
+$('refreshBtn').addEventListener('click', () => refresh().catch(e => toast(friendlyError(e), true)));
+
+// sort by header click
+document.addEventListener('click', e => {
+  const th = e.target.closest('#grid thead tr.hdr th[data-col]');
+  if (!th || !state.session) return;
+  if (state.editing) commitEdit(false);
+  const ui = state.ui[state.sheet];
+  const k = th.dataset.col;
+  if (ui.sort && ui.sort.k === k) {
+    ui.sort = ui.sort.dir === 1 ? { k, dir: -1 } : null;
+  } else {
+    ui.sort = { k, dir: 1 };
+  }
+  render();
+});
+
+// column filter inputs
+let filterTimer = null;
+document.addEventListener('input', e => {
+  const inp = e.target.closest('#grid thead [data-filter]');
+  if (!inp || !state.session) return;
+  const k = inp.dataset.filter;
+  clearTimeout(filterTimer);
+  filterTimer = setTimeout(() => {
+    state.ui[state.sheet].filters[k] = inp.value;
+    const pos = inp.selectionStart;
+    render();
+    const again = document.querySelector('#grid thead [data-filter="' + k + '"]');
+    if (again) { again.focus(); try { again.setSelectionRange(pos, pos); } catch (_) {} }
+  }, 220);
+});
+document.addEventListener('change', e => {
+  const sel = e.target.closest('#grid thead select[data-filter]');
+  if (!sel || !state.session) return;
+  state.ui[state.sheet].filters[sel.dataset.filter] = sel.value;
+  render();
+});
+
+// cell click = select; dblclick = edit
+document.addEventListener('click', e => {
+  const td = e.target.closest('#grid tbody td.cell');
+  if (!td || !state.session) return;
+  if (e.target.closest('a')) return; // let links work
+  selectCell(td.dataset.rid, td.dataset.col, false);
+});
+
+document.addEventListener('dblclick', e => {
+  const td = e.target.closest('#grid tbody td.cell');
+  if (!td || !state.session) return;
+  beginEdit(td);
+});
+
+// keyboard: arrows move, Enter edits, typing starts edit, Esc commits/cancels
+document.addEventListener('keydown', e => {
+  if (!state.session || state.editing) return;
+  if ($('modalRoot').innerHTML) return;
+  if (e.target.closest('input, select, textarea')) return;
+  const ui = state.ui[state.sheet];
+  if (state.sheet === 'overview') return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); moveSelection(1, 0); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); moveSelection(-1, 0); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); moveSelection(0, 1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); moveSelection(0, -1); }
+  else if (e.key === 'Enter' && ui.sel) {
+    e.preventDefault();
+    const td = document.querySelector('#grid td.cell[data-rid="' + ui.sel.rid + '"][data-col="' + ui.sel.col + '"]');
+    beginEdit(td);
+  } else if (e.key === 'Delete' && ui.sel && e.shiftKey) {
+    e.preventDefault();
+    const def = SHEETS[state.sheet];
+    const row = state.data[def.list].find(r => r.id === ui.sel.rid);
+    if (row) doDelete(def.table, row.id, def.delLabel);
+  } else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && ui.sel) {
+    const td = document.querySelector('#grid td.cell[data-rid="' + ui.sel.rid + '"][data-col="' + ui.sel.col + '"]');
+    if (td && !td.dataset.ro) { e.preventDefault(); beginEdit(td, e.key); }
+  }
+});
+
+// column resize (drag header edge)
+let resizing = null;
+document.addEventListener('mousedown', e => {
+  const rz = e.target.closest('#grid th .rz');
+  if (!rz || !state.session) return;
+  e.preventDefault();
+  const k = rz.dataset.col;
+  const col = document.querySelector('#grid col[data-col="' + k + '"]');
+  resizing = { k, col, startX: e.clientX, startW: parseInt(col.style.width, 10) || 100 };
+  document.body.style.cursor = 'col-resize';
+});
+document.addEventListener('mousemove', e => {
+  if (!resizing) return;
+  const w = Math.max(60, resizing.startW + (e.clientX - resizing.startX));
+  resizing.col.style.width = w + 'px';
+  state.ui[state.sheet].widths[resizing.k] = w;
+});
+document.addEventListener('mouseup', () => {
+  if (!resizing) return;
+  resizing = null;
+  document.body.style.cursor = '';
+});
+
+// ============================================================
+// ACTION ROUTER
+// ============================================================
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || !state.session) return;
+  const act = el.dataset.act;
+  const id = el.dataset.id;
+  const byId = (arr, x) => state.data[arr].find(r => r.id === x);
+
+  switch (act) {
+    case 'close': closeModal(); break;
+    case 'toggle-job-view':
+      state.jobView = state.jobView === 'sankey' ? 'grid' : 'sankey';
+      localStorage.setItem('jobsJobView', state.jobView);
+      render();
+      break;
+    case 'src-reject': {
+      const id = el.dataset.id;
+      const list = loadSourcedJobs().filter(x => x.id !== id);
+      saveSourcedJobs(list);
+      renderSourcedWidget();
+      toast('Removed');
+      break;
+    }
+    case 'src-accept': {
+      const id = el.dataset.id;
+      const list = loadSourcedJobs();
+      const item = list.find(x => x.id === id);
+      if (!item) break;
+      let firm = state.data.firms.find(f => f.name === item.company);
+      if (!firm) { firm = { id: crypto.randomUUID(), name: item.company }; state.data.firms.push(firm); }
+      state.data.jobs.push({
+        id: crypto.randomUUID(),
+        title: item.title,
+        firm_id: firm.id,
+        application_status: 'interested',
+        location: item.location,
+        source_url: item.url,
+        tags: [],
+        firm: firm,
+      });
+      saveSourcedJobs(list.filter(x => x.id !== id));
+      renderSourcedWidget();
+      render();
+      toast('Added to pipeline');
+      break;
+    }
+    case 'kw-extract': {
+      const ta = document.getElementById('kwInput');
+      const out = document.getElementById('kwOut');
+      if (!ta || !out) break;
+      const kws = extractKeywords(ta.value || '');
+      out.innerHTML = kws.length
+        ? kws.map(k => '<span class="kw-chip">' + esc(k) + '</span>').join('')
+        : '<span class="muted">No keywords found.</span>';
+      break;
+    }
+    case 'resume-customize': {
+      const out = document.getElementById('resumeOut');
+      if (out) out.textContent = 'Resume customization queued (backend wiring pending).';
+      toast('Queued');
+      break;
+    }
+    case 'clear-filters': state.ui[state.sheet].filters = {}; render(); break;
+
+    case 'new-firm':
+      openFormModal({ title: 'New firm', table: 'firms', fields: firmFields(null), submitLabel: 'Add firm' });
+      break;
+    case 'edit-firm':
+      openFormModal({ title: 'Edit firm', table: 'firms', id, fields: firmFields(byId('firms', id)), submitLabel: 'Save' });
+      break;
+    case 'del-firm': doDelete('firms', id, 'firm'); break;
+    case 'view-firm': openFirmDetail(id); break;
+
+    case 'new-job':
+      openFormModal({ title: 'New job', table: 'jobs', fields: jobFields(null, el.dataset.firm), submitLabel: 'Add job' });
+      break;
+    case 'edit-job':
+      openFormModal({ title: 'Edit job', table: 'jobs', id, fields: jobFields(byId('jobs', id)), submitLabel: 'Save' });
+      break;
+    case 'del-job': doDelete('jobs', id, 'job'); break;
+    case 'view-job': openJobDetail(id); break;
+
+    case 'new-person':
+      openFormModal({ title: 'New person', table: 'people', fields: personFields(null), submitLabel: 'Add person' });
+      break;
+    case 'edit-person':
+      openFormModal({ title: 'Edit person', table: 'people', id, fields: personFields(byId('people', id)), submitLabel: 'Save' });
+      break;
+    case 'del-person': doDelete('people', id, 'person'); break;
+    case 'view-person': openPersonDetail(id); break;
+
+    case 'new-interaction':
+      openFormModal({
+        title: 'Log interaction', table: 'interactions',
+        fields: interactionFields(null, { person_id: el.dataset.person || '', firm_id: el.dataset.firm || '', job_id: el.dataset.job || '' }),
+        submitLabel: 'Log',
+      });
+      break;
+    case 'edit-interaction':
+      openFormModal({ title: 'Edit interaction', table: 'interactions', id, fields: interactionFields(byId('interactions', id)), submitLabel: 'Save' });
+      break;
+    case 'del-interaction': doDelete('interactions', id, 'interaction'); break;
+
+    case 'link-person':
+      openFormModal({ title: 'Link person to job', table: 'job_people', fields: jobPersonFields(null, id), submitLabel: 'Link' });
+      break;
+    case 'edit-jobperson':
+      openFormModal({ title: 'Edit job link', table: 'job_people', id, fields: jobPersonFields(byId('jobPeople', id)), submitLabel: 'Save' });
+      break;
+    case 'del-jobperson': doDelete('job_people', id, 'job link'); break;
+
+    case 'link-to-firm':
+      openFormModal({ title: 'Link person to firm', table: 'person_firms', fields: personFirmFields(null, { firm_id: id }), submitLabel: 'Link' });
+      break;
+    case 'link-to-firm-person':
+      openFormModal({ title: 'Link person to firm', table: 'person_firms', fields: personFirmFields(null, { person_id: id }), submitLabel: 'Link' });
+      break;
+    case 'edit-personfirm':
+      openFormModal({ title: 'Edit firm link', table: 'person_firms', id, fields: personFirmFields(byId('personFirms', id)), submitLabel: 'Save' });
+      break;
+    case 'del-personfirm': doDelete('person_firms', id, 'firm link'); break;
+  }
+});
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !state.editing) closeModal(); });
+
+// ============================================================
+// BOOT
+// ============================================================
+(function boot() {
+  const saved = localStorage.getItem('recruitingEmail');
+  if (saved) $('gateEmail').value = saved;
+  client.auth.getSession().then(async ({ data }) => {
+    if (data.session) await enterApp(data.session);
+    else showGate();
+  }).catch(() => showGate());
+})();
+</script>
+</body>
+</html>
