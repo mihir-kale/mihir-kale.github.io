@@ -1726,13 +1726,25 @@ function renderJobDetail(rid) {
 function renderJobsTable(main) {
   const jobs = state.data.jobs || [];
   if (!jobs.length) { main.innerHTML = '<div class="muted" style="padding:20px">No jobs yet.</div>'; return; }
-  let html = '<table class="sheet mini" style="width:100%"><thead><tr><th>Firm</th><th>Role</th><th>Status</th></tr></thead><tbody>';
-  for (const j of jobs) {
-    const firm = j.firm ? j.firm.name : ((state.data.firms || []).find(f => f.id === j.firm_id) || {}).name || '';
-    html += '<tr data-id="' + esc(j.id) + '" style="cursor:pointer"><td>' + esc(firm) + '</td><td>' + esc(j.title) + '</td><td>' + statusBadge(j) + '</td></tr>';
+  const liveStatuses = new Set(['interested','preparing','applied','assessment','screened','interviewing']);
+  const live = jobs.filter(j => liveStatuses.has(j.application_status));
+  const stale = jobs.filter(j => !liveStatuses.has(j.application_status));
+
+  function tableFor(list) {
+    if (!list.length) return '<div class="muted" style="padding:8px">None.</div>';
+    let h = '<table class="sheet mini" style="width:100%"><thead><tr><th>Firm</th><th>Role</th><th>Status</th></tr></thead><tbody>';
+    for (const j of list) {
+      const firm = j.firm ? j.firm.name : ((state.data.firms || []).find(f => f.id === j.firm_id) || {}).name || '';
+      h += '<tr data-id="' + esc(j.id) + '" style="cursor:pointer"><td>' + esc(firm) + '</td><td>' + esc(j.title) + '</td><td>' + statusBadge(j) + '</td></tr>';
+    }
+    h += '</tbody></table>';
+    return h;
   }
-  html += '</tbody></table>';
-  main.innerHTML = html;
+
+  main.innerHTML =
+    '<details class="widget" open><summary class="widget-head">Live (' + live.length + ')</summary><div style="margin-top:6px">' + tableFor(live) + '</div></details>' +
+    '<details class="widget" style="margin-top:10px"><summary class="widget-head">Stale (' + stale.length + ')</summary><div style="margin-top:6px">' + tableFor(stale) + '</div></details>';
+
   main.querySelectorAll('tr[data-id]').forEach(tr => {
     tr.addEventListener('click', () => {
       main.querySelectorAll('tr.sel').forEach(x => x.classList.remove('sel'));
