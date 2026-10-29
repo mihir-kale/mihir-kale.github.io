@@ -1367,6 +1367,7 @@ function render() {
           '<aside class="dash-side dash-left">' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">People</div><div class="widget-body" id="wPeople"></div></section>' +
+            '<section class="widget"><div class="widget-head">Connect</div><div class="widget-body" id="wConnect"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1389,6 +1390,7 @@ function render() {
           '<aside class="dash-side dash-left">' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">People</div><div class="widget-body" id="wPeople"></div></section>' +
+            '<section class="widget"><div class="widget-head">Connect</div><div class="widget-body" id="wConnect"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1668,6 +1670,22 @@ function renderResumeWidget() {
     '<div class="muted" style="font-size:10px;margin:8px 0 4px">Keywords</div>' +
     '<textarea class="widget-ta" id="resumeKw" placeholder="Generated keywords will appear here..."></textarea>' +
     '<button class="btn small primary" data-act="resume-customize" style="margin-top:6px">Customize resume</button>';
+}
+
+function renderConnectWidget() {
+  const el = document.getElementById('wConnect');
+  if (!el) return;
+  el.innerHTML =
+    '<select id="connectType" style="margin-bottom:6px">' +
+      '<option value="intro">Intro</option>' +
+      '<option value="followup">Follow-up</option>' +
+      '<option value="thankyou">Thank you</option>' +
+      '<option value="referral">Referral request</option>' +
+    '</select>' +
+    '<textarea class="widget-ta" id="connectPersonal" placeholder="Personalization notes..."></textarea>' +
+    '<button class="btn small run" data-act="connect-draft" style="margin-top:6px">Draft email</button>' +
+    '<div class="muted" style="font-size:10px;margin:8px 0 4px">Draft</div>' +
+    '<textarea class="widget-ta" id="connectDraft" placeholder="Draft will appear here..." readonly></textarea>';
 }
 
 function renderWidgets() {
@@ -2096,6 +2114,17 @@ document.addEventListener('click', e => {
       break;
     }
     case 'save-job-status': updateJobStatus(el.dataset.id); break;
+    case 'connect-draft': {
+      const type = (document.getElementById('connectType') || {}).value || 'intro';
+      const personal = (document.getElementById('connectPersonal') || {}).value || '';
+      const draft = 'Subject: ' + type.charAt(0).toUpperCase() + type.slice(1) + '\n\nHi [Name],\n\n' +
+        'I hope you\'re doing well. ' + (personal ? personal + ' ' : '') +
+        'I\'d love to connect and learn about your experience.\n\nBest,\nMihir';
+      const out = document.getElementById('connectDraft');
+      if (out) out.value = draft;
+      toast('Draft generated (LLM wiring pending)');
+      break;
+    }
     case 'clear-filters': state.ui[state.sheet].filters = {}; render(); break;
 
     case 'new-firm':
