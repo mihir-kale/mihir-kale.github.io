@@ -534,22 +534,9 @@ const SHEETS = {
     label: 'Jobs', table: 'jobs', list: 'jobs',
     newAct: 'new-job', viewAct: 'view-job', editAct: 'edit-job', delAct: 'del-job', delLabel: 'job',
     columns: [
-      { k: 'title', label: 'Title', w: 240, type: 'text', required: true },
-      { k: 'firm_id', label: 'Firm', w: 150, type: 'fk', ref: 'firms', refLabel: 'name', required: true },
-      { k: 'application_status', label: 'Status', w: 120, type: 'enum', values: APP_STATUS, required: true, badge: true },
-      { k: 'posting_status', label: 'Posting', w: 100, type: 'enum', values: POSTING, required: true },
-      { k: 'interest_level', label: 'Interest', w: 90, type: 'enum', values: INTEREST, required: true, dot: true },
-      { k: 'application_deadline', label: 'Deadline', w: 130, type: 'datetime', deadline: true },
-      { k: 'applied_at', label: 'Applied', w: 130, type: 'datetime' },
-      { k: 'posted_at', label: 'Posted', w: 110, type: 'date' },
-      { k: 'program_year', label: 'Year', w: 70, type: 'number' },
-      { k: 'department', label: 'Department', w: 130, type: 'text' },
-      { k: 'location', label: 'Location', w: 140, type: 'text' },
-      { k: 'work_arrangement', label: 'Arrangement', w: 110, type: 'enum', values: WORK_ARR },
-      { k: 'employment_type', label: 'Type', w: 110, type: 'enum', values: EMP_TYPE },
-      { k: 'tags', label: 'Tags', w: 160, type: 'tags' },
-      { k: 'fit_notes', label: 'Fit notes', w: 220, type: 'text' },
-      { k: 'notes', label: 'Notes', w: 200, type: 'text' },
+      { k: 'firm_id', label: 'Firm', w: 180, type: 'fk', ref: 'firms', refLabel: 'name', required: true },
+      { k: 'title', label: 'Role', w: 260, type: 'text', required: true },
+      { k: 'application_status', label: 'Status', w: 130, type: 'enum', values: APP_STATUS, required: true, badge: true },
     ],
   },
   firms: {
@@ -803,6 +790,7 @@ function selectCell(rid, col, scroll) {
     td.classList.add('sel');
     if (scroll) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
+  if (state.sheet === 'jobs') renderJobDetail(rid);
 }
 
 function visibleCells() {
@@ -1370,6 +1358,7 @@ function render() {
         '</aside>' +
         '<section class="dash-center" id="centerMain"></section>' +
         '<aside class="dash-side dash-right">' +
+          '<section class="widget"><div class="widget-head">Job details <span class="sub">click a row</span></div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
           '<section class="widget"><div class="widget-head">JD → keywords <span class="sub">llm extraction</span></div><div class="widget-body" id="wKeywords"></div></section>' +
           '<section class="widget"><div class="widget-head">Resume customize <span class="sub">tailor to a job</span></div><div class="widget-body" id="wResume"></div></section>' +
         '</aside>' +
@@ -1543,6 +1532,38 @@ function extractKeywords(text) {
   const counts = new Map();
   for (const w of words) counts.set(w, (counts.get(w) || 0) + 1);
   return [...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,18).map(([w])=>w);
+}
+
+function renderJobDetail(rid) {
+  const el = document.getElementById('wJobDetail');
+  if (!el) return;
+  const job = (state.data.jobs || []).find(j => j.id === rid);
+  if (!job) { el.innerHTML = 'Select a job row to see details.'; return; }
+  const firm = job.firm ? job.firm.name : ((state.data.firms || []).find(f => f.id === job.firm_id) || {}).name || '';
+  const pairs = [
+    ['Firm', firm],
+    ['Status', job.application_status],
+    ['Posting', job.posting_status],
+    ['Interest', job.interest_level],
+    ['Deadline', job.application_deadline ? fmtDate(job.application_deadline) : ''],
+    ['Applied', job.applied_at ? fmtDate(job.applied_at) : ''],
+    ['Posted', job.posted_at ? fmtDate(job.posted_at) : ''],
+    ['Year', job.program_year],
+    ['Department', job.department],
+    ['Location', job.location],
+    ['Arrangement', job.work_arrangement],
+    ['Type', job.employment_type],
+    ['Requisition', job.requisition_id],
+  ];
+  let html = '<div class="detail-grid">' + pairs.filter(p => p[1]).map(p =>
+    '<div><div class="k">' + esc(p[0]) + '</div><div>' + esc(p[1]) + '</div></div>').join('') + '</div>';
+  if (job.requirements && job.requirements.length) html += '<div class="k" style="margin-top:8px">Requirements</div><div>' + chips(job.requirements) + '</div>';
+  if (job.skills && job.skills.length) html += '<div class="k" style="margin-top:8px">Skills</div><div>' + chips(job.skills) + '</div>';
+  if (job.job_description) html += '<div class="k" style="margin-top:8px">Description</div><div class="prose">' + esc(job.job_description) + '</div>';
+  if (job.fit_notes) html += '<div class="k" style="margin-top:8px">Fit notes</div><div class="prose">' + esc(job.fit_notes) + '</div>';
+  if (job.notes) html += '<div class="k" style="margin-top:8px">Notes</div><div class="prose">' + esc(job.notes) + '</div>';
+  if (job.source_url) html += '<div style="margin-top:8px"><a href="' + esc(job.source_url) + '" target="_blank" rel="noopener">Job posting \u2197</a></div>';
+  el.innerHTML = html;
 }
 
 function renderOverview(main) {
