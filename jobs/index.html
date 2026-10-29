@@ -212,6 +212,7 @@
 
   .badge.applied { border-color: #9ca3af; color: #6b7280; background: transparent; }
   .badge.interested-deadline { border-color: var(--warn); color: var(--warn); }
+  .badge.screened { border-color: #b8860b; color: #b8860b; }
 </style>
 </head>
 <body>
@@ -257,7 +258,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const TZ = 'America/New_York';
 
 // Client vocabularies (DB columns are free text; no constraints).
-const APP_STATUS   = ['interested', 'applied', 'interviewing', 'offer', 'rejected', 'withdrawn'];
+const APP_STATUS   = ['interested', 'applied', 'screened', 'interviewing', 'offer', 'rejected', 'withdrawn'];
 const POSTING      = ['open', 'unknown', 'closed', 'expired'];
 const INTEREST     = ['low', 'medium', 'high'];
 const CHANNELS     = ['email', 'phone', 'linkedin', 'coffee', 'meeting', 'referral', 'career_fair', 'other'];
@@ -1432,21 +1433,24 @@ function renderSankey(main) {
     const count = (st) => jobs.filter(j => j.application_status === st).length;
     const interested = count('interested');
     const applied = count('applied');
+    const screened = count('screened');
     const interviewing = count('interviewing');
     const offer = count('offer');
     const rejected = count('rejected');
     const withdrawn = count('withdrawn');
 
-    const appliedBeyond = applied + interviewing + offer + rejected + withdrawn;
+    const appliedBeyond = applied + screened + interviewing + offer + rejected + withdrawn;
 
     const rows = [];
     if (appliedBeyond > 0) rows.push(['Interested', 'Applied', appliedBeyond]);
     if (interested > 0) rows.push(['Interested', 'Interested (pending)', interested]);
-    if (interviewing + offer > 0) rows.push(['Applied', 'Interview rounds', interviewing + offer]);
+    if (screened + interviewing + offer > 0) rows.push(['Applied', 'Screened', screened + interviewing + offer]);
+    if (interviewing + offer > 0) rows.push(['Screened', 'Interview rounds', interviewing + offer]);
     if (offer > 0) rows.push(['Interview rounds', 'Offer', offer]);
     if (rejected > 0) rows.push(['Applied', 'Rejected', rejected]);
     if (withdrawn > 0) rows.push(['Applied', 'Withdrawn', withdrawn]);
     if (applied > 0) rows.push(['Applied', 'Applied (pending)', applied]);
+    if (screened > 0) rows.push(['Screened', 'Screened (pending)', screened]);
 
     if (!rows.length) {
       main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs yet.</div>';
