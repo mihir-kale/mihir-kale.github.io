@@ -1410,13 +1410,18 @@ function renderSankey(main) {
       return;
     }
     const count = (st) => jobs.filter(j => j.application_status === st).length;
+    const interested = count('interested');
     const applied = count('applied');
     const interviewing = count('interviewing');
     const offer = count('offer');
     const rejected = count('rejected');
     const withdrawn = count('withdrawn');
 
+    const appliedBeyond = applied + interviewing + offer + rejected + withdrawn;
+
     const rows = [];
+    if (appliedBeyond > 0) rows.push(['Interested', 'Applied', appliedBeyond]);
+    if (interested > 0) rows.push(['Interested', 'Interested (pending)', interested]);
     if (interviewing + offer > 0) rows.push(['Applied', 'Interview rounds', interviewing + offer]);
     if (offer > 0) rows.push(['Interview rounds', 'Offer', offer]);
     if (rejected > 0) rows.push(['Applied', 'Rejected', rejected]);
@@ -1424,7 +1429,7 @@ function renderSankey(main) {
     if (applied > 0) rows.push(['Applied', 'Applied (pending)', applied]);
 
     if (!rows.length) {
-      main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No applied jobs yet.</div>';
+      main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs yet.</div>';
       return;
     }
 
@@ -1447,6 +1452,7 @@ function renderSankey(main) {
     chart.draw(data, options);
   });
 }
+
 
 
 
