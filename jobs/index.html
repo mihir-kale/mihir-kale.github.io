@@ -209,6 +209,9 @@
   details.widget > summary::-webkit-details-marker { display: none; }
   details.widget > summary::after { content: '\25B8'; float: right; color: var(--muted); }
   details.widget[open] > summary::after { content: '\25BE'; }
+
+  .badge.applied { border-color: #9ca3af; color: #6b7280; background: transparent; }
+  .badge.interested-deadline { border-color: var(--warn); color: var(--warn); }
 </style>
 </head>
 <body>
@@ -1632,7 +1635,7 @@ function renderJobDetail(rid) {
   if (document.getElementById('wPeople')) renderPeopleWidget();
   const pairs = [
     ['Firm', firm],
-    ['Status', job.application_status],
+    ['Status', statusBadge(job), true],
     ['Posting', job.posting_status],
     ['Interest', job.interest_level],
     ['Deadline', job.application_deadline ? fmtDate(job.application_deadline) : ''],
@@ -1646,7 +1649,7 @@ function renderJobDetail(rid) {
     ['Requisition', job.requisition_id],
   ];
   let html = '<div class="detail-grid">' + pairs.filter(p => p[1]).map(p =>
-    '<div><div class="k">' + esc(p[0]) + '</div><div>' + esc(p[1]) + '</div></div>').join('') + '</div>';
+    '<div><div class="k">' + esc(p[0]) + '</div><div>' + (p[2] ? p[1] : esc(p[1])) + '</div></div>').join('') + '</div>';
   if (job.requirements && job.requirements.length) html += '<div class="k" style="margin-top:8px">Requirements</div><div>' + chips(job.requirements) + '</div>';
   if (job.skills && job.skills.length) html += '<div class="k" style="margin-top:8px">Skills</div><div>' + chips(job.skills) + '</div>';
   if (job.job_description) html += '<div class="k" style="margin-top:8px">Description</div><div class="prose">' + esc(job.job_description) + '</div>';
@@ -1667,7 +1670,7 @@ function renderJobsTable(main) {
   let html = '<table class="sheet mini" style="width:100%"><thead><tr><th>Firm</th><th>Role</th><th>Status</th></tr></thead><tbody>';
   for (const j of jobs) {
     const firm = j.firm ? j.firm.name : ((state.data.firms || []).find(f => f.id === j.firm_id) || {}).name || '';
-    html += '<tr data-id="' + esc(j.id) + '" style="cursor:pointer"><td>' + esc(firm) + '</td><td>' + esc(j.title) + '</td><td>' + badge(j.application_status) + '</td></tr>';
+    html += '<tr data-id="' + esc(j.id) + '" style="cursor:pointer"><td>' + esc(firm) + '</td><td>' + esc(j.title) + '</td><td>' + statusBadge(j) + '</td></tr>';
   }
   html += '</tbody></table>';
   main.innerHTML = html;
@@ -1734,6 +1737,13 @@ function statsBarHtml() {
     ['Offers', count('offer')],
   ];
   return items.map(([l, n]) => '<span style="margin-right:12px"><b>' + n + '</b> ' + esc(l) + '</span>').join('');
+}
+
+function statusBadge(job) {
+  const s = job.application_status;
+  let cls = String(s || '').replace(/_/g, '-');
+  if (s === 'interested' && job.application_deadline) cls = 'interested-deadline';
+  return '<span class="badge ' + esc(cls) + '">' + esc(fmtEnum(s)) + '</span>';
 }
 
 function renderOverview(main) {
