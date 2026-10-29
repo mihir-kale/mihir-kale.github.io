@@ -202,6 +202,11 @@
   .kw-chip { display: inline-block; font-size: 10px; padding: 2px 7px; border: 1px solid var(--accent-dim); color: var(--accent); background: var(--panel); }
   textarea.widget-ta { width: 100%; min-height: 80px; resize: vertical; font-size: 11px; }
   .widget button.run { margin-top: 6px; }
+
+  details.widget > summary { cursor: pointer; list-style: none; user-select: none; }
+  details.widget > summary::-webkit-details-marker { display: none; }
+  details.widget > summary::after { content: '\25B8'; float: right; color: var(--muted); }
+  details.widget[open] > summary::after { content: '\25BE'; }
 </style>
 </head>
 <body>
@@ -1360,7 +1365,7 @@ function render() {
     main.innerHTML =
       '<div class="jobdash">' +
         '<aside class="dash-side dash-left">' +
-          '<section class="widget"><div class="widget-head">Sourced jobs <span class="sub">potential matches from the web</span></div><div class="widget-body" id="wSourced"></div></section>' +
+          '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs <span class="sub">potential matches from the web</span></summary><div class="widget-body" id="wSourced"></div></details>' +
           '<section class="widget"><div class="widget-head">Kenan-Flagler alumni <span class="sub">potential matches</span></div><div class="widget-body" id="wAlumni"></div></section>' +
         '</aside>' +
         '<section class="dash-center" id="centerMain"></section>' +
