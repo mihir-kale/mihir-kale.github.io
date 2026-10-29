@@ -1349,6 +1349,7 @@ function render() {
       main.innerHTML =
         '<div class="jobdash">' +
           '<aside class="dash-side dash-left">' +
+            '<section class="widget"><div class="widget-head">Overview</div><div class="widget-body" id="wStats"></div></section>' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
             '<section class="widget"><div class="widget-head">Employer contacts</div><div class="widget-body" id="wEmployers"></div></section>' +
@@ -1372,6 +1373,7 @@ function render() {
       main.innerHTML =
         '<div class="jobdash">' +
           '<aside class="dash-side dash-left">' +
+            '<section class="widget"><div class="widget-head">Overview</div><div class="widget-body" id="wStats"></div></section>' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
             '<section class="widget"><div class="widget-head">Employer contacts</div><div class="widget-body" id="wEmployers"></div></section>' +
@@ -1595,6 +1597,7 @@ function renderResumeWidget() {
 
 function renderWidgets() {
   renderSourcedWidget();
+  renderStatsWidget();
   renderAlumniWidget();
   renderEmployersWidget();
   renderKeywordsWidget();
@@ -1684,7 +1687,32 @@ async function updateJobStatus(id) {
   }
   const center = document.getElementById('centerMain');
   if (center) renderJobsTable(center);
+  renderStatsWidget();
   renderJobDetail(id);
+}
+
+function renderStatsWidget() {
+  const el = document.getElementById('wStats');
+  if (!el) return;
+  const jobs = state.data.jobs || [];
+  const firms = state.data.firms || [];
+  const people = state.data.people || [];
+  const interactions = state.data.interactions || [];
+  const count = (st) => jobs.filter(j => j.application_status === st).length;
+  const out = count('applied') + count('interviewing') + count('offer');
+  const now = Date.now();
+  const recent30 = interactions.filter(i => i.occurred_at && now - new Date(i.occurred_at).getTime() < 30 * 86400000).length;
+  const items = [
+    ['Jobs', jobs.length],
+    ['Applications out', out],
+    ['Interviewing', count('interviewing')],
+    ['Offers', count('offer')],
+    ['Firms', firms.length],
+    ['People', people.length],
+    ['Interactions (30d)', recent30],
+  ];
+  el.innerHTML = '<div class="stats">' + items.map(([l, n]) =>
+    '<div class="stat"><div class="n">' + n + '</div><div class="l">' + esc(l) + '</div></div>').join('') + '</div>';
 }
 
 function renderOverview(main) {
