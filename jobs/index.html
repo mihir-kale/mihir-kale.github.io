@@ -1442,15 +1442,14 @@ function renderSankey(main) {
     const appliedBeyond = applied + screened + interviewing + offer + rejected + withdrawn;
 
     const rows = [];
-    if (appliedBeyond > 0) rows.push(['Interested', 'Applied', appliedBeyond]);
-    if (interested > 0) rows.push(['Interested', 'Interested (pending)', interested]);
-    if (screened + interviewing + offer > 0) rows.push(['Applied', 'Screened', screened + interviewing + offer]);
-    if (interviewing + offer > 0) rows.push(['Screened', 'Interview rounds', interviewing + offer]);
     if (offer > 0) rows.push(['Interview rounds', 'Offer', offer]);
+    if (interviewing + offer > 0) rows.push(['Screened', 'Interview rounds', interviewing + offer]);
+    if (screened + interviewing + offer > 0) rows.push(['Applied', 'Screened', screened + interviewing + offer]);
     if (rejected > 0) rows.push(['Applied', 'Rejected', rejected]);
     if (withdrawn > 0) rows.push(['Applied', 'Withdrawn', withdrawn]);
-    if (applied > 0) rows.push(['Applied', 'Applied (pending)', applied]);
-    if (screened > 0) rows.push(['Screened', 'Screened (pending)', screened]);
+    if (applied > 0) rows.push(['Applied', 'Waiting for response', applied]);
+    if (appliedBeyond > 0) rows.push(['Interested', 'Applied', appliedBeyond]);
+    if (interested > 0) rows.push(['Interested', 'Interested (pending)', interested]);
 
     if (!rows.length) {
       main.innerHTML = '<div class="muted" style="padding:40px;text-align:center">No jobs yet.</div>';
