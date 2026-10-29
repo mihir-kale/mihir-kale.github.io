@@ -1358,6 +1358,7 @@ function render() {
           '<aside class="dash-side dash-left">' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
+            '<section class="widget"><div class="widget-head">Employer contacts</div><div class="widget-body" id="wEmployers"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1380,6 +1381,7 @@ function render() {
           '<aside class="dash-side dash-left">' +
             '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
             '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
+            '<section class="widget"><div class="widget-head">Employer contacts</div><div class="widget-body" id="wEmployers"></div></section>' +
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
@@ -1506,19 +1508,76 @@ function renderSourcedWidget() {
     '</div>').join('');
 }
 
+async function loadAlumniData() {
+  if (state.alumniData) return state.alumniData;
+  try {
+    const res = await fetch('data/alumni.json');
+    state.alumniData = await res.json();
+  } catch (e) { state.alumniData = {}; }
+  return state.alumniData;
+}
+async function loadEmployerData() {
+  if (state.employerData) return state.employerData;
+  try {
+    const res = await fetch('data/employers.json');
+    state.employerData = await res.json();
+  } catch (e) { state.employerData = []; }
+  return state.employerData;
+}
+
 function renderAlumniWidget() {
   const el = document.getElementById('wAlumni');
   if (!el) return;
-  const mock = [
-    { name: 'Jane Doe', role: 'Consultant', firm: 'Deloitte', linkedin: '#' },
-    { name: 'John Smith', role: 'Associate', firm: 'McKinsey', linkedin: '#' },
-    { name: 'Ava Lee', role: 'Analyst', firm: 'Goldman Sachs', linkedin: '#' },
-  ];
-  el.innerHTML = mock.map(a =>
-    '<div class="alum-row">' +
-      '<div class="alum-name">' + esc(a.name) + '</div>' +
-      '<div class="alum-meta">' + esc(a.role) + ' · ' + esc(a.firm) + '</div>' +
-    '</div>').join('');
+  if (!state.alumniData) {
+    el.innerHTML = '<div class="muted">Loading alumni…</div>';
+    loadAlumniData().then(() => renderAlumniWidget());
+    return;
+  }
+  const data = state.alumniData || {};
+  const q = (state.alumniQuery || '').trim().toLowerCase();
+  let results = [];
+  let matchedEmployer = null;
+  if (q) {
+    for (const emp of Object.keys(data)) {
+      if (emp.toLowerCase().includes(q)) {
+        matchedEmployer = emp;
+        results = data[emp];
+        break;
+      }
+    }
+  }
+  el.innerHTML =
+    '<input id="alumniSearch" placeholder="Search firm…" value="' + esc(state.alumniQuery || '') + '" style="margin-bottom:6px">' +
+    (matchedEmployer ? '<div class="muted" style="font-size:10px;margin-bottom:4px">' + esc(matchedEmployer) + ' · ' + results.length + ' alumni</div>' : '') +
+    (results.length ? results.slice(0, 15).map(a =>
+      '<div class="alum-row">' +
+        '<div class="alum-name">' + esc(a.name) + ' <span class="muted">' + esc(a.year) + '</span></div>' +
+        '<div class="alum-meta">' + esc(a.title) + (a.email ? ' · ' + esc(a.email) : '') + '</div>' +
+      '</div>').join('') : '<div class="muted">Search a firm to see alumni.</div>');
+  const inp = document.getElementById('alumniSearch');
+  if (inp) inp.addEventListener('input', () => { state.alumniQuery = inp.value; renderAlumniWidget(); });
+}
+
+function renderEmployersWidget() {
+  const el = document.getElementById('wEmployers');
+  if (!el) return;
+  if (!state.employerData) {
+    el.innerHTML = '<div class="muted">Loading contacts…</div>';
+    loadEmployerData().then(() => renderEmployersWidget());
+    return;
+  }
+  const q = (state.employerQuery || '').trim().toLowerCase();
+  const matches = (state.employerData || []).filter(e =>
+    !q || e.company.toLowerCase().includes(q) || (e.firstName + ' ' + e.lastName).toLowerCase().includes(q));
+  el.innerHTML =
+    '<input id="employerSearch" placeholder="Search company/contact…" value="' + esc(state.employerQuery || '') + '" style="margin-bottom:6px">' +
+    (matches.length ? matches.slice(0, 15).map(e =>
+      '<div class="alum-row">' +
+        '<div class="alum-name">' + esc(e.firstName + ' ' + e.lastName) + '</div>' +
+        '<div class="alum-meta">' + esc(e.company) + ' · ' + esc(e.title) + (e.linkedin ? ' · <a href="' + esc(e.linkedin) + '" target="_blank" rel="noopener">LI</a>' : '') + '</div>' +
+      '</div>').join('') : '<div class="muted">No contacts found.</div>');
+  const inp = document.getElementById('employerSearch');
+  if (inp) inp.addEventListener('input', () => { state.employerQuery = inp.value; renderEmployersWidget(); });
 }
 
 function renderKeywordsWidget() {
@@ -1544,6 +1603,7 @@ function renderResumeWidget() {
 function renderWidgets() {
   renderSourcedWidget();
   renderAlumniWidget();
+  renderEmployersWidget();
   renderKeywordsWidget();
   renderResumeWidget();
 }
@@ -1562,6 +1622,10 @@ function renderJobDetail(rid) {
   const job = (state.data.jobs || []).find(j => j.id === rid);
   if (!job) { el.innerHTML = 'Select a job row to see details.'; return; }
   const firm = job.firm ? job.firm.name : ((state.data.firms || []).find(f => f.id === job.firm_id) || {}).name || '';
+  if (firm) { state.alumniQuery = firm; state.employerQuery = firm; }
+  // refresh widgets if present
+  if (document.getElementById('wAlumni')) renderAlumniWidget();
+  if (document.getElementById('wEmployers')) renderEmployersWidget();
   const pairs = [
     ['Firm', firm],
     ['Status', job.application_status],
