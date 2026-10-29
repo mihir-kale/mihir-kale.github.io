@@ -1613,68 +1613,54 @@ function renderPeopleWidget() {
   const alumniData = state.alumniData || {};
   const employerData = state.employerData || [];
 
-  // alumni matches
+  // alumni matches across name/title/email/industry/employer
   let alumniMatches = [];
-  let matchedEmployer = null;
   if (q) {
     for (const emp of Object.keys(alumniData)) {
-      if (emp.toLowerCase().includes(q)) {
-        matchedEmployer = emp;
-        alumniMatches = alumniData[emp];
-        break;
+      for (const a of alumniData[emp]) {
+        const hay = (a.name + ' ' + a.title + ' ' + (a.email||'') + ' ' + (a.industry||'') + ' ' + emp).toLowerCase();
+        if (hay.includes(q)) alumniMatches.push({ ...a, employer: emp });
       }
     }
   }
 
   // employer contact matches
   const contactMatches = q
-    ? employerData.filter(e =>
-        e.company.toLowerCase().includes(q) ||
-        (e.firstName + ' ' + e.lastName).toLowerCase().includes(q))
+    ? employerData.filter(e => {
+        const hay = (e.firstName + ' ' + e.lastName + ' ' + e.company + ' ' + e.title).toLowerCase();
+        return hay.includes(q);
+      })
     : [];
 
-  let html = '<input id="peopleSearch" placeholder="Search firm or person…" value="' + esc(state.peopleQuery || '') + '" style="margin-bottom:6px">';
+  let html = '<input id="peopleSearch" placeholder="Search name, firm, title…" value="' + esc(state.peopleQuery || '') + '" style="margin-bottom:6px">';
 
-  if (matchedEmployer) {
-    html += '<div class="muted" style="font-size:10px;margin-bottom:4px">' + esc(matchedEmployer) + ' · ' + alumniMatches.length + ' alumni</div>';
-    html += alumniMatches.slice(0, 12).map(a =>
+  if (alumniMatches.length) {
+    html += '<div class="muted" style="font-size:10px;margin-bottom:4px">Alumni · ' + alumniMatches.length + '</div>';
+    html += alumniMatches.slice(0, 20).map(a =>
       '<div class="alum-row">' +
         '<div class="alum-name">' + esc(a.name) + ' <span class="muted">' + esc(a.year) + '</span></div>' +
-        '<div class="alum-meta">' + esc(a.title) + (a.email ? ' · ' + esc(a.email) : '') + '</div>' +
+        '<div class="alum-meta">' + esc(a.employer) + ' · ' + esc(a.title) + (a.email ? ' · ' + esc(a.email) : '') + '</div>' +
       '</div>').join('');
-  } else if (q && alumniMatches.length === 0 && contactMatches.length === 0) {
-    html += '<div class="muted">No matches.</div>';
-  } else if (!q) {
-    html += '<div class="muted">Search a firm or person.</div>';
   }
 
   if (contactMatches.length) {
-    if (matchedEmployer || q) html += '<div class="muted" style="font-size:10px;margin:8px 0 4px">Employer contacts · ' + contactMatches.length + '</div>';
-    html += contactMatches.slice(0, 12).map(e =>
+    html += '<div class="muted" style="font-size:10px;margin:8px 0 4px">Employer contacts · ' + contactMatches.length + '</div>';
+    html += contactMatches.slice(0, 20).map(e =>
       '<div class="alum-row">' +
         '<div class="alum-name">' + esc(e.firstName + ' ' + e.lastName) + '</div>' +
         '<div class="alum-meta">' + esc(e.company) + ' · ' + esc(e.title) + (e.linkedin ? ' · <a href="' + esc(e.linkedin) + '" target="_blank" rel="noopener">LI</a>' : '') + '</div>' +
       '</div>').join('');
   }
 
+  if (!q) {
+    html += '<div class="muted">Search a name, firm, or title.</div>';
+  } else if (!alumniMatches.length && !contactMatches.length) {
+    html += '<div class="muted">No matches.</div>';
+  }
+
   el.innerHTML = html;
-  if (document.getElementById('wResume')) renderResumeWidget();
   const inp = document.getElementById('peopleSearch');
   if (inp) inp.addEventListener('input', () => { state.peopleQuery = inp.value; renderPeopleWidget(); });
-}
-
-function renderResumeWidget() {
-  const el = document.getElementById('wResume');
-  if (!el) return;
-  const job = (state.data.jobs || []).find(j => j.id === state.selectedJobId) || (state.data.jobs || [])[0];
-  const jd = (job && job.job_description) ? job.job_description : '';
-  el.innerHTML =
-    '<div class="muted" style="font-size:10px;margin-bottom:4px">Job description</div>' +
-    '<textarea class="widget-ta" id="resumeJd" placeholder="Paste or edit a job description...">' + esc(jd) + '</textarea>' +
-    '<button class="btn small run" data-act="resume-extract" style="margin-top:6px">Extract keywords</button>' +
-    '<div class="muted" style="font-size:10px;margin:8px 0 4px">Keywords</div>' +
-    '<textarea class="widget-ta" id="resumeKw" placeholder="Generated keywords will appear here..."></textarea>' +
-    '<button class="btn small primary" data-act="resume-customize" style="margin-top:6px">Customize resume</button>';
 }
 
 function renderConnectWidget() {
