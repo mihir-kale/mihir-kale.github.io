@@ -1382,8 +1382,13 @@ function render() {
             '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
           '</aside>' +
         '</div>';
+      $('sheetToolbar').innerHTML = '<span class="title">Jobs</span>' +
+        '<span class="count">' + (state.data.jobs || []).length + ' jobs</span>' +
+        '<span style="flex:1"></span>' +
+        '<button class="btn small" data-act="toggle-job-view">View: Chart</button>' +
+        '<button class="btn small primary" data-act="new-job">+ New</button>';
       const center = document.getElementById('centerMain');
-      renderSheet(center);
+      renderJobsTable(center);
     }
   } else {
     renderSheet(main);
@@ -1574,6 +1579,25 @@ function renderJobDetail(rid) {
   if (job.notes) html += '<div class="k" style="margin-top:8px">Notes</div><div class="prose">' + esc(job.notes) + '</div>';
   if (job.source_url) html += '<div style="margin-top:8px"><a href="' + esc(job.source_url) + '" target="_blank" rel="noopener">Job posting \u2197</a></div>';
   el.innerHTML = html;
+}
+
+function renderJobsTable(main) {
+  const jobs = state.data.jobs || [];
+  if (!jobs.length) { main.innerHTML = '<div class="muted" style="padding:20px">No jobs yet.</div>'; return; }
+  let html = '<table class="sheet mini" style="width:100%"><thead><tr><th>Firm</th><th>Role</th><th>Status</th></tr></thead><tbody>';
+  for (const j of jobs) {
+    const firm = j.firm ? j.firm.name : ((state.data.firms || []).find(f => f.id === j.firm_id) || {}).name || '';
+    html += '<tr data-id="' + esc(j.id) + '" style="cursor:pointer"><td>' + esc(firm) + '</td><td>' + esc(j.title) + '</td><td>' + badge(j.application_status) + '</td></tr>';
+  }
+  html += '</tbody></table>';
+  main.innerHTML = html;
+  main.querySelectorAll('tr[data-id]').forEach(tr => {
+    tr.addEventListener('click', () => {
+      main.querySelectorAll('tr.sel').forEach(x => x.classList.remove('sel'));
+      tr.classList.add('sel');
+      renderJobDetail(tr.dataset.id);
+    });
+  });
 }
 
 function renderOverview(main) {
