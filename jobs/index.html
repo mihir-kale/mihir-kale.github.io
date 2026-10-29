@@ -178,9 +178,11 @@
 
   /* ---------- dashboard widgets ---------- */
   .jobdash { display: grid; grid-template-columns: 300px 1fr 300px; gap: 12px; padding: 12px 16px; align-items: start; min-height: calc(100% - 0px); }
+  .jobdash-grid { display: grid; grid-template-columns: 1fr 320px; gap: 12px; padding: 12px 16px; align-items: start; }
+  @media (max-width: 900px) { .jobdash-grid { grid-template-columns: 1fr; } }
   @media (max-width: 1100px) { .jobdash { grid-template-columns: 1fr; } }
   .dash-side { display: flex; flex-direction: column; gap: 12px; }
-  .dash-center { min-width: 0; background: var(--card); border: 1px solid var(--border); padding: 10px; min-height: 400px; overflow: hidden; }
+  .dash-center { min-width: 0; background: var(--card); border: 1px solid var(--border); padding: 10px; min-height: 400px; overflow: auto; }
   .widget { background: var(--card); border: 1px solid var(--border); padding: 10px 12px; }
   .widget-head { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
   .widget-head .sub { font-size: 10px; text-transform: none; letter-spacing: 0; color: var(--muted); }
@@ -1350,22 +1352,22 @@ function render() {
       '<button class="btn small primary" data-act="new-interaction">+ Log interaction</button>';
     renderOverview(main);
   } else if (state.sheet === 'jobs') {
-    main.innerHTML =
-      '<div class="jobdash">' +
-        '<aside class="dash-side dash-left">' +
-          '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
-          '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
-        '</aside>' +
-        '<section class="dash-center" id="centerMain"></section>' +
-        '<aside class="dash-side dash-right">' +
-          '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
-          '<section class="widget"><div class="widget-head">JD → keywords</div><div class="widget-body" id="wKeywords"></div></section>' +
-          '<section class="widget"><div class="widget-head">Resume customize</div><div class="widget-body" id="wResume"></div></section>' +
-        '</aside>' +
-      '</div>';
-    renderWidgets();
-    const center = document.getElementById('centerMain');
     if (state.jobView === 'sankey') {
+      main.innerHTML =
+        '<div class="jobdash">' +
+          '<aside class="dash-side dash-left">' +
+            '<details class="widget" id="wSourcedDetails"><summary class="widget-head">Sourced jobs</summary><div class="widget-body" id="wSourced"></div></details>' +
+            '<section class="widget"><div class="widget-head">Kenan-Flagler alumni</div><div class="widget-body" id="wAlumni"></div></section>' +
+          '</aside>' +
+          '<section class="dash-center" id="centerMain"></section>' +
+          '<aside class="dash-side dash-right">' +
+            '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
+            '<section class="widget"><div class="widget-head">JD → keywords</div><div class="widget-body" id="wKeywords"></div></section>' +
+            '<section class="widget"><div class="widget-head">Resume customize</div><div class="widget-body" id="wResume"></div></section>' +
+          '</aside>' +
+        '</div>';
+      renderWidgets();
+      const center = document.getElementById('centerMain');
       $('sheetToolbar').innerHTML = '<span class="title">Jobs pipeline</span>' +
         '<span class="count">' + state.data.jobs.length + ' jobs</span>' +
         '<span style="flex:1"></span>' +
@@ -1373,6 +1375,14 @@ function render() {
         '<button class="btn small primary" data-act="new-job">+ New</button>';
       renderSankey(center);
     } else {
+      main.innerHTML =
+        '<div class="jobdash-grid">' +
+          '<section class="dash-center" id="centerMain"></section>' +
+          '<aside class="dash-side dash-right">' +
+            '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
+          '</aside>' +
+        '</div>';
+      const center = document.getElementById('centerMain');
       renderSheet(center);
     }
   } else {
