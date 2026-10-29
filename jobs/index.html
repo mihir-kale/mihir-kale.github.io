@@ -1800,14 +1800,17 @@ function renderOverview(main) {
 // ============================================================
 // GRID INTERACTION (delegated — survives re-renders)
 // ============================================================
-// sheet tab switching
-$('sheetTabs').addEventListener('click', e => {
-  const b = e.target.closest('.sheettab');
-  if (!b) return;
-  if (state.editing) commitEdit(false);
-  state.sheet = b.dataset.sheet;
-  render();
-});
+// sheet tab switching (no-op if tab bar removed)
+const sheetTabsEl = document.getElementById('sheetTabs');
+if (sheetTabsEl) {
+  sheetTabsEl.addEventListener('click', e => {
+    const b = e.target.closest('.sheettab');
+    if (!b) return;
+    if (state.editing) commitEdit(false);
+    state.sheet = b.dataset.sheet;
+    render();
+  });
+}
 
 $('refreshBtn').addEventListener('click', () => refresh().catch(e => toast(friendlyError(e), true)));
 
