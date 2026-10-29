@@ -1468,6 +1468,10 @@ function renderSankey(main) {
   const height = 520;
   main.innerHTML = '<div id="sankeyChart"></div>';
   const container = document.getElementById('sankeyChart');
+  const tip = document.createElement('div');
+  tip.style.cssText = 'position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--border);padding:4px 8px;font-size:11px;display:none;z-index:10;white-space:nowrap;';
+  container.style.position = 'relative';
+  container.appendChild(tip);
 
   const svg = d3.select(container).append('svg')
     .attr('width', width)
@@ -1502,8 +1506,9 @@ function renderSankey(main) {
     .attr('height', d => Math.max(1, d.y1 - d.y0))
     .attr('width', d => d.x1 - d.x0)
     .attr('fill', d => color(d.name))
-    .append('title')
-    .text(d => `${d.name}\n${d.value}`);
+    .on('mouseover', (event, d) => { tip.textContent = d.name + ': ' + d.value; tip.style.display = 'block'; })
+    .on('mousemove', (event) => { tip.style.left = (event.offsetX + 12) + 'px'; tip.style.top = (event.offsetY + 12) + 'px'; })
+    .on('mouseout', () => { tip.style.display = 'none'; });
 
   svg.append('g')
     .attr('fill', 'none')
@@ -1514,7 +1519,10 @@ function renderSankey(main) {
     .append('path')
     .attr('d', d3.sankeyLinkHorizontal())
     .attr('stroke', d => color(d.source.name))
-    .attr('stroke-width', d => Math.max(1, d.width));
+    .attr('stroke-width', d => Math.max(1, d.width))
+    .on('mouseover', (event, d) => { tip.textContent = d.source.name + ' → ' + d.target.name + ': ' + d.value; tip.style.display = 'block'; })
+    .on('mousemove', (event) => { tip.style.left = (event.offsetX + 12) + 'px'; tip.style.top = (event.offsetY + 12) + 'px'; })
+    .on('mouseout', () => { tip.style.display = 'none'; });
 
   svg.append('g')
     .selectAll('text')
