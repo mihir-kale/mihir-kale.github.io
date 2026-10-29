@@ -1480,7 +1480,9 @@ function renderSankey(main) {
     .nodePadding(12)
     .extent([[1, 1], [width - 1, height - 5]])
     .nodeId(d => d.name)
-    .nodeSort(null);
+    .nodeAlign(d3.sankeyLeft)
+    .nodeSort(null)
+    .iterations(0);
 
   const graph = sankey({
     nodes: nodes.map(d => ({ ...d })),
