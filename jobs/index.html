@@ -1751,10 +1751,8 @@ function renderJobDetail(rid) {
   if (document.getElementById('wPeople')) renderPeopleWidget();
   const pairs = [
     ['Firm', firm],
-    ['Posting', job.posting_status],
     ['Interest', job.interest_level],
     ['Deadline', job.application_deadline ? fmtDate(job.application_deadline) : ''],
-    ['Year', job.program_year],
     ['Department', job.department],
     ['Location', job.location],
     ['Arrangement', job.work_arrangement],
