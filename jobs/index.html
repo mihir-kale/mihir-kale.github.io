@@ -1726,7 +1726,7 @@ function renderJobDetail(rid) {
 function renderJobsTable(main) {
   const jobs = state.data.jobs || [];
   if (!jobs.length) { main.innerHTML = '<div class="muted" style="padding:20px">No jobs yet.</div>'; return; }
-  const liveStatuses = new Set(['interested','preparing','applied','assessment','screened','interviewing']);
+  const liveStatuses = new Set(['interested','preparing','assessment','screened','interviewing']);
   const live = jobs.filter(j => liveStatuses.has(j.application_status));
   const stale = jobs.filter(j => !liveStatuses.has(j.application_status));
 
