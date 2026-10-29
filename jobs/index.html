@@ -1585,6 +1585,11 @@ function renderJobDetail(rid) {
   if (job.fit_notes) html += '<div class="k" style="margin-top:8px">Fit notes</div><div class="prose">' + esc(job.fit_notes) + '</div>';
   if (job.notes) html += '<div class="k" style="margin-top:8px">Notes</div><div class="prose">' + esc(job.notes) + '</div>';
   if (job.source_url) html += '<div style="margin-top:8px"><a href="' + esc(job.source_url) + '" target="_blank" rel="noopener">Job posting \u2197</a></div>';
+  const statusOpts = APP_STATUS.map(v => '<option value="' + esc(v) + '"' + (v === job.application_status ? ' selected' : '') + '>' + esc(fmtEnum(v)) + '</option>').join('');
+  html += '<div style="margin-top:10px;display:flex;gap:6px;align-items:center">' +
+    '<select id="jobDetailStatus" style="flex:1">' + statusOpts + '</select>' +
+    '<button class="btn small primary" data-act="save-job-status" data-id="' + esc(job.id) + '">Save status</button>' +
+  '</div>';
   el.innerHTML = html;
 }
 
@@ -1605,6 +1610,24 @@ function renderJobsTable(main) {
       renderJobDetail(tr.dataset.id);
     });
   });
+}
+
+async function updateJobStatus(id) {
+  const sel = document.getElementById('jobDetailStatus');
+  const newStatus = sel ? sel.value : null;
+  if (!newStatus) return;
+  const job = (state.data.jobs || []).find(j => j.id === id);
+  if (!job) return;
+  job.application_status = newStatus;
+  try {
+    if (state.session) await saveRow('jobs', { application_status: newStatus }, id);
+    toast('Status updated');
+  } catch (e) {
+    toast(friendlyError(e), true);
+  }
+  const center = document.getElementById('centerMain');
+  if (center) renderJobsTable(center);
+  renderJobDetail(id);
 }
 
 function renderOverview(main) {
@@ -1858,6 +1881,7 @@ document.addEventListener('click', e => {
       toast('Queued');
       break;
     }
+    case 'save-job-status': updateJobStatus(el.dataset.id); break;
     case 'clear-filters': state.ui[state.sheet].filters = {}; render(); break;
 
     case 'new-firm':
