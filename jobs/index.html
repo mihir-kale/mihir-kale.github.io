@@ -215,6 +215,11 @@
   .badge.applied { border-color: #9ca3af; color: #6b7280; background: transparent; }
   .badge.interested-deadline { border-color: var(--warn); color: var(--warn); }
   .badge.screened { border-color: #b8860b; color: #b8860b; }
+
+  .cycletabs { display: flex; gap: 2px; margin-left: 8px; }
+  .cycletab { background: var(--card); border: 1px solid var(--border); padding: 4px 10px; cursor: pointer; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .cycletab:hover { color: var(--text); border-color: var(--accent); }
+  .cycletab.active { color: var(--accent); border-color: var(--accent); background: var(--bg); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -1379,7 +1384,7 @@ function render() {
       const center = document.getElementById('centerMain');
       $('sheetToolbar').innerHTML = '<span class="title">Jobs pipeline</span>' +
         '<span class="count">' + statsBarHtml() + '</span>' +
-        '<select id="cycleFilter" style="margin-left:8px">' + cycleSelectOptions() + '</select>' +
+        '<div class="cycletabs">' + cycleTabsHtml() + '</div>' +
         '<span style="flex:1"></span>' +
         '<button class="btn small" data-act="toggle-job-view">View: Grid</button>' +
         '<button class="btn small primary" data-act="new-job">+ New</button>';
@@ -1401,7 +1406,7 @@ function render() {
       renderWidgets();
       $('sheetToolbar').innerHTML = '<span class="title">Jobs</span>' +
         '<span class="count">' + statsBarHtml() + '</span>' +
-        '<select id="cycleFilter" style="margin-left:8px">' + cycleSelectOptions() + '</select>' +
+        '<div class="cycletabs">' + cycleTabsHtml() + '</div>' +
         '<span style="flex:1"></span>' +
         '<button class="btn small" data-act="toggle-job-view">View: Chart</button>' +
         '<button class="btn small primary" data-act="new-job">+ New</button>';
@@ -1851,9 +1856,9 @@ function filteredJobs() {
   return all.filter(j => jobCycle(j) === state.cycleFilter);
 }
 
-function cycleSelectOptions() {
+function cycleTabsHtml() {
   const cycles = ['All','Summer 2027','Spring 2027','Fall 2027','Summer 2028','Spring 2028'];
-  return cycles.map(c => '<option value="' + esc(c) + '"' + (c === state.cycleFilter ? ' selected' : '') + '>' + esc(c) + '</option>').join('');
+  return cycles.map(c => '<button class="cycletab' + (c === state.cycleFilter ? ' active' : '') + '" data-cycle="' + esc(c) + '">' + esc(c) + '</button>').join('');
 }
 
 function renderOverview(main) {
@@ -1943,11 +1948,11 @@ if (sheetTabsEl) {
     render();
   });
 }
-document.addEventListener('change', e => {
-  const sel = e.target.closest('#cycleFilter');
-  if (!sel) return;
-  state.cycleFilter = sel.value;
-  localStorage.setItem('jobsCycleFilter', sel.value);
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.cycletab');
+  if (!btn) return;
+  state.cycleFilter = btn.dataset.cycle;
+  localStorage.setItem('jobsCycleFilter', btn.dataset.cycle);
   render();
 });
 
