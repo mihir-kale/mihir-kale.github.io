@@ -418,15 +418,19 @@ function friendlyError(e) {
 }
 
 async function loadAll() {
-  const [firms, jobs, people, interactions, jobPeople, personFirms] = await Promise.all([
+  const qs = [
     q('firms?select=*'),
     q('jobs?select=*,firm:firms(id,name)'),
     q('people_context?select=*'),
     q('interactions?select=*,person:people(id,name),firm:firms(id,name),job:jobs(id,title)&order=occurred_at.desc'),
     q('job_people?select=*,person:people(id,name),job:jobs(id,title)'),
     q('person_firms?select=*,firm:firms(id,name),person:people(id,name)'),
-  ]);
+  ];
+  const res = await Promise.allSettled(qs);
+  const [firms, jobs, people, interactions, jobPeople, personFirms] = res.map(r => (r.status === 'fulfilled' && Array.isArray(r.value)) ? r.value : []);
   state.data = { firms, jobs, people, interactions, jobPeople, personFirms };
+  const failed = res.filter(r => r.status === 'rejected');
+  if (failed.length) console.warn('Some data failed to load', failed);
 }
 
 async function refresh() {
