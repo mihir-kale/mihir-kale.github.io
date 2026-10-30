@@ -1678,7 +1678,13 @@ function renderPeopleWidget() {
 
   el.innerHTML = html;
   const inp = document.getElementById('peopleSearch');
-  if (inp) inp.addEventListener('input', () => { state.peopleQuery = inp.value; renderPeopleWidget(); });
+  if (inp) inp.addEventListener('input', () => {
+    const pos = inp.selectionStart;
+    state.peopleQuery = inp.value;
+    renderPeopleWidget();
+    const again = document.getElementById('peopleSearch');
+    if (again) { again.focus(); try { again.setSelectionRange(pos, pos); } catch (e) {} }
+  });
 }
 
 function renderConnectWidget() {
