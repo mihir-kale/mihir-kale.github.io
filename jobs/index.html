@@ -1769,7 +1769,7 @@ function renderJobDetail(rid) {
   if (job.requirements && job.requirements.length) html += '<div class="k" style="margin-top:8px">Requirements</div><div>' + chips(job.requirements) + '</div>';
   if (job.skills && job.skills.length) html += '<div class="k" style="margin-top:8px">Skills</div><div>' + chips(job.skills) + '</div>';
   if (job.job_description) html += '<div class="k" style="margin-top:8px">Description</div><div class="prose">' + esc(job.job_description) + '</div>';
-  if (job.fit_notes) html += '<div class="k" style="margin-top:8px">Fit notes</div><div class="prose">' + esc(job.fit_notes) + '</div>';
+  if (job.fit_notes) html += '<div class="k" style="margin-top:8px">NOTES</div><div class="prose">' + esc(job.fit_notes) + '</div>';
   if (job.notes) html += '<div class="k" style="margin-top:8px">Notes</div><div class="prose">' + esc(job.notes) + '</div>';
   if (job.source_url) html += '<div style="margin-top:8px"><a href="' + esc(job.source_url) + '" target="_blank" rel="noopener">Job posting \u2197</a></div>';
   const statusOpts = APP_STATUS.map(v => '<option value="' + esc(v) + '"' + (v === job.application_status ? ' selected' : '') + '>' + esc(fmtEnum(v)) + '</option>').join('');
