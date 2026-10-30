@@ -1395,8 +1395,7 @@ function render() {
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
-            '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
-            '<details class="widget"><summary class="widget-head">Resume</summary><div class="widget-body" id="wResume"></div></details>' +
+            '<details class="widget" open><summary class="widget-head">Resume</summary><div class="widget-body" id="wResume"></div></details>' +
           '</aside>' +
         '</div>';
       renderWidgets();
@@ -1419,8 +1418,7 @@ function render() {
           '</aside>' +
           '<section class="dash-center" id="centerMain"></section>' +
           '<aside class="dash-side dash-right">' +
-            '<section class="widget"><div class="widget-head">Job details</div><div class="widget-body" id="wJobDetail">Select a job row to see details.</div></section>' +
-            '<details class="widget"><summary class="widget-head">Resume</summary><div class="widget-body" id="wResume"></div></details>' +
+            '<details class="widget" open><summary class="widget-head">Resume</summary><div class="widget-body" id="wResume"></div></details>' +
           '</aside>' +
         '</div>';
       renderWidgets();
@@ -1793,7 +1791,8 @@ function renderJobsTable(main) {
     let h = '<table class="sheet mini" style="width:100%"><thead><tr><th>Firm</th><th>Role</th><th>Status</th></tr></thead><tbody>';
     for (const j of list) {
       const firm = j.firm ? j.firm.name : ((state.data.firms || []).find(f => f.id === j.firm_id) || {}).name || '';
-      h += '<tr data-id="' + esc(j.id) + '" style="cursor:pointer"><td>' + esc(firm) + '</td><td>' + esc(j.title) + '</td><td>' + statusBadge(j) + '</td></tr>';
+      const opts = APP_STATUS.map(v => '<option value="' + esc(v) + '"' + (v === j.application_status ? ' selected' : '') + '>' + esc(fmtEnum(v)) + '</option>').join('');
+      h += '<tr data-id="' + esc(j.id) + '"><td>' + esc(firm) + '</td><td>' + esc(j.title) + '</td><td><select class="status-select" data-id="' + esc(j.id) + '">' + opts + '</select></td></tr>';
     }
     h += '</tbody></table>';
     return h;
@@ -1803,13 +1802,7 @@ function renderJobsTable(main) {
     '<details class="widget" open><summary class="widget-head">Live (' + live.length + ')</summary><div style="margin-top:6px">' + tableFor(live) + '</div></details>' +
     '<details class="widget" style="margin-top:10px"><summary class="widget-head">Stale (' + stale.length + ')</summary><div style="margin-top:6px">' + tableFor(stale) + '</div></details>';
 
-  main.querySelectorAll('tr[data-id]').forEach(tr => {
-    tr.addEventListener('click', () => {
-      main.querySelectorAll('tr.sel').forEach(x => x.classList.remove('sel'));
-      tr.classList.add('sel');
-      renderJobDetail(tr.dataset.id);
-    });
-  });
+  // no row-click detail panel (removed)
 }
 
 async function updateJobStatus(id) {
@@ -1986,6 +1979,19 @@ document.addEventListener('click', e => {
   state.cycleFilter = btn.dataset.cycle;
   localStorage.setItem('jobsCycleFilter', btn.dataset.cycle);
   render();
+});
+document.addEventListener('change', e => {
+  const sel = e.target.closest('.status-select');
+  if (!sel) return;
+  const id = sel.dataset.id;
+  const newStatus = sel.value;
+  const job = (state.data.jobs || []).find(j => j.id === id);
+  if (job) job.application_status = newStatus;
+  (async () => {
+    try {
+      if (state.session) await saveRow('jobs', { application_status: newStatus }, id);
+    } catch (err) { toast(friendlyError(err), true); }
+  })();
 });
 
 $('refreshBtn').addEventListener('click', () => refresh().catch(e => toast(friendlyError(e), true)));
