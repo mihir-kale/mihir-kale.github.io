@@ -1658,6 +1658,7 @@ function renderPeopleWidget() {
       '<div class="alum-row">' +
         '<div class="alum-name">' + esc(a.name) + ' <span class="muted">' + esc(a.year) + '</span></div>' +
         '<div class="alum-meta">' + esc(a.employer) + ' · ' + esc(a.title) + (a.email ? ' · ' + esc(a.email) : '') + '</div>' +
+        '<button class="btn small" data-act="connect-person" data-name="' + esc(a.name) + '" data-email="' + esc(a.email || '') + '" style="margin-top:4px">Connect</button>' +
       '</div>').join('');
   }
 
@@ -1667,6 +1668,7 @@ function renderPeopleWidget() {
       '<div class="alum-row">' +
         '<div class="alum-name">' + esc(e.firstName + ' ' + e.lastName) + '</div>' +
         '<div class="alum-meta">' + esc(e.company) + ' · ' + esc(e.title) + (e.linkedin ? ' · <a href="' + esc(e.linkedin) + '" target="_blank" rel="noopener">LI</a>' : '') + '</div>' +
+        '<button class="btn small" data-act="connect-person" data-name="' + esc(e.firstName + ' ' + e.lastName) + '" data-email="' + esc('') + '" style="margin-top:4px">Connect</button>' +
       '</div>').join('');
   }
 
@@ -2217,6 +2219,21 @@ document.addEventListener('click', e => {
         if (center) renderJobsTable(center);
         renderJobDetail(id);
       })();
+      break;
+    }
+    case 'connect-person': {
+      const name = el.dataset.name || '';
+      const email = el.dataset.email || '';
+      const details = document.querySelectorAll('details.widget');
+      details.forEach(d => {
+        const summary = d.querySelector('summary');
+        if (summary && summary.textContent.includes('Connect')) d.open = true;
+      });
+      const personal = document.getElementById('connectPersonal');
+      if (personal) personal.value = 'Recipient: ' + name + (email ? ' (' + email + ')' : '');
+      const draft = document.getElementById('connectDraft');
+      if (draft) draft.value = '';
+      toast('Connect opened for ' + name);
       break;
     }
     case 'clear-filters': state.ui[state.sheet].filters = {}; render(); break;
