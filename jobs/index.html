@@ -1810,7 +1810,21 @@ function renderJobsTable(main) {
     '<details class="widget" open><summary class="widget-head">Live (' + live.length + ')</summary><div style="margin-top:6px">' + tableFor(live) + '</div></details>' +
     '<details class="widget" style="margin-top:10px"><summary class="widget-head">Stale (' + stale.length + ')</summary><div style="margin-top:6px">' + tableFor(stale) + '</div></details>';
 
-  // no row-click detail panel (removed)
+  main.querySelectorAll('tr[data-id]').forEach(tr => {
+    tr.addEventListener('click', (e) => {
+      if (e.target.closest('select')) return;
+      const job = (state.data.jobs || []).find(j => j.id === tr.dataset.id);
+      if (!job) return;
+      const firm = job.firm ? job.firm.name : ((state.data.firms || []).find(f => f.id === job.firm_id) || {}).name || '';
+      state.peopleQuery = firm;
+      // open People widget
+      document.querySelectorAll('details.widget').forEach(d => {
+        const sm = d.querySelector('summary');
+        if (sm && sm.textContent.includes('People')) d.open = true;
+      });
+      if (document.getElementById('wPeople')) renderPeopleWidget();
+    });
+  });
 }
 
 async function updateJobStatus(id) {
