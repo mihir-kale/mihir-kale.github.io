@@ -1,323 +1,625 @@
 [
   {
-    "id": "feed-51854e98cf18",
+    "id": "feed-30a653e19652",
     "mediaType": "short-non-fiction",
-    "title": "“Tip Toe” Is a Rare Outcry Against Social Revanchism",
+    "title": "“Chronovisor” Captures the Terror of Thinking",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "The filmmakers Jack Auen and Kevin Walker have found the ideal genre in which to depict the life of the mind: horror.",
+    "tags": [
+      "the-new-yorker",
+      "becca-rothfeld"
+    ],
+    "url": "https://www.newyorker.com/culture/critics-notebook/chronovisor-captures-the-terror-of-thinking",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6a707d4a539a",
+    "mediaType": "short-non-fiction",
+    "title": "An AI Agent Injected Drugs Into a Live Mouse’s Brain",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "A biotech startup let an agent choose a gene therapy and successfully inject the treatment, offering a startling glimpse of the future of research labs.",
+    "tags": [
+      "wired",
+      "emily-mullin"
+    ],
+    "url": "https://www.wired.com/story/an-ai-agent-did-brain-surgery-on-live-mouse/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-4ec363257827",
+    "mediaType": "short-non-fiction",
+    "title": "Backup by Biolite Review: A Cool Idea",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Backup by BioLite is designed to power your fridge when the grid goes down. It works, but protecting your ice cream doesn’t come cheap.",
+    "tags": [
+      "wired",
+      "christopher-null"
+    ],
+    "url": "https://www.wired.com/review/backup-by-biolite/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-38f3eac08e13",
+    "mediaType": "short-non-fiction",
+    "title": "Bose QC Headphones (2nd Gen) Sale: Lowest Price Ahead of Black Friday",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "They’re a steal at over 40 percent off in multiple colors. Plus, other great Bose deals you should know about ahead of Black Friday.",
+    "tags": [
+      "wired",
+      "harry-rabinowitz"
+    ],
+    "url": "https://www.wired.com/story/bose-deals-october-2026/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-9d1575c5d6ec",
+    "mediaType": "short-non-fiction",
+    "title": "California’s billionaire tax is dividing Democrats",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "The fight over the state’s ballot measure has national stakes",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/united-states/2026/10/31/californias-billionaire-tax-is-dividing-democrats",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-406de82a70a8",
+    "mediaType": "short-non-fiction",
+    "title": "Foie Gras Is Tearing D.C. Apart",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "A proposed ban on the delicacy is somehow the most contentious question on the ballot.",
+    "tags": [
+      "the-atlantic",
+      "hana-kiros"
+    ],
+    "url": "https://www.theatlantic.com/health/2026/10/foie-gras-ban-washington-dc/689244/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c4212fcf54c8",
+    "mediaType": "short-non-fiction",
+    "title": "Govee Christmas Lights 2 Deal: Save $25 on These Smart String Lights",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Glow up your home indoors or out with these versatile, discounted, full color smart string lights. They’re WIRED-tested and 25 percent off right now.",
+    "tags": [
+      "wired",
+      "simon-hill"
+    ],
+    "url": "https://www.wired.com/story/govee-christmas-lights-deal-october-2026/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1e3d4fd41236",
+    "mediaType": "short-non-fiction",
+    "title": "Grok the Vote",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "No one is ready for what X could look like on Election Day.",
+    "tags": [
+      "the-atlantic",
+      "will-oremus"
+    ],
+    "url": "https://www.theatlantic.com/technology/2026/10/x-midterm-election-ai-fact-check/689245/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a6dbe9ee51ba",
+    "mediaType": "short-non-fiction",
+    "title": "He Was Hugely Influential. He Also Had a Foolish Streak.",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "A recent biography of the writer John Berger reminds us about his hefty influence—and how he could be blinkered by his convictions.",
+    "tags": [
+      "the-atlantic",
+      "sebastian-smee"
+    ],
+    "url": "https://www.theatlantic.com/books/2026/10/john-berger-biography-book-review/688987/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-501269b9996e",
+    "mediaType": "short-non-fiction",
+    "title": "How Binance’s $6.3 Billion Hack Went Down",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "A war room. A global conference call. A founder who live-posted about the largest crypto heist in history. Inside a frantic 24 hours at the world’s biggest crypto exchange.",
+    "tags": [
+      "the-new-york-times",
+      "david-yaffe-bellany"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/technology/binance-hack-crypto-north-korea.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1eef73b0e49f",
+    "mediaType": "short-non-fiction",
+    "title": "How The Midterms Could Test Trump",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Panelists on Washington Week With The Atlantic joined to discuss how Tuesday’s midterm results could help determine what President Trump’s final two years in office will look like.",
+    "tags": [
+      "the-atlantic",
+      "the-editors"
+    ],
+    "url": "https://www.theatlantic.com/national/2026/10/midterms-test-trump-washington-week/689243/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e68dbe32b0b3",
+    "mediaType": "short-non-fiction",
+    "title": "How Trump Is Dismantling America’s Scientific Research Machine",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "The system that has driven life-altering discoveries and helped make the United States a superpower is now under intense strain.",
+    "tags": [
+      "the-new-york-times",
+      "christopher-flavelle-irena-hwang-adam-sella-alan-blinder-sheryl-gay-stolberg-benjamin-mueller-and-michael-c-bender"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/climate/how-trump-is-dismantling-americas-scientific-research-machine.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-9359a9eb0853",
+    "mediaType": "short-non-fiction",
+    "title": "Inside India’s Cockroach Protests",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "The youth movement that has roiled the country prepares its next move.",
+    "tags": [
+      "the-new-yorker",
+      "amitava-kumar"
+    ],
+    "url": "https://www.newyorker.com/news/the-lede/inside-indias-cockroach-protests",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-558a783e9bd9",
+    "mediaType": "short-non-fiction",
+    "title": "Iran Braces for More War, No Matter the Outcome of the U.S. and Israeli Elections",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "With Prime Minister Benjamin Netanyahu fighting to stay in power and President Trump facing a tough midterm, Iran’s leaders expect no major shift in policy.",
+    "tags": [
+      "the-new-york-times",
+      "yeganeh-torbati"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/world/middleeast/iran-war-israel-us-elections-trump-netanyahu.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-aa987397933f",
+    "mediaType": "short-non-fiction",
+    "title": "Keurig Alta Brewer Review: Brand-New Tech, Classically Good Coffee",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "This multifaceted home coffee brewer and its new AltaRounds will make you rethink everything you know about Keurig machines.",
+    "tags": [
+      "wired",
+      "louryn-strampe"
+    ],
+    "url": "https://www.wired.com/review/keurig-alta-brewer/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-8222b5343c41",
+    "mediaType": "short-non-fiction",
+    "title": "Martin McDonagh Says Art Can Change the World. Just Not as Much as Murder.",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "The writer-director, known for his dark and bleak work, believes in film’s power to change our lives.",
+    "tags": [
+      "the-new-york-times",
+      "david-marchese"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/magazine/martin-mcdonagh-interview.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-3adf848904ad",
+    "mediaType": "short-non-fiction",
+    "title": "Meta’s Muse Could Upend All Kinds of Businesses. It Hasn’t Yet",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Companies have spent the past several weeks trying to reassure investors that Muse and other AI agents pose more of an opportunity than a threat.",
+    "tags": [
+      "wired",
+      "paresh-dave"
+    ],
+    "url": "https://www.wired.com/story/metas-muse-could-upend-all-kinds-of-businesses-it-hasnt-yet/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-4a3fa17b2b81",
+    "mediaType": "short-non-fiction",
+    "title": "Spooky New Infostealer Malware Uses AI to ‘Autodox’ Victims",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Named “Volta-Autodoxer,” the recently uncovered malware uses AI tools to collect troves of data about victims, from login credentials and credit card numbers to Discord sessions and UberEats receipts.",
+    "tags": [
+      "wired",
+      "lily-hay-newman-matt-burgess"
+    ],
+    "url": "https://www.wired.com/story/kernel-panic-volta-autodoxer-ai-infostealer-malware/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c70a6d35d37c",
+    "mediaType": "short-non-fiction",
+    "title": "Surviving “The Graduate”",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "It was the film that made me famous. On set, all I could think about was how I was failing.",
+    "tags": [
+      "the-new-yorker",
+      "dustin-hoffman"
+    ],
+    "url": "https://www.newyorker.com/culture/the-weekend-essay/dustin-hoffman-on-surviving-the-graduate",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-96bd8cfcf29e",
+    "mediaType": "short-non-fiction",
+    "title": "Talarico Makes Final Election Pitch to Texans: ‘You Are My Slingshot’",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "The Democratic candidate for Senate has led in polls. But because it’s Texas, he remains the underdog.",
+    "tags": [
+      "the-new-york-times",
+      "robert-draper"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/us/politics/talarico-texas.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-0eb6f74a63a1",
+    "mediaType": "short-non-fiction",
+    "title": "The ‘Cuteservative’ in Chief",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Alex Clark, the voice of wellness at Turning Point USA, is entering her wife era.",
+    "tags": [
+      "the-atlantic",
+      "nancy-walecki"
+    ],
+    "url": "https://www.theatlantic.com/health/2026/10/alex-clark-maha-rfk-marriage/689193/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-725d00163b47",
+    "mediaType": "short-non-fiction",
+    "title": "The last hospital in El Fasher",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Finding hope in a dark place",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/podcasts/2026/10/31/the-last-hospital-in-el-fasher",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e90e5991ba22",
+    "mediaType": "short-non-fiction",
+    "title": "The NYC Marathon Is as Popular as Ever. It Remains Inaccessible to Many.",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Running has long been celebrated as a cheap and accessible sport. But the culture of racing, especially in New York, is often anything but.",
+    "tags": [
+      "the-new-york-times",
+      "santul-nerkar"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/nyregion/nyc-marathon-price.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-7f258cbe4786",
+    "mediaType": "short-non-fiction",
+    "title": "The Party Girls at the Heart of “Club Kid”",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Jordan Firstman’s directorial début tells the story of a gay promoter who finds out he’s a father. On a groggy Lower East Side morning, the three actors who play his night-life posse compare notes on queer family planning.",
+    "tags": [
+      "the-new-yorker",
+      "holden-seidlitz"
+    ],
+    "url": "https://www.newyorker.com/magazine/2026/11/09/the-party-girls-at-the-heart-of-club-kid",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-ae674480c289",
+    "mediaType": "short-non-fiction",
+    "title": "The Rise of the Tallboy Is a Sign of the Times",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "America has entered its big-beer era.",
+    "tags": [
+      "the-atlantic",
+      "megan-garber"
+    ],
+    "url": "https://www.theatlantic.com/culture/2026/10/tallboys-big-beer/689231/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-65563caf71ce",
+    "mediaType": "short-non-fiction",
+    "title": "The Washington Roundtable Live: The Final Stretch with David Plouffe",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "With the midterms nearly upon us, the political strategist assesses where things stand, and how the chips may fall.",
+    "tags": [
+      "the-new-yorker"
+    ],
+    "url": "https://www.newyorker.com/podcast/political-scene/the-washington-roundtable-live-the-final-stretch-with-david-plouffe",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-d0be912147e5",
+    "mediaType": "short-non-fiction",
+    "title": "There’s a Completely New Type of Whisky. It’s French and Made in Concrete Eggs",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "The founders of Maison Lineti are, in a world first, making single malt whisky as if it were wine—and the spirit world is mighty impressed.",
+    "tags": [
+      "wired",
+      "jeremy-white"
+    ],
+    "url": "https://www.wired.com/story/theres-a-completely-new-type-of-whisky-its-french-and-made-in-concrete-eggs/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1babf0df38fa",
+    "mediaType": "short-non-fiction",
+    "title": "Trump and GOP Close Midterms With Ugly Personal Attacks",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Facing backlash over inflation and anger with the president, Republicans have turned to an onslaught of baseless claims about Democratic candidates.",
+    "tags": [
+      "the-new-york-times",
+      "tim-balk-and-sam-easter"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/us/politics/trump-republicans-personal-attacks-midterms.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-aef20293f87e",
+    "mediaType": "short-non-fiction",
+    "title": "What the Economy Is Sacrificing to AI",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "Every investment is a trade-off.",
+    "tags": [
+      "the-atlantic",
+      "annie-lowrey"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/10/ai-data-centers-crowding/689239/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-0839326571f4",
+    "mediaType": "short-non-fiction",
+    "title": "Why Haley Stevens Can’t Stop Talking About Abdul El-Sayed",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "In a frank interview, she described her disappointment and also said she was considering converting to Judaism. Her fiancé had thoughts, too.",
+    "tags": [
+      "the-new-york-times",
+      "reid-j-epstein"
+    ],
+    "url": "https://www.nytimes.com/2026/10/31/us/haley-stevens-abdul-el-sayed.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-73208fc021d2",
+    "mediaType": "short-non-fiction",
+    "title": "Why Halloween Isn’t Just for Kids",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-10-31",
+    "notes": "A holiday devoted to costumes and candy offers grown-ups a chance to embrace their silly side.",
+    "tags": [
+      "the-atlantic",
+      "rafaela-jinich"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/10/halloween-adults-embrace-silliness/689228/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-833206e439f1",
+    "mediaType": "short-non-fiction",
+    "title": "A New Gig for Liz Holmes",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-30",
-    "notes": "The gripping British show starring Alan Cumming is fuelled by panic over the erosion of progressive political and cultural gains.",
+    "notes": "How many Scaramuccis might she last?",
     "tags": [
       "the-new-yorker",
-      "inkoo-kang"
+      "barry-blitt"
     ],
-    "url": "https://www.newyorker.com/culture/on-television/tip-toe-is-a-rare-outcry-against-social-revanchism",
+    "url": "https://www.newyorker.com/cartoons/blitts-kvetchbook/a-new-gig-for-liz-holmes",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-82b20a1d9f55",
+    "id": "feed-0f546643447d",
     "mediaType": "short-non-fiction",
-    "title": "“Wild Horse Nine” Gets Lost on Easter Island",
+    "title": "Defending the Midterms from Donald Trump",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-30",
-    "notes": "Martin McDonagh’s comic thriller, set on the eve of the Pinochet dictatorship, diverts our tears toward the mortality of a cancer-riddled C.I.A. agent.",
+    "notes": "The reporter Barton Gellman discusses threats to the upcoming elections.",
     "tags": [
-      "the-new-yorker",
-      "justin-chang"
+      "the-new-yorker"
     ],
-    "url": "https://www.newyorker.com/magazine/2026/11/09/wild-horse-nine-movie-review",
+    "url": "https://www.newyorker.com/podcast/the-new-yorker-radio-hour/defending-the-midterms-from-donald-trump",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-c6d285e8cb49",
+    "id": "feed-2e3876f8f271",
     "mediaType": "short-non-fiction",
-    "title": "America!: Meet the Midterms Superfans",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Some of whom write political romantasy featuring gruff yet sensual senatorial candidates.",
-    "tags": [
-      "the-new-yorker",
-      "ali-fitzgerald"
-    ],
-    "url": "https://www.newyorker.com/humor/shouts-murmurs/america-meet-the-midterms-superfans",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a2e2af5d8b91",
-    "mediaType": "short-non-fiction",
-    "title": "Big Tech’s Data Center Blitz Is Burning Through Cash and Scaring Wall St.",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Amazon became the latest tech company to announce swelling investments in A.I. amid stumbling share prices.",
-    "tags": [
-      "the-new-york-times",
-      "karen-weise"
-    ],
-    "url": "https://www.nytimes.com/2026/10/29/technology/amazon-earnings-tech-spending.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3fbca60f2eeb",
-    "mediaType": "short-non-fiction",
-    "title": "Binance Hack Sends Crypto Stocks Tumbling",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The rout hit publicly traded crypto exchanges and fintech companies, as well as cryptocurrencies like Bitcoin.",
-    "tags": [
-      "the-new-york-times",
-      "aruni-soni"
-    ],
-    "url": "https://www.nytimes.com/2026/10/30/business/binance-hack-crypto-stocks-bitcoin.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-d32bebfb8414",
-    "mediaType": "short-non-fiction",
-    "title": "Binance Suspends Withdrawals After Crypto Hackers Steal $6.3 Billion",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The crypto exchange said it was compromised in what could be the biggest crypto heist ever. One research lab attributed the theft to “North Korea’s elite hacking unit.”",
-    "tags": [
-      "the-new-york-times",
-      "david-yaffe-bellany-and-ryan-mac"
-    ],
-    "url": "https://www.nytimes.com/2026/10/29/technology/binance-hack-crypto.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-783e758dad8f",
-    "mediaType": "short-non-fiction",
-    "title": "Chinese spy or chump? The case of the Fed economist",
+    "title": "Is brown rice really healthier than white rice?",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-30",
-    "notes": "John Rogers was at the top of his profession. Then the FBI came calling",
+    "notes": "The scientific evidence goes against the grain",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/1843/2026/10/30/chinese-spy-or-chump-the-case-of-the-fed-economist",
+    "url": "https://www.economist.com/science-and-technology/2026/10/30/is-brown-rice-really-healthier-than-white-rice",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-a0234d8e00b8",
+    "id": "feed-bba81ef1a4b6",
     "mediaType": "short-non-fiction",
-    "title": "Daily Cartoon: Friday, October 30th",
+    "title": "Jamie Raskin Is Not Afraid to Impeach Trump Again",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-30",
-    "notes": "A drawing that riffs on the latest news and happenings.",
+    "notes": "The Maryland congressman talks about how the Democratic Party is fighting the President’s “gangster state.”",
     "tags": [
       "the-new-yorker",
-      "ellie-black"
+      "david-remnick"
     ],
-    "url": "https://www.newyorker.com/cartoons/daily-cartoon/friday-october-30th-marathon-roadrunner",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c314753a9872",
-    "mediaType": "short-non-fiction",
-    "title": "Darline Graham Is ‘a Little Nervous.’ Can She Keep South Carolina’s Senate Seat Red?",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Polls show the sister of the late Senator Lindsey Graham in a virtual tie with her Democratic opponent, Dr. Annie Andrews. An upset was unthinkable just a few months ago.",
-    "tags": [
-      "the-new-york-times",
-      "emily-davies"
-    ],
-    "url": "https://www.nytimes.com/2026/10/30/us/darline-graham-annie-andrews-south-carolina-senate.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a96553133616",
-    "mediaType": "short-non-fiction",
-    "title": "Do You Feel Needed?",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Being necessary has never been more necessary—or more difficult.",
-    "tags": [
-      "the-new-yorker",
-      "joshua-rothman"
-    ],
-    "url": "https://www.newyorker.com/culture/open-questions/do-you-feel-needed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6e703addf16d",
-    "mediaType": "short-non-fiction",
-    "title": "Elon Musk’s Ties to Texas Republicans Go Much Deeper Than the Midterms",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "As Election Day approaches, the billionaire’s longstanding relationships with GOP leaders in Texas are under scrutiny.",
-    "tags": [
-      "wired",
-      "tess-owen"
-    ],
-    "url": "https://www.wired.com/story/elon-musks-ties-to-texas-republicans-go-much-deeper-than-the-midterms/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-601c7631b5fc",
-    "mediaType": "short-non-fiction",
-    "title": "Forget Grit",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Even the luminaries of the self-help genre have begun to recognize how little in life we can actually control.",
-    "tags": [
-      "the-atlantic",
-      "gal-beckerman"
-    ],
-    "url": "https://www.theatlantic.com/magazine/2026/12/self-help-genre-duckworth-situated-grant-vibe/689023/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a31b64f09289",
-    "mediaType": "short-non-fiction",
-    "title": "How Michigan’s Midterm Senate Race Could Influence the 2028 Democratic Presidential Primary",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The fate of Dr. Abdul El-Sayed, the progressive candidate in the race, will serve as a litmus test for the left’s potency heading into the next presidential contest.",
-    "tags": [
-      "the-new-york-times",
-      "shane-goldmacher"
-    ],
-    "url": "https://www.nytimes.com/2026/10/30/us/politics/michigan-senate-democratic-presidential-primary.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2041f363fa45",
-    "mediaType": "short-non-fiction",
-    "title": "How to Adapt a Truly Surreal Book",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Lincoln in the Bardo is a bold novel that has rightfully inspired inventive adaptations.",
-    "tags": [
-      "the-atlantic",
-      "boris-kachka"
-    ],
-    "url": "https://www.theatlantic.com/newsletters/2026/10/books-briefing-lincoln-bardo-met-surreal-book/689222/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-736f24306b89",
-    "mediaType": "short-non-fiction",
-    "title": "I Spent 30 Minutes With Apple’s CEO. Now I Know Why John Ternus Got the Job",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Apple doesn’t need fixing, and it doesn’t want drama. Its new leader is a “product guy” who bleeds six colors.",
-    "tags": [
-      "wired",
-      "steven-levy"
-    ],
-    "url": "https://www.wired.com/story/i-spent-30-minutes-with-apples-ceo-now-i-know-why-john-ternus-got-the-job/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-28b7edb77b0d",
-    "mediaType": "short-non-fiction",
-    "title": "Just Noting That Your Candy Corn Is Made of Bug Secretions",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Sorry!",
-    "tags": [
-      "the-atlantic",
-      "tove-danovich"
-    ],
-    "url": "https://www.theatlantic.com/science/2026/10/candy-corn-bug-shellac/689213/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-8ce050c9015d",
-    "mediaType": "short-non-fiction",
-    "title": "Male Insecurity Over Penis Size Is a Booming Business",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Manhood, a new documentary about “girth enhancement,” explores how wellness professionals are encouraging men to undergo increasingly extreme procedures to be sexually desirable.",
-    "tags": [
-      "wired",
-      "jason-parham"
-    ],
-    "url": "https://www.wired.com/story/male-insecurity-over-penis-size-is-a-booming-business/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cc5302e41b4d",
-    "mediaType": "short-non-fiction",
-    "title": "Mattress Deals: Save Over $600 Before Black Friday 2026",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Even though Black Friday isn’t for a few more weeks, we’ve found early discounts on our favorite WIRED-tested mattresses and sleep accessories.",
-    "tags": [
-      "wired",
-      "molly-higgins"
-    ],
-    "url": "https://www.wired.com/story/best-early-bfcm-mattress-deals-10-30-2026/",
+    "url": "https://www.newyorker.com/news/the-new-yorker-interview/jamie-raskin-is-not-afraid-to-impeach-trump-again",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -357,356 +659,52 @@
     "source": "feed"
   },
   {
-    "id": "feed-e265c1af8d08",
+    "id": "feed-2f2029b1c88b",
     "mediaType": "short-non-fiction",
-    "title": "People Are Creating ‘Survival Guides’ to Cope With the ‘AO3 Apocalypse’",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The fanfic site could be down for weeks due to a “security incident.” Users are not taking it well.",
-    "tags": [
-      "wired",
-      "ej-dickson"
-    ],
-    "url": "https://www.wired.com/story/people-are-creating-survival-guides-to-cope-with-the-ao3-apocalypse/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3f3851e28933",
-    "mediaType": "short-non-fiction",
-    "title": "Photos of the Week: Surfing Devil, Sheltered Owl, Fresh Snowfall",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Sheep herding in central Madrid, Halloween displays in California, scenes from Brazil’s general election, autumn colors in China, and much more",
-    "tags": [
-      "the-atlantic",
-      "alan-taylor"
-    ],
-    "url": "https://www.theatlantic.com/photography/2026/10/photos-of-the-week-surfing-devil-sheltered-owl-fresh-snowfall/689203/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1d4bf823c2f4",
-    "mediaType": "short-non-fiction",
-    "title": "Redistricting Isn’t Going as Republicans Planned",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "A North Carolina Democrat is trying to keep his seat in a district that’s been redrawn twice.",
-    "tags": [
-      "the-atlantic",
-      "madeleine-carlisle"
-    ],
-    "url": "https://www.theatlantic.com/politics/2026/10/gerrymander-north-carolina-voting/689189/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a11e6673b46d",
-    "mediaType": "short-non-fiction",
-    "title": "Silver-year strongman: 25 years of Narendra Modi",
+    "title": "Stalled on the front lines, Russia hits Ukrainian harder",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-10-30",
-    "notes": "Also on the daily podcast: surprising midterm races and Cecily Gemmell",
+    "notes": "Our tracker visualises a shift in the war",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/podcasts/2026/10/30/silver-year-strongman-25-years-of-narendra-modi",
+    "url": "https://www.economist.com/interactive/graphic-detail/2026/10/30/stalled-on-the-front-lines-russia-hits-ukraine-harder",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-917da2fd3c0d",
+    "id": "feed-c2821cf245dc",
     "mediaType": "short-non-fiction",
-    "title": "Tech Stocks Tumble, but Broader Market Is Holding On",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The S&P 500 is set for a small loss for the month, despite a deeper slide in some of the A.I. stocks that exert a heavy influence on the index.",
-    "tags": [
-      "the-new-york-times",
-      "joe-rennison-and-aruni-soni"
-    ],
-    "url": "https://www.nytimes.com/2026/10/30/business/stock-market-october-ai.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-4d636a1406d9",
-    "mediaType": "short-non-fiction",
-    "title": "The $6.3 Billion Binance Hack Was Pulled Off in Just 20 Minutes",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Multiple crypto-tracing firms say notorious North Korean hackers TraderTraitor may be behind the largest digital heist in history—with billions of crypto likely gone for good.",
-    "tags": [
-      "wired",
-      "matt-burgess"
-    ],
-    "url": "https://www.wired.com/story/the-dollar63-billion-binance-hack-was-pulled-off-in-just-20-minutes/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-68d33a1d567c",
-    "mediaType": "short-non-fiction",
-    "title": "The Best Handheld Translators for Work and Travel (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Your cell phone can handle basic language translation, but dedicated translator devices can offer a much more immersive, versatile experience.",
-    "tags": [
-      "wired",
-      "christopher-null"
-    ],
-    "url": "https://www.wired.com/story/why-you-need-a-handheld-translator-for-travel/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6a0677f439b3",
-    "mediaType": "short-non-fiction",
-    "title": "The Final Electric Days of Abdul El-Sayed’s Senate Campaign",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The candidate fears that high-profile attacks have compromised his safety—but he also argues that they’ve given him “one of the biggest and best platforms.”",
-    "tags": [
-      "the-new-yorker",
-      "eliza-griswold"
-    ],
-    "url": "https://www.newyorker.com/news/the-political-scene/the-final-electric-days-of-abdul-el-sayeds-senate-campaign",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cb29aff4bcb5",
-    "mediaType": "short-non-fiction",
-    "title": "The Joy of Cranks",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Time and change have obscured certain gestures—but we can still rediscover them.",
-    "tags": [
-      "the-atlantic",
-      "ian-bogost"
-    ],
-    "url": "https://www.theatlantic.com/newsletters/2026/10/time-change-rediscover-joy/689221/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ed1d5073edc0",
-    "mediaType": "short-non-fiction",
-    "title": "The Real Stakes of the Ilhan Omar Case",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "In seeking to revoke the citizenship of a sitting congresswoman, the Trump Administration has sent a chilling message about dissent, loyalty, and who gets to be an American.",
-    "tags": [
-      "the-new-yorker",
-      "rozina-ali"
-    ],
-    "url": "https://www.newyorker.com/news/the-lede/the-real-stakes-of-the-ilhan-omar-case",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1b9c3f82594a",
-    "mediaType": "short-non-fiction",
-    "title": "This App Brutally Shames You by Tracking How Many Hours You’ve Lost to Scrolling",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The iOS app Oh My Hours takes a new approach to curbing screen time. It splits up your day into hour-long blocks, then shows which ones you wasted on Instagram and TikTok.",
-    "tags": [
-      "wired",
-      "david-nield"
-    ],
-    "url": "https://www.wired.com/story/oh-my-hours-ios-app/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-50e779f9d96e",
-    "mediaType": "short-non-fiction",
-    "title": "What Horror Films Have to Say About God",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Scary movies may appear irreverent or profane—but many of them are deeply interested in theological questions.",
-    "tags": [
-      "the-atlantic",
-      "luis-parrales"
-    ],
-    "url": "https://www.theatlantic.com/culture/2026/10/horror-exorcist-religion-god/689210/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-94ff71941e83",
-    "mediaType": "short-non-fiction",
-    "title": "What to Do in N.Y.C. This Winter",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The shows to see, hear, and watch in TV, art, contemporary music, theatre, movies, classical music, and dance.",
-    "tags": [
-      "the-new-yorker",
-      "shauna-lyon-inkoo-kang-dan-stahl-richard-brody-jillian-steinhauer-marina-harss-sheldon-pearce-fergus-mcintosh"
-    ],
-    "url": "https://www.newyorker.com/culture/goings-on/winter-culture-preview-2026",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6923d0f9b440",
-    "mediaType": "short-non-fiction",
-    "title": "Where No Man Has Gone Before",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "The late actor exemplified the wisdom and sophistication of his most famous character, Jean-Luc Picard.",
-    "tags": [
-      "the-atlantic",
-      "emma-sarappo"
-    ],
-    "url": "https://www.theatlantic.com/culture/2026/10/patrick-stewart-obituary-picard/689220/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2c56cd02e5f5",
-    "mediaType": "short-non-fiction",
-    "title": "Why the Markets Don’t Care About the Midterms",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Factors like inflation, interest rates, A.I. and the war with Iran are far more important, our columnist says.",
-    "tags": [
-      "the-new-york-times",
-      "jeff-sommer"
-    ],
-    "url": "https://www.nytimes.com/2026/10/30/business/midterms-stock-bond-markets.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3490355cb4f6",
-    "mediaType": "short-non-fiction",
-    "title": "Why Trump Is Losing Young Men",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-30",
-    "notes": "Young men swung to Donald Trump in 2024. Polling shows they are now moving away — but to what? Sabrina Tavernise, a reporter for The New York Times, went to Michigan to find out.",
-    "tags": [
-      "the-new-york-times",
-      "sabrina-tavernise-kassie-bracken-mark-boyer-luke-piotrowski-erik-ljung-david-jouppi-and-ruth-igielnik"
-    ],
-    "url": "https://www.nytimes.com/video/us/elections/100000011230123/trump-young-men-voters-michigan.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-112da831f9f0",
-    "mediaType": "short-non-fiction",
-    "title": "Cecily Gemmell would do almost anything for Churchill",
+    "title": "The midterms preview",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-29",
-    "notes": "His last personal secretary died on October 8th, aged 97",
+    "consumed": "2026-10-30",
+    "notes": "Our weekly podcast on America. This week, the races and voters that will decide power in Washington",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/obituary/2026/10/29/cecily-gemmell-would-do-almost-anything-for-churchill",
+    "url": "https://www.economist.com/podcasts/2026/10/30/the-midterms-preview",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-ac64635714f6",
+    "id": "feed-87b5dd0c90a2",
     "mediaType": "short-non-fiction",
-    "title": "Google’s $500bn bloodbath reflects the danger it faces from AI",
+    "title": "The War Room newsletter: The best warplanes in history",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-10-29",
-    "notes": "As its search engine sputters, rivals gain ground",
+    "consumed": "2026-10-30",
+    "notes": "Richard Cockett, a senior editor, straps in to examine the greatest aircraft of all time",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/business/2026/10/29/googles-500bn-bloodbath-reflects-the-danger-it-faces-from-ai",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-98dd2edf93e7",
-    "mediaType": "short-non-fiction",
-    "title": "Veteran investor Howard Marks on AI debt",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-29",
-    "notes": "Our podcast on markets, the economy and business. This week, for his final show, Mike Bird talks to the legendary distressed debt investor",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/podcasts/2026/10/29/veteran-investor-howard-marks-on-ai-debt",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-f60af0766559",
-    "mediaType": "short-non-fiction",
-    "title": "What to watch this week",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-10-29",
-    "notes": "Need a break? Try one of these films or TV shows",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/culture/2026/10/29/what-to-watch-this-week",
+    "url": "https://www.economist.com/international/2026/10/30/the-war-room-newsletter-the-best-warplanes-in-history",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
