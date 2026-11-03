@@ -1,196 +1,639 @@
 [
   {
-    "id": "feed-d80e9ba3b1ad",
+    "id": "feed-80fddfc65a7d",
     "mediaType": "short-non-fiction",
-    "title": "18 Best Gifts for PC Gamers (2026): Headsets, Desks, Monitors",
+    "title": "‘Our Risk, Their Reward’: Zohran Mamdani on AI and Data Centers",
     "creator": "WIRED",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Shopping for a PC gamer? This is the gear we use ourselves, starting at prices as low as $12.",
+    "consumed": "2026-11-03",
+    "notes": "Ahead of the midterms, WIRED talked to New York City’s mayor about data centers, AI in schools, and the future of the Democratic party.",
+    "tags": [
+      "wired",
+      "katie-drummond"
+    ],
+    "url": "https://www.wired.com/story/the-big-interview-podcast-nyc-mayor-zohran-mamdani/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-12e812c3d8fd",
+    "mediaType": "short-non-fiction",
+    "title": "A Test for Israeli Democracy: Should Jews Ask Arabs to Join the Government?",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Arab lawmakers give opponents of Benjamin Netanyahu a clear majority in the Parliament. But many Jewish lawmakers are trying to avoid relying on them.",
+    "tags": [
+      "the-new-york-times",
+      "david-m-halbfinger-and-natan-odenheimer"
+    ],
+    "url": "https://www.nytimes.com/2026/11/03/world/middleeast/israel-coalition-arab-lawmakers.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-eb2ab23ec6a8",
+    "mediaType": "short-non-fiction",
+    "title": "Apple AirPods 5 Review: Better Than Before but Not Quite Pro",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Apple finally made ANC standard across the AirPods lineup. But should you still spring for the AirPods Pro 3?",
+    "tags": [
+      "wired",
+      "boutayna-chokrane"
+    ],
+    "url": "https://www.wired.com/review/apple-airpods-5/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-ec49bcc3ff41",
+    "mediaType": "short-non-fiction",
+    "title": "Apple iPad Mini (2026) Review: A Dream Device, but Who Is It For?",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The iPad Mini’s impressive new features make it a better tablet than ever—only to be betrayed by its higher price.",
     "tags": [
       "wired",
       "luke-larsen"
     ],
-    "url": "https://www.wired.com/gallery/gift-ideas-for-pc-gamers/",
+    "url": "https://www.wired.com/review/ipad-mini-2026/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-2791138587e2",
+    "id": "feed-6bd3288181ad",
     "mediaType": "short-non-fiction",
-    "title": "A new path to political power in China runs through state firms",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "China Inc has become a breeding ground for up-and-coming officials",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/china/2026/11/02/a-new-path-to-political-power-in-china-runs-through-state-firms",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-0e2cb23b60f8",
-    "mediaType": "short-non-fiction",
-    "title": "A Right-Wing Think Tank Has a Plan to Prevent Democrats From Being Seated in Congress",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "The influential Center for Renewing America says that “neo-Marxist progressives and anti-Western Muslims” can’t sincerely swear to protect the Constitution—and shouldn’t be allowed to assume office.",
-    "tags": [
-      "wired",
-      "vittoria-elliott"
-    ],
-    "url": "https://www.wired.com/story/a-right-wing-think-tank-has-a-plan-to-prevent-democrats-from-being-seated-in-congress/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-da06fc1c9408",
-    "mediaType": "short-non-fiction",
-    "title": "Accused of Voter Fraud, They Ended Up in Shackles",
+    "title": "As Trump’s Midterm Deadline Looms, Gulf Countries Brace for Possible Renewal of Iran War",
     "creator": "The New York Times",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "The Trump administration’s campaign to identify and charge immigrants in connection with voting violations has led to fears of being jailed, or deported.",
+    "consumed": "2026-11-03",
+    "notes": "The energy-rich Gulf Arab countries are engaged in a flurry of mediation efforts to avert war between the U.S. and Iran, as many fear that the fighting will be worse this time around.",
     "tags": [
       "the-new-york-times",
-      "livia-albeck-ripka-and-jacey-fortin"
+      "vivian-nereim"
     ],
-    "url": "https://www.nytimes.com/2026/11/02/us/politics/noncitizen-voters-green-cards.html",
+    "url": "https://www.nytimes.com/2026/11/03/world/middleeast/trump-iran-war-midterms-election.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-6a44d518d41e",
+    "id": "feed-b1faf1d735ce",
     "mediaType": "short-non-fiction",
-    "title": "America Can’t Afford an AI Recession",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "AI investments are driving the economy. That’s a dangerous tightrope.",
-    "tags": [
-      "the-atlantic",
-      "matteo-wong"
-    ],
-    "url": "https://www.theatlantic.com/technology/2026/11/ai-data-center-spending-economy/689237/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6935693f66f7",
-    "mediaType": "short-non-fiction",
-    "title": "An Exiled Filmmaker’s Unsparing View of Contemporary Russia",
+    "title": "Daily Cartoon: Tuesday, November 3rd",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Andrey Zvyagintsev’s “Minotaur” is the first independent feature to portray Russian life during the war with Ukraine.",
+    "consumed": "2026-11-03",
+    "notes": "A drawing that riffs on the latest news and happenings.",
     "tags": [
       "the-new-yorker",
-      "joshua-yaffa"
+      "bob-eckstein"
     ],
-    "url": "https://www.newyorker.com/magazine/2026/11/09/an-exiled-filmmakers-unsparing-view-of-contemporary-russia",
+    "url": "https://www.newyorker.com/cartoons/daily-cartoon/tuesday-november-3rd-voter-intimidation",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-aa7e120cfd97",
+    "id": "feed-3728414a7a33",
     "mediaType": "short-non-fiction",
-    "title": "Andy Burnham reveals his lack of ambition",
+    "title": "Fertile ambitions: scientists’ plans to slow the biological clock",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
+    "consumed": "2026-11-03",
+    "notes": "Also on the daily podcast: Belarusian culture is changing and the success of South Africa’s chewy export",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/podcasts/2026/11/03/fertile-ambitions-scientists-plans-to-slow-the-biological-clock",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-80a0c9253541",
+    "mediaType": "short-non-fiction",
+    "title": "Finally, the Beginning of Trump’s End",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Reflections on a midterm campaign in which our octogenarian President waged war—against algae in the Reflecting Pool.",
+    "tags": [
+      "the-new-yorker",
+      "susan-b-glasser"
+    ],
+    "url": "https://www.newyorker.com/news/letter-from-trumps-washington/finally-the-beginning-of-trumps-end",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-ce62126b0cd5",
+    "mediaType": "short-non-fiction",
+    "title": "Flouting Consumer Law, Insurers Refuse to Pay Medical Bills for Emergency Care",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "A law to end surprise medical bills has generated millions of high-dollar payouts for doctors. Health plans are now fighting back by frequently withholding money.",
+    "tags": [
+      "the-new-york-times",
+      "margot-sanger-katz-and-sarah-kliff"
+    ],
+    "url": "https://www.nytimes.com/2026/11/03/us/insuers-nonpayment-arbitration.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-465c38c73469",
+    "mediaType": "short-non-fiction",
+    "title": "Hackers are exploiting Africa’s digital identities",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Governments are embracing new databases. So too are criminals",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/middle-east-and-africa/2026/11/03/hackers-are-exploiting-africas-digital-identities",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-68cce8c8317b",
+    "mediaType": "short-non-fiction",
+    "title": "Here’s Why You Shouldn’t Use AI to Vote",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "From hallucinations to partisan bias, artificial intelligence chatbots like ChatGPT and Claude are not helpful when it comes to Election Day.",
+    "tags": [
+      "wired",
+      "david-gilbert"
+    ],
+    "url": "https://www.wired.com/story/heres-why-you-shouldnt-use-ai-to-vote/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6c5ce3042d96",
+    "mediaType": "short-non-fiction",
+    "title": "How to Track the Midterms Results",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The best bet is to just wait a few days. But if you must follow more closely, here are some tips.",
+    "tags": [
+      "the-atlantic",
+      "david-a-graham"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/11/how-track-midterms-results/689261/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-84f7c89fe461",
+    "mediaType": "short-non-fiction",
+    "title": "ICE Is Inspiring Latinos to Vote in Historic Numbers",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "“I did a Latino community event [and said] we have to actually fucking vote to tell these motherfuckers to fuck off,” Nevada secretary of state Cisco Aguilar tells WIRED.",
+    "tags": [
+      "wired",
+      "david-gilbert"
+    ],
+    "url": "https://www.wired.com/story/ice-is-inspiring-latinos-to-vote-in-historic-numbers/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-be8f72bd4a5c",
+    "mediaType": "short-non-fiction",
+    "title": "India’s strongman faces stern challenges",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
     "notes": "A handpicked article read aloud from the latest issue of The Economist",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/podcasts/2026/11/02/andy-burnham-reveals-his-lack-of-ambition",
+    "url": "https://www.economist.com/podcasts/2026/11/03/indias-strongman-faces-stern-challenges",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-d88cc2c411bc",
+    "id": "feed-aaa80e5e978e",
     "mediaType": "short-non-fiction",
-    "title": "Anti-Oligarchy Activists Plan to Dox Elon Musk and Hundreds of Billionaire-Linked Homes",
-    "creator": "WIRED",
+    "title": "Investigators Looking for Cause of Learjet Crash Say Ice Was ‘Certainly a Factor’",
+    "creator": "The New York Times",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "The Capytistas, a secretive group claiming more than $1.2 million in backing, started with Elon Musk and Tesla’s board. Members argue that those who buy political power deserve the scrutiny they’ll impose.",
+    "consumed": "2026-11-03",
+    "notes": "Ice, experts said, can change the shape of a plane’s wing, disrupting its aerodynamics.",
     "tags": [
-      "wired",
-      "dell-cameron"
+      "the-new-york-times",
+      "alexander-nazaryan"
     ],
-    "url": "https://www.wired.com/story/anti-oligarchy-activists-plan-to-dox-elon-musk-and-hundreds-of-billionaire-linked-homes/",
+    "url": "https://www.nytimes.com/2026/11/02/science/florida-learjet-crash-causes.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-f003fdf292be",
+    "id": "feed-d1db6cdf8199",
     "mediaType": "short-non-fiction",
-    "title": "Asus ROG Rapture GT-BN98 Pro Review: Welcome to Wi-Fi 8",
-    "creator": "WIRED",
+    "title": "Israel’s Common Ground",
+    "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "The first Wi-Fi 8 router has arrived. This quad-band gaming beast from Asus is fabulously fast and feature-packed.",
+    "consumed": "2026-11-03",
+    "notes": "Israel is becoming dangerously indifferent to world opinion, but still finds strength in its social bonds.",
     "tags": [
-      "wired",
-      "simon-hill"
+      "the-atlantic",
+      "eliot-a-cohen"
     ],
-    "url": "https://www.wired.com/review/asus-rog-rapture-gt-bn98-pro/",
+    "url": "https://www.theatlantic.com/ideas/2026/11/israeli-election-politics-culture/689257/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-1af47fb5b7a6",
+    "id": "feed-b2c62bbf93e1",
     "mediaType": "short-non-fiction",
-    "title": "Best Early Black Friday Espresso Machine Deals (2026)",
-    "creator": "WIRED",
+    "title": "Latinos Are Still Swing Voters",
+    "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Impress your Thanksgiving guests with a cappuccino. These early deals on WIRED-tested favorites leave you time to practice.",
+    "consumed": "2026-11-03",
+    "notes": "Two years after Trump’s second victory, many political observers wrongly see us as one-dimensional actors.",
     "tags": [
-      "wired",
-      "kat-merck"
+      "the-atlantic",
+      "geraldo-l-cadava"
     ],
-    "url": "https://www.wired.com/story/early-black-friday-coffee-espresso-deals-2026/",
+    "url": "https://www.theatlantic.com/ideas/2026/11/latinos-swing-voters-midterms/689256/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-12bd9267db3c",
+    "id": "feed-7ca68af4d910",
     "mediaType": "short-non-fiction",
-    "title": "Birdbuddy vs. Birdfy: Which Budget Smart Feeder Should You Buy? (2026)",
+    "title": "Life as a D.C. Insider, as Imagined by a D.C. Outsider",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "I text my best friend, Coal Lobby, and ask if he wants to play outside. “Sorry, I have to be at the Capitol today,” he replies. He adds a sad emoji. I cry.",
+    "tags": [
+      "the-new-yorker",
+      "river-clegg"
+    ],
+    "url": "https://www.newyorker.com/humor/shouts-murmurs/life-as-a-dc-insider-as-imagined-by-a-dc-outsider",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c752b4e13d41",
+    "mediaType": "short-non-fiction",
+    "title": "Markets are pushing electrification. Governments must push harder",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The transformation can’t be left to market forces alone, writes Murat Kurum, president of COP31",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/by-invitation/2026/11/03/markets-are-pushing-electrification-governments-must-push-harder",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a524af58c0fa",
+    "mediaType": "short-non-fiction",
+    "title": "Midterm Elections 2026: Live Results Map",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The vote counts from key Senate, House, and gubernatorial elections around the country.",
+    "tags": [
+      "the-new-yorker"
+    ],
+    "url": "https://www.newyorker.com/news/election-2026/midterms-live-results-map-senate-house-governors-races",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-866e8287b768",
+    "mediaType": "short-non-fiction",
+    "title": "NASA’s Swift Observatory Is Falling to Earth. Here’s What to Know About the Impending Impact",
     "creator": "WIRED",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "I tested Birdbuddy’s Nook and Birdfy’s Rookie in my backyard. Saving money comes with compromises, but some are easier to live with.",
+    "consumed": "2026-11-03",
+    "notes": "The 3,200-pound satellite is expected to reenter Earth’s atmosphere later this week with a wide reentry zone covering parts of Africa, Australia, Southeast Asia, and South America.",
     "tags": [
       "wired",
-      "kat-merck"
+      "javier-carbajal"
     ],
-    "url": "https://www.wired.com/story/birdbuddy-nook-vs-birdfy-rookie/",
+    "url": "https://www.wired.com/story/nasas-swift-observatory-is-falling-to-earth-heres-what-to-know-about-the-impending-impact/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e374906965ce",
+    "mediaType": "short-non-fiction",
+    "title": "Plot Twist newsletter: Winston Churchill and the power of hobbies",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Alexandra Suich Bass, our Culture editor, paints a picture of the most pleasurable pastimes",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/culture/2026/11/03/plot-twist-newsletter-winston-churchill-and-the-power-of-hobbies",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-d5fcddab36b7",
+    "mediaType": "short-non-fiction",
+    "title": "Roli Has Fallen Apart—and Left Customers Holding the Bag",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The inventive instrument maker collapsed into insolvency, leaving buyers empty-handed and users scrambling to keep their musical gear alive.",
+    "tags": [
+      "wired",
+      "boone-ashworth"
+    ],
+    "url": "https://www.wired.com/story/roli-has-fallen-apart-and-left-customers-holding-the-bag/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-5587df1bbea2",
+    "mediaType": "short-non-fiction",
+    "title": "Strike on Ukraine Humanitarian Hub Is Feared to Be Among War’s Deadliest",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Hours after the Russian attack, which killed at least 31 and left dozens missing, the United States said that peace talks with the two countries would resume after nine months.",
+    "tags": [
+      "the-new-york-times",
+      "siobh-n-o-grady-and-liubov-sholudko"
+    ],
+    "url": "https://www.nytimes.com/2026/11/03/world/europe/komyshuvakha-zaporizhzhia-attack-ukraine.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-cd6be8f7a70d",
+    "mediaType": "short-non-fiction",
+    "title": "The Democrat Who’s Winning Over Voters in Trump Country",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Josh Shapiro is looking past his own reelection.",
+    "tags": [
+      "the-atlantic",
+      "gabby-deutch"
+    ],
+    "url": "https://www.theatlantic.com/politics/2026/11/josh-shapiro-pennsylvania-midterms/689252/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-059e24dbe457",
+    "mediaType": "short-non-fiction",
+    "title": "The Election Deniers Are in Retreat",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The president is not getting the political cover he once enjoyed from Republicans.",
+    "tags": [
+      "the-atlantic",
+      "toluse-olorunnipa"
+    ],
+    "url": "https://www.theatlantic.com/politics/2026/11/election-deniers-midterms-trump/689240/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-23124760c7e9",
+    "mediaType": "short-non-fiction",
+    "title": "The Endlessly Meme-able Steve Kornacki Is Not a Meme Person",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "NBC’s go-to data guru also isn’t quite sure what a subreddit is.",
+    "tags": [
+      "wired",
+      "elana-klein"
+    ],
+    "url": "https://www.wired.com/story/steve-kornacki-user-behavior/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a1a4d6fb9488",
+    "mediaType": "short-non-fiction",
+    "title": "The Insistent Monumentality of “La Bola Negra”",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "In Javier Ambrossi and Javier Calvo’s historical triptych, dramas of gay repression and liberation dovetail in ways more reductive than illuminating.",
+    "tags": [
+      "the-new-yorker",
+      "justin-chang"
+    ],
+    "url": "https://www.newyorker.com/culture/the-current-cinema/the-insistent-monumentality-of-la-bola-negra",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-bc9049570c1d",
+    "mediaType": "short-non-fiction",
+    "title": "The Voters Sitting This One Out",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "They could help determine the balance of Congress.",
+    "tags": [
+      "the-atlantic",
+      "yvonne-wingett-sanchez"
+    ],
+    "url": "https://www.theatlantic.com/politics/2026/11/midterm-voters-sitting-out/689255/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-934333d271de",
+    "mediaType": "short-non-fiction",
+    "title": "Things Are Going to Get Ugly",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Donald Trump is about to redefine the lame-duck presidency.",
+    "tags": [
+      "the-atlantic",
+      "david-frum"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/11/trump-election-results-cope/689260/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b715d8c4d031",
+    "mediaType": "short-non-fiction",
+    "title": "Trump Effort to Prove Rampant Noncitizen Voting Leads to Few Charges So Far",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Just 236 people have been charged with voting-fraud-related offenses by the Trump administration, despite its unsubstantiated claims that fraud is widespread.",
+    "tags": [
+      "the-new-york-times",
+      "madeleine-ngo"
+    ],
+    "url": "https://www.nytimes.com/2026/11/03/us/politics/dhs-noncitizen-voting-midterms.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6f138a9e4a9c",
+    "mediaType": "short-non-fiction",
+    "title": "Trump Says U.S. to End $4 Billion in Aid to Israel at End of Year",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The president’s announcement on Election Day, which he said was part of an agreement reached months ago, was a sign of how quickly the politics surrounding Israel have shifted.",
+    "tags": [
+      "the-new-york-times",
+      "david-e-sanger"
+    ],
+    "url": "https://www.nytimes.com/2026/11/03/us/politics/trump-israel-aid-netanyahu.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-fa0fabdafec0",
+    "mediaType": "short-non-fiction",
+    "title": "U.S. Military Strikes Iran’s Qeshm Island in What U.S. Officials Call a Defensive Measure",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "The action was limited, the officials said, with no immediate plans to escalate. The strikes come on the eve of the midterm elections.",
+    "tags": [
+      "the-new-york-times",
+      "helene-cooper-tyler-pager-and-jonathan-swan"
+    ],
+    "url": "https://www.nytimes.com/2026/11/02/us/politics/us-military-strikes-iran-qeshm-island.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-01ef8bf21b36",
+    "mediaType": "short-non-fiction",
+    "title": "US midterms 2026: live results",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Follow all the races in the Senate and the House of Representatives",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/interactive/2026/us-midterms/results/summary",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1ebde52b821c",
+    "mediaType": "short-non-fiction",
+    "title": "Wanted: a news researcher in Beijing",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-03",
+    "notes": "Work with the Beijing bureau of The Economist",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/china/2026/11/03/wanted-a-news-researcher-in-beijing",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-3dc3992d3dbb",
+    "mediaType": "short-non-fiction",
+    "title": "As voters head to the polls, Democrats bet that discontent will power their victory",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-02",
+    "notes": "Our latest forecast of the midterms’ outcome",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/united-states/2026/11/02/as-voters-head-to-the-polls-democrats-bet-that-discontent-will-power-their-victory",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -208,60 +651,6 @@
       "the-new-yorker"
     ],
     "url": "https://www.newyorker.com/magazine/2026/11/09/music-against-the-night-her-kind-a-world-we-share-the-flying-death",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-9fdfaa46a1e6",
-    "mediaType": "short-non-fiction",
-    "title": "Can You See What Holds This Painting Together?",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "With his sly, vacant images, Roy Lichtenstein explored the distance that technology created between us and reality.",
-    "tags": [
-      "the-atlantic",
-      "sebastian-smee"
-    ],
-    "url": "https://www.theatlantic.com/culture/2026/11/roy-lichtenstein-like-new-whitney-exhibition-review/689215/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-03bfc822342d",
-    "mediaType": "short-non-fiction",
-    "title": "Carter Goodrich’s “Leaf Chic”",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Costume drama for the season.",
-    "tags": [
-      "the-new-yorker",
-      "fran-oise-mouly"
-    ],
-    "url": "https://www.newyorker.com/culture/cover-story/cover-story-2026-11-09",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cae2c0ddf077",
-    "mediaType": "short-non-fiction",
-    "title": "CISA Retreats From Election Security Ahead of Midterms",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Protecting the vote was once considered among the top priorities of the Cybersecurity and Infrastructure Security Agency. Now it barely mentions the issue.",
-    "tags": [
-      "the-new-york-times",
-      "dustin-volz-and-julian-e-barnes"
-    ],
-    "url": "https://www.nytimes.com/2026/11/02/us/politics/cisa-election-security-midterms.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -285,426 +674,37 @@
     "source": "feed"
   },
   {
-    "id": "feed-7265f85d7adb",
+    "id": "feed-fb4e11e9b182",
     "mediaType": "short-non-fiction",
-    "title": "Daily Cartoon: Monday, November 2nd",
+    "title": "Maybe Donald Trump Doesn’t Want His Party to Win the Midterms",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-02",
+    "notes": "If he does, he’s certainly picking a strange way of showing it.",
+    "tags": [
+      "the-atlantic",
+      "alexandra-petri"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/11/trump-midterms-speech-reflecting-pool/689259/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e57155a9785e",
+    "mediaType": "short-non-fiction",
+    "title": "Nothing Is Stopping the Flood of A.I. Political Ads",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-02",
-    "notes": "A drawing that riffs on the latest news and happenings.",
+    "notes": "An A.I.-generated Josh Shapiro talking about “deleting incriminating e-mails.” An A.I.-generated Abdul El-Sayed and the words “DEATH TO AMERICA.” They’re not real, but can voters tell the difference?",
     "tags": [
       "the-new-yorker",
-      "nathan-cooper"
+      "kyle-chayka"
     ],
-    "url": "https://www.newyorker.com/cartoons/daily-cartoon/monday-november-2nd-witches-eggnog",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-808f8d9e735d",
-    "mediaType": "short-non-fiction",
-    "title": "Dante de Blasio Is Off Vocal Rest",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "As a newborn, the son of the former mayor won free music lessons for life at the Brooklyn Conservatory of Music—and then he quit. Now he’s finding his way back to the notes.",
-    "tags": [
-      "the-new-yorker",
-      "jane-bua"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/09/dante-de-blasio-is-off-vocal-rest",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-71ccff647d51",
-    "mediaType": "short-non-fiction",
-    "title": "DOJ’s Try-Anything Approach",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "A wide range of last-minute schemes could seed the idea among Trump’s supporters that the election results can’t be trusted.",
-    "tags": [
-      "the-atlantic",
-      "quinta-jurecic"
-    ],
-    "url": "https://www.theatlantic.com/ideas/2026/11/doj-elections/689238/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-0aa65b444555",
-    "mediaType": "short-non-fiction",
-    "title": "Fall Is in the Air, Part II",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "More images of the season, as autumn colors reach their peak and people are out working in fields, going for walks, and taking photographs, while animals migrate or prepare for the winter to come",
-    "tags": [
-      "the-atlantic",
-      "alan-taylor"
-    ],
-    "url": "https://www.theatlantic.com/photography/2026/11/fall-photos-2026/689253/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a4cc98005fc9",
-    "mediaType": "short-non-fiction",
-    "title": "France’s unhappy countryside turns to the populist right",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "In long-suffering villages, Marine Le Pen has come to stand for hope",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/europe/2026/11/02/frances-unhappy-countryside-turns-to-the-populist-right",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-161c229cb561",
-    "mediaType": "short-non-fiction",
-    "title": "Get 25 Percent Off My Favorite Renter-Friendly Storage Lockers",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "These gorgeous, renter-friendly storage lockers are hardly ever discounted.",
-    "tags": [
-      "wired",
-      "louryn-strampe"
-    ],
-    "url": "https://www.wired.com/story/mustard-made-sale-october-2026/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2c3a6425972e",
-    "mediaType": "short-non-fiction",
-    "title": "Here’s How the Trump Administration Is Trying to Undermine the Election",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "So far, Department of Justice–led efforts to sow chaos, even as Americans are already voting, have fallen flat.",
-    "tags": [
-      "wired",
-      "tess-owen-david-gilbert"
-    ],
-    "url": "https://www.wired.com/story/the-trump-administration-is-wreaking-havoc-on-the-electoral-system-before-the-midterms/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-f75176eb846b",
-    "mediaType": "short-non-fiction",
-    "title": "How Democrats Are Reclaiming the Politics of Populism",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "In the midterms’ most competitive races, Democratic candidates are reviving an old party message: that the Republicans are selling out to the highest bidder.",
-    "tags": [
-      "the-new-yorker",
-      "benjamin-wallace-wells"
-    ],
-    "url": "https://www.newyorker.com/news/the-lede/how-democrats-are-reclaiming-the-politics-of-populism",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-50f1ef2b2d70",
-    "mediaType": "short-non-fiction",
-    "title": "How is King Charles III doing?",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Quite well. Not least because he has stopped complaining",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/britain/2026/11/02/how-is-king-charles-iii-doing",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-83d2f23d11bc",
-    "mediaType": "short-non-fiction",
-    "title": "How Much Do You Pay for TV Streaming Services? We Want to Know.",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Let us know your thoughts about the costs of streaming television.",
-    "tags": [
-      "the-new-york-times"
-    ],
-    "url": "https://www.nytimes.com/2026/11/02/arts/television/streaming-costs-readers.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-4bc81d846701",
-    "mediaType": "short-non-fiction",
-    "title": "Iran Says It Would Reopen Strait of Hormuz in 2 Days as Part of U.S. Deal",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Iranian officials spoke of some progress in negotiating to reopen the strait, a vital oil and gas shipping lane, even as they prepare for all-out war.",
-    "tags": [
-      "the-new-york-times",
-      "erika-solomon-sanam-mahoozi-adam-rasgon-and-vivian-nereim"
-    ],
-    "url": "https://www.nytimes.com/2026/11/02/world/middleeast/iran-deal-strait-of-hormuz.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-15e0d7c20c76",
-    "mediaType": "short-non-fiction",
-    "title": "New Jersey, the Diesel State",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "A data center in the Meadowlands recently leaked five thousand gallons of fuel into a nearby creek. The Riverkeeper of the Hackensack gives a tour.",
-    "tags": [
-      "the-new-yorker",
-      "robert-sullivan"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/09/new-jersey-the-diesel-state",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ab3d4cb3333e",
-    "mediaType": "short-non-fiction",
-    "title": "Off to the races: our American-midterms preview",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Also on the daily podcast: young people swap the property ladder for the markets and lessons in fame from Harry Houdini",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/podcasts/2026/11/02/off-to-the-races-our-american-midterms-preview",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c5eb40b7727e",
-    "mediaType": "short-non-fiction",
-    "title": "The fight for the soul of the Australian right",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Can a special-forces veteran stop the rise of Pauline Hanson?",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/asia/2026/11/02/the-fight-for-the-soul-of-the-australian-right",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6626bf5654e1",
-    "mediaType": "short-non-fiction",
-    "title": "The Protect College Sports Act Isn’t Enough",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "A much-hyped piece of legislation is more bark than bite.",
-    "tags": [
-      "the-atlantic",
-      "jemele-hill"
-    ],
-    "url": "https://www.theatlantic.com/culture/2026/11/protect-college-sports-act/689235/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b111daff2bc6",
-    "mediaType": "short-non-fiction",
-    "title": "The Racism Scam",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Republicans are resorting to a troubling closing argument.",
-    "tags": [
-      "the-atlantic",
-      "adam-serwer"
-    ],
-    "url": "https://www.theatlantic.com/ideas/2026/11/right-strategy-rhetoric-racism/689233/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-905b26fba92c",
-    "mediaType": "short-non-fiction",
-    "title": "The States Where Democrats Have the Most to Gain",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "The party is trying to take maximum advantage of the moment.",
-    "tags": [
-      "the-atlantic",
-      "russell-berman"
-    ],
-    "url": "https://www.theatlantic.com/politics/2026/11/democrats-midterms-state-power/689236/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1b7c7a4b487f",
-    "mediaType": "short-non-fiction",
-    "title": "The Streaming Era Has Given Us Great TV, but It Comes at a Price",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "The streaming era has provided viewers a lot of great things to watch. But it comes at a price.",
-    "tags": [
-      "the-new-york-times",
-      "james-poniewozik"
-    ],
-    "url": "https://www.nytimes.com/2026/11/02/arts/television/streaming-tv-era-cost.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b632c62fa55b",
-    "mediaType": "short-non-fiction",
-    "title": "The Time is Right for a ‘Great Books’ Revival",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "To build a better world in the age of AI, students need grounding in indispensable ideas.",
-    "tags": [
-      "the-atlantic",
-      "joshua-bennett"
-    ],
-    "url": "https://www.theatlantic.com/books/2026/11/age-ai-is-the-time-for-a-great-books-revival/689242/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-014d41223b4e",
-    "mediaType": "short-non-fiction",
-    "title": "The War Room newsletter: Canada’s fighter-jet dilemma",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Alex Turner, our defence editor, looks at a choice between the Gripen and the F-35",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/the-americas/2026/11/02/the-war-room-newsletter-canadas-fighter-jet-dilemma",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cad24e23f2de",
-    "mediaType": "short-non-fiction",
-    "title": "They Tried Kratom for Its Purported Health Benefits, Then They Became Addicted",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "Some say they were introduced to the drug through wellness podcasts, free samples at gyms or fitness influencers.",
-    "tags": [
-      "the-new-york-times",
-      "olivia-tauber"
-    ],
-    "url": "https://www.nytimes.com/2026/11/02/well/kratom-wellness-marketing-addiction.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cf2f62e31b11",
-    "mediaType": "short-non-fiction",
-    "title": "Trump Administration Asks Supreme Court to Intervene in California Ballot Case",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "In an emergency application, administration lawyers asked the justices to immediately order California to set aside 20,000 mail-in ballots.",
-    "tags": [
-      "the-new-york-times",
-      "abbie-vansickle"
-    ],
-    "url": "https://www.nytimes.com/2026/11/02/us/politics/trump-supreme-court-california-ballots.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c6aa129d2034",
-    "mediaType": "short-non-fiction",
-    "title": "Trump’s Immigration Crackdown Backlash Poses Challenge for Republicans in the Midterms",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-02",
-    "notes": "President Trump promised to end the chaos at the southern border. But deadly ICE shootings and high-profile raids have shaken many voters.",
-    "tags": [
-      "the-new-york-times",
-      "jennifer-medina-and-jazmine-ulloa"
-    ],
-    "url": "https://www.nytimes.com/2026/11/02/us/politics/trump-immigration-crackdown-backlash-republicans.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6bb85ee2a0d4",
-    "mediaType": "short-non-fiction",
-    "title": "Hackers are running riot with AI. Its makers want to cash in",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-01",
-    "notes": "OpenAI and Anthropic spy a big opportunity in cyber-security",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/business/2026/11/01/hackers-are-running-riot-with-ai-its-makers-want-to-cash-in",
+    "url": "https://www.newyorker.com/culture/infinite-scroll/nothing-is-stopping-the-flood-of-ai-political-ads",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
