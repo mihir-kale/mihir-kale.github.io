@@ -868,7 +868,7 @@
     let taskView = 'pending';
     let showArchivedProjects = localStorage.getItem('personalOSShowArchivedProjects') === '1';
     let demoMode = false;
-    let calMode = 'today';
+    let calMode = 'week';
     let calAnchor = null;
     let editingId = null;
     let modalKind = 'task';
@@ -2020,8 +2020,11 @@
           external_id: ev.external_id || null,
           source: ev.source,
           title: ev.title,
+          date: ev.date || null,
           durMin: eventDurMin(ev),
         }));
+        // Fallback so the drop still resolves if the custom mime type is stripped.
+        e.dataTransfer.setData('text/plain', 'CAL:' + (ev.title || ''));
         e.dataTransfer.effectAllowed = ev.source === 'feed' ? 'copy' : 'move';
       };
       el.ondragend = () => { dragCtx = null; };
@@ -2288,12 +2291,19 @@
       e.preventDefault();
       const body = document.querySelector('#taskColumns [data-body="tasks"]');
       body.classList.remove('drag-over');
+      let payload = null;
       const raw = e.dataTransfer.getData('application/x-cal-event');
-      if (!raw) return;
-      let payload;
-      try { payload = JSON.parse(raw); } catch (err) { return; }
+      if (raw) {
+        try { payload = JSON.parse(raw); } catch (err) { payload = null; }
+      }
+      if (!payload) {
+        const txt = e.dataTransfer.getData('text/plain') || '';
+        if (txt.startsWith('CAL:')) payload = { title: txt.slice(4).trim() };
+      }
+      if (!payload) return;
       const title = String(payload.title || 'Untitled').trim();
       if (!title) return;
+      const dueDate = (payload.date && /^\\d{4}-\\d{2}-\\d{2}$/.test(payload.date)) ? payload.date : null;
       try {
         if (demoMode) {
           tasks.push({
@@ -2303,7 +2313,7 @@
             project: null,
             description: null,
             source: 'manual',
-            due_date: null,
+            due_date: dueDate,
             recur: null,
             people: [],
             created_at: new Date().toISOString(),
@@ -2320,7 +2330,9 @@
           project: null,
           description: null,
           source: 'manual',
+          due_date: dueDate,
           created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         });
         if (error) throw error;
         await loadTasks();

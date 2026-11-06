@@ -133,7 +133,7 @@
   .badge { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; border: 1px solid var(--border); color: var(--muted); }
   .badge.applied, .badge.interviewing { border-color: var(--accent-dim); color: var(--accent); }
   .badge.offer { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .badge.rejected, .badge.withdrawn, .badge.expired, .badge.closed { border-color: var(--warn); color: var(--warn); }
+  .badge.rejected, .badge.not-pursuing, .badge.expired, .badge.closed { border-color: var(--warn); color: var(--warn); }
   .badge.referral-requested, .badge.referral-sent { border-color: var(--done); color: var(--done); }
   .chip { display: inline-block; font-size: 11px; padding: 1px 7px; border: 1px solid var(--border); color: var(--muted); }
   .chip.due-soon { border-color: var(--done); color: var(--done); }
@@ -283,7 +283,7 @@ async function callDeepSeek(system, user) {
 }
 
 // Client vocabularies (DB columns are free text; no constraints).
-const APP_STATUS   = ['interested', 'preparing', 'applied', 'assessment', 'screened', 'interviewing', 'offer', 'accepted', 'rejected', 'withdrawn', 'not_pursuing'];
+const APP_STATUS   = ['interested', 'preparing', 'applied', 'assessment', 'screened', 'interviewing', 'offer', 'accepted', 'rejected', 'not_pursuing'];
 const POSTING      = ['open', 'unknown', 'closed', 'expired'];
 const INTEREST     = ['low', 'medium', 'high'];
 const CHANNELS     = ['email', 'phone', 'linkedin', 'coffee', 'meeting', 'referral', 'career_fair', 'other'];
@@ -1464,9 +1464,9 @@ function renderSankey(main) {
   const interviewing = count('interviewing');
   const offer = count('offer');
   const rejected = count('rejected');
-  const withdrawn = count('withdrawn');
+  const notPursuing = count('not_pursuing');
 
-  const interestedBeyond = applied + screened + interviewing + offer + rejected + withdrawn;
+  const interestedBeyond = applied + screened + interviewing + offer + rejected + notPursuing;
   const screenedBeyond = screened + interviewing + offer + rejected;
   const interviewBeyond = interviewing + offer + rejected;
 
@@ -1475,7 +1475,7 @@ function renderSankey(main) {
   if (rejected > 0) links.push({ source: 'Interview rounds', target: 'Rejected', value: rejected });
   if (interviewBeyond > 0) links.push({ source: 'Screened', target: 'Interview rounds', value: interviewBeyond });
   if (screenedBeyond > 0) links.push({ source: 'Applied', target: 'Screened', value: screenedBeyond });
-  if (withdrawn > 0) links.push({ source: 'Applied', target: 'Withdrawn', value: withdrawn });
+  if (notPursuing > 0) links.push({ source: 'Applied', target: 'Not applied', value: notPursuing });
   if (applied > 0) links.push({ source: 'Applied', target: 'Waiting for response', value: applied });
   if (interestedBeyond > 0) links.push({ source: 'Interested', target: 'Applied', value: interestedBeyond });
   if (interested > 0) links.push({ source: 'Interested', target: 'Not applied', value: interested });
@@ -1486,7 +1486,7 @@ function renderSankey(main) {
   }
 
   // Desired top-to-bottom node order (preserved within each column).
-  const nodeOrder = ['Offer', 'Rejected', 'Interview rounds', 'Screened', 'Waiting for response', 'Withdrawn', 'Applied', 'Interested', 'Not applied'];
+  const nodeOrder = ['Offer', 'Rejected', 'Interview rounds', 'Screened', 'Waiting for response', 'Applied', 'Interested', 'Not applied'];
   const nodeSet = new Set();
   links.forEach(l => { nodeSet.add(l.source); nodeSet.add(l.target); });
   const nodes = nodeOrder.filter(n => nodeSet.has(n)).map(name => ({ name }));
@@ -1521,8 +1521,8 @@ function renderSankey(main) {
   });
 
   const color = d3.scaleOrdinal()
-    .domain(['Offer','Rejected','Interview rounds','Waiting for response','Screened','Withdrawn','Applied','Interested','Not applied'])
-    .range(['#0a7e3d','#d64545','#4aa06b','#9ca3af','#b8860b','#6b7280','#6b7280','#0a7e3d','#9ca3af']);
+    .domain(['Offer','Rejected','Interview rounds','Waiting for response','Screened','Applied','Interested','Not applied'])
+    .range(['#0a7e3d','#d64545','#4aa06b','#9ca3af','#b8860b','#6b7280','#0a7e3d','#9ca3af']);
 
   svg.append('g')
     .selectAll('rect')
@@ -1922,7 +1922,7 @@ function renderOverview(main) {
   });
   html += '</div>';
 
-  const upcoming = jobs.filter(j => j.application_deadline && !['rejected', 'withdrawn'].includes(j.application_status))
+  const upcoming = jobs.filter(j => j.application_deadline && !['rejected', 'not_pursuing'].includes(j.application_status))
     .sort((a, b) => new Date(a.application_deadline) - new Date(b.application_deadline)).slice(0, 10);
   const stale = jobs.filter(j => j.application_status === 'interested' &&
     !state.data.interactions.some(i => i.job_id === j.id));
