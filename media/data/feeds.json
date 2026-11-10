@@ -1,192 +1,641 @@
 [
   {
-    "id": "feed-f8a78d11a2a3",
+    "id": "feed-4e3a797673fa",
     "mediaType": "short-non-fiction",
-    "title": "<em>The Atlantic</em>’s December Cover: Sarah Zhang Reports on “The Geo-Located Generation”",
-    "creator": "The Atlantic",
+    "title": "‘We Have to Take Over’: Far-Right Extremists Want to Seize Control of the GOP",
+    "creator": "WIRED",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "In The Atlantic ’s December cover story, “ The Geo-Located Generation ,” staff writer Sarah Zhang explores how constant surveillance is stunting children and making parents paranoid. Parents today can functionally track their children 24/7 from the moment they’re born through…",
+    "consumed": "2026-11-10",
+    "notes": "MAGA failed because it didn’t go far enough, right-wing extremists say—and following devastating midterm losses, they see an opportunity to take over.",
     "tags": [
-      "the-atlantic"
+      "wired",
+      "david-gilbert"
     ],
-    "url": "https://www.theatlantic.com/press-releases/2026/11/atlantics-december-cover-the-geo-located-generation/689333/?utm_source=feed",
+    "url": "https://www.wired.com/story/we-have-to-take-over-far-right-extremists-want-to-seize-control-of-the-gop/",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-de6c408987a1",
+    "id": "feed-6b23625354c0",
     "mediaType": "short-non-fiction",
-    "title": "A.I. Fueled Nvidia CEO Jensen Huang’s Elite Status, but Scandal Followed",
+    "title": "4DX Movies Are Entering Their Thirsty Romance Era",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "From Heated Rivalry to Wicker, the movie format that embraces thrusting chairs and splashing the crowd is catering to those who want a horny communal theatergoing experience.",
+    "tags": [
+      "wired",
+      "ej-dickson"
+    ],
+    "url": "https://www.wired.com/story/4dx-movies-horny-romances-wicker-heated-rivalry/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1be315a64e87",
+    "mediaType": "short-non-fiction",
+    "title": "Anthropic Targets Valuation of Up to $1.4 Trillion for Blockbuster I.P.O.",
     "creator": "The New York Times",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "As chips became essential components for A.I., executives like Nvidia’s Jensen Huang saw their personal wealth and profiles soar in a way the industry has not experienced before.",
+    "consumed": "2026-11-10",
+    "notes": "The A.I. company’s pricing would make it one of the biggest ever public listings. It comes at a volatile moment in markets, with investors questioning the sustainability of the A.I. boom.",
     "tags": [
       "the-new-york-times",
-      "don-clark"
+      "erin-griffith-mike-isaac-and-lauren-hirsch"
     ],
-    "url": "https://www.nytimes.com/2026/11/09/technology/jensen-huang-nvidia-ai-chips-scandal.html",
+    "url": "https://www.nytimes.com/2026/11/10/technology/anthropic-ipo-valuation-share-price.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-0d5e7de5dcd6",
+    "id": "feed-b5a33a9d60e9",
     "mediaType": "short-non-fiction",
-    "title": "After the War, They Turned the Cameras on Themselves, in “Allies in Exile”",
+    "title": "Can Democrats Hold Trump Accountable?",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Democrats hope they can link corruption to the cost of living.",
+    "tags": [
+      "the-atlantic",
+      "isaac-stanley-becker"
+    ],
+    "url": "https://www.theatlantic.com/politics/2026/11/democrats-trump-investigations-corruption/689354/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-9a8901c9510e",
+    "mediaType": "short-non-fiction",
+    "title": "Can ICE Be Abolished Now?",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "How a Democratic Congress could stop the runaway federal agency",
+    "tags": [
+      "the-atlantic",
+      "anne-applebaum"
+    ],
+    "url": "https://www.theatlantic.com/podcasts/2026/11/can-ice-be-abolished-now/689046/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-3619a82679da",
+    "mediaType": "short-non-fiction",
+    "title": "Changing Our Relationship to Technology Will Require Collective Action",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Many of us are making individual efforts to use our phones less, or to avoid A.I. But we will need to work together.",
+    "tags": [
+      "the-new-yorker",
+      "jay-caspian-kang"
+    ],
+    "url": "https://www.newyorker.com/news/fault-lines/changing-our-relationship-to-technology-will-require-collective-action",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b2e9518f6d2a",
+    "mediaType": "short-non-fiction",
+    "title": "China’s AI brain drain",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Our weekly podcast on China. This week, how talent flows are shaping the battle for AI dominance",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/podcasts/2026/11/10/chinas-ai-brain-drain",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f8773403b4c0",
+    "mediaType": "short-non-fiction",
+    "title": "Civilisation has collapsed in England, and other odd ideas",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "“The End of Everything”, a sci-fi tale by M. John Harrison, wins the Booker prize",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/culture/2026/11/10/civilisation-has-collapsed-in-england-and-other-odd-ideas",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a9f31905fa80",
+    "mediaType": "short-non-fiction",
+    "title": "Daily Cartoon: Tuesday, November 10th",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "A drawing that riffs on the latest news and happenings.",
+    "tags": [
+      "the-new-yorker",
+      "brendan-loper"
+    ],
+    "url": "https://www.newyorker.com/cartoons/daily-cartoon/tuesday-november-10th-results-trickle",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-eef34dbb7ae3",
+    "mediaType": "short-non-fiction",
+    "title": "Data Show Households Still Managing to Meet Their Monthly Debts",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "The New York Fed detailed general steadiness in debt payments for autos, student loans and mortgages.",
+    "tags": [
+      "the-new-york-times",
+      "talmon-joseph-smith"
+    ],
+    "url": "https://www.nytimes.com/2026/11/10/business/economy/household-debt-real-estate-home-equity.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-7deffa3afc49",
+    "mediaType": "short-non-fiction",
+    "title": "Elevated Inflation Keeps Pressure on Fed to Raise Rates",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "October’s Consumer Price Index report showed a broadening of price pressures that has stoked concerns about the Federal Reserve’s grip on inflation.",
+    "tags": [
+      "the-new-york-times",
+      "colby-smith-and-ben-casselman"
+    ],
+    "url": "https://www.nytimes.com/2026/11/10/business/economy/inflation-economy-cpi.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-9747d6fb192b",
+    "mediaType": "short-non-fiction",
+    "title": "Failure of California Billionaire Tax Strikes Blow to Progressive Agenda",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "A wealth tax on billionaires seemed like a political layup. The outcome of a California ballot initiative shows otherwise.",
+    "tags": [
+      "the-new-york-times",
+      "andrew-duehren"
+    ],
+    "url": "https://www.nytimes.com/2026/11/10/business/billionaire-tax-progressive-agenda.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b87d44cdb9f8",
+    "mediaType": "short-non-fiction",
+    "title": "Getting Too Close to Trump Was a Mistake",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "For Silicon Valley leaders, cozying up to the Trump administration has led to a series of spectacular failures.",
+    "tags": [
+      "the-atlantic",
+      "nick-clegg"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/11/silicon-valley-trump-administration/689360/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-53fd5e08b366",
+    "mediaType": "short-non-fiction",
+    "title": "Gifts for Discerning Design Lovers",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Everyday objects that are utilitarian, durable, minimalist, and aesthetic—and likely to sell out.",
+    "tags": [
+      "the-new-yorker",
+      "nicholas-blechman"
+    ],
+    "url": "https://www.newyorker.com/culture/gift-guides/gifts-for-discerning-design-lovers",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-ab2d27a719d1",
+    "mediaType": "short-non-fiction",
+    "title": "I’m Totally Pulling Off These New Glasses",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "This isn’t another bucket-hat situation.",
+    "tags": [
+      "the-new-yorker",
+      "tyler-watamanuk"
+    ],
+    "url": "https://www.newyorker.com/humor/shouts-murmurs/im-totally-pulling-off-these-new-glasses",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c3095437cb26",
+    "mediaType": "short-non-fiction",
+    "title": "In Midterm Elections, Voters Backed Democrats but Broke Right on Many Ballot Measures",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "In some states that elected Democrats, voters also approved measures to restrict transgender athletes, require voter identification and toughen prison sentences.",
+    "tags": [
+      "the-new-york-times",
+      "jack-healy-and-maia-spoto"
+    ],
+    "url": "https://www.nytimes.com/2026/11/10/us/ballot-measures-democrats-republicans.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-17eea2657a1d",
+    "mediaType": "short-non-fiction",
+    "title": "Inside America’s first new submarine base abroad for 53 years",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "AUKUS is beginning to make waves on Australia’s west coast",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/asia/2026/11/10/inside-americas-first-new-submarine-base-abroad-for-53-years",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-11a4886d09c6",
+    "mediaType": "short-non-fiction",
+    "title": "Kitchen Gear From Our Place Is Steeply Discounted",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Get up to 30 percent off and save an extra $60 on orders over $100.",
+    "tags": [
+      "wired",
+      "louryn-strampe"
+    ],
+    "url": "https://www.wired.com/story/our-place-sale-november-2026/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f0eec2629795",
+    "mediaType": "short-non-fiction",
+    "title": "Louis Rossmann Wants More People to Care About the Right to Repair",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "The outspoken consumer rights advocate knows the incoming Democrat-heavy Congress has a lot to get done. But he hopes one of those things is letting you fix your own iPhone.",
+    "tags": [
+      "wired",
+      "brian-barrett"
+    ],
+    "url": "https://www.wired.com/story/the-big-interview-podcast-louis-rossmann-right-to-repair/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-4221baf31175",
+    "mediaType": "short-non-fiction",
+    "title": "Nvidia’s Board Has a History of Letting Jensen Huang Get His Way",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Governance experts question whether the board, which is investigating Mr. Huang’s conduct, has been too deferential as he has turned Nvidia into a global giant.",
+    "tags": [
+      "the-new-york-times",
+      "kalley-huang-and-don-clark"
+    ],
+    "url": "https://www.nytimes.com/2026/11/10/technology/jensen-huang-nvidia-board.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1aee93233ebd",
+    "mediaType": "short-non-fiction",
+    "title": "Oil Prices Have Tumbled in November. Here’s Why.",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "The global benchmark price is down more than $20 a barrel since late October, when it traded for around $113.",
+    "tags": [
+      "the-new-york-times",
+      "rebecca-f-elliott-and-lisa-friedman"
+    ],
+    "url": "https://www.nytimes.com/2026/11/09/business/energy-environment/oil-price-iran-trump-war.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-306a43ec6546",
+    "mediaType": "short-non-fiction",
+    "title": "Ring’s Indoor Drone Camera Is Back—and Now Powered by AI",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "This $250 Drone Cam flies around your home to monitor threats. There’s also the Rover Cam for businesses, featuring the guts of Amazon’s former Astro robot.",
+    "tags": [
+      "wired",
+      "julian-chokkattu"
+    ],
+    "url": "https://www.wired.com/story/ring-robotics-drone-cam-rover-cam/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-2913a7df214f",
+    "mediaType": "short-non-fiction",
+    "title": "Rocco’s Mini Mini Fridge Is Here (2026)",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "The new Mini Mini holds 12 cans and fits on a countertop. And if you buy a full-sized Rocco fridge, you can take $50 off the little one.",
+    "tags": [
+      "wired",
+      "kat-merck"
+    ],
+    "url": "https://www.wired.com/story/rocco-made-a-mini-version-of-its-mini-fridge/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-8cfc6b63cdfa",
+    "mediaType": "short-non-fiction",
+    "title": "The Grindr 1 Percent Is Getting Its Own Gated Community",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "The gay hookup app’s premium tier Edge rolls out this month. Grindr will limit membership numbers to “preserve exclusivity.”",
+    "tags": [
+      "wired",
+      "jason-parham"
+    ],
+    "url": "https://www.wired.com/story/the-grindr-1-percent-is-getting-its-own-gated-community/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-081460ba52bc",
+    "mediaType": "short-non-fiction",
+    "title": "The Lost World of Aquaterra",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Most of human history is waiting to be found. And it’s underwater.",
+    "tags": [
+      "the-atlantic",
+      "toby-lester"
+    ],
+    "url": "https://www.theatlantic.com/magazine/2026/12/aquaterra-ancient-human-migration/689029/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-46b8046cf0b1",
+    "mediaType": "short-non-fiction",
+    "title": "The Trolls’ Comeuppance",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "How the attention economy turned on Republicans",
+    "tags": [
+      "the-atlantic",
+      "adam-serwer"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/11/attention-economy-republicans-failure/689347/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a319518fbee0",
+    "mediaType": "short-non-fiction",
+    "title": "The Unbearable Mediocrity of Microdramas",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "A new festival devoted to vertical-video series tries to make a case for the format.",
+    "tags": [
+      "the-atlantic",
+      "elise-hannum"
+    ],
+    "url": "https://www.theatlantic.com/culture/2026/11/microdramas-festival-vertical-entertainment/689361/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-49267e5e6229",
+    "mediaType": "short-non-fiction",
+    "title": "This New Linux-Based Desktop Operating System Is Built for AI Nerds",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Built by Cyanogen’s cofounder, Kora is a next-gen alternative to Windows and macOS built for power users running local AI models.",
+    "tags": [
+      "wired",
+      "reece-rogers"
+    ],
+    "url": "https://www.wired.com/story/kora-new-linux-based-desktop-operating-system-is-built-for-ai-nerds/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-20d6fe86883f",
+    "mediaType": "short-non-fiction",
+    "title": "Trump Has Been Corroded by Hate",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "And he has, in turn, also corroded the soul of his party.",
+    "tags": [
+      "the-atlantic",
+      "peter-wehner"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/11/trump-hate-legacy/689362/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-073c0fa5120e",
+    "mediaType": "short-non-fiction",
+    "title": "What I Learned About Christmas—And Life—By Starring* in a Hallmark Movie",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "*Playing a minor character",
+    "tags": [
+      "the-atlantic",
+      "alexandra-petri"
+    ],
+    "url": "https://www.theatlantic.com/magazine/2026/12/hallmark-christmas-movie-actor/689028/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c59e1a830f54",
+    "mediaType": "short-non-fiction",
+    "title": "What Is Biography For?",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "In “Transcendence for Beginners,” the philosopher Clare Carlisle suggests that any life, even an ordinary one, is a portal to divinity.",
+    "tags": [
+      "the-new-yorker",
+      "kieran-setiya"
+    ],
+    "url": "https://www.newyorker.com/books/page-turner/what-is-biography-for",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-4f676373041a",
+    "mediaType": "short-non-fiction",
+    "title": "When chips are down: Nvidia CEO’s risky relationship",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Also on the daily podcast: Africa’s Ebola outbreak and a roadkill food festival",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/podcasts/2026/11/10/when-chips-are-down-nvidia-ceos-risky-relationship",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1ef4277bb0b5",
+    "mediaType": "short-non-fiction",
+    "title": "Who Is Alice Huang, the Woman in the Middle of Nvidia’s Spy Scandal?",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "Alice Huang, who U.S. intelligence determined is a Chinese asset, emerged from the high-flying world of Shanghai finance to work with tech titans and obtain essential A.I. chips.",
+    "tags": [
+      "the-new-york-times",
+      "paul-mozur-ana-swanson-tripp-mickle-and-michael-forsythe"
+    ],
+    "url": "https://www.nytimes.com/2026/11/10/technology/alice-huang-megaspeed-nvidia-jensen-huang.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-d2fb3830c678",
+    "mediaType": "short-non-fiction",
+    "title": "Why free traders should thank AI",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-10",
+    "notes": "A handpicked article read aloud from the latest issue of The Economist",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/podcasts/2026/11/10/why-free-traders-should-thank-ai",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-de1ac8cecbe8",
+    "mediaType": "short-non-fiction",
+    "title": "Briefly Noted Book Reviews",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-09",
-    "notes": "Displaced by war, two Syrian filmmakers, Hasan Kattan and Fadi al-Halabi, document their wait for asylum in the U.K., forging a friendship through storytelling amid rising anti-immigrant protests.",
+    "notes": "“The End of Everything,” “Gloria Don’t Speak,” “Shakespeare at Thirty,” and “Almost Animal.”",
     "tags": [
       "the-new-yorker"
     ],
-    "url": "https://www.newyorker.com/culture/the-new-yorker-documentary/after-the-war-they-turned-the-cameras-on-themselves-in-allies-in-exile",
+    "url": "https://www.newyorker.com/magazine/2026/11/16/the-end-of-everything-gloria-dont-speak-shakespeare-at-thirty-almost-animal",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-407f021aea02",
+    "id": "feed-2b2b4e1a0ebc",
     "mediaType": "short-non-fiction",
-    "title": "An Electoral Mess in Mississippi",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Tens of thousands of voters in the state were shifted to “inactive” status.",
-    "tags": [
-      "the-atlantic",
-      "toluse-olorunnipa"
-    ],
-    "url": "https://www.theatlantic.com/politics/2026/11/mississippi-voters-senate-election-experian/689345/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-425396b7eb63",
-    "mediaType": "short-non-fiction",
-    "title": "At 50, “Rocky” isn’t as good as you remember. It’s better",
+    "title": "Café Europa newsletter: Democratic wins or no, Europe is over America",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-09",
-    "notes": "Why Sylvester Stallone’s boxing parable is about more than the violent sport",
+    "notes": "Matt Steinglass, our Europe editor, offers a view of the midterms from Amsterdam",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/culture/2026/11/09/at-50-rocky-isnt-as-good-as-you-remember-its-better",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-f25ccea930d6",
-    "mediaType": "short-non-fiction",
-    "title": "Audioengine Color of the Year Kit Review: Bright Look, Good Sound",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The canary-yellow set is equal parts design and audio performance, and includes speakers, speaker stands, a turntable, and a subwoofer.",
-    "tags": [
-      "wired",
-      "jordan-michelman"
-    ],
-    "url": "https://www.wired.com/review/audioengine-2026-color-of-the-year-kit/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b47566b789dc",
-    "mediaType": "short-non-fiction",
-    "title": "Authors Can Defend Against AI Allegations With ‘Paper Trail’ Tools. Is It Enough?",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "As the publishing industry wrestles with paranoia over the provenance of manuscripts, writers are caught in an impossible bind.",
-    "tags": [
-      "wired",
-      "miles-klee"
-    ],
-    "url": "https://www.wired.com/story/authors-can-defend-against-ai-allegations-with-paper-trail-tools/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1a910dc5516a",
-    "mediaType": "short-non-fiction",
-    "title": "Bartleby newsletter: Can AI write newsletters",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Andrew Palmer, our Bartleby columnist, has bad news for some email scribes",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/business/2026/11/09/bartleby-newsletter-can-ai-write-newsletters",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-0a1e3819b73e",
-    "mediaType": "short-non-fiction",
-    "title": "Colombia’s Trumpian president is taking no prisoners",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Drug lords and social-justice warriors are both in El Tigre’s sights",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/the-americas/2026/11/09/colombias-trumpian-president-is-taking-no-prisoners",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-010ca862bcb1",
-    "mediaType": "short-non-fiction",
-    "title": "Congress Has Reined In the Presidency Before. Here’s How to Do It.",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "History tells us that constitutional oversight can be a powerful tool — if wielded correctly.",
-    "tags": [
-      "the-new-york-times",
-      "emily-bazelon"
-    ],
-    "url": "https://www.nytimes.com/2026/11/09/magazine/congress-trump-oversight-investigations-presidency.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-8569b1c0062e",
-    "mediaType": "short-non-fiction",
-    "title": "Cover Story newsletter: Wipeout",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "An exclusive look at how we designed our cover",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/the-world-this-week/2026/11/09/cover-story-newsletter-wipeout",
+    "url": "https://www.economist.com/europe/2026/11/09/cafe-europa-newsletter-democratic-wins-or-no-europe-is-over-america",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -210,234 +659,35 @@
     "source": "feed"
   },
   {
-    "id": "feed-52b01554bc90",
+    "id": "feed-0954bf5933bd",
     "mediaType": "short-non-fiction",
-    "title": "Democrats Demand Answers on Trump’s A.I. Policy Amid Spy Plot",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Congressional leaders raise concerns in a letter as Nvidia investigates its chief executive’s affair with a suspected Chinese spy.",
-    "tags": [
-      "the-new-york-times",
-      "julian-e-barnes-and-ana-swanson"
-    ],
-    "url": "https://www.nytimes.com/2026/11/09/us/politics/democrats-trump-ai-nvidia.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-390e77a70773",
-    "mediaType": "short-non-fiction",
-    "title": "How to Be an Ethical Russophile",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "In his new memoir, Emmanuel Carrère wonders if he can both oppose the war in Ukraine and love Russia.",
-    "tags": [
-      "the-atlantic",
-      "sara-krolewski"
-    ],
-    "url": "https://www.theatlantic.com/books/2026/11/ethical-russophile-russia-carrere-kolkhoz/688945/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-88fe8905161e",
-    "mediaType": "short-non-fiction",
-    "title": "How Ugly Metro Sweaters Became Chic",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Public-transit fashion is having a moment.",
-    "tags": [
-      "the-atlantic",
-      "kelsey-ables"
-    ],
-    "url": "https://www.theatlantic.com/culture/2026/11/metro-fashion-is-cool-now/689323/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-376c6f6cb16a",
-    "mediaType": "short-non-fiction",
-    "title": "Jensen Huang Hired a PR Firm Known for Handling Sex Scandals Last Year",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The Nvidia CEO began working with consultants from Heller as early as October 2025, around the same time he was first linked to a suspected Chinese spy.",
-    "tags": [
-      "wired",
-      "lauren-goode"
-    ],
-    "url": "https://www.wired.com/story/nvidia-ceo-jensen-huang-hired-a-pr-firm-known-for-handling-sex-scandals-last-year/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e33f970d6fe1",
-    "mediaType": "short-non-fiction",
-    "title": "Josh Homme Likes to Satan",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "On the heels of a new album from the rock band Queens of the Stone Age, the group’s front man spends some quality time with Linda Blair’s “Exorcist” character.",
-    "tags": [
-      "the-new-yorker",
-      "amanda-petrusich"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/16/josh-homme-likes-to-satan",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-122a5aeee94a",
-    "mediaType": "short-non-fiction",
-    "title": "King Arthur Baking Sourdough Sidekick Review: Rising to the Occasion",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "This techy automatic starter feeder has some quirks, but it ended my yearlong sourdough slump.",
-    "tags": [
-      "wired",
-      "kat-merck"
-    ],
-    "url": "https://www.wired.com/review/king-arthur-baking-sourdough-sidekick/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e58c525d180a",
-    "mediaType": "short-non-fiction",
-    "title": "New Hulu Doc ‘Get Huge’ Shows the Deadly Toll of Looksmaxxing",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The new Hulu docuseries Get Huge: Looksmaxxing to Death shines a light on the mysterious deaths and disappearances of a group of male influencers in Thailand—and the leader at the center of it all.",
-    "tags": [
-      "wired",
-      "ej-dickson"
-    ],
-    "url": "https://www.wired.com/story/hulu-doc-get-huge-shows-the-deadly-toll-of-looksmaxxing/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e460234c4fe4",
-    "mediaType": "short-non-fiction",
-    "title": "Nvidia’s Stock Price Drops After Investigation Into CEO Jensen Huang",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The chipmaker’s size and significance to the A.I. trade means that Jensen Huang’s admission of a relationship with a businesswoman suspected of spying for China could reverberate across Wall Street.",
-    "tags": [
-      "the-new-york-times",
-      "joe-rennison-and-jason-karaian"
-    ],
-    "url": "https://www.nytimes.com/2026/11/09/business/nvidia-stock-price-jensen-huang-ceo.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-944ea4ab3a9b",
-    "mediaType": "short-non-fiction",
-    "title": "Pete Hegseth Lashes Out",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The defense secretary wants military educators to pursue politics, not war.",
-    "tags": [
-      "the-atlantic",
-      "tom-nichols"
-    ],
-    "url": "https://www.theatlantic.com/ideas/2026/11/hegseth-war-college-curriculum/689351/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-f959a2d6e706",
-    "mediaType": "short-non-fiction",
-    "title": "Scientists May Have Discovered a Massive Starless Galaxy",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The promising candidate contains roughly 2 billion times the sun’s mass in hydrogen, yet appears to have no stars. Studying it could help answer questions that have vexed astronomers for years.",
-    "tags": [
-      "wired",
-      "jacklin-kwan"
-    ],
-    "url": "https://www.wired.com/story/scientists-discover-massive-starless-galaxy/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-7100cb1ee002",
-    "mediaType": "short-non-fiction",
-    "title": "The Collapse of America’s Most Consequential Institution",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Without a functional Department of Justice, no one can ensure that Americans will be treated equally under the law.",
-    "tags": [
-      "the-atlantic",
-      "rachel-maddow"
-    ],
-    "url": "https://www.theatlantic.com/ideas/2026/11/justice-department-collapse-trump/689306/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c9cc418ccc23",
-    "mediaType": "short-non-fiction",
-    "title": "The Death Knell of Digital Search",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Companies such as Google used to be our portals to the rest of the web. Can the internet as we know it survive when A.I. answers all of our questions?",
-    "tags": [
-      "the-new-yorker",
-      "kyle-chayka"
-    ],
-    "url": "https://www.newyorker.com/culture/infinite-scroll/the-death-knell-of-digital-search",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-14c58213af98",
-    "mediaType": "short-non-fiction",
-    "title": "The future of Trumponomics: compromise or failure",
+    "title": "Donald Trump is in a hurry for peace in Ukraine. Vladimir Putin is not",
     "creator": "The Economist",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-09",
-    "notes": "How the art of the deal may yet prevail over the art of denial",
+    "notes": "American-brokered talks may help Russia prolong the war",
     "tags": [
       "the-economist"
     ],
-    "url": "https://www.economist.com/finance-and-economics/2026/11/09/the-future-of-trumponomics-compromise-or-failure",
+    "url": "https://www.economist.com/europe/2026/11/09/donald-trump-is-in-a-hurry-for-peace-in-ukraine-vladimir-putin-is-not",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-549ce5c09c7c",
+    "mediaType": "short-non-fiction",
+    "title": "Scientists are finally starting to understand endometriosis",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-09",
+    "notes": "That should lead to quicker diagnosis and better treatment",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/science-and-technology/2026/11/09/scientists-are-finally-starting-to-understand-endometriosis",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -456,255 +706,6 @@
       "merve-emre"
     ],
     "url": "https://www.newyorker.com/magazine/2026/11/16/john-berger-a-life-tom-overton-book-review",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-92b67d7f801d",
-    "mediaType": "short-non-fiction",
-    "title": "The Long-Awaited Rise of Tinashe",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "After more than a decade of niche popularity, the singer released “Popstar”—an album whose title was a self-fulfilling prophecy.",
-    "tags": [
-      "the-new-yorker",
-      "kelefa-sanneh"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/16/popstar-tinashe-music-review",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-951a24e3c1e0",
-    "mediaType": "short-non-fiction",
-    "title": "The Midterms Were a Pretty Good Sign for the Right-to-Repair Movement",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "A shifting political landscape gives right-to-repair advocates their best shot yet at meaningful federal reform.",
-    "tags": [
-      "wired",
-      "boone-ashworth"
-    ],
-    "url": "https://www.wired.com/story/the-midterms-were-a-pretty-good-sign-for-right-to-repair/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-722f4bfc9b3a",
-    "mediaType": "short-non-fiction",
-    "title": "The One Source Bob Woodward Can’t Get to Talk",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "In a new memoir, the legendary reporter reveals his methods—but little of himself.",
-    "tags": [
-      "the-atlantic",
-      "george-packer"
-    ],
-    "url": "https://www.theatlantic.com/magazine/2026/12/bob-woodward-secrets-sources-watergate/689022/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-5ff068d1fe7f",
-    "mediaType": "short-non-fiction",
-    "title": "The Ubiquitous Melancholy of Max Richter",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The composer’s song “On the Nature of Daylight” has popped up in countless sob fests including “Arrival” and “Hamnet.” With billions of streams, he’s become one of the most popular and successful composers of our time.",
-    "tags": [
-      "the-new-yorker",
-      "jane-bua"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/16/the-ubiquitous-melancholy-of-max-richter",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-5cd983209af4",
-    "mediaType": "short-non-fiction",
-    "title": "The Unfinished Business of American Socialism",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The movement has often seen its ideas flourish as its organizations withered. Will today’s resurgence follow the same course?",
-    "tags": [
-      "the-new-yorker",
-      "jill-lepore"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/16/can-american-socialism-survive-its-success",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cec99e885755",
-    "mediaType": "short-non-fiction",
-    "title": "The Used-Battery Gold Rush Is Coming",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "If it can power an electric vehicle, why not a data center?",
-    "tags": [
-      "the-atlantic",
-      "nora-lowe"
-    ],
-    "url": "https://www.theatlantic.com/science/2026/11/electric-vehicle-battery-reuse/689326/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-37cac75fda4f",
-    "mediaType": "short-non-fiction",
-    "title": "The War Room newsletter: How long will Pete Hegseth last?",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "“Democrats, and a handful of Republicans, want the former Fox News host’s well-gelled head,” writes Samuel Beal, our Washington correspondent",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/united-states/2026/11/09/the-war-room-newsletter-how-long-will-pete-hegseth-last",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-be9b070739d6",
-    "mediaType": "short-non-fiction",
-    "title": "These Robotic Arms Are Powered by Algae. Watch How They Move",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "The key to the movement of these flexible robots is the algae’s photosynthetic capabilities.",
-    "tags": [
-      "wired",
-      "ritsuko-kawai"
-    ],
-    "url": "https://www.wired.com/story/these-robotic-arms-are-made-of-algae-watch-how-they-move/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-d2d3dcb05728",
-    "mediaType": "short-non-fiction",
-    "title": "Thomas Massie Moves to Force Vote on Impeaching Pete Hegseth",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Representative Thomas Massie, Republican of Kentucky, set in motion a vote that must be taken within two days.",
-    "tags": [
-      "the-new-york-times",
-      "robert-jimison"
-    ],
-    "url": "https://www.nytimes.com/2026/11/09/us/hegseth-impeachment-massie.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-0883bf641578",
-    "mediaType": "short-non-fiction",
-    "title": "Trump Veers Back Into Claims of Rigged Election, Questioning Midterm Results",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "President Trump, who initially said he would accept the midterm results, renewed his unsubstantiated claims that voting was manipulated.",
-    "tags": [
-      "the-new-york-times",
-      "luke-broadwater-and-zolan-kanno-youngs"
-    ],
-    "url": "https://www.nytimes.com/2026/11/09/us/politics/trump-election-fraud-rigging-midterms.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-8233129c4cd1",
-    "mediaType": "short-non-fiction",
-    "title": "U.S. Commerce Dept. Inquiry Into Megaspeed Was Halted After Nvidia Intervention",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "An investigation into Megaspeed, a Singapore company that was buying advanced Nvidia A.I. chips, was transferred to the Justice Department after a top Nvidia executive reached out to Commerce Department officials.",
-    "tags": [
-      "the-new-york-times",
-      "ana-swanson-and-devlin-barrett"
-    ],
-    "url": "https://www.nytimes.com/2026/11/09/business/economy/nvidia-megaspeed-investigation-huang.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6bcc56699d60",
-    "mediaType": "short-non-fiction",
-    "title": "What Democrats Plan to Investigate After Election Victory",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Following their midterm victories, Democrats are preparing to open wide-ranging investigations into President Trump, his family and his administration. Michael Gold, a Times congressional reporter, identifies the Democrats’ biggest targets.",
-    "tags": [
-      "the-new-york-times",
-      "michael-gold-joy-sung-whitney-shefte-and-pierre-kattar"
-    ],
-    "url": "https://www.nytimes.com/video/us/politics/100000011266496/democrats-plan-corruption-investigations-after-election-victory.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b60d888f3951",
-    "mediaType": "short-non-fiction",
-    "title": "What Donald Trump needs to understand about China and Taiwan",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "Chinese pressure on America to stop arms sales is calibrated to change the political calculus in Taipei, writes Ker Gibbs",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/by-invitation/2026/11/09/what-donald-trump-needs-to-understand-about-china-and-taiwan",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-731b57dd97dd",
-    "mediaType": "short-non-fiction",
-    "title": "Xi Jinping’s plan for a China-centric world order",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-09",
-    "notes": "A “community with a shared future” sounds soft, but is backed by muscle",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/china/2026/11/09/xi-jinpings-plan-for-a-china-centric-world-order",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
