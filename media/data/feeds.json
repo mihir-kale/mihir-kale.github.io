@@ -1,90 +1,609 @@
 [
   {
-    "id": "feed-4bb779d431bd",
+    "id": "feed-b9e0e2630463",
     "mediaType": "short-non-fiction",
-    "title": "“Avedon” Shows the Scars, Just Not the Photographer’s Own",
+    "title": "“News from Home,” by Tova Gannana",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Ron Howard’s new Netflix documentary is cagy about the dark underside of the legendary photographer’s life, which is perhaps fitting for an artist whose pictures were studies in utter control.",
+    "consumed": "2026-11-15",
+    "notes": "“Night easily becomes a year.”",
     "tags": [
       "the-new-yorker",
-      "naomi-fry"
+      "tova-gannana"
     ],
-    "url": "https://www.newyorker.com/culture/critics-notebook/avedon-shows-the-scars-just-not-the-photographers-own",
+    "url": "https://www.newyorker.com/magazine/2026/11/23/tova-gannana-news-from-home-poem",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-9be79ef9881a",
+    "id": "feed-a24ae472463a",
     "mediaType": "short-non-fiction",
-    "title": "10 Best Early Black Friday Headphone Deals (2026): Up to 50% Off",
-    "creator": "WIRED",
+    "title": "“Train of Thought,” by Jennifer Maier",
+    "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Get up to 50 percent off some of my favorite headphones and earbuds from Apple, Sony, Nothing, and more.",
+    "consumed": "2026-11-15",
+    "notes": "“All metaphor breaks down somewhere. That’s the beauty of it, / says Robert Frost.”",
     "tags": [
-      "wired",
-      "harry-rabinowitz"
+      "the-new-yorker",
+      "jennifer-maier"
     ],
-    "url": "https://www.wired.com/story/best-early-black-friday-headphone-deals-11-14-26/",
+    "url": "https://www.newyorker.com/magazine/2026/11/23/train-of-thought-jennifer-maier-poem",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-0d603287c9c9",
+    "id": "feed-b941d86e4c89",
     "mediaType": "short-non-fiction",
-    "title": "10 Questions to Determine Whether Your Partner Is a Spy",
+    "title": "“Trude,” by Joshua Cohen",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "She was the modest sister, she was the behaved sister, she was the responsible sister, she was the living sister and last survivor of the Herzl siblings.",
+    "tags": [
+      "the-new-yorker",
+      "joshua-cohen"
+    ],
+    "url": "https://www.newyorker.com/magazine/2026/11/23/trude-fiction-joshua-cohen",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6194da1de632",
+    "mediaType": "short-non-fiction",
+    "title": "30 Years for Moving a Box",
     "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Here’s how to make sure you aren’t being honeypotted.",
+    "consumed": "2026-11-15",
+    "notes": "A man who relocated a collection of radical art, zines, and handbooks will spend the next three decades in prison.",
     "tags": [
       "the-atlantic",
-      "alexandra-petri"
+      "matt-viser"
     ],
-    "url": "https://www.theatlantic.com/newsletters/2026/11/jensen-huang-partner-quiz-spy/689448/?utm_source=feed",
+    "url": "https://www.theatlantic.com/politics/2026/11/daniel-sanchez-prairieland-ice-protest/689372/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-98ec90b9a701",
+    "id": "feed-05ae19827390",
     "mediaType": "short-non-fiction",
-    "title": "Alaska Senate Race Between Dan Sullivan and Mary Peltola Still Counting Votes",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The race between Senator Dan S. Sullivan and Ms. Peltola, a former representative, is the only Senate contest that hasn’t been called.",
-    "tags": [
-      "the-new-york-times",
-      "tim-balk"
-    ],
-    "url": "https://www.nytimes.com/2026/11/14/us/alaska-senate-race-ranked-choice-tabulation.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2d33328dd4c9",
-    "mediaType": "short-non-fiction",
-    "title": "Beware the New AI-Fueled Ransomware Boom",
+    "title": "AI DJs Completely Kill My Groove",
     "creator": "WIRED",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Fully automated ransomware hasn’t arrived—yet. But seemingly unsophisticated attackers are using AI tools to wreak havoc.",
+    "consumed": "2026-11-15",
+    "notes": "YouTube Music and Spotify want synthetic hosts to curate your playlists. Their awkward banter and bogus song trivia are ruining the vibe.",
     "tags": [
       "wired",
-      "matt-burgess-lily-hay-newman"
+      "reece-rogers"
     ],
-    "url": "https://www.wired.com/story/beware-the-new-ai-fueled-ransomware-boom/",
+    "url": "https://www.wired.com/story/ai-djs-completely-kill-my-groove/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-adf8c514d508",
+    "mediaType": "short-non-fiction",
+    "title": "Caravaggio",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "A poem",
+    "tags": [
+      "the-atlantic",
+      "peter-balakian"
+    ],
+    "url": "https://www.theatlantic.com/books/2026/11/poem-peter-balakian-caravaggio/689422/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-efbf06f6375f",
+    "mediaType": "short-non-fiction",
+    "title": "ChatGPT Analyzed 32,245 of My Text Messages",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "I fed it a digital archive of one of my most intimate friendships. It had a lot to say.",
+    "tags": [
+      "the-atlantic",
+      "anna-holmes"
+    ],
+    "url": "https://www.theatlantic.com/family/2026/11/ai-text-message-analysis-friendship/689436/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-cc69cfa76a70",
+    "mediaType": "short-non-fiction",
+    "title": "Donald Trump will get a warm welcome in the Philippines",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "He almost skipped about the only country that still adores him",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/asia/2026/11/15/donald-trump-will-get-a-warm-welcome-in-the-philippines",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c6ce182f4e38",
+    "mediaType": "short-non-fiction",
+    "title": "Evercade Nexus Review: The Best Retro Handheld Yet",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Evercade’s best handheld yet is a major level-up for the retro specialist.",
+    "tags": [
+      "wired",
+      "matt-kamen"
+    ],
+    "url": "https://www.wired.com/review/evercade-nexus/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f4f82a108c74",
+    "mediaType": "short-non-fiction",
+    "title": "Five Books That Would Make Great Movies",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "These stories would translate well to the big screen.",
+    "tags": [
+      "the-atlantic",
+      "stephanie-bai"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/11/five-books-that-would-make-great-movies/689442/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-83667547c166",
+    "mediaType": "short-non-fiction",
+    "title": "How Jensen Huang’s Secret Led to His Downfall at Nvidia",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Nvidia’s leader said his relationship with a female customer was just about business. But what he was concealing eventually led to his resignation from the company he created.",
+    "tags": [
+      "the-new-york-times",
+      "tripp-mickle-ana-swanson-paul-mozur-jonathan-swan-julian-e-barnes-and-maggie-haberman"
+    ],
+    "url": "https://www.nytimes.com/2026/11/14/technology/jensen-huang-nvidia-board.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-fe4edc47622d",
+    "mediaType": "short-non-fiction",
+    "title": "Investigate Trump Like a Mob Boss",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Democrats will be tempted to go directly after Trump. They should focus first on the misconduct of those around him.",
+    "tags": [
+      "the-atlantic",
+      "randall-d-eliason"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/11/trump-investigation-strategy/689427/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-5bd2fc39ca44",
+    "mediaType": "short-non-fiction",
+    "title": "Iran Attacks Bahrain for the Second Time in Days",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The resumption of attacks after a two-month lull comes as peace talks between the U.S. and Iran appear to have stalled.",
+    "tags": [
+      "the-new-york-times",
+      "vivian-nereim-and-aaron-boxerman"
+    ],
+    "url": "https://www.nytimes.com/2026/11/15/world/middleeast/bahrain-iran-israel.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a864855dadcf",
+    "mediaType": "short-non-fiction",
+    "title": "Israel Kidnapped Iranian Generals in Hunt for Ron Arad",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Israeli officials were convinced that Tehran was to blame for the airman’s disappearance. Alternative theories got little attention, until now.",
+    "tags": [
+      "the-new-york-times",
+      "adam-goldman-ronen-bergman-farnaz-fassihi-and-hwaida-saad"
+    ],
+    "url": "https://www.nytimes.com/2026/11/15/world/europe/ron-arad-missing-israel-iran-asgari-hunt.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-0f0979e249c0",
+    "mediaType": "short-non-fiction",
+    "title": "It’s Getting Too Dry for Even Cactuses to Survive",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "As droughts worsen due to climate change, new research shows that hundreds of cactus species could lose the majority of their habitats by 2100.",
+    "tags": [
+      "wired",
+      "matt-simon"
+    ],
+    "url": "https://www.wired.com/story/droughts-are-getting-too-extreme-even-for-cactuses/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f3947b11a024",
+    "mediaType": "short-non-fiction",
+    "title": "Jensen Huang’s Downfall Brings Disbelief in Taiwan",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The Nvidia chief executive’s resignation shocked people in his birthplace, where he is called “the people’s dad.”",
+    "tags": [
+      "the-new-york-times",
+      "li-yuan-and-an-rong-xu"
+    ],
+    "url": "https://www.nytimes.com/2026/11/15/business/jensen-huang-taiwan.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-9998631a73fe",
+    "mediaType": "short-non-fiction",
+    "title": "Joshua Cohen on Writing Fiction About the Children of Theodor Herzl",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The author discusses his story “Trude.”",
+    "tags": [
+      "the-new-yorker",
+      "cressida-leyshon"
+    ],
+    "url": "https://www.newyorker.com/books/this-week-in-fiction/joshua-cohen-11-23-2026",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-29cfe1b8791d",
+    "mediaType": "short-non-fiction",
+    "title": "Joshua Cohen Reads “Trude”",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The author reads his story from the November 23, 2026, issue of the magazine.",
+    "tags": [
+      "the-new-yorker"
+    ],
+    "url": "https://www.newyorker.com/podcast/the-writers-voice/joshua-cohen-reads-trude",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-d4f0fda3ddcc",
+    "mediaType": "short-non-fiction",
+    "title": "LeVar Burton Gets the Last Word",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The actor opens up about his struggles with mental health, his passion for literature, and why he believes the Trump Administration is “killing the imaginations of America’s kids.”",
+    "tags": [
+      "the-new-yorker",
+      "julian-lucas"
+    ],
+    "url": "https://www.newyorker.com/culture/the-new-yorker-interview/levar-burton-gets-the-last-word",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e78f91b4a60d",
+    "mediaType": "short-non-fiction",
+    "title": "Logitech Yeti 2 Review: An All-In-One Studio Setup",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The follow-up to the iconic Yeti microphone is here, and its upgrades make it worthy of the legacy.",
+    "tags": [
+      "wired",
+      "henri-robbins"
+    ],
+    "url": "https://www.wired.com/review/logitech-yeti-2/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-40d415929291",
+    "mediaType": "short-non-fiction",
+    "title": "Lutnick Pushed to Weaken Chip Rules That Overlap With His Family Business",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The commerce secretary has been writing new rules that would affect Southeast Asian data centers, some of which are clients of his former firm.",
+    "tags": [
+      "the-new-york-times",
+      "ana-swanson-aaron-krolik-and-paul-mozur"
+    ],
+    "url": "https://www.nytimes.com/2026/11/15/us/politics/trump-lutnick-ai-chips-nvidia-cantor-fitzgerald.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-0f2b1e1709ac",
+    "mediaType": "short-non-fiction",
+    "title": "M6 Mac Mini Early Black Friday Sale (2026)",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Not only is it the best mini computer you can buy, but it’s currently on sale, starting at just $779.",
+    "tags": [
+      "wired",
+      "luke-larsen"
+    ],
+    "url": "https://www.wired.com/story/mac-mini-deal-11-13-2026/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-cc818cda9b01",
+    "mediaType": "short-non-fiction",
+    "title": "Microsoft Outlook Outage and FAA Groundstop Show Dependence on Fragile Technology",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Incidents involving Microsoft’s Outlook and the Federal Aviation Administration this past week demonstrated our dependence on fragile technology.",
+    "tags": [
+      "the-new-york-times",
+      "steve-lohr"
+    ],
+    "url": "https://www.nytimes.com/2026/11/15/business/technology-dependence-microsoft-airlines.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-cd30b7116f32",
+    "mediaType": "short-non-fiction",
+    "title": "New Species of Giant Fungus Discovered in China Grows up to 20 Inches Tall",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Dubbed Dianjunus rex, the huge fungus emerged shortly after the mass extinction that wiped out the dinosaurs.",
+    "tags": [
+      "wired",
+      "ritsuko-kawai"
+    ],
+    "url": "https://www.wired.com/story/new-species-of-giant-fungus-discovered-in-china-grows-up-to-20-inches-tall/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-866676cce976",
+    "mediaType": "short-non-fiction",
+    "title": "Restaurant Review: Iara",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "There are plenty of Brazilian restaurants in New York, but Iara feels thrillingly novel.",
+    "tags": [
+      "the-new-yorker",
+      "helen-rosner"
+    ],
+    "url": "https://www.newyorker.com/culture/the-food-scene/a-brazilian-restaurant-showcases-the-ingredients-of-the-amazon",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-cc70f5ed8f70",
+    "mediaType": "short-non-fiction",
+    "title": "Saudi-Backed Forces in Yemen Retreat From Red Sea as Houthis Advance",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The move is a setback for the Yemeni government and its ally Saudi Arabia, as analysts said the balance of power in the country’s civil war was tilting toward the Iran-backed Houthi militia.",
+    "tags": [
+      "the-new-york-times",
+      "vivian-nereim"
+    ],
+    "url": "https://www.nytimes.com/2026/11/15/world/middleeast/saudi-houthis-yemen-red-sea.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-de49df4dc574",
+    "mediaType": "short-non-fiction",
+    "title": "Scott Colom’s Senate Win Is a Mississippi Miracle",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Scenes from the Democrats’ most shocking midterm flip.",
+    "tags": [
+      "the-new-yorker",
+      "paige-williams"
+    ],
+    "url": "https://www.newyorker.com/news/us-journal/scott-coloms-mississippi-miracle",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6d8c0655d7a6",
+    "mediaType": "short-non-fiction",
+    "title": "SpaceX achieves another historic first",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "It has caught the second stage of its Starship rocket",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/science-and-technology/2026/11/15/spacex-achieves-another-historic-first",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f1bb80dca136",
+    "mediaType": "short-non-fiction",
+    "title": "The 4 Best Planners of 2027: Roterunner, Hobonichi, Cloth & Paper",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "If digital calendars are leaving you lacking, these WIRED-tested paper agendas and notebooks could change your life.",
+    "tags": [
+      "wired",
+      "nena-farrell"
+    ],
+    "url": "https://www.wired.com/story/best-paper-planners/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-cd462b9b259f",
+    "mediaType": "short-non-fiction",
+    "title": "The Only Thing Nathan Fielder Won’t Show",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "Why shouldn’t the subject of a documentary get paid?",
+    "tags": [
+      "the-atlantic",
+      "amanda-knox"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/11/holmes-documentary-journalistic-ethics/689350/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1064acd840d5",
+    "mediaType": "short-non-fiction",
+    "title": "The Pentagon Ignored a Warning About the Danger of Iran’s Drones",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "As soon as the war started, U.S. troops were killed.",
+    "tags": [
+      "the-atlantic",
+      "simon-shuster"
+    ],
+    "url": "https://www.theatlantic.com/national-security/2026/11/pentagon-drones-iran-war-hegseth/689425/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-bbfdff8ea22c",
+    "mediaType": "short-non-fiction",
+    "title": "This AI Tamagotchi Turns Everyday Objects Into Needy Virtual Pets",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "A Carnegie Mellon student’s tiny E Ink gadgets, called OATs, give houseplants, skateboards, and dumbbells expressive personalities to nudge you toward better habits.",
+    "tags": [
+      "wired",
+      "julian-chokkattu"
+    ],
+    "url": "https://www.wired.com/story/this-ai-tamagotchi-oats-turns-everyday-objects-into-needy-virtual-pets/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-bccf0a4f6895",
+    "mediaType": "short-non-fiction",
+    "title": "What Are the Masculine Virtues?",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "The novelist and Iraq War veteran Phil Klay offers an alternative to Donald Trump and Pete Hegseth’s cartoonish view of manhood.",
+    "tags": [
+      "the-atlantic",
+      "david-brooks"
+    ],
+    "url": "https://www.theatlantic.com/podcasts/2026/11/what-are-masculine-virtues/689379/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f06969949216",
+    "mediaType": "short-non-fiction",
+    "title": "What to Know About Continued Flight Disruptions",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-15",
+    "notes": "After a nationwide ground stop Friday, travelers are still encountering snags, and it could take several days for flight schedules to return to normal.",
+    "tags": [
+      "the-new-york-times",
+      "sejal-govindarao"
+    ],
+    "url": "https://www.nytimes.com/2026/11/14/us/flight-delays-cancelations-what-to-know.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -107,312 +626,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-4dee2ead78c5",
-    "mediaType": "short-non-fiction",
-    "title": "Did the Redistricting Wars Backfire on Republicans? In a Word, No.",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The G.O.P. was able to avoid more House midterm losses — on top of the advantage it already had from gerrymandering.",
-    "tags": [
-      "the-new-york-times",
-      "nate-cohn-and-eve-washington"
-    ],
-    "url": "https://www.nytimes.com/2026/11/13/upshot/gerrymanders-midterm-elections-republicans.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a1f113461650",
-    "mediaType": "short-non-fiction",
-    "title": "Don’t Be So Surprised That Mississippi Turned Blue",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Scott Colom’s win is the product of decades of work.",
-    "tags": [
-      "the-atlantic",
-      "ko-bragg"
-    ],
-    "url": "https://www.theatlantic.com/ideas/2026/11/scott-colom-mississippi-democrats/689443/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3cbfc5a3fdb4",
-    "mediaType": "short-non-fiction",
-    "title": "How the University of North Carolina Tried to Avoid Trump’s Wrath",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The University of North Carolina’s chancellor tried to protect the school from the Trump administration. Work on cancer, suicide, AIDS and coronaviruses was hit anyway.",
-    "tags": [
-      "the-new-york-times",
-      "alan-blinder-stephanie-saul-irena-hwang-benjamin-mueller-and-mike-belleme"
-    ],
-    "url": "https://www.nytimes.com/2026/11/13/us/university-north-carolina-science-research-cuts-trump.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-793db10fa8e1",
-    "mediaType": "short-non-fiction",
-    "title": "How to Land 4,000 Planes During a Ground Stop",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "No planes could take off; the ones in the air still had to land.",
-    "tags": [
-      "the-atlantic",
-      "joshua-partlow"
-    ],
-    "url": "https://www.theatlantic.com/technology/2026/11/flight-stop-safety/689447/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1499990f3529",
-    "mediaType": "short-non-fiction",
-    "title": "How to Run SteamOS on Your Mac",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "A free app lets you boot SteamOS in a virtual machine on your Apple Silicon Mac, unlocking PC and legacy games that otherwise won’t run.",
-    "tags": [
-      "wired",
-      "justin-pot"
-    ],
-    "url": "https://www.wired.com/story/get-steamos-easily-running-on-your-mac/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e93acab6c80e",
-    "mediaType": "short-non-fiction",
-    "title": "I Put the Best Digital Notebooks to the Test. Here Are My Favorites (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "These nifty tools combine the ease of jotting notes by hand with the power of saving them digitally.",
-    "tags": [
-      "wired",
-      "nena-farrell"
-    ],
-    "url": "https://www.wired.com/gallery/best-smart-notebooks-and-smart-pens/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a79f80d452c5",
-    "mediaType": "short-non-fiction",
-    "title": "It’s Time to Run an Audit of All the Cloud Storage Links You’ve Shared",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Those old links you shared with friends ages ago are still live, and they might be attracting unwelcome visitors.",
-    "tags": [
-      "wired",
-      "david-nield"
-    ],
-    "url": "https://www.wired.com/story/audit-all-the-cloud-storage-links-youve-shared/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-ef59e36ca420",
-    "mediaType": "short-non-fiction",
-    "title": "Jensen Huang and the Storied Lineage of the Honey Trap",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Novelists have long grasped the possibilities. Ian Fleming served up such enticements in his James Bond novels nearly as often as Bond was served a Martini.",
-    "tags": [
-      "the-new-yorker",
-      "david-remnick"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/23/jensen-huang-and-the-storied-lineage-of-the-honey-trap",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3cb14ee266a1",
-    "mediaType": "short-non-fiction",
-    "title": "Joe Biden’s Memoir “Promise Me, America” Shows a Man in Denial",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The former President had it in him to write a great book about the loss of his powers as he aged. “Promise Me, America” is not that book.",
-    "tags": [
-      "the-new-yorker",
-      "amy-davidson-sorkin"
-    ],
-    "url": "https://www.newyorker.com/books/page-turner/joe-biden-is-still-in-denial",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-429bab818e75",
-    "mediaType": "short-non-fiction",
-    "title": "Living in Normaltown and Feeling Anything But",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Tim Davis revisits a period of childhood upheaval in a place he remembers for its “cartilage of politeness.”",
-    "tags": [
-      "the-new-yorker",
-      "chris-wiley"
-    ],
-    "url": "https://www.newyorker.com/culture/photo-booth/living-in-normaltown-and-feeling-anything-but",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-50c3471fe79c",
-    "mediaType": "short-non-fiction",
-    "title": "Measles Is Once Again Endemic in the U.S.",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "RFK Jr. didn’t start the outbreak, but it’s his crisis now.",
-    "tags": [
-      "the-atlantic",
-      "tom-bartlett"
-    ],
-    "url": "https://www.theatlantic.com/health/2026/11/measles-elimination-status-endemic-kennedy/689450/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6fb99937853c",
-    "mediaType": "short-non-fiction",
-    "title": "My 9 Favorite Pickleball Paddles From 3 Years of Testing (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Paddles are getting more sophisticated and expensive. We’ve tested 100+ over the years to find our favorites.",
-    "tags": [
-      "wired",
-      "martin-cizmar"
-    ],
-    "url": "https://www.wired.com/story/best-pickleball-paddles/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c553f4de5580",
-    "mediaType": "short-non-fiction",
-    "title": "No Pilots. Few Air Traffic Controllers. What Could Go Wrong?",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Normally, aviation is slow to embrace new technology—but AI has come for the skies.",
-    "tags": [
-      "wired",
-      "jeff-wise"
-    ],
-    "url": "https://www.wired.com/story/no-pilots-few-air-traffic-controllers-what-could-go-wrong/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2b9afcbe9fec",
-    "mediaType": "short-non-fiction",
-    "title": "Nvidia Scandal Prompts Questions of What It Means to Be a Spy",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "U.S. intelligence agencies believe a woman who had an affair with Jensen Huang was a Chinese asset. But there is much more that they are still assessing about her role.",
-    "tags": [
-      "the-new-york-times",
-      "julian-e-barnes-maggie-haberman-and-jonathan-swan"
-    ],
-    "url": "https://www.nytimes.com/2026/11/13/us/politics/nvidia-alice-huang-spy-china.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-987b7584df6b",
-    "mediaType": "short-non-fiction",
-    "title": "President Trump’s Nightmare Oval Office",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "At a Chelsea gallery, the artist duo Elmgreen & Dragset walked through their latest installation—a barren, rusty Corten-steel replica of the West Wing room, with not a gold touch in sight.",
-    "tags": [
-      "the-new-yorker",
-      "jane-bua"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/23/president-trumps-nightmare-oval-office",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-329b00bd2fef",
-    "mediaType": "short-non-fiction",
-    "title": "The 21 Best REI Holiday Sale Outdoor Deals (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Stock up on outdoor gear and gifts for friends at REI's annual holiday sale.",
-    "tags": [
-      "wired",
-      "scott-gilbertson"
-    ],
-    "url": "https://www.wired.com/story/best-rei-holiday-sale-outdoor-deals-2026/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-67c8ba012be2",
-    "mediaType": "short-non-fiction",
-    "title": "The Aftershock",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "My family escaped the destruction of Gaza. In the quiet of exile, we discovered the cost of staying intact.",
-    "tags": [
-      "the-new-yorker",
-      "mohammed-r-mhawish"
-    ],
-    "url": "https://www.newyorker.com/news/the-weekend-essay/the-aftershock",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-92a21ac5e67a",
     "mediaType": "short-non-fiction",
     "title": "The Bottom Line newsletter: Nvidia will never be the same",
@@ -425,150 +638,6 @@
       "the-economist"
     ],
     "url": "https://www.economist.com/business/2026/11/14/the-bottom-line-newsletter-nvidia-will-never-be-the-same",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-613de96a5982",
-    "mediaType": "short-non-fiction",
-    "title": "The Jensen Huang Scandal Has Shocked Even Scandal-Prone Silicon Valley",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "As Jensen Huang abruptly departs, the tech community grapples with an eternal question: Why do the smartest and most successful men so often act so stupidly?",
-    "tags": [
-      "the-new-york-times",
-      "david-streitfeld"
-    ],
-    "url": "https://www.nytimes.com/2026/11/14/technology/jensen-huang-nvidia-scandal-silicon-valley.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-f896370f5756",
-    "mediaType": "short-non-fiction",
-    "title": "The Joy of True Mental Effort",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Fully engaging your brain with no distractions can be a reminder of what the mind is capable of.",
-    "tags": [
-      "the-atlantic",
-      "isabel-fattal"
-    ],
-    "url": "https://www.theatlantic.com/newsletters/2026/11/mental-effort-math-puzzles/689451/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6b51d5c29f19",
-    "mediaType": "short-non-fiction",
-    "title": "The Mind of a Megalomaniac",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The secret government report that previewed Hitler’s final two years in power",
-    "tags": [
-      "the-atlantic",
-      "timothy-w-ryback"
-    ],
-    "url": "https://www.theatlantic.com/ideas/2026/11/hitler-langer-cia-psychoanalysis/689434/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-fc1c85f9474f",
-    "mediaType": "short-non-fiction",
-    "title": "Top Democrat Eyes Filibuster-Proof Budget Bill to Unlock Affordability Agenda",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The lawmaker set to lead the House Budget Committee outlined Democrats’ options for forcing a negotiation with President Trump on an economic package to bring down living costs.",
-    "tags": [
-      "the-new-york-times",
-      "catie-edmondson"
-    ],
-    "url": "https://www.nytimes.com/2026/11/14/us/politics/house-democrats-affordability-costs-budget.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-6e756d0c7a2e",
-    "mediaType": "short-non-fiction",
-    "title": "What a New Congress Could Mean For Hegseth",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "Panelists on Washington Week With The Atlantic joined to discuss the defense secretary’s future once Democrats take control of Congress.",
-    "tags": [
-      "the-atlantic",
-      "the-editors"
-    ],
-    "url": "https://www.theatlantic.com/national/2026/11/congress-hegseth-washington-week/689449/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2fef10ed9c7e",
-    "mediaType": "short-non-fiction",
-    "title": "What the Tomb of the Unknown Soldier Means to Its Guards",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The U.S. Army sentinel who reprimanded the defense secretary joins a century-long line of infantrymen who did their duty.",
-    "tags": [
-      "the-atlantic",
-      "erik-slavin"
-    ],
-    "url": "https://www.theatlantic.com/politics/2026/11/tomb-unknown-soldier-guards-meaning/689437/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-42019767f114",
-    "mediaType": "short-non-fiction",
-    "title": "What to Know About Friday’s Nationwide Ground Stop",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "The air traffic control system’s overloaded, antiquated telecommunications equipment sustained its latest widespread failure, prompting a call for more money to fuel faster upgrades.",
-    "tags": [
-      "the-new-york-times",
-      "karoun-demirjian"
-    ],
-    "url": "https://www.nytimes.com/2026/11/13/us/faa-ground-stop-flights-what-to-know.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-5e0cd23c4e1e",
-    "mediaType": "short-non-fiction",
-    "title": "What’s Behind the Trump-Huang Relationship?",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "President Trump’s show of support for Jensen Huang as he was under fire was a remarkable moment in a relationship that barely existed two years ago. Our White House correspondent Maggie Haberman explains how Mr. Trump came to see Mr. Huang as a modern-day Henry Ford.",
-    "tags": [
-      "the-new-york-times",
-      "maggie-haberman-john-pappas-gilad-thaler-thomas-vollkommer-james-surdam-edward-vega-and-nikolay-nikolov"
-    ],
-    "url": "https://www.nytimes.com/video/us/politics/100000011272223/whats-behind-the-trump-huang-relationship.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -591,40 +660,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-7ac92882795e",
-    "mediaType": "short-non-fiction",
-    "title": "With Stephen Miller and Jim Jordan, the G.O.P. Doubles Down on Ideology",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-14",
-    "notes": "In the aftermath of the Republicans’ defeat in the midterms, right-wing hard-liners have been elevated to the apex of Washington politics. What does their rise spell for the future of the G.O.P.?",
-    "tags": [
-      "the-new-yorker"
-    ],
-    "url": "https://www.newyorker.com/podcast/political-scene/with-stephen-miller-and-jim-jordan-the-gop-doubles-down-on-ideology",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3cccb9c84f66",
-    "mediaType": "short-non-fiction",
-    "title": "Cover Story newsletter: An AI crash, or a bull in the bath?",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-13",
-    "notes": "An exclusive look at how we designed our cover",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/the-world-this-week/2026/11/13/cover-story-newsletter-an-ai-crash-or-a-bull-in-the-bath",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-46bee35c4506",
     "mediaType": "short-non-fiction",
     "title": "How badly did Republican gerrymandering fail?",
@@ -637,23 +672,6 @@
       "the-economist"
     ],
     "url": "https://www.economist.com/interactive/graphic-detail/2026/11/13/how-badly-did-republican-gerrymandering-fail",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-0c503d23e46a",
-    "mediaType": "short-non-fiction",
-    "title": "In His War of Choice with Iran, Trump Has No Good Options",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-13",
-    "notes": "The staff writer Ishaan Tharoor on the political backlash to the war, and why the President cannot easily extricate the U.S.",
-    "tags": [
-      "the-new-yorker"
-    ],
-    "url": "https://www.newyorker.com/podcast/the-new-yorker-radio-hour/in-his-war-of-choice-with-iran-trump-has-no-good-options",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -688,23 +706,6 @@
       "the-economist"
     ],
     "url": "https://www.economist.com/united-states/2026/11/13/the-jensen-huang-scandal-reaches-donald-trumps-cabinet",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a84cd42f2aee",
-    "mediaType": "short-non-fiction",
-    "title": "The Republican post-mortem",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-13",
-    "notes": "Our weekly podcast on America. This week, Republicans regroup",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/podcasts/2026/11/13/the-republican-post-mortem",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
