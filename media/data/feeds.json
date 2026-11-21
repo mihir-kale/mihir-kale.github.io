@@ -1,53 +1,501 @@
 [
   {
-    "id": "feed-78b71e886f04",
+    "id": "feed-6a224aaf06dd",
     "mediaType": "short-non-fiction",
-    "title": "“All of a Sudden” Exalts the Power of Talk",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Ryûsuke Hamaguchi’s new film explores emotional connections at the end of life.",
-    "tags": [
-      "the-new-yorker",
-      "richard-brody"
-    ],
-    "url": "https://www.newyorker.com/magazine/2026/11/30/all-of-a-sudden-movie-review",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-98a78cccfa0a",
-    "mediaType": "short-non-fiction",
-    "title": "A Dairy Farmer Ran for Office to Prove a Point. He Accidentally Won.",
+    "title": "10 Days After Fatal Building Collapse, a Brooklyn Block Is in Limbo",
     "creator": "The New York Times",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "An Arkansas Democrat’s victory in a race for county assessor was one of many unlikely down-ballot wins that showed the depth of the blue wave.",
+    "consumed": "2026-11-21",
+    "notes": "A deadly collapse damaged an adjoining building, which city officials now say must be torn down. Residents of that building and others nearby are frustrated and anxious.",
     "tags": [
       "the-new-york-times",
-      "reis-thebault"
+      "mihir-zaveri-wesley-parnell-and-andrea-barnes"
     ],
-    "url": "https://www.nytimes.com/2026/11/20/us/democrats-unexpected-winning-candidates-midterms.html",
+    "url": "https://www.nytimes.com/2026/11/21/nyregion/brooklyn-building-collapse-flatbush-ave.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-8fd3c02efad3",
+    "id": "feed-49ca1062cc10",
     "mediaType": "short-non-fiction",
-    "title": "A Diagnosis Unravels Reality in “With Tapes and Toasts in the Car”",
+    "title": "17 Best Gifts for Women in the Enshittocene (2026)",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The least you can do is buy her something nice.",
+    "tags": [
+      "wired",
+      "boutayna-chokrane"
+    ],
+    "url": "https://www.wired.com/story/best-gifts-for-women/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a888349adbef",
+    "mediaType": "short-non-fiction",
+    "title": "A Space Probe Returns to Asteroids Where NASA Tested Planetary Defense Systems",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Several years ago, NASA tested systems for deterring dangerous space rocks. Now, a probe from the European Space Agency is returning to the scene to investigate.",
+    "tags": [
+      "wired",
+      "petr-kubala"
+    ],
+    "url": "https://www.wired.com/story/a-space-probe-returns-to-astroids-where-nasa-tested-planetary-defense-systems/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6d38a5f3e883",
+    "mediaType": "short-non-fiction",
+    "title": "Anthropic’s Debut Shows the Disconnect Between Wall Street and Silicon Valley",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The A.I. giant broke records with its initial public offering this week before a rocky first full day of trading, as the markets plunged on worries about artificial intelligence spending.",
+    "tags": [
+      "the-new-york-times",
+      "cory-weinberg"
+    ],
+    "url": "https://www.nytimes.com/2026/11/21/business/anthropic-stock-wall-street-silicon-valley.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b13843ba225d",
+    "mediaType": "short-non-fiction",
+    "title": "Before a Fatal Building Collapse, Officials Signed Off on a Dubious Plan",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Experts say that the New York City Buildings Department approved a risky method of shoring up a structure next to a Brooklyn construction site. Months later, it collapsed.",
+    "tags": [
+      "the-new-york-times",
+      "stefanos-chen-dionne-searcey-mihir-zaveri-and-bianca-pallaro"
+    ],
+    "url": "https://www.nytimes.com/2026/11/21/nyregion/flatbush-building-collapse-oversight.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e2c3a2df894d",
+    "mediaType": "short-non-fiction",
+    "title": "Best Laptops for Travel (2026): Which to Take on the Road",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Having brought many different laptops on work trips, I can say these are the best portable computers for travel, based on my personal testing.",
+    "tags": [
+      "wired",
+      "luke-larsen"
+    ],
+    "url": "https://www.wired.com/story/best-laptops-for-travel/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f883c4875878",
+    "mediaType": "short-non-fiction",
+    "title": "Best Power Banks (2026): My Picks After Testing Over 100",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Keep your phone, laptop, handheld gaming console, and other electronics running with these travel-friendly power banks.",
+    "tags": [
+      "wired",
+      "simon-hill"
+    ],
+    "url": "https://www.wired.com/gallery/best-portable-chargers-power-banks/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-2992449eb455",
+    "mediaType": "short-non-fiction",
+    "title": "Checks and Balance newsletter: The crowded field for 2028",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Charlotte Howard, our US editor, on how presidential hopefuls are trying to stand out",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/united-states/2026/11/21/checks-and-balance-newsletter-the-crowded-field-for-2028",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b4a50b501fec",
+    "mediaType": "short-non-fiction",
+    "title": "Donald Trump’s Crackdown on International Students Is Working",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Kiana Naghshineh’s animated short is a bold, psychedelic vision of the stages of grief.",
+    "consumed": "2026-11-21",
+    "notes": "Courts have blocked some of the harshest restrictions proposed by the Administration, but international enrollment—and interest from students abroad—has dropped anyway, leaving schools such as the University of Illinois in a precarious position.",
+    "tags": [
+      "the-new-yorker",
+      "erika-hayasaki"
+    ],
+    "url": "https://www.newyorker.com/news/the-lede/donald-trumps-crackdown-on-international-students-is-working",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1e9868f1ff19",
+    "mediaType": "short-non-fiction",
+    "title": "Fighting a Radical Militia Was Not Part of the Plan",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Saudi Arabia was looking forward to a frictionless future before the Houthis got involved.",
+    "tags": [
+      "the-atlantic",
+      "robert-f-worth"
+    ],
+    "url": "https://www.theatlantic.com/international/2026/11/houthis-saudi-arabia-war/689532/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c4051db85d67",
+    "mediaType": "short-non-fiction",
+    "title": "Hakeem Jeffries on Trump, Stephen Miller, AIPAC and the Road Ahead",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The Democratic nominee for House speaker will have a challenging job. We asked him how he plans to lead.",
+    "tags": [
+      "the-new-york-times",
+      "lulu-garcia-navarro"
+    ],
+    "url": "https://www.nytimes.com/2026/11/21/magazine/hakeem-jeffries-interview.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-1a3485362766",
+    "mediaType": "short-non-fiction",
+    "title": "Hollywood Needs a New Pixar",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "AI is accelerating culture’s move to YouTube, Roblox, and TikTok. Movie studios can make the move that transformed Disney.",
+    "tags": [
+      "the-atlantic",
+      "maureen-fan"
+    ],
+    "url": "https://www.theatlantic.com/ideas/2026/11/movies-pixar-animation-media/689535/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6a3fc1a063d5",
+    "mediaType": "short-non-fiction",
+    "title": "It’s a Bill on Energy Permits, but Trump’s Pet Projects Are Part of the Debate",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The pervasive presence of the president hovers over the bipartisan legislation to speed up construction of energy projects that is advancing through Congress.",
+    "tags": [
+      "the-new-york-times",
+      "luke-broadwater"
+    ],
+    "url": "https://www.nytimes.com/2026/11/20/us/politics/baaja-permitting-bill-trump.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-e49b7f5c6e66",
+    "mediaType": "short-non-fiction",
+    "title": "Matt Salinger Doesn’t Know Where the Ducks Go",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The son of J.D. stops by the Central Park Pond to consider seventy-five years of “The Catcher in the Rye” and Holden Caulfield’s gnawing question.",
+    "tags": [
+      "the-new-yorker",
+      "adam-gopnik"
+    ],
+    "url": "https://www.newyorker.com/magazine/2026/11/30/matt-salinger-doesnt-know-where-the-ducks-go",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-8be599660b8e",
+    "mediaType": "short-non-fiction",
+    "title": "Officials Find Cascade of Problems With ICE Training in Trump’s Immigration Crackdown",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "In a draft report, officials found widespread training gaps as the Department of Homeland Security sought to rapidly hire and deploy 10,000 new officers.",
+    "tags": [
+      "the-new-york-times",
+      "hamed-aleaziz"
+    ],
+    "url": "https://www.nytimes.com/2026/11/20/us/politics/training-ice-immigration-inspector-general.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f3bd7d61f2ea",
+    "mediaType": "short-non-fiction",
+    "title": "Our Top Tested Picks From Tineco’s Black Friday Sale (2026)",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Get WIRED-tested vacuum cleaners, carpet cleaners, and steam mops for up to 60 percent off.",
+    "tags": [
+      "wired",
+      "louryn-strampe"
+    ],
+    "url": "https://www.wired.com/story/tineco-black-friday-sale-2026/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-b13f3c074efc",
+    "mediaType": "short-non-fiction",
+    "title": "Raye’s Theatrical Pop Nostalgia",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The singer’s latest album, “This Music May Contain Hope,” which just earned her the most Grammy nominations of any artist this year, deepens the impression that she is a musician trapped in her idea of what it means to be a musician.",
+    "tags": [
+      "the-new-yorker",
+      "doreen-st-f-lix"
+    ],
+    "url": "https://www.newyorker.com/culture/critics-notebook/rayes-theatrical-pop-nostalgia",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-6f7e859226dc",
+    "mediaType": "short-non-fiction",
+    "title": "Reading in Reverse",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "I sat on a sofa with a book in my lap and read the last sentence of a chapter, and then the second to last, and then the third to last.",
+    "tags": [
+      "the-new-yorker",
+      "akhil-sharma"
+    ],
+    "url": "https://www.newyorker.com/culture/the-weekend-essay/reading-in-reverse",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-245d5b24f151",
+    "mediaType": "short-non-fiction",
+    "title": "Senator Raphael Warnock on How Democrats Won Across the South",
+    "creator": "The New Yorker",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The pastor and Georgia legislator calls his party’s sweeping victories across the South a “parting of the Red Sea.”",
     "tags": [
       "the-new-yorker"
     ],
-    "url": "https://www.newyorker.com/culture/screening-room/a-diagnosis-unravels-reality-in-with-tapes-and-toasts-in-the-car",
+    "url": "https://www.newyorker.com/podcast/political-scene/senator-raphael-warnock-on-how-democrats-won-across-the-south",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-ceb7af02341f",
+    "mediaType": "short-non-fiction",
+    "title": "Sony Bravia 9 II Review (2026): Adjustable and Bright",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The Bravia 9 II comes at a premium cost but offers great, highly customizable features.",
+    "tags": [
+      "wired",
+      "john-brandon"
+    ],
+    "url": "https://www.wired.com/review/sony-bravia-9-ii/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-c13c6a34f9f6",
+    "mediaType": "short-non-fiction",
+    "title": "The False Comfort of Online Shopping",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Buying things has never been easier—or more isolating.",
+    "tags": [
+      "the-atlantic",
+      "rafaela-jinich"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/11/false-comfort-of-online-shopping/689518/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-498b91a9f6aa",
+    "mediaType": "short-non-fiction",
+    "title": "The Manosphere Isn’t Ready for Brothercore",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Vulnerable, huggable, affirming, chiseled: Welcome to Hey Brother House, a content incubator for bros who just want to trauma-dump and play Mario Kart.",
+    "tags": [
+      "wired",
+      "ej-dickson"
+    ],
+    "url": "https://www.wired.com/story/hey-brother-house-manosphere-content/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-2a24eccd42fb",
+    "mediaType": "short-non-fiction",
+    "title": "The Outages Are Just Getting Started",
+    "creator": "WIRED",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "AI is forcing companies to patch their systems faster as attackers race to exploit newly discovered vulnerabilities. Welcome to internet outage hell.",
+    "tags": [
+      "wired",
+      "lily-hay-newman-matt-burgess"
+    ],
+    "url": "https://www.wired.com/story/brace-yourself-for-years-of-outage-chaos/",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-54accb3b694b",
+    "mediaType": "short-non-fiction",
+    "title": "The real tech addicts",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Why some people are falling down the digital rabbit hole",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/podcasts/2026/11/21/the-real-tech-addicts",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-4992a5d3aff6",
+    "mediaType": "short-non-fiction",
+    "title": "Top Drug Kingpin Is Captured by Mexican Army as Gunfire Erupts",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The arrest of Fausto Isidro Meza Flores, who is known as El Chapo Isidro and was one of the F.B.I.’s 10 most wanted, was a victory for the Mexican government.",
+    "tags": [
+      "the-new-york-times",
+      "paulina-villegas"
+    ],
+    "url": "https://www.nytimes.com/2026/11/21/world/americas/mexico-el-chapo-isidro-captured-drugs.html",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-8dbb8c33599a",
+    "mediaType": "short-non-fiction",
+    "title": "Two Risk-Takers Walk Into a Football Stadium",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "When the 49ers and Vikings play this weekend, the most nonconformist coaching minds in the NFL will face off.",
+    "tags": [
+      "the-atlantic",
+      "sally-jenkins"
+    ],
+    "url": "https://www.theatlantic.com/culture/2026/11/vikings-49ers-coaching/689538/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-a9a5d4fdbf4b",
+    "mediaType": "short-non-fiction",
+    "title": "What Trump’s Summit in China Reveals",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "Panelists on Washington Week With The Atlantic joined to discuss the president’s week in China with Xi Jinping and Vladimir Putin.",
+    "tags": [
+      "the-atlantic",
+      "the-editors"
+    ],
+    "url": "https://www.theatlantic.com/national/2026/11/trump-summit-china-washington-week/689539/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-f7671820ae49",
+    "mediaType": "short-non-fiction",
+    "title": "Who Is the Mexican Drug Kingpin Known as El Chapo Isidro?",
+    "creator": "The New York Times",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-21",
+    "notes": "The kingpin, Fausto Isidro Meza Flores, was captured in a violent operation in Mexico. He was one of the F.B.I.’s 10 most wanted fugitives.",
+    "tags": [
+      "the-new-york-times",
+      "lynsey-chutel"
+    ],
+    "url": "https://www.nytimes.com/2026/11/21/world/americas/mexico-el-chapo-isidro-drug-kingpin.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -70,6 +518,23 @@
     "source": "feed"
   },
   {
+    "id": "feed-06a92da540bd",
+    "mediaType": "short-non-fiction",
+    "title": "AI may have solved the most important problem in mathematics",
+    "creator": "The Economist",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-20",
+    "notes": "Humans spent 167 years trying to prove the Riemann hypothesis",
+    "tags": [
+      "the-economist"
+    ],
+    "url": "https://www.economist.com/science-and-technology/2026/11/20/ai-may-have-solved-the-most-important-problem-in-mathematics",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
     "id": "feed-893609a80e65",
     "mediaType": "short-non-fiction",
     "title": "Andy Burnham’s EU deal is only a start",
@@ -82,24 +547,6 @@
       "the-economist"
     ],
     "url": "https://www.economist.com/britain/2026/11/20/andy-burnhams-eu-deal-is-only-a-start",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1380648aadbb",
-    "mediaType": "short-non-fiction",
-    "title": "Anthropic Shares Slip as AI and Tech Stock Sell-Off Continues",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "The S&P 500 and Nasdaq were on course for their worst weekly performances in over a year. Anthropic’s shares tumbled on their second day of trading.",
-    "tags": [
-      "the-new-york-times",
-      "joe-rennison"
-    ],
-    "url": "https://www.nytimes.com/2026/11/20/business/anthropic-ai-stocks-sp500.html",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -122,114 +569,6 @@
     "source": "feed"
   },
   {
-    "id": "feed-88e621397215",
-    "mediaType": "short-non-fiction",
-    "title": "As He Leaves Office, Ken Paxton Drops Suits Against Political Opponents",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "The Texas attorney general has abandoned suits against Muslim and immigrant rights groups — and the N.C.A.A.",
-    "tags": [
-      "the-new-york-times",
-      "j-david-goodman"
-    ],
-    "url": "https://www.nytimes.com/2026/11/20/us/texas-ken-paxton-drops-lawsuits.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-52d716ca790d",
-    "mediaType": "short-non-fiction",
-    "title": "Best Robot Vacuum Early Black Friday Deals from Roborock (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "A few of the best robot vacuums I’ve tested from the brand are at their lowest prices ever.",
-    "tags": [
-      "wired",
-      "nena-farrell"
-    ],
-    "url": "https://www.wired.com/story/best-early-black-friday-robot-vacuum-deals-roborock-2026/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-501b62309233",
-    "mediaType": "short-non-fiction",
-    "title": "Big Belly, Big Shame",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "It’s been with me for at least twenty-five years, maybe longer.",
-    "tags": [
-      "the-new-yorker",
-      "yinfan-huang"
-    ],
-    "url": "https://www.newyorker.com/humor/sketchbook/big-belly-big-shame",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-f8b144c08eb0",
-    "mediaType": "short-non-fiction",
-    "title": "C.F.T.C. Officials Considered Investigating Trump’s Memecoin, Then Punted",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Lawyers at the Commodity Futures Trading Commission looked into possible fraud soon after the digital token’s launch, then decided they would not get the commission’s support.",
-    "tags": [
-      "the-new-york-times",
-      "sharon-lafraniere"
-    ],
-    "url": "https://www.nytimes.com/2026/11/20/us/politics/cftc-cryptocurrency-trump-memecoin.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e56c29c8f4da",
-    "mediaType": "short-non-fiction",
-    "title": "China’s A.I. Ambitions Are Running Into a Money Problem",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "While Anthropic and other Silicon Valley A.I. giants are raising tens of billions in capital, Chinese rivals are struggling to keep pace financially.",
-    "tags": [
-      "the-new-york-times",
-      "sui-lee-wee-and-li-you"
-    ],
-    "url": "https://www.nytimes.com/2026/11/20/business/china-ai-investment-spending.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-8f4954b76c69",
-    "mediaType": "short-non-fiction",
-    "title": "Daily Cartoon: Friday, November 20th",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "A drawing that riffs on the latest news and happenings.",
-    "tags": [
-      "the-new-yorker",
-      "paul-noth"
-    ],
-    "url": "https://www.newyorker.com/cartoons/daily-cartoon/friday-november-20th-no-injury-to-shareholders",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
     "id": "feed-7e9af048e928",
     "mediaType": "short-non-fiction",
     "title": "Delayed but not denied: justice for the Rohingyas",
@@ -242,114 +581,6 @@
       "the-economist"
     ],
     "url": "https://www.economist.com/podcasts/2026/11/20/delayed-but-not-denied-justice-for-the-rohingyas",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-94d23612a717",
-    "mediaType": "short-non-fiction",
-    "title": "Dinner and “The Dead”",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Also: Doja Cat’s reincarnation, a tap-dance party, the evolution of Yoshitomo Nara, and more.",
-    "tags": [
-      "the-new-yorker",
-      "dan-stahl-marina-harss-brian-seibert-sheldon-pearce-emily-nussbaum-katherine-hu-richard-brody"
-    ],
-    "url": "https://www.newyorker.com/culture/goings-on/dinner-and-the-dead",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-0ba94f108e92",
-    "mediaType": "short-non-fiction",
-    "title": "Don’t Bring Jensen Back",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "A mob of tech bros is clamoring for Nvidia to reinstate Jensen Huang as CEO. It's a bad idea.",
-    "tags": [
-      "wired",
-      "steven-levy"
-    ],
-    "url": "https://www.wired.com/story/dont-bring-jensen-back/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-cc5302e41b4d",
-    "mediaType": "short-non-fiction",
-    "title": "Early Black Friday Mattress Deals: Get Up to 55% Off WIRED-Tested Favorites",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "I’ve already found early deals on our favorite WIRED-tested mattresses and sleep accessories.",
-    "tags": [
-      "wired",
-      "molly-higgins"
-    ],
-    "url": "https://www.wired.com/story/best-early-black-friday-mattress-deals-11-20-2026/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-692445356d1f",
-    "mediaType": "short-non-fiction",
-    "title": "Gerrymandering Worked",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "It just isn’t magic.",
-    "tags": [
-      "the-atlantic",
-      "adam-serwer"
-    ],
-    "url": "https://www.theatlantic.com/ideas/2026/11/gerrymandering-redistricting-black-voters/689492/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-984042180d1d",
-    "mediaType": "short-non-fiction",
-    "title": "Have Yourself a Kitschy Little Christmas",
-    "creator": "The New Yorker",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Leave your good taste at the door.",
-    "tags": [
-      "the-new-yorker",
-      "rachel-syme"
-    ],
-    "url": "https://www.newyorker.com/culture/gift-guides/have-yourself-a-kitschy-little-christmas",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-580832c861e9",
-    "mediaType": "short-non-fiction",
-    "title": "Hollywood’s Worst Tendencies, in One Movie",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "The Hunger Games franchise once found meaning in its violent spectacle.",
-    "tags": [
-      "the-atlantic",
-      "shirley-li"
-    ],
-    "url": "https://www.theatlantic.com/culture/2026/11/hunger-games-sunrise-on-the-reaping-movie-review/689509/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -372,253 +603,90 @@
     "source": "feed"
   },
   {
-    "id": "feed-5077181eb050",
+    "id": "feed-8f25f3f26ddf",
     "mediaType": "short-non-fiction",
-    "title": "How Jensen Huang Made Humiliation Routine at Nvidia",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "The Nvidia co-founder’s belittling behavior toward employees goes back decades. It once led to a confidential settlement agreement with an executive who said Mr. Huang “terrorized” staff.",
-    "tags": [
-      "the-new-york-times",
-      "emily-steel-kalley-huang-ryan-mac-and-tripp-mickle"
-    ],
-    "url": "https://www.nytimes.com/2026/11/20/technology/jensen-huang-nvidia-culture.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-04765bd96bc4",
-    "mediaType": "short-non-fiction",
-    "title": "I Went Full Kardashian",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "The Kardashians now have so many brands that approximating their lifestyle is more possible than ever before.",
-    "tags": [
-      "the-atlantic",
-      "nancy-walecki"
-    ],
-    "url": "https://www.theatlantic.com/health/2026/11/kardashian-products-week/689363/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-c43a01873316",
-    "mediaType": "short-non-fiction",
-    "title": "Internet Archive Staffers Are Unionizing",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "A supermajority of eligible workers at the nonprofit digital library voted to join the Communications Workers of America.",
-    "tags": [
-      "wired",
-      "caroline-haskins"
-    ],
-    "url": "https://www.wired.com/story/internet-archive-staffers-are-unionizing/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b6009c3ed79a",
-    "mediaType": "short-non-fiction",
-    "title": "Should You Invest in Anthropic? Here’s What to Consider.",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Placing a meaningful portion of your wealth on a single stock is never a good idea, but if you feel tempted to invest, ask yourself several questions first.",
-    "tags": [
-      "the-new-york-times",
-      "tara-siegel-bernard"
-    ],
-    "url": "https://www.nytimes.com/2026/11/19/your-money/anthropic-ipo-investing.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-a7362ff86af8",
-    "mediaType": "short-non-fiction",
-    "title": "Spying Suspect’s Chip Network Has Ties to Chinese Military Suppliers",
-    "creator": "The New York Times",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Companies linked to Alice Huang, the woman at the heart of the Nvidia scandal, are part of a network of Chinese tech firms and defense contractors that need advanced computing power.",
-    "tags": [
-      "the-new-york-times",
-      "julian-e-barnes-paul-mozur-and-ana-swanson"
-    ],
-    "url": "https://www.nytimes.com/2026/11/20/us/politics/nvidia-alice-huang-chips-china.html",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-fb6a4d48857b",
-    "mediaType": "short-non-fiction",
-    "title": "The 23 Best Early Black Friday Deals: Our Ultimate Picks (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "The early bird gets the worm. Here are the best Black Friday deals for 2026 you can get right now.",
-    "tags": [
-      "wired",
-      "simon-hill"
-    ],
-    "url": "https://www.wired.com/story/best-black-friday-deals-11-20-2026/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-1f3558a6eb1b",
-    "mediaType": "short-non-fiction",
-    "title": "The Benefits of Reading Are Incalculable",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Books can alter a life, undermine foundational beliefs, even change the world.",
-    "tags": [
-      "the-atlantic",
-      "emma-sarappo"
-    ],
-    "url": "https://www.theatlantic.com/newsletters/2026/11/books-briefing-benefits-reading-incalculable/689527/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-41aa145d3adb",
-    "mediaType": "short-non-fiction",
-    "title": "The Best Pura Deals for Cyber Week (2026)",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Pura fragrances are 20 percent off, and diffusers are 30 percent off through December 6. Here’s what I’d buy after having tested three generations of Pura devices.",
-    "tags": [
-      "wired",
-      "kat-merck"
-    ],
-    "url": "https://www.wired.com/story/pura-black-friday-2026/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b1f6c17a9a89",
-    "mediaType": "short-non-fiction",
-    "title": "The Birdfy Gifts I’d Buy for Backyard Birders",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "After more than two years of testing smart bird feeders, these are the picks I’d give others, including a simple camera feeder and a nest box that let me watch chickadees raise their young.",
-    "tags": [
-      "wired",
-      "kat-merck"
-    ],
-    "url": "https://www.wired.com/story/best-birdfy-gifts-2026/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-21fb3e2bfbda",
-    "mediaType": "short-non-fiction",
-    "title": "The Former Trump Official Who Thinks Trump’s Staff Has Let Him Down",
+    "title": "Is the F.A.A. Grounding the First of Many?",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-20",
-    "notes": "John Ullyot’s new book argues that better advisers could save the President’s second term.",
+    "notes": "Recent disruptions to air travel, banking, and other critical systems have raised questions about the reliability of aging technology—and the risks of upgrading it.",
     "tags": [
-      "the-new-yorker",
-      "isaac-chotiner"
+      "the-new-yorker"
     ],
-    "url": "https://www.newyorker.com/news/q-and-a/the-former-trump-official-who-thinks-trumps-staff-has-let-him-down",
+    "url": "https://www.newyorker.com/podcast/political-scene/is-the-faa-grounding-the-first-of-many",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-d58e0399c790",
+    "id": "feed-895bff92d12b",
     "mediaType": "short-non-fiction",
-    "title": "The Impish Faxes Between Janet Malcolm and Philip Roth",
+    "title": "Silicon Valley Is Scrambling Now",
+    "creator": "The Atlantic",
+    "year": 2026,
+    "status": "finished",
+    "consumed": "2026-11-20",
+    "notes": "Companies’ attempts to prepare for a post-Trump moment are making them look foolish.",
+    "tags": [
+      "the-atlantic",
+      "david-a-graham"
+    ],
+    "url": "https://www.theatlantic.com/newsletters/2026/11/karp-musk-trump-midterms/689534/?utm_source=feed",
+    "spotlight": false,
+    "list": "shelf",
+    "source": "feed"
+  },
+  {
+    "id": "feed-fc4e6eb826f4",
+    "mediaType": "short-non-fiction",
+    "title": "The Case for A.I. Optimism",
     "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-20",
-    "notes": "For years, the literary greats shared a gleeful, supportive friendship, thanks to a newfangled machine.",
+    "notes": "The tech reporter Kevin Roose discusses the rise of Anthropic, the fall of Jensen Huang, and why not to freak out—too much—about the new age enveloping us all.",
     "tags": [
       "the-new-yorker",
-      "eve-sneider"
+      "david-remnick"
     ],
-    "url": "https://www.newyorker.com/books/page-turner/the-impish-faxes-between-janet-malcolm-and-philip-roth",
+    "url": "https://www.newyorker.com/culture/the-new-yorker-interview/the-case-for-ai-optimism",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-e6c91d63eaaf",
+    "id": "feed-5daa406ad399",
     "mediaType": "short-non-fiction",
-    "title": "The Old-School Dating Ritual People Can’t Seem to Shake",
-    "creator": "The Atlantic",
+    "title": "The Look-at-Me Spectacle of Actors Playing Actors in “Elsinore” and “I Play Rocky”",
+    "creator": "The New Yorker",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-20",
-    "notes": "Who pays the bill matters less than many people think.",
+    "notes": "The lead performances outshine the cliché-ridden filmmaking in two new biographical dramas about actors defying the odds.",
     "tags": [
-      "the-atlantic",
-      "faith-hill"
+      "the-new-yorker",
+      "justin-chang"
     ],
-    "url": "https://www.theatlantic.com/family/2026/11/split-bill-first-date-debate/689516/?utm_source=feed",
+    "url": "https://www.newyorker.com/culture/the-current-cinema/the-look-at-me-spectacle-of-actors-playing-actors-in-elsinore-and-i-play-rocky",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
   },
   {
-    "id": "feed-21abe0219289",
+    "id": "feed-be73256ee7e8",
     "mediaType": "short-non-fiction",
-    "title": "The Taylor Swift Museum Exhibition Is an SOS Call",
+    "title": "Trump vs. America",
     "creator": "The Atlantic",
     "year": 2026,
     "status": "finished",
     "consumed": "2026-11-20",
-    "notes": "Art museums have to get creative right now. They can do better than this.",
+    "notes": "The president finally admitted that his interests do not always align with the nation’s.",
     "tags": [
       "the-atlantic",
-      "kelsey-ables"
+      "jonathan-chait"
     ],
-    "url": "https://www.theatlantic.com/culture/2026/11/taylor-swift-museum-boston/689520/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-e1dedb001396",
-    "mediaType": "short-non-fiction",
-    "title": "What War Has Brought Iran’s Opposition",
-    "creator": "The Atlantic",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "Domestic repression and exile infighting leave few strategic options.",
-    "tags": [
-      "the-atlantic",
-      "arash-azizi"
-    ],
-    "url": "https://www.theatlantic.com/international/2026/11/iran-opposition-strategic-options/689510/?utm_source=feed",
+    "url": "https://www.theatlantic.com/ideas/2026/11/trump-putin-ukraine-collins/689537/?utm_source=feed",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
@@ -637,75 +705,6 @@
       "charlie-warzel"
     ],
     "url": "https://www.theatlantic.com/podcasts/2026/11/whats-so-important-about-nvidias-chips/689521/?utm_source=feed",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-468399184892",
-    "mediaType": "short-non-fiction",
-    "title": "Which MacBook to Buy (2026): Here’s Which Laptop Is Right for You",
-    "creator": "WIRED",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-20",
-    "notes": "With the introduction of the OLED MacBook Pro and MacBook Neo, there are now more Apple laptops than ever to choose from.",
-    "tags": [
-      "wired",
-      "luke-larsen"
-    ],
-    "url": "https://www.wired.com/story/which-macbook-should-you-buy/",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-2c41451b46fc",
-    "mediaType": "short-non-fiction",
-    "title": "Anthropic goes to Wall Street",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-19",
-    "notes": "Our podcast on markets, the economy and business. This week, the largest-ever IPO",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/podcasts/2026/11/19/anthropic-goes-to-wall-street",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-b8183aa74753",
-    "mediaType": "short-non-fiction",
-    "title": "Anthropic soars, but it may soon be back, cap in hand",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-19",
-    "notes": "The biggest IPO of all time is just a start",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/business/2026/11/19/anthropic-soars-but-it-may-soon-be-back-cap-in-hand",
-    "spotlight": false,
-    "list": "shelf",
-    "source": "feed"
-  },
-  {
-    "id": "feed-3e29d35d8036",
-    "mediaType": "short-non-fiction",
-    "title": "What to watch this week",
-    "creator": "The Economist",
-    "year": 2026,
-    "status": "finished",
-    "consumed": "2026-11-19",
-    "notes": "Dictators, spies and shootings feature on our list",
-    "tags": [
-      "the-economist"
-    ],
-    "url": "https://www.economist.com/culture/2026/11/19/what-to-watch-this-week",
     "spotlight": false,
     "list": "shelf",
     "source": "feed"
