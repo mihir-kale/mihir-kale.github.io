@@ -11,7 +11,6 @@ const indexScroll = document.getElementById("indexScroll");
 const galleryScroll = document.getElementById("galleryScroll");
 const indexPanel = document.getElementById("indexPanel");
 const galleryPanel = document.getElementById("galleryPanel");
-const categoryNav = document.getElementById("categoryNav");
 const mobileNav = document.getElementById("mobileNav");
 const mobileIndexBtn = document.getElementById("mobileIndexBtn");
 const mobileGalleryBtn = document.getElementById("mobileGalleryBtn");
@@ -127,48 +126,13 @@ function filteredItems() {
     if (state.dismissed.has(item.id)) continue;
     const lst = effectiveList(item);
     if (lst !== "recommend" && lst !== "now") continue;
-    if (state.category !== "ALL" && item.mediaType !== state.category) continue;
     if (!matches(item, query)) continue;
     out.push(item);
   }
   return out;
 }
 
-// ---------------- category nav ----------------
-function buildCategoryNav() {
-  categoryNav.replaceChildren();
-  const cats = ["ALL", ...MEDIA_TYPES];
-  for (const c of cats) {
-    const btn = el("button", "cat-btn", c === "ALL" ? "ALL" : (TYPE_LABELS[c] || c).toUpperCase());
-    btn.type = "button";
-    btn.dataset.cat = c;
-    btn.addEventListener("click", () => setCategory(c));
-    categoryNav.append(btn);
-  }
-  syncCategoryNav();
-}
-function syncCategoryNav() {
-  categoryNav.querySelectorAll(".cat-btn").forEach((b) => {
-    const active = b.dataset.cat === state.category;
-    b.classList.toggle("is-active", active);
-    b.setAttribute("aria-pressed", String(active));
-  });
-}
-function setCategory(c) {
-  const prev = state.category;
-  state.category = c;
-  if (prev !== c) {
-    // cleanup selection/expanded
-    const ids = new Set(filteredItems().map((i) => i.id));
-    if (state.selectedMediaId && !ids.has(state.selectedMediaId)) state.selectedMediaId = null;
-    if (state.expandedId && !ids.has(state.expandedId)) state.expandedId = null;
-    // reset scrolls
-    indexScroll.scrollTop = 0;
-    galleryScroll.scrollTop = 0;
-  }
-  syncCategoryNav();
-  renderAll();
-}
+// (category navigation removed; items are grouped under section headings in one scroll)
 
 // ---------------- index rendering ----------------
 function createEntry(item) {
@@ -207,6 +171,16 @@ function createEntry(item) {
   return entry;
 }
 
+const SECTION_LABELS = {
+  "fiction": "fiction",
+  "non-fiction": "non-fiction",
+  "short-fiction": "short fiction",
+  "short-non-fiction": "essays",
+  "film": "movies",
+  "album": "music",
+  "podcast": "podcasts"
+};
+
 function renderIndex(items) {
   indexScroll.replaceChildren();
   if (!items.length) {
@@ -214,8 +188,23 @@ function renderIndex(items) {
     indexScroll.append(msg);
     return;
   }
+  // Group items by media type, preserving filtered order within each group.
+  const groups = new Map();
   for (const item of items) {
-    indexScroll.append(createEntry(item));
+    const key = item.mediaType;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  }
+  // Render in a stable type order.
+  const order = ["fiction", "short-fiction", "non-fiction", "short-non-fiction", "film", "album", "podcast"];
+  for (const type of order) {
+    const groupItems = groups.get(type);
+    if (!groupItems || !groupItems.length) continue;
+    const heading = el("h2", "section-heading", SECTION_LABELS[type] || type);
+    indexScroll.append(heading);
+    for (const item of groupItems) {
+      indexScroll.append(createEntry(item));
+    }
   }
 }
 
@@ -715,7 +704,6 @@ mobileGalleryBtn.addEventListener("click", () => { state.mobileView = "gallery";
 
 setupTheme();
 setupHelp();
-buildCategoryNav();
 buildAuthDialog();
 buildEditor();
 buildAuth();
