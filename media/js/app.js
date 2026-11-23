@@ -250,34 +250,23 @@ function createGalleryItem(item) {
     }
   });
   img.addEventListener("error", () => {
-    // render placeholder
-    btn.replaceChildren();
-    const ph = el("div", "cover-placeholder");
-    ph.style.aspectRatio = "2 / 3";
-    ph.style.background = "#e8e6e0";
-    const t = el("span", "placeholder-title", item.title);
-    ph.append(t);
-    btn.append(ph);
-    // keep interactive
+    btn.remove();
+    galleryNodes.delete(item.id);
+    galleryItemOrder = galleryItemOrder.filter((id) => id !== item.id);
+    scheduleMasonry();
   });
   btn.append(img);
 
-  // resolve cover async
+  // resolve cover async; items without cover art are removed from the gallery wall
   resolveCover(item).then((url) => {
     if (!url) {
-      // placeholder
-      if (img.isConnected) {
-        img.remove();
-        const ph = el("div", "cover-placeholder");
-        ph.style.aspectRatio = "2 / 3";
-        ph.style.background = "#e8e6e0";
-        const t = el("span", "placeholder-title", item.title);
-        ph.append(t);
-        btn.append(ph);
-      }
+      btn.remove();
+      galleryNodes.delete(item.id);
+      galleryItemOrder = galleryItemOrder.filter((id) => id !== item.id);
+      scheduleMasonry();
       return;
     }
-    img.src = url;
+    if (img.isConnected) img.src = url;
   });
 
   return btn;
