@@ -125,6 +125,8 @@ function filteredItems() {
   const out = [];
   for (const item of ordered(pool)) {
     if (state.dismissed.has(item.id)) continue;
+    const lst = effectiveList(item);
+    if (lst !== "recommend" && lst !== "now") continue;
     if (state.category !== "ALL" && item.mediaType !== state.category) continue;
     if (!matches(item, query)) continue;
     out.push(item);
