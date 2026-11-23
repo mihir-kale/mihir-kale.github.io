@@ -622,7 +622,7 @@ select.editor-input{cursor:pointer}
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #faf9f6;
+  background: #191919;
   font-family: "Inter", sans-serif;
   font-weight: 500;
 }
@@ -642,7 +642,7 @@ select.editor-input{cursor:pointer}
   display: none;
   height: 44px;
   align-items: stretch;
-  border-bottom: 1px solid #e5e5e1;
+  border-bottom: 1px solid #2a2a2a;
 }
 .mobile-nav-btn {
   flex: 1 1 0;
@@ -653,14 +653,14 @@ select.editor-input{cursor:pointer}
   font-family: "Inter", sans-serif;
   font-size: 12px;
   text-transform: uppercase;
-  color: #777777;
+  color: #8a8a8a;
   font-weight: 400;
   line-height: 44px;
 }
 .mobile-nav-btn.is-active {
-  color: #171717;
+  color: rgb(197, 197, 197);
   font-weight: 700;
-  border-bottom: 2px solid #171717;
+  border-bottom: 2px solid rgb(197, 197, 197);
 }
 @media (min-width: 600px) {
   .mobile-nav { display: none !important; }
@@ -673,14 +673,14 @@ select.editor-input{cursor:pointer}
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-right: 1px solid #d8d8d4;
-  background: #faf9f6;
+  border-right: 1px solid #2a2a2a;
+  background: #191919;
 }
 .gallery-panel {
   min-width: 0;
   height: 100%;
   overflow: hidden;
-  background: #faf9f6;
+  background: #191919;
 }
 @media (max-width: 599px) {
   .index-panel, .gallery-panel {
@@ -707,7 +707,7 @@ select.editor-input{cursor:pointer}
   font-weight: 700;
   line-height: 16px;
   letter-spacing: 0.08em;
-  color: #171717;
+  color: rgb(197, 197, 197);
   text-transform: none;
 }
 
@@ -716,7 +716,7 @@ select.editor-input{cursor:pointer}
   flex-wrap: wrap;
   gap: 6px 8px;
   padding: 0 16px 16px;
-  border-bottom: 1px solid #e5e5e1;
+  border-bottom: 1px solid #2a2a2a;
 }
 .cat-btn {
   appearance: none;
@@ -728,15 +728,15 @@ select.editor-input{cursor:pointer}
   font-size: 10px;
   line-height: 14px;
   text-transform: uppercase;
-  color: #777777;
+  color: #8a8a8a;
   font-weight: 400;
 }
 .cat-btn.is-active {
-  color: #171717;
+  color: rgb(197, 197, 197);
   font-weight: 700;
 }
 .cat-btn:focus-visible {
-  outline: 2px solid #171717;
+  outline: 2px solid rgb(197, 197, 197);
   outline-offset: 3px;
 }
 
@@ -753,7 +753,7 @@ select.editor-input{cursor:pointer}
   position: relative;
   padding: 0 0 18px;
   margin: 0 0 18px;
-  border-bottom: 1px solid #e5e5e1;
+  border-bottom: 1px solid #2a2a2a;
 }
 .media-entry[data-selected="true"] .media-title {
   font-weight: 700;
@@ -769,7 +769,7 @@ select.editor-input{cursor:pointer}
   margin: 0 0 6px;
   border: 0;
   background: transparent;
-  color: #171717;
+  color: rgb(197, 197, 197);
   text-align: left;
   font-family: "Inter", sans-serif;
   font-size: 13px;
@@ -791,7 +791,7 @@ select.editor-input{cursor:pointer}
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: #555555;
+  color: #9a9a9a;
   overflow-wrap: anywhere;
   text-transform: none;
 }
@@ -802,7 +802,7 @@ select.editor-input{cursor:pointer}
   margin-top: 5px;
   border: 0;
   background: transparent;
-  color: #171717;
+  color: rgb(197, 197, 197);
   font-family: "Inter", sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -845,11 +845,11 @@ select.editor-input{cursor:pointer}
   text-transform: none;
 }
 .gallery-item[data-selected="true"] {
-  outline: 2px solid #171717;
+  outline: 2px solid rgb(197, 197, 197);
   outline-offset: 3px;
 }
 .gallery-item:hover:not([data-selected="true"]) {
-  outline: 1px solid #777777;
+  outline: 1px solid #8a8a8a;
   outline-offset: 3px;
 }
 
@@ -866,13 +866,13 @@ select.editor-input{cursor:pointer}
   justify-content: center;
   width: 100%;
   aspect-ratio: 2 / 3;
-  background: #e8e6e0;
+  background: #2a2a2a;
   text-align: center;
 }
 .cover-placeholder .placeholder-title {
   font-family: "Inter", sans-serif;
   font-size: 12px;
-  color: #171717;
+  color: rgb(197, 197, 197);
   padding: 8px;
   text-transform: none;
 }
@@ -880,13 +880,13 @@ select.editor-input{cursor:pointer}
 .empty-msg {
   font-family: "Inter", sans-serif;
   font-size: 12px;
-  color: #555555;
+  color: #9a9a9a;
   padding: 8px 0;
   text-transform: none;
 }
 
 :focus-visible {
-  outline: 2px solid #171717;
+  outline: 2px solid rgb(197, 197, 197);
   outline-offset: 3px;
 }
 
