@@ -684,10 +684,12 @@ function setupHelp() {
 }
 
 // ---------------- init ----------------
-searchInput.addEventListener("input", () => {
-  state.query = searchInput.value;
-  renderAll();
-});
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    state.query = searchInput.value;
+    renderAll();
+  });
+}
 
 window.addEventListener("resize", () => {
   applyMobileView();
