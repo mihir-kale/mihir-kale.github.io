@@ -140,11 +140,17 @@ function createEntry(item) {
   entry.dataset.id = item.id;
   entry.dataset.selected = String(state.selectedMediaId === item.id);
 
+  const line = el("div", "entry-line");
   const titleBtn = el("button", "media-title", item.title);
   titleBtn.type = "button";
   titleBtn.setAttribute("aria-pressed", String(state.selectedMediaId === item.id));
   titleBtn.addEventListener("click", () => selectFromIndex(item.id));
-  entry.append(titleBtn);
+  line.append(titleBtn);
+  if (item.creator) {
+    const meta = el("span", "entry-meta", item.creator);
+    line.append(meta);
+  }
+  entry.append(line);
 
   if (hasReview(item)) {
     const review = el("p", "media-review");
@@ -200,7 +206,8 @@ function renderIndex(items) {
   for (const type of order) {
     const groupItems = groups.get(type);
     if (!groupItems || !groupItems.length) continue;
-    const heading = el("h2", "section-heading", SECTION_LABELS[type] || type);
+    const label = (TYPE_LABELS[type] || type).toLowerCase();
+    const heading = el("h2", "category-heading", `on ${label}`);
     indexScroll.append(heading);
     for (const item of groupItems) {
       indexScroll.append(createEntry(item));
