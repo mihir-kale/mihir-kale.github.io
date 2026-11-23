@@ -30,14 +30,25 @@
     <div class="auth" id="auth"></div>
   </header>
 
-  <main class="shell" aria-label="Commonplace catalogue">
-    <div class="rails" id="rails"></div>
+  <main class="media-page" aria-label="Media archive">
+    <nav class="mobile-nav" id="mobileNav" aria-label="View">
+      <button id="mobileIndexBtn" class="mobile-nav-btn" type="button">INDEX</button>
+      <button id="mobileGalleryBtn" class="mobile-nav-btn" type="button">GALLERY</button>
+    </nav>
+    <section class="index-panel" id="indexPanel" aria-label="Index">
+      <div class="index-header">MEDIA</div>
+      <nav class="category-nav" id="categoryNav" aria-label="Categories"></nav>
+      <div class="index-scroll" id="indexScroll"></div>
+    </section>
+    <section class="gallery-panel" id="galleryPanel" aria-label="Gallery">
+      <div class="gallery-scroll" id="galleryScroll"></div>
+    </section>
   </main>
 
   <noscript>
     <p class="notice">This board needs JavaScript. Enable it and reload.</p>
   </noscript>
 
-  <script type="module" src="js/app.js?v=20261026f"></script>
+  <script type="module" src="js/app.js?v=20261122a"></script>
 </body>
 </html>
