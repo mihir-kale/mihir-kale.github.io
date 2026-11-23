@@ -618,7 +618,7 @@ select.editor-input{cursor:pointer}
 
 .media-page {
   display: grid;
-  grid-template-columns: 20% 80%;
+  grid-template-columns: 33.333% 66.667%;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -627,7 +627,7 @@ select.editor-input{cursor:pointer}
   font-weight: 500;
 }
 @media (min-width: 600px) and (max-width: 899px) {
-  .media-page { grid-template-columns: 32% 68%; }
+  .media-page { grid-template-columns: 33.333% 66.667%; }
 }
 @media (max-width: 599px) {
   .media-page {
@@ -854,7 +854,7 @@ select.editor-input{cursor:pointer}
 
 .gallery-columns {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: flex-start;
 }
 .gallery-col {
@@ -862,7 +862,7 @@ select.editor-input{cursor:pointer}
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .gallery-item {

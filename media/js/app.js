@@ -207,7 +207,7 @@ function renderIndex(items) {
     const groupItems = groups.get(type);
     if (!groupItems || !groupItems.length) continue;
     const label = (TYPE_LABELS[type] || type).toLowerCase();
-    const heading = el("h2", "category-heading", `on ${label}`);
+    const heading = el("h2", "category-heading", label);
     indexScroll.append(heading);
     for (const item of groupItems) {
       indexScroll.append(createEntry(item));
@@ -221,10 +221,10 @@ let galleryItemOrder = []; // ids
 let masonryTimer = null;
 
 function colCount(width) {
-  if (width >= 1100) return 5;
-  if (width >= 700) return 4;
-  if (width >= 400) return 3;
-  return 2;
+  if (width >= 1100) return 7;
+  if (width >= 700) return 6;
+  if (width >= 400) return 5;
+  return 3;
 }
 
 function createGalleryItem(item) {
@@ -298,7 +298,7 @@ function doMasonry() {
   const width = container.clientWidth;
   const cols = colCount(width);
   const contentWidth = Math.max(0, width - 40);
-  const colWidth = cols > 0 ? (contentWidth - (cols - 1) * 12) / cols : contentWidth;
+  const colWidth = cols > 0 ? (contentWidth - (cols - 1) * 16) / cols : contentWidth;
   // ensure column containers
   let columnsWrap = container.querySelector(".gallery-columns");
   if (!columnsWrap || columnsWrap.dataset.cols !== String(cols)) {
@@ -327,7 +327,7 @@ function doMasonry() {
       if (heights[i] < heights[target]) target = i;
     }
     colEls[target].append(node);
-    heights[target] += imgHeight + 12;
+    heights[target] += imgHeight + 16;
   }
   // empty state
   if (!galleryItemOrder.length) {
