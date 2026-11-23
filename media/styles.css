@@ -623,6 +623,8 @@ select.editor-input{cursor:pointer}
   height: 100%;
   overflow: hidden;
   background: #faf9f6;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
 }
 @media (min-width: 600px) and (max-width: 899px) {
   .media-page { grid-template-columns: 32% 68%; }
@@ -648,7 +650,7 @@ select.editor-input{cursor:pointer}
   background: transparent;
   border: 0;
   cursor: pointer;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   text-transform: uppercase;
   color: #777777;
@@ -700,7 +702,7 @@ select.editor-input{cursor:pointer}
 .index-header {
   flex-shrink: 0;
   padding: 24px 16px 16px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 700;
   line-height: 16px;
@@ -722,7 +724,7 @@ select.editor-input{cursor:pointer}
   border: 0;
   padding: 0;
   cursor: pointer;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 10px;
   line-height: 14px;
   text-transform: uppercase;
@@ -769,7 +771,7 @@ select.editor-input{cursor:pointer}
   background: transparent;
   color: #171717;
   text-align: left;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
   font-weight: 600;
   line-height: 18px;
@@ -785,7 +787,7 @@ select.editor-input{cursor:pointer}
 
 .media-review {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
@@ -801,7 +803,7 @@ select.editor-input{cursor:pointer}
   border: 0;
   background: transparent;
   color: #171717;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 11px;
   font-weight: 700;
   line-height: 16px;
@@ -868,7 +870,7 @@ select.editor-input{cursor:pointer}
   text-align: center;
 }
 .cover-placeholder .placeholder-title {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   color: #171717;
   padding: 8px;
@@ -876,7 +878,7 @@ select.editor-input{cursor:pointer}
 }
 
 .empty-msg {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   color: #555555;
   padding: 8px 0;
