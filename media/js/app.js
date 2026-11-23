@@ -282,73 +282,47 @@ function scheduleMasonry() {
   }, 80);
 }
 
-function spiralCells(rows, cols) {
-  const total = rows * cols;
-  const result = [];
-  const seen = new Set();
-  let r = Math.floor(rows / 2);
-  let c = Math.floor(cols / 2);
-  const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];
-  let dirIdx = 0;
-  let steps = 1;
-  let stepCount = 0;
-  let turnCount = 0;
-  let guard = 0;
-  if (r >= 0 && r < rows && c >= 0 && c < cols) {
-    const idx = r * cols + c;
-    seen.add(idx);
-    result.push(idx);
-  }
-  while (result.length < total && guard < total * 10) {
-    guard++;
-    const [dr, dc] = dirs[dirIdx];
-    r += dr;
-    c += dc;
-    if (r >= 0 && r < rows && c >= 0 && c < cols) {
-      const idx = r * cols + c;
-      if (!seen.has(idx)) {
-        seen.add(idx);
-        result.push(idx);
-      }
-    }
-    stepCount++;
-    if (stepCount === steps) {
-      stepCount = 0;
-      dirIdx = (dirIdx + 1) % 4;
-      turnCount++;
-      if (turnCount % 2 === 0) steps++;
-    }
-  }
-  return result;
-}
-
 function doMasonry() {
   const container = galleryScroll;
   const width = container.clientWidth;
   const cols = colCount(width);
-  const n = galleryItemOrder.length;
-  if (n === 0) {
-    container.replaceChildren(el("p", "empty-msg", "No works found."));
-    return;
+  const contentWidth = Math.max(0, width - 40);
+  const colWidth = cols > 0 ? (contentWidth - (cols - 1) * 16) / cols : contentWidth;
+  // ensure column containers
+  let columnsWrap = container.querySelector(".gallery-columns");
+  if (!columnsWrap || columnsWrap.dataset.cols !== String(cols)) {
+    columnsWrap = el("div", "gallery-columns");
+    columnsWrap.dataset.cols = String(cols);
+    container.replaceChildren(columnsWrap);
+    for (let i = 0; i < cols; i++) {
+      const c = el("div", "gallery-col");
+      columnsWrap.append(c);
+    }
   }
-  const rows = Math.ceil(n / cols);
-  const cells = spiralCells(rows, cols);
-  const grid = el("div", "gallery-grid");
-  grid.style.display = "grid";
-  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-  grid.style.gap = "16px";
-  grid.style.alignItems = "start";
-  cells.slice(0, n).forEach((cellIdx, i) => {
-    const id = galleryItemOrder[i];
+  const colEls = [...columnsWrap.querySelectorAll(".gallery-col")];
+  colEls.forEach((c) => c.replaceChildren());
+  const heights = new Array(cols).fill(0);
+  for (const id of galleryItemOrder) {
     const node = galleryNodes.get(id);
-    if (!node) return;
-    const rr = Math.floor(cellIdx / cols);
-    const cc = cellIdx % cols;
-    node.style.gridRow = String(rr + 1);
-    node.style.gridColumn = String(cc + 1);
-    grid.append(node);
+    if (!node) continue;
+    const ratio = aspectRatios.get(id) || 2 / 3;
+    const imgHeight = colWidth > 0 ? colWidth / ratio : 0;
+    let target = 0;
+    for (let i = 1; i < cols; i++) {
+      if (heights[i] < heights[target]) target = i;
+    }
+    colEls[target].append(node);
+    heights[target] += imgHeight + 16;
+  }
+  if (!galleryItemOrder.length) {
+    const msg = el("p", "empty-msg", "No works found.");
+    container.replaceChildren(msg);
+  }
+  // clear any leftover grid placement styles
+  galleryNodes.forEach((node) => {
+    node.style.gridRow = "";
+    node.style.gridColumn = "";
   });
-  container.replaceChildren(grid);
 }
 
 let filteredCache = [];
