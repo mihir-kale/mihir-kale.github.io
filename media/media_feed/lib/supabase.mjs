@@ -84,6 +84,15 @@ export function createSupabaseClient({ url, key }) {
         prefer: "return=minimal"
       });
       return true;
+    },
+
+    async pruneArticlesOlderThan(cutoff) {
+      const { contentRange } = await request(`articles?published_at=lt.${encodeURIComponent(cutoff)}`, {
+        method: "DELETE",
+        prefer: "count=exact,return=minimal"
+      });
+      const count = Number(contentRange?.split("/").pop());
+      return Number.isFinite(count) ? count : null;
     }
   };
 }

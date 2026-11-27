@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { canonicalizeUrl, parseFeed } from "../lib/rss.mjs";
+import { canonicalizeUrl, isWithinDays, parseFeed } from "../lib/rss.mjs";
 import { buildArticleUpdate } from "../lib/supabase.mjs";
 
 test("canonicalizeUrl produces a stable dedupe key", () => {
@@ -53,6 +53,13 @@ test("parseFeed prefers the Atom alternate link over self/canonical feed links",
   assert.equal(item.author, "Ada");
   assert.equal(item.description, "Summary");
   assert.equal(item.publishedAt, "2026-11-25T10:00:00.000Z");
+});
+
+test("isWithinDays uses the run time as the retention reference", () => {
+  const now = "2026-11-27T12:00:00.000Z";
+  assert.equal(isWithinDays("2026-11-20T12:00:00.000Z", now, 7), true);
+  assert.equal(isWithinDays("2026-11-20T11:59:59.000Z", now, 7), false);
+  assert.equal(isWithinDays(null, now, 7), false);
 });
 
 test("buildArticleUpdate never changes reading state, ranking or reviews", () => {

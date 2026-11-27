@@ -71,6 +71,13 @@ export function cleanText(value) {
   return stripHtml(decodeEntities(unwrapCdata(value))).replace(/\s+/g, " ").trim();
 }
 
+export function isWithinDays(date, now, days) {
+  const time = Date.parse(date ?? "");
+  const reference = Date.parse(now ?? "");
+  if (!Number.isFinite(time) || !Number.isFinite(reference) || !(days > 0)) return false;
+  return time >= reference - days * 86400000;
+}
+
 function isTrackingParam(key) {
   const name = String(key).toLowerCase();
   return name.startsWith("utm_") || TRACKING_PARAMS.has(name);

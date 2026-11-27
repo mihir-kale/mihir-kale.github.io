@@ -10,7 +10,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseFeed } from "../lib/rss.mjs";
+import { isWithinDays, parseFeed } from "../lib/rss.mjs";
 import { buildArticleUpdate, createSupabaseClient } from "../lib/supabase.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -19,6 +19,7 @@ const FETCH_TIMEOUT_MS = Number(process.env.FEED_FETCH_TIMEOUT_MS) > 0
   ? Number(process.env.FEED_FETCH_TIMEOUT_MS)
   : 20000;
 const USER_AGENT = process.env.FEED_USER_AGENT || "mihirOS-media-feed-ingest/1.0 (+https://github.com/mihir-kale)";
+const RETENTION_DAYS = 7;
 
 function loadEnv(path) {
   if (!existsSync(path)) return;
@@ -58,7 +59,8 @@ async function ingestSource(source, client, existingByCanonical, discoveredAt) {
     inserted: 0,
     updated: 0,
     duplicates: 0,
-    skipped: 0
+    skipped: 0,
+    too_old: 0
   };
 
   try {
@@ -72,6 +74,14 @@ async function ingestSource(source, client, existingByCanonical, discoveredAt) {
         continue;
       }
       seen.add(item.url);
+
+      // Undated feed items are treated as discovered now; they age out after
+      // the same 7-day window via the prune step.
+      const effectivePublishedAt = item.publishedAt ?? discoveredAt;
+      if (!isWithinDays(effectivePublishedAt, discoveredAt, RETENTION_DAYS)) {
+        result.too_old += 1;
+        continue;
+      }
 
       if (!item.title) {
         result.skipped += 1;
@@ -87,7 +97,7 @@ async function ingestSource(source, client, existingByCanonical, discoveredAt) {
           author: item.author ?? null,
           url: item.url,
           description: item.description ?? null,
-          published_at: item.publishedAt ?? discoveredAt,
+          published_at: effectivePublishedAt,
           discovered_at: discoveredAt
         });
         continue;
@@ -114,28 +124,44 @@ async function ingestSource(source, client, existingByCanonical, discoveredAt) {
 
 async function main() {
   const startedAt = new Date().toISOString();
+  const cutoffAt = new Date(Date.parse(startedAt) - RETENTION_DAYS * 86400000).toISOString();
   const client = createSupabaseClient({
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_SERVICE_ROLE_KEY
   });
 
   const sources = await client.getEnabledSources();
-  console.log(JSON.stringify({ event: "run_start", at: startedAt, enabled_sources: sources.length }));
-
-  if (!sources.length) {
-    console.log(JSON.stringify({ event: "run_summary", enabled_sources: 0, succeeded: 0, failed: 0, fetched: 0, inserted: 0, updated: 0 }));
-    return;
-  }
-
-  const existingByCanonical = await client.getArticleUrlMap();
-  console.log(JSON.stringify({ event: "existing_articles", count: existingByCanonical.size }));
+  console.log(JSON.stringify({
+    event: "run_start",
+    at: startedAt,
+    retention_days: RETENTION_DAYS,
+    cutoff: cutoffAt,
+    enabled_sources: sources.length
+  }));
 
   const results = [];
-  for (const source of sources) {
-    console.log(JSON.stringify({ event: "source_start", source: source.name }));
-    const result = await ingestSource(source, client, existingByCanonical, startedAt);
-    results.push(result);
-    console.log(JSON.stringify({ event: "source_result", ...result }));
+  if (sources.length) {
+    const existingByCanonical = await client.getArticleUrlMap();
+    console.log(JSON.stringify({ event: "existing_articles", count: existingByCanonical.size }));
+
+    for (const source of sources) {
+      console.log(JSON.stringify({ event: "source_start", source: source.name }));
+      const result = await ingestSource(source, client, existingByCanonical, startedAt);
+      results.push(result);
+      console.log(JSON.stringify({ event: "source_result", ...result }));
+    }
+  }
+
+  // Strict retention: prune even if every feed failed, so the table always
+  // converges to the trailing window.
+  let pruned = 0;
+  let pruneError = null;
+  try {
+    pruned = (await client.pruneArticlesOlderThan(cutoffAt)) ?? 0;
+    console.log(JSON.stringify({ event: "prune_result", cutoff: cutoffAt, deleted: pruned }));
+  } catch (error) {
+    pruneError = error instanceof Error ? error.message : String(error);
+    console.log(JSON.stringify({ event: "prune_failed", error: pruneError }));
   }
 
   const summary = {
@@ -147,12 +173,16 @@ async function main() {
     inserted: results.reduce((sum, result) => sum + result.inserted, 0),
     updated: results.reduce((sum, result) => sum + result.updated, 0),
     duplicates: results.reduce((sum, result) => sum + result.duplicates, 0),
-    skipped: results.reduce((sum, result) => sum + result.skipped, 0)
+    skipped: results.reduce((sum, result) => sum + result.skipped, 0),
+    too_old: results.reduce((sum, result) => sum + result.too_old, 0),
+    pruned
   };
+  if (pruneError) summary.prune_failed = true;
   console.log(JSON.stringify(summary));
 
-  // One broken feed must not abort the job; only total failure is fatal.
-  if (summary.failed === summary.enabled_sources) process.exitCode = 1;
+  // One broken feed must not abort the job; total feed failure or a failed
+  // retention prune is fatal.
+  if ((sources.length && summary.failed === summary.enabled_sources) || pruneError) process.exitCode = 1;
 }
 
 main().catch((error) => {

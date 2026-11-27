@@ -59,12 +59,17 @@ The ingestion job uses the service role.
   both within and across feeds (first feed by name wins).
 - Feeds are processed in alphabetical order. A failed fetch/parse for one feed is logged and
   skipped; the remaining feeds still ingest. The job exits non-zero only if every enabled
-  feed fails.
+  feed fails or the retention prune fails.
+- Strict 7-day retention: items older than the run start minus 7 days are skipped on pull,
+  and every existing `articles` row older than that cutoff is deleted after ingestion
+  (reviews cascade). Undated items are treated as discovered now, so they age out after
+  the same window. Reading state is preserved for rows still inside the window.
 - New articles get `status = 'unreviewed'`, empty ranking/reason, and `discovered_at` set to
   the run start time. Re-ingestion sends `PATCH` updates containing **only** feed-owned
   metadata (title, author, description, published_at when available). `id`, `source_id`,
   `discovered_at`, `status`, `priority`, `recommendation_reason`, `read_at`, and all reviews
   are never touched. Missing metadata on a later fetch does not erase existing values.
-- Results are logged as JSON lines: `run_start`, `existing_articles`, `source_start`,
-  `source_result` (per-feed fetched/inserted/updated/duplicates/skipped/error), and
-  `run_summary`. GitHub Actions retains these logs; no secrets are printed.
+- Results are logged as JSON lines: `run_start` (with cutoff), `existing_articles`,
+  `source_start`, `source_result` (per-feed fetched/inserted/updated/duplicates/skipped/
+  too_old/error), `prune_result`, and `run_summary`. GitHub Actions retains these logs;
+  no secrets are printed.
