@@ -1,7 +1,7 @@
-import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128d";
-import { resolveCover } from "./covers.js?v=20261128d";
-import { signIn, signOut, getSession } from "./auth.js?v=20261128d";
-import { loadNowPlaying } from "./lastfm.js?v=20261128d";
+import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128e";
+import { resolveCover } from "./covers.js?v=20261128e";
+import { signIn, signOut, getSession } from "./auth.js?v=20261128e";
+import { loadNowPlaying } from "./lastfm.js?v=20261128e";
 
 // Cover art is disabled for now. The resolver and gallery/masonry code below
 // are retained but never run; the old gallery node now renders the text shelf.

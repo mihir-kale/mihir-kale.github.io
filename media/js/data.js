@@ -15,6 +15,10 @@ export const LASTFM_USERNAME = "mihirpkale";
 const REST = `${SUPABASE_URL}/rest/v1`;
 const AUTH_HEADERS = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` };
 
+// Public shelf shows ten articles, rotating through sources so one feed can't
+// fill the whole column.
+export const SHELF_LIMIT = 10;
+
 export const MEDIA_TYPES = [
   "fiction",
   "non-fiction",
@@ -146,28 +150,58 @@ export async function loadEntries() {
   }
 }
 
+function publishedTime(article) {
+  const time = Date.parse(article.publishedAt || "");
+  return Number.isNaN(time) ? 0 : time;
+}
+
+// Round-robin across sources, newest source first, then repeat sources if
+// there are fewer than SHELF_LIMIT of them.
+export function mixSources(articles, limit = SHELF_LIMIT) {
+  const groups = new Map();
+  for (const article of articles) {
+    const key = article.source || "unknown";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(article);
+  }
+  const ordered = [...groups.values()].sort(
+    (a, b) => publishedTime(b[0]) - publishedTime(a[0]) || a[0].source.localeCompare(b[0].source)
+  );
+  const mixed = [];
+  for (let index = 0; mixed.length < limit; index++) {
+    let added = false;
+    for (const group of ordered) {
+      if (index >= group.length) continue;
+      mixed.push(group[index]);
+      added = true;
+      if (mixed.length >= limit) break;
+    }
+    if (!added) break;
+  }
+  return mixed;
+}
+
 // Recent articles pulled by the RSS cron job, read from the public
 // `article_shelf` view. Reviews and owner reading state are not exposed.
 export async function loadArticles() {
   try {
     const response = await fetch(
-      `${REST}/article_shelf?select=id,title,author,url,description,published_at,source&order=published_at.desc&limit=200`,
+      `${REST}/article_shelf?select=id,title,url,published_at,source&order=published_at.desc&limit=200`,
       { headers: AUTH_HEADERS }
     );
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const rows = await response.json();
     if (!Array.isArray(rows)) throw new Error("unexpected payload");
-    return rows
+    const articles = rows
       .map((row) => ({
         id: row.id,
         title: typeof row.title === "string" ? row.title.trim() : "",
-        author: typeof row.author === "string" ? row.author.trim() : "",
         url: typeof row.url === "string" ? row.url.trim() : "",
-        description: typeof row.description === "string" ? row.description.trim() : "",
         publishedAt: row.published_at || null,
         source: typeof row.source === "string" ? row.source.trim() : ""
       }))
       .filter((article) => article.title || article.url);
+    return mixSources(articles);
   } catch (error) {
     console.warn(`articles unavailable (${error.message})`);
     return [];
