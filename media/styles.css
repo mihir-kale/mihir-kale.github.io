@@ -700,6 +700,13 @@ select.editor-input{cursor:pointer}
   }
 }
 
+/* cover art disabled: hide the gallery wall and give the index the full page.
+   The gallery/masonry rules below are kept for re-enabling. */
+:root[data-covers="off"] .media-page { grid-template-columns: 1fr; }
+:root[data-covers="off"] .mobile-nav { display: none !important; }
+:root[data-covers="off"] .gallery-panel { display: none !important; }
+:root[data-covers="off"] .index-panel { border-right: 0; }
+
 .index-header {
   flex-shrink: 0;
   padding: 24px 16px 16px;

@@ -1,7 +1,12 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261122a";
-import { resolveCover } from "./covers.js?v=20261026f";
-import { signIn, signOut, getSession } from "./auth.js?v=20261026f";
-import { loadNowPlaying } from "./lastfm.js?v=20261026f";
+import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261127a";
+import { resolveCover } from "./covers.js?v=20261127a";
+import { signIn, signOut, getSession } from "./auth.js?v=20261127a";
+import { loadNowPlaying } from "./lastfm.js?v=20261127a";
+
+// Cover art is disabled for now. The resolver and gallery/masonry code below
+// are retained but never run; the text index is the whole page.
+const COVER_ART_ENABLED = false;
+document.documentElement.dataset.covers = COVER_ART_ENABLED ? "on" : "off";
 
 const searchInput = document.getElementById("search");
 const authEl = document.getElementById("auth");
@@ -275,7 +280,7 @@ function createGalleryItem(item) {
 const aspectRatios = new Map(); // id -> ratio
 
 function scheduleMasonry() {
-  if (masonryTimer) return;
+  if (!COVER_ART_ENABLED || masonryTimer) return;
   masonryTimer = setTimeout(() => {
     masonryTimer = null;
     doMasonry();
@@ -329,6 +334,13 @@ let filteredCache = [];
 
 function renderGallery(items) {
   filteredCache = items;
+  if (!COVER_ART_ENABLED) {
+    // Keep the gallery code above intact, but render no artwork and no wall.
+    galleryNodes = new Map();
+    galleryItemOrder = [];
+    galleryScroll.replaceChildren();
+    return;
+  }
   galleryNodes = new Map();
   galleryItemOrder = items.map((i) => i.id);
   // create nodes
@@ -371,12 +383,14 @@ function applySelectionStyles() {
     if (titleBtn) titleBtn.setAttribute("aria-pressed", String(sel));
   });
   // gallery items
-  galleryScroll.querySelectorAll(".gallery-item").forEach((g) => {
-    const id = g.dataset.id;
-    const sel = id === state.selectedMediaId;
-    g.dataset.selected = String(sel);
-    g.setAttribute("aria-pressed", String(sel));
-  });
+  if (COVER_ART_ENABLED) {
+    galleryScroll.querySelectorAll(".gallery-item").forEach((g) => {
+      const id = g.dataset.id;
+      const sel = id === state.selectedMediaId;
+      g.dataset.selected = String(sel);
+      g.setAttribute("aria-pressed", String(sel));
+    });
+  }
 }
 
 function isReducedMotion() {
@@ -402,15 +416,17 @@ function selectFromIndex(id) {
   state.selectedMediaId = id;
   applySelectionStyles();
   // gallery scroll
-  const gItem = galleryScroll.querySelector(`.gallery-item[data-id="${CSS.escape(id)}"]`);
-  if (gItem) {
-    if (!completelyVisible(galleryScroll, gItem)) {
-      const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
-      galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
+  if (COVER_ART_ENABLED) {
+    const gItem = galleryScroll.querySelector(`.gallery-item[data-id="${CSS.escape(id)}"]`);
+    if (gItem) {
+      if (!completelyVisible(galleryScroll, gItem)) {
+        const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
+        galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
+      }
     }
   }
   // mobile switch
-  if (window.innerWidth < 600) {
+  if (COVER_ART_ENABLED && window.innerWidth < 600) {
     state.mobileView = "gallery";
     applyMobileView();
   }
@@ -442,15 +458,26 @@ function toggleReview(id) {
   renderIndex(filteredItems());
   applySelectionStyles();
   // reveal selected artwork in gallery if needed
-  const gItem = galleryScroll.querySelector(`.gallery-item[data-id="${CSS.escape(id)}"]`);
-  if (gItem && !completelyVisible(galleryScroll, gItem)) {
-    const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
-    galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
+  if (COVER_ART_ENABLED) {
+    const gItem = galleryScroll.querySelector(`.gallery-item[data-id="${CSS.escape(id)}"]`);
+    if (gItem && !completelyVisible(galleryScroll, gItem)) {
+      const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
+      galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
+    }
   }
 }
 
 // ---------------- mobile view ----------------
 function applyMobileView() {
+  if (!COVER_ART_ENABLED) {
+    state.mobileView = "index";
+    if (mobileNav) mobileNav.style.display = "none";
+    indexPanel.classList.add("is-active");
+    galleryPanel.classList.remove("is-active");
+    if (mobileIndexBtn) mobileIndexBtn.classList.add("is-active");
+    if (mobileGalleryBtn) mobileGalleryBtn.classList.remove("is-active");
+    return;
+  }
   const isMobile = window.innerWidth < 600;
   if (mobileNav) mobileNav.style.display = isMobile ? "flex" : "none";
   if (isMobile) {
@@ -697,8 +724,8 @@ window.addEventListener("resize", () => {
   scheduleMasonry();
 });
 
-mobileIndexBtn.addEventListener("click", () => { state.mobileView = "index"; applyMobileView(); });
-mobileGalleryBtn.addEventListener("click", () => { state.mobileView = "gallery"; applyMobileView(); });
+mobileIndexBtn.addEventListener("click", () => { if (!COVER_ART_ENABLED) return; state.mobileView = "index"; applyMobileView(); });
+mobileGalleryBtn.addEventListener("click", () => { if (!COVER_ART_ENABLED) return; state.mobileView = "gallery"; applyMobileView(); });
 
 setupTheme();
 setupHelp();
