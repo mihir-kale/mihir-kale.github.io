@@ -1,12 +1,15 @@
-import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128f";
-import { resolveCover } from "./covers.js?v=20261128f";
-import { signIn, signOut, getSession } from "./auth.js?v=20261128f";
-import { loadNowPlaying } from "./lastfm.js?v=20261128f";
+import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128g";
+import { resolveCover } from "./covers.js?v=20261128g";
+import { signIn, signOut, getSession } from "./auth.js?v=20261128g";
+import { loadNowPlaying } from "./lastfm.js?v=20261128g";
 
 // Cover art is disabled for now. The resolver and gallery/masonry code below
 // are retained but never run; the old gallery node now renders the text shelf.
 const COVER_ART_ENABLED = false;
 document.documentElement.dataset.covers = COVER_ART_ENABLED ? "on" : "off";
+
+// Live Last.fm line in the left-column "currently" section.
+const LIVE_LISTENING = true;
 
 const searchInput = document.getElementById("search");
 const authEl = document.getElementById("auth");
@@ -118,7 +121,51 @@ function filteredItems() {
   return out;
 }
 
+function currentItems() {
+  const query = state.query.trim().toLowerCase();
+  return state.items.filter((item) => {
+    if (effectiveList(item) !== "now") return false;
+    if (state.dismissed.has(item.id)) return false;
+    if (query && !matches(item, query)) return false;
+    return true;
+  });
+}
+
 // ---------------- index rendering ----------------
+function externalLink(className, text, href) {
+  const link = el("a", className, text);
+  link.href = href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  return link;
+}
+
+function nowPlayingNode() {
+  const line = el("div", "entry-line now-line");
+  const track = state.nowPlaying;
+  const profileUrl = `https://www.last.fm/user/${LASTFM_USERNAME}`;
+  if (track && track.name) {
+    const artists = (track.artists || []).filter(Boolean).join(", ");
+    const label = artists ? `${track.name} \u2014 ${artists}` : track.name;
+    const title = isHttpUrl(track.url)
+      ? externalLink("media-title now-title", label, track.url)
+      : el("span", "media-title now-title", label);
+    line.append(title, externalLink("entry-meta now-source", "last.fm", profileUrl));
+  } else {
+    line.append(externalLink("media-title now-title now-link", "last.fm", profileUrl));
+  }
+  return line;
+}
+
+function createCurrentEntry(item) {
+  const entry = el("div", "media-entry now-entry");
+  const line = el("div", "entry-line");
+  line.append(el("span", "media-title now-title", item.title));
+  if (item.creator) line.append(el("span", "entry-meta", item.creator));
+  entry.append(line);
+  return entry;
+}
+
 function createEntry(item) {
   const entry = el("div", "media-entry");
   entry.dataset.id = item.id;
@@ -139,6 +186,14 @@ function createEntry(item) {
 
 function renderIndex(items) {
   indexScroll.replaceChildren();
+
+  indexScroll.append(el("h2", "section-heading", "currently"));
+  if (LIVE_LISTENING) indexScroll.append(nowPlayingNode());
+  const current = currentItems();
+  for (const item of current) indexScroll.append(createCurrentEntry(item));
+  if (!LIVE_LISTENING && !current.length) indexScroll.append(el("p", "empty-msg", "nothing here yet"));
+
+  indexScroll.append(el("h2", "section-heading section-heading--recommendations", "recommendations"));
   if (!items.length) {
     indexScroll.append(el("p", "empty-msg", "No works found."));
     return;
@@ -639,6 +694,12 @@ function setupHelp() {
   helpToggle.addEventListener("click", () => helpDialog.showModal());
 }
 
+async function refreshNowPlaying() {
+  if (!LIVE_LISTENING) return;
+  state.nowPlaying = await loadNowPlaying();
+  renderAll();
+}
+
 // ---------------- init ----------------
 if (searchInput) {
   searchInput.addEventListener("input", () => {
@@ -664,6 +725,11 @@ buildAuth();
 
 state.dismissed = new Set(readDismissed());
 state.promoted = new Set(readPromoted());
+
+if (LIVE_LISTENING) {
+  refreshNowPlaying();
+  setInterval(refreshNowPlaying, 30_000);
+}
 
 getSession().then(async (session) => {
   state.session = session;

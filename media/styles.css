@@ -726,6 +726,41 @@ select.editor-input{cursor:pointer}
   overscroll-behavior: contain;
 }
 
+.section-heading {
+  margin: 0 0 12px;
+  font-family: "Inter", -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  color: rgb(197, 197, 197);
+  text-transform: none;
+}
+.section-heading--recommendations {
+  margin-top: 24px;
+}
+
+.now-line {
+  margin-bottom: 10px;
+}
+.now-title {
+  font-weight: 400;
+}
+.now-link {
+  color: #9a9a9a;
+}
+.now-source {
+  text-decoration: none;
+}
+.now-source:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.now-entry {
+  margin-bottom: 10px;
+}
+
 .media-entry {
   position: relative;
   padding: 0 0 0 0;
