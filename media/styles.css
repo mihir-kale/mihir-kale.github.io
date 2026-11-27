@@ -674,7 +674,6 @@ select.editor-input{cursor:pointer}
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-right: 1px solid #2a2a2a;
   background: #191919;
 }
 .gallery-panel {
@@ -718,35 +717,6 @@ select.editor-input{cursor:pointer}
   text-transform: none;
 }
 
-.category-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-  padding: 0 16px 16px;
-  border-bottom: 1px solid #2a2a2a;
-}
-.cat-btn {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  font-family: "Inter", -apple-system, sans-serif;
-  font-size: 10px;
-  line-height: 14px;
-  text-transform: uppercase;
-  color: #8a8a8a;
-  font-weight: 400;
-}
-.cat-btn.is-active {
-  color: rgb(197, 197, 197);
-  font-weight: 700;
-}
-.cat-btn:focus-visible {
-  outline: 2px solid rgb(197, 197, 197);
-  outline-offset: 3px;
-}
-
 .index-scroll {
   flex: 1;
   min-height: 0;
@@ -754,21 +724,6 @@ select.editor-input{cursor:pointer}
   overflow-x: hidden;
   padding: 16px;
   overscroll-behavior: contain;
-}
-
-.category-heading {
-  font-family: "Inter", -apple-system, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  letter-spacing: -0.01em;
-  text-transform: lowercase;
-  color: rgb(197, 197, 197);
-  margin: 16px 0 10px;
-  padding: 0;
-}
-.category-heading:first-child {
-  margin-top: 0;
 }
 
 .media-entry {
@@ -782,10 +737,13 @@ select.editor-input{cursor:pointer}
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px;
+  gap: 4px 12px;
 }
 
 .entry-meta {
+  flex: 0 0 auto;
+  margin-left: auto;
+  text-align: right;
   font-family: "Inter", -apple-system, sans-serif;
   font-size: 12px;
   font-weight: 400;
@@ -800,6 +758,8 @@ select.editor-input{cursor:pointer}
 }
 
 .media-title {
+  flex: 1 1 auto;
+  min-width: 0;
   display: inline;
   width: auto;
   padding: 0;
@@ -823,33 +783,6 @@ select.editor-input{cursor:pointer}
   text-underline-offset: 2px;
 }
 
-.media-review {
-  font-family: "Inter", -apple-system, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: 0;
-  color: #9a9a9a;
-  margin: 4px 0 0;
-  text-transform: none;
-  overflow-wrap: anywhere;
-}
-
-.review-toggle {
-  display: inline-block;
-  padding: 0;
-  margin-top: 4px;
-  border: 0;
-  background: transparent;
-  color: rgb(197, 197, 197);
-  font-family: "Inter", -apple-system, sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 16px;
-  cursor: pointer;
-  text-transform: none;
-}
-
 .gallery-scroll {
   width: 100%;
   height: 100%;
@@ -868,23 +801,21 @@ select.editor-input{cursor:pointer}
 
 .shelf-item {
   margin: 0 0 14px;
-  padding: 0 0 14px;
-  border-bottom: 1px solid #2a2a2a;
 }
 .shelf-item:last-child {
   margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: 0;
 }
 
 .shelf-line {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px;
+  gap: 4px 12px;
 }
 
 .shelf-title {
+  flex: 1 1 auto;
+  min-width: 0;
   color: rgb(197, 197, 197);
   font-family: "Inter", -apple-system, sans-serif;
   font-size: 13px;
@@ -900,8 +831,10 @@ select.editor-input{cursor:pointer}
   text-underline-offset: 2px;
 }
 
-.shelf-meta,
-.shelf-description {
+.shelf-meta {
+  flex: 0 0 auto;
+  margin-left: auto;
+  text-align: right;
   font-family: "Inter", -apple-system, sans-serif;
   font-size: 11px;
   font-weight: 400;
@@ -909,9 +842,6 @@ select.editor-input{cursor:pointer}
   color: #9a9a9a;
   text-transform: none;
   overflow-wrap: anywhere;
-}
-.shelf-description {
-  margin: 4px 0 0;
 }
 
 .gallery-columns {

@@ -1,7 +1,7 @@
-import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128c";
-import { resolveCover } from "./covers.js?v=20261128c";
-import { signIn, signOut, getSession } from "./auth.js?v=20261128c";
-import { loadNowPlaying } from "./lastfm.js?v=20261128c";
+import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128d";
+import { resolveCover } from "./covers.js?v=20261128d";
+import { signIn, signOut, getSession } from "./auth.js?v=20261128d";
+import { loadNowPlaying } from "./lastfm.js?v=20261128d";
 
 // Cover art is disabled for now. The resolver and gallery/masonry code below
 // are retained but never run; the old gallery node now renders the text shelf.
@@ -33,9 +33,7 @@ const state = {
   items: [],
   articles: [],
   query: "",
-  category: "ALL",
   selectedMediaId: null,
-  expandedId: null,
   mobileView: "index",
   session: null,
   suggestions: [],
@@ -105,24 +103,6 @@ function effectiveList(item) {
   return item.list;
 }
 
-// ---------------- review preview ----------------
-function reviewWords(item) {
-  const r = (item.notes || "").trim();
-  return r;
-}
-function previewText(full) {
-  const words = full.trim().split(/\s+/).filter(Boolean);
-  if (words.length <= 30) return full.trim();
-  return words.slice(0, 30).join(" ") + "\u2026";
-}
-function hasReview(item) {
-  return !!(item.notes && item.notes.trim());
-}
-function isLongReview(item) {
-  if (!hasReview(item)) return false;
-  return item.notes.trim().split(/\s+/).filter(Boolean).length > 30;
-}
-
 // ---------------- filtering ----------------
 function filteredItems() {
   const query = state.query.trim().toLowerCase();
@@ -138,8 +118,6 @@ function filteredItems() {
   return out;
 }
 
-// (category navigation removed; items are grouped under section headings in one scroll)
-
 // ---------------- index rendering ----------------
 function createEntry(item) {
   const entry = el("div", "media-entry");
@@ -153,71 +131,20 @@ function createEntry(item) {
   titleBtn.addEventListener("click", () => selectFromIndex(item.id));
   line.append(titleBtn);
   if (item.creator) {
-    const meta = el("span", "entry-meta", item.creator);
-    line.append(meta);
+    line.append(el("span", "entry-meta", item.creator));
   }
   entry.append(line);
-
-  if (hasReview(item)) {
-    const review = el("p", "media-review");
-    review.id = `review-${item.id}`;
-    const expanded = state.expandedId === item.id;
-    if (expanded) review.textContent = item.notes.trim();
-    else review.textContent = previewText(item.notes);
-    entry.append(review);
-
-    if (isLongReview(item)) {
-      const toggle = el("button", "review-toggle", expanded ? "<<<" : ">>>");
-      toggle.type = "button";
-      toggle.setAttribute("aria-expanded", String(expanded));
-      toggle.setAttribute("aria-controls", review.id);
-      toggle.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleReview(item.id);
-      });
-      entry.append(toggle);
-    }
-  }
-
   return entry;
 }
-
-const SECTION_LABELS = {
-  "fiction": "fiction",
-  "non-fiction": "non-fiction",
-  "short-fiction": "short fiction",
-  "short-non-fiction": "essays",
-  "film": "movies",
-  "album": "music",
-  "podcast": "podcasts"
-};
 
 function renderIndex(items) {
   indexScroll.replaceChildren();
   if (!items.length) {
-    const msg = el("p", "empty-msg", "No works found.");
-    indexScroll.append(msg);
+    indexScroll.append(el("p", "empty-msg", "No works found."));
     return;
   }
-  // Group items by media type, preserving filtered order within each group.
-  const groups = new Map();
   for (const item of items) {
-    const key = item.mediaType;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(item);
-  }
-  // Render in a stable type order.
-  const order = ["fiction", "short-fiction", "non-fiction", "short-non-fiction", "film", "album", "podcast"];
-  for (const type of order) {
-    const groupItems = groups.get(type);
-    if (!groupItems || !groupItems.length) continue;
-    const label = (TYPE_LABELS[type] || type).toLowerCase();
-    const heading = el("h2", "category-heading", label);
-    indexScroll.append(heading);
-    for (const item of groupItems) {
-      indexScroll.append(createEntry(item));
-    }
+    indexScroll.append(createEntry(item));
   }
 }
 
@@ -358,12 +285,6 @@ function renderGallery(items) {
   doMasonry();
 }
 
-function formatPublished(value) {
-  const date = value ? new Date(value) : null;
-  if (!date || Number.isNaN(date.getTime())) return "";
-  return date.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
-}
-
 function renderShelf() {
   galleryScroll.replaceChildren();
   if (!state.articles.length) {
@@ -383,10 +304,10 @@ function renderShelf() {
     } else {
       line.append(el("span", "shelf-title", label));
     }
-    const meta = [article.source, article.author, formatPublished(article.publishedAt)].filter(Boolean);
-    if (meta.length) line.append(el("span", "shelf-meta", meta.join(" · ")));
+    if (article.source) {
+      line.append(el("span", "shelf-meta", article.source));
+    }
     row.append(line);
-    if (article.description) row.append(el("p", "shelf-description", previewText(article.description)));
     galleryScroll.append(row);
   }
 }
@@ -394,10 +315,8 @@ function renderShelf() {
 function renderAll() {
   const items = filteredItems();
   filteredCache = items;
-  // cleanup selected/expanded already handled in setCategory; also on search? ensure
   const ids = new Set(items.map((i) => i.id));
   if (state.selectedMediaId && !ids.has(state.selectedMediaId)) state.selectedMediaId = null;
-  if (state.expandedId && !ids.has(state.expandedId)) state.expandedId = null;
 
   renderIndex(items);
   renderGallery(items);
@@ -483,22 +402,6 @@ function selectFromGallery(id) {
   if (window.innerWidth < 600) {
     state.mobileView = "index";
     applyMobileView();
-  }
-}
-
-function toggleReview(id) {
-  state.selectedMediaId = id;
-  if (state.expandedId === id) state.expandedId = null;
-  else state.expandedId = id;
-  renderIndex(filteredItems());
-  applySelectionStyles();
-  // reveal selected artwork in gallery if needed
-  if (COVER_ART_ENABLED) {
-    const gItem = galleryScroll.querySelector(`.gallery-item[data-id="${CSS.escape(id)}"]`);
-    if (gItem && !completelyVisible(galleryScroll, gItem)) {
-      const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
-      galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
-    }
   }
 }
 
