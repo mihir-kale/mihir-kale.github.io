@@ -1,0 +1,29 @@
+name: Ingest RSS feeds
+
+on:
+  schedule:
+    # Every six hours: 05:17, 11:17, 17:17, 23:17 UTC.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: media-feed-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Ingest enabled feeds into Supabase
+        run: node media/media_feed/scripts/ingest.mjs

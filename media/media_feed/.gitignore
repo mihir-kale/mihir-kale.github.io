@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+*.log
+.DS_Store
+
+# The parent repo ignores every supabase/ directory; keep this repo's migrations.
+!supabase/
+!supabase/**
+supabase/.temp/
