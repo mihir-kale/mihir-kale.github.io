@@ -735,14 +735,15 @@ select.editor-input{cursor:pointer}
 
 .entry-line {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: baseline;
-  gap: 4px 12px;
+  gap: 12px;
 }
 
 .entry-meta {
   flex: 0 0 auto;
   margin-left: auto;
+  white-space: nowrap;
   text-align: right;
   font-family: "Inter", -apple-system, sans-serif;
   font-size: 12px;
@@ -773,6 +774,7 @@ select.editor-input{cursor:pointer}
   font-weight: 500;
   line-height: 18px;
   cursor: pointer;
+  white-space: normal;
   overflow-wrap: anywhere;
   text-transform: none;
   text-decoration: none;
