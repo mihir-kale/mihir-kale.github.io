@@ -1,7 +1,7 @@
-import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128g";
-import { resolveCover } from "./covers.js?v=20261128g";
-import { signIn, signOut, getSession } from "./auth.js?v=20261128g";
-import { loadNowPlaying } from "./lastfm.js?v=20261128g";
+import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, GROUP_LABELS, MEDIA_TYPE_TO_GROUP, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128h";
+import { resolveCover } from "./covers.js?v=20261128h";
+import { signIn, signOut, getSession } from "./auth.js?v=20261128h";
+import { loadNowPlaying } from "./lastfm.js?v=20261128h";
 
 // Cover art is disabled for now. The resolver and gallery/masonry code below
 // are retained but never run; the old gallery node now renders the text shelf.
@@ -17,13 +17,18 @@ const themeToggle = document.getElementById("themeToggle");
 const helpToggle = document.getElementById("helpToggle");
 const indexScroll = document.getElementById("indexScroll");
 const galleryScroll = document.getElementById("galleryScroll");
-const indexPanel = document.getElementById("indexPanel");
-const galleryPanel = document.getElementById("galleryPanel");
-const mobileNav = document.getElementById("mobileNav");
-const mobileIndexBtn = document.getElementById("mobileIndexBtn");
-const mobileGalleryBtn = document.getElementById("mobileGalleryBtn");
 
 const THEME_KEY = "media:theme:v1";
+
+// Single combined archive: human-facing media groups first, then reading-state subsections.
+const GROUP_ORDER = ["books", "short-fiction", "essays", "movies", "music", "podcasts"];
+const SUBSECTIONS = [
+  ["now", "currently"],
+  ["recommend", "favorite"],
+  ["shelf", "on the shelf"]
+];
+const SUBSECTION_IDS = new Set(SUBSECTIONS.map(([id]) => id));
+const ARTICLE_GROUP = "essays";
 
 const REST = `${SUPABASE_URL}/rest/v1`;
 const WRITE_HEADERS = {
@@ -37,7 +42,6 @@ const state = {
   articles: [],
   query: "",
   selectedMediaId: null,
-  mobileView: "index",
   session: null,
   suggestions: [],
   dismissed: new Set(),
@@ -106,32 +110,44 @@ function effectiveList(item) {
   return item.list;
 }
 
-// ---------------- filtering ----------------
-function filteredItems() {
+// ---------------- archive model ----------------
+function matchesArticle(article, query) {
+  if (!query) return true;
+  return [article.title, article.source].filter(Boolean).join(" ").toLowerCase().includes(query);
+}
+
+function buildArchiveBuckets() {
   const query = state.query.trim().toLowerCase();
+  const buckets = new Map();
+  const add = (type, subsection, value) => {
+    if (!buckets.has(type)) buckets.set(type, new Map());
+    const subs = buckets.get(type);
+    if (!subs.has(subsection)) subs.set(subsection, []);
+    subs.get(subsection).push(value);
+  };
+
+  // Last.fm leads music/currently; curated rows follow in their saved order;
+  // RSS articles fill essays/on the shelf in the mixed order from loadArticles().
+  if (LIVE_LISTENING) add("music", "now", { kind: "listening" });
   const pool = state.items.concat(state.suggestions || []);
-  const out = [];
   for (const item of ordered(pool)) {
     if (state.dismissed.has(item.id)) continue;
-    const lst = effectiveList(item);
-    if (lst !== "recommend") continue;
-    if (!matches(item, query)) continue;
-    out.push(item);
+    const list = effectiveList(item);
+    if (!SUBSECTION_IDS.has(list)) continue;
+    if (query && !matches(item, query)) continue;
+    const group = MEDIA_TYPE_TO_GROUP[item.mediaType];
+    if (!group) continue;
+    add(group, list, { kind: "entry", item });
   }
-  return out;
+  for (const article of state.articles) {
+    if (state.dismissed.has(article.id)) continue;
+    if (query && !matchesArticle(article, query)) continue;
+    add(ARTICLE_GROUP, "shelf", { kind: "article", article });
+  }
+  return buckets;
 }
 
-function currentItems() {
-  const query = state.query.trim().toLowerCase();
-  return state.items.filter((item) => {
-    if (effectiveList(item) !== "now") return false;
-    if (state.dismissed.has(item.id)) return false;
-    if (query && !matches(item, query)) return false;
-    return true;
-  });
-}
-
-// ---------------- index rendering ----------------
+// ---------------- archive rendering ----------------
 function externalLink(className, text, href) {
   const link = el("a", className, text);
   link.href = href;
@@ -157,15 +173,6 @@ function nowPlayingNode() {
   return line;
 }
 
-function createCurrentEntry(item) {
-  const entry = el("div", "media-entry now-entry");
-  const line = el("div", "entry-line");
-  line.append(el("span", "media-title now-title", item.title));
-  if (item.creator) line.append(el("span", "entry-meta", item.creator));
-  entry.append(line);
-  return entry;
-}
-
 function createEntry(item) {
   const entry = el("div", "media-entry");
   entry.dataset.id = item.id;
@@ -184,22 +191,42 @@ function createEntry(item) {
   return entry;
 }
 
-function renderIndex(items) {
+function createArticleItem(article) {
+  const row = el("div", "media-entry article-entry");
+  const line = el("div", "entry-line");
+  const label = article.title || article.url;
+  const title = isHttpUrl(article.url)
+    ? externalLink("media-title", label, article.url)
+    : el("span", "media-title", label);
+  line.append(title);
+  if (article.source) line.append(el("span", "entry-meta", article.source));
+  row.append(line);
+  return row;
+}
+
+function renderArchive() {
   indexScroll.replaceChildren();
-
-  indexScroll.append(el("h2", "section-heading", "currently"));
-  if (LIVE_LISTENING) indexScroll.append(nowPlayingNode());
-  const current = currentItems();
-  for (const item of current) indexScroll.append(createCurrentEntry(item));
-  if (!LIVE_LISTENING && !current.length) indexScroll.append(el("p", "empty-msg", "nothing here yet"));
-
-  indexScroll.append(el("h2", "section-heading section-heading--recommendations", "recommendations"));
-  if (!items.length) {
-    indexScroll.append(el("p", "empty-msg", "No works found."));
+  const buckets = buildArchiveBuckets();
+  if (!buckets.size) {
+    indexScroll.append(el("p", "empty-msg", "Nothing here yet."));
     return;
   }
-  for (const item of items) {
-    indexScroll.append(createEntry(item));
+  for (const group of GROUP_ORDER) {
+    const subsections = buckets.get(group);
+    if (!subsections) continue;
+    const section = el("section", "media-type-section");
+    section.append(el("h2", "media-type-heading", (GROUP_LABELS[group] || group).toLowerCase()));
+    for (const [id, label] of SUBSECTIONS) {
+      const values = subsections.get(id);
+      if (!values || !values.length) continue;
+      section.append(el("h3", "subsection-heading", label));
+      for (const value of values) {
+        if (value.kind === "listening") section.append(nowPlayingNode());
+        else if (value.kind === "article") section.append(createArticleItem(value.article));
+        else section.append(createEntry(value.item));
+      }
+    }
+    indexScroll.append(section);
   }
 }
 
@@ -313,72 +340,12 @@ function doMasonry() {
   });
 }
 
-let filteredCache = [];
-
-function renderGallery(items) {
-  filteredCache = items;
-  if (!COVER_ART_ENABLED) {
-    // Keep the gallery code intact; clear this node so renderShelf can fill it.
-    galleryNodes = new Map();
-    galleryItemOrder = [];
-    galleryScroll.replaceChildren();
-    return;
-  }
-  galleryNodes = new Map();
-  galleryItemOrder = items.map((i) => i.id);
-  // create nodes
-  const nodes = new Map();
-  for (const item of items) {
-    nodes.set(item.id, createGalleryItem(item));
-  }
-  galleryNodes = nodes;
-  // reset aspect ratios for new items? keep existing
-  if (!items.length) {
-    galleryScroll.replaceChildren(el("p", "empty-msg", "No works found."));
-    return;
-  }
-  doMasonry();
-}
-
-function renderShelf() {
-  galleryScroll.replaceChildren();
-  if (!state.articles.length) {
-    galleryScroll.append(el("p", "empty-msg", "Nothing on the shelf yet."));
-    return;
-  }
-  for (const article of state.articles) {
-    const row = el("div", "shelf-item");
-    const line = el("div", "shelf-line");
-    const label = article.title || article.url;
-    if (isHttpUrl(article.url)) {
-      const link = el("a", "shelf-title", label);
-      link.href = article.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      line.append(link);
-    } else {
-      line.append(el("span", "shelf-title", label));
-    }
-    if (article.source) {
-      line.append(el("span", "shelf-meta", article.source));
-    }
-    row.append(line);
-    galleryScroll.append(row);
-  }
-}
-
 function renderAll() {
-  const items = filteredItems();
-  filteredCache = items;
-  const ids = new Set(items.map((i) => i.id));
+  const ids = new Set(state.items.concat(state.suggestions || []).map((item) => item.id));
   if (state.selectedMediaId && !ids.has(state.selectedMediaId)) state.selectedMediaId = null;
 
-  renderIndex(items);
-  renderGallery(items);
-  if (!COVER_ART_ENABLED) renderShelf();
+  renderArchive();
   applySelectionStyles();
-  // mobile nav state
-  applyMobileView();
 }
 
 // ---------------- selection ----------------
@@ -424,20 +391,13 @@ function completelyVisible(container, el) {
 function selectFromIndex(id) {
   state.selectedMediaId = id;
   applySelectionStyles();
-  // gallery scroll
+  // gallery scroll (retained for cover art; unreachable while disabled)
   if (COVER_ART_ENABLED) {
     const gItem = galleryScroll.querySelector(`.gallery-item[data-id="${CSS.escape(id)}"]`);
-    if (gItem) {
-      if (!completelyVisible(galleryScroll, gItem)) {
-        const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
-        galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
-      }
+    if (gItem && !completelyVisible(galleryScroll, gItem)) {
+      const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
+      galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
     }
-  }
-  // mobile switch
-  if (COVER_ART_ENABLED && window.innerWidth < 600) {
-    state.mobileView = "gallery";
-    applyMobileView();
   }
 }
 
@@ -453,25 +413,6 @@ function selectFromGallery(id) {
       const top = target.getBoundingClientRect().top - indexScroll.getBoundingClientRect().top + indexScroll.scrollTop;
       indexScroll.scrollTo({ top: top - 16, behavior: isReducedMotion() ? "auto" : "smooth" });
     }
-  }
-  if (window.innerWidth < 600) {
-    state.mobileView = "index";
-    applyMobileView();
-  }
-}
-
-// ---------------- mobile view ----------------
-function applyMobileView() {
-  const isMobile = window.innerWidth < 600;
-  if (mobileNav) mobileNav.style.display = isMobile ? "flex" : "none";
-  if (isMobile) {
-    indexPanel.classList.toggle("is-active", state.mobileView === "index");
-    galleryPanel.classList.toggle("is-active", state.mobileView === "gallery");
-    if (mobileIndexBtn) mobileIndexBtn.classList.toggle("is-active", state.mobileView === "index");
-    if (mobileGalleryBtn) mobileGalleryBtn.classList.toggle("is-active", state.mobileView === "gallery");
-  } else {
-    indexPanel.classList.add("is-active");
-    galleryPanel.classList.add("is-active");
   }
 }
 
@@ -709,13 +650,9 @@ if (searchInput) {
 }
 
 window.addEventListener("resize", () => {
-  applyMobileView();
-  // recompute masonry if width changed
+  // recompute masonry if width changed (retained for cover art)
   scheduleMasonry();
 });
-
-mobileIndexBtn.addEventListener("click", () => { state.mobileView = "index"; applyMobileView(); });
-mobileGalleryBtn.addEventListener("click", () => { state.mobileView = "gallery"; applyMobileView(); });
 
 setupTheme();
 setupHelp();
@@ -755,6 +692,3 @@ Promise.all([loadEntries(), loadFeeds(), loadMarks(), loadArticles()])
     indexScroll.replaceChildren();
     indexScroll.append(el("p", "notice", error.message));
   });
-
-// initial mobile view
-applyMobileView();
