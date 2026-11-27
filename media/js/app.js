@@ -1,10 +1,10 @@
-import { loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261127a";
-import { resolveCover } from "./covers.js?v=20261127a";
-import { signIn, signOut, getSession } from "./auth.js?v=20261127a";
-import { loadNowPlaying } from "./lastfm.js?v=20261127a";
+import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128c";
+import { resolveCover } from "./covers.js?v=20261128c";
+import { signIn, signOut, getSession } from "./auth.js?v=20261128c";
+import { loadNowPlaying } from "./lastfm.js?v=20261128c";
 
 // Cover art is disabled for now. The resolver and gallery/masonry code below
-// are retained but never run; the text index is the whole page.
+// are retained but never run; the old gallery node now renders the text shelf.
 const COVER_ART_ENABLED = false;
 document.documentElement.dataset.covers = COVER_ART_ENABLED ? "on" : "off";
 
@@ -31,6 +31,7 @@ const WRITE_HEADERS = {
 
 const state = {
   items: [],
+  articles: [],
   query: "",
   category: "ALL",
   selectedMediaId: null,
@@ -130,7 +131,7 @@ function filteredItems() {
   for (const item of ordered(pool)) {
     if (state.dismissed.has(item.id)) continue;
     const lst = effectiveList(item);
-    if (lst !== "recommend" && lst !== "now") continue;
+    if (lst !== "recommend") continue;
     if (!matches(item, query)) continue;
     out.push(item);
   }
@@ -335,7 +336,7 @@ let filteredCache = [];
 function renderGallery(items) {
   filteredCache = items;
   if (!COVER_ART_ENABLED) {
-    // Keep the gallery code above intact, but render no artwork and no wall.
+    // Keep the gallery code intact; clear this node so renderShelf can fill it.
     galleryNodes = new Map();
     galleryItemOrder = [];
     galleryScroll.replaceChildren();
@@ -357,6 +358,39 @@ function renderGallery(items) {
   doMasonry();
 }
 
+function formatPublished(value) {
+  const date = value ? new Date(value) : null;
+  if (!date || Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+}
+
+function renderShelf() {
+  galleryScroll.replaceChildren();
+  if (!state.articles.length) {
+    galleryScroll.append(el("p", "empty-msg", "Nothing on the shelf yet."));
+    return;
+  }
+  for (const article of state.articles) {
+    const row = el("div", "shelf-item");
+    const line = el("div", "shelf-line");
+    const label = article.title || article.url;
+    if (isHttpUrl(article.url)) {
+      const link = el("a", "shelf-title", label);
+      link.href = article.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      line.append(link);
+    } else {
+      line.append(el("span", "shelf-title", label));
+    }
+    const meta = [article.source, article.author, formatPublished(article.publishedAt)].filter(Boolean);
+    if (meta.length) line.append(el("span", "shelf-meta", meta.join(" · ")));
+    row.append(line);
+    if (article.description) row.append(el("p", "shelf-description", previewText(article.description)));
+    galleryScroll.append(row);
+  }
+}
+
 function renderAll() {
   const items = filteredItems();
   filteredCache = items;
@@ -367,6 +401,7 @@ function renderAll() {
 
   renderIndex(items);
   renderGallery(items);
+  if (!COVER_ART_ENABLED) renderShelf();
   applySelectionStyles();
   // mobile nav state
   applyMobileView();
@@ -469,15 +504,6 @@ function toggleReview(id) {
 
 // ---------------- mobile view ----------------
 function applyMobileView() {
-  if (!COVER_ART_ENABLED) {
-    state.mobileView = "index";
-    if (mobileNav) mobileNav.style.display = "none";
-    indexPanel.classList.add("is-active");
-    galleryPanel.classList.remove("is-active");
-    if (mobileIndexBtn) mobileIndexBtn.classList.add("is-active");
-    if (mobileGalleryBtn) mobileGalleryBtn.classList.remove("is-active");
-    return;
-  }
   const isMobile = window.innerWidth < 600;
   if (mobileNav) mobileNav.style.display = isMobile ? "flex" : "none";
   if (isMobile) {
@@ -724,8 +750,8 @@ window.addEventListener("resize", () => {
   scheduleMasonry();
 });
 
-mobileIndexBtn.addEventListener("click", () => { if (!COVER_ART_ENABLED) return; state.mobileView = "index"; applyMobileView(); });
-mobileGalleryBtn.addEventListener("click", () => { if (!COVER_ART_ENABLED) return; state.mobileView = "gallery"; applyMobileView(); });
+mobileIndexBtn.addEventListener("click", () => { state.mobileView = "index"; applyMobileView(); });
+mobileGalleryBtn.addEventListener("click", () => { state.mobileView = "gallery"; applyMobileView(); });
 
 setupTheme();
 setupHelp();
@@ -743,9 +769,10 @@ getSession().then(async (session) => {
   renderAll();
 });
 
-Promise.all([loadEntries(), loadFeeds(), loadMarks()])
-  .then(([entries, feeds, marks]) => {
+Promise.all([loadEntries(), loadFeeds(), loadMarks(), loadArticles()])
+  .then(([entries, feeds, marks, articles]) => {
     state.items = [...entries, ...feeds];
+    state.articles = articles;
     if (marks) {
       state.dismissed = new Set(marks.filter((m) => m.dismissed).map((m) => m.item_id));
       state.promoted = new Set(marks.filter((m) => m.promoted).map((m) => m.item_id));

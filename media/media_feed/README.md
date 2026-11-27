@@ -47,8 +47,10 @@ node --test
 - `reviews`: `id`, `article_id` (unique), `body` (Markdown), `status`, `created_at`,
   `updated_at`, `published_at`. Statuses: `draft` (default), `published`.
 
-RLS is enabled on all three tables. `anon` has no access; signed-in owners have full access.
-The ingestion job uses the service role.
+RLS is enabled on all three tables. The public media page reads `articles`
+through the `article_shelf` view (last 7 days, with source name only); the base
+tables, reading state, ranking, reasons, `reviews`, and all writes remain
+owner-only. The ingestion job uses the service role.
 
 ## Ingestion behavior
 

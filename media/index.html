@@ -17,22 +17,23 @@
       if (localStorage.getItem("media:theme:v1") === "dark") document.documentElement.setAttribute("data-theme", "dark");
     } catch (e) {}
   </script>
-  <link rel="stylesheet" href="styles.css?v=20261127a">
+  <link rel="stylesheet" href="styles.css?v=20261128c">
 </head>
 <body>
 
 
   <main class="media-page" aria-label="Media archive">
     <nav class="mobile-nav" id="mobileNav" aria-label="View">
-      <button id="mobileIndexBtn" class="mobile-nav-btn" type="button">INDEX</button>
-      <button id="mobileGalleryBtn" class="mobile-nav-btn" type="button">GALLERY</button>
+      <button id="mobileIndexBtn" class="mobile-nav-btn" type="button">RECOMMENDATIONS</button>
+      <button id="mobileGalleryBtn" class="mobile-nav-btn" type="button">SHELF</button>
     </nav>
-    <section class="index-panel" id="indexPanel" aria-label="Index">
-      <div class="index-header">MEDIA</div>
+    <section class="index-panel" id="indexPanel" aria-label="Recommendations">
+      <div class="index-header">recommendations</div>
       <div class="index-scroll" id="indexScroll"></div>
     </section>
-    <section class="gallery-panel" id="galleryPanel" aria-label="Gallery">
-      <div class="gallery-scroll" id="galleryScroll"></div>
+    <section class="gallery-panel shelf-panel" id="galleryPanel" aria-label="Shelf">
+      <div class="index-header shelf-header">shelf</div>
+      <div class="gallery-scroll shelf-scroll" id="galleryScroll"></div>
     </section>
   </main>
 
@@ -40,6 +41,6 @@
     <p class="notice">This board needs JavaScript. Enable it and reload.</p>
   </noscript>
 
-  <script type="module" src="js/app.js?v=20261127a"></script>
+  <script type="module" src="js/app.js?v=20261128c"></script>
 </body>
 </html>

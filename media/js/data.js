@@ -146,6 +146,34 @@ export async function loadEntries() {
   }
 }
 
+// Recent articles pulled by the RSS cron job, read from the public
+// `article_shelf` view. Reviews and owner reading state are not exposed.
+export async function loadArticles() {
+  try {
+    const response = await fetch(
+      `${REST}/article_shelf?select=id,title,author,url,description,published_at,source&order=published_at.desc&limit=200`,
+      { headers: AUTH_HEADERS }
+    );
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+    if (!Array.isArray(rows)) throw new Error("unexpected payload");
+    return rows
+      .map((row) => ({
+        id: row.id,
+        title: typeof row.title === "string" ? row.title.trim() : "",
+        author: typeof row.author === "string" ? row.author.trim() : "",
+        url: typeof row.url === "string" ? row.url.trim() : "",
+        description: typeof row.description === "string" ? row.description.trim() : "",
+        publishedAt: row.published_at || null,
+        source: typeof row.source === "string" ? row.source.trim() : ""
+      }))
+      .filter((article) => article.title || article.url);
+  } catch (error) {
+    console.warn(`articles unavailable (${error.message})`);
+    return [];
+  }
+}
+
 // Shelf marks (dismiss / promote) keyed by feed item id. Returns null when the
 // backend is unreachable so the caller can fall back to localStorage.
 export async function loadMarks() {
