@@ -39,24 +39,14 @@ export const TYPE_LABELS = {
   podcast: "Podcast"
 };
 
-export const GROUP_LABELS = {
-  books: "Books",
+export const KIND_LABELS = {
+  fiction: "Fiction",
+  "non-fiction": "Non-fiction",
   "short-fiction": "Short fiction",
-  essays: "Essays",
-  movies: "Movies",
-  music: "Music",
-  podcasts: "Podcasts"
-};
-
-// Archive sections: several stored media types share one human-facing group.
-export const MEDIA_TYPE_TO_GROUP = {
-  fiction: "books",
-  "non-fiction": "books",
-  "short-fiction": "short-fiction",
-  "short-non-fiction": "essays",
-  film: "movies",
-  album: "music",
-  podcast: "podcasts"
+  "short-non-fiction": "Short non-fiction",
+  film: "Films",
+  album: "Music",
+  podcast: "Podcasts"
 };
 
 export const COVER_TYPES = new Set(["fiction", "non-fiction", "film", "album", "podcast"]);
