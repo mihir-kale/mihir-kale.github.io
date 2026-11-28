@@ -1,10 +1,10 @@
-import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, GROUP_LABELS, MEDIA_TYPE_TO_GROUP, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128i";
-import { resolveCover } from "./covers.js?v=20261128i";
-import { signIn, signOut, getSession } from "./auth.js?v=20261128i";
-import { loadNowPlaying } from "./lastfm.js?v=20261128i";
+import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, GROUP_LABELS, MEDIA_TYPE_TO_GROUP, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128j";
+import { resolveCover } from "./covers.js?v=20261128j";
+import { signIn, signOut, getSession } from "./auth.js?v=20261128j";
+import { loadNowPlaying } from "./lastfm.js?v=20261128j";
 
 // Cover art is disabled for now. The resolver and gallery/masonry code below
-// are retained but never run; the old gallery node now renders the text shelf.
+// are retained but never run.
 const COVER_ART_ENABLED = false;
 document.documentElement.dataset.covers = COVER_ART_ENABLED ? "on" : "off";
 
@@ -17,11 +17,6 @@ const themeToggle = document.getElementById("themeToggle");
 const helpToggle = document.getElementById("helpToggle");
 const indexScroll = document.getElementById("indexScroll");
 const galleryScroll = document.getElementById("galleryScroll");
-const indexPanel = document.getElementById("indexPanel");
-const galleryPanel = document.getElementById("galleryPanel");
-const mobileNav = document.getElementById("mobileNav");
-const mobileIndexBtn = document.getElementById("mobileIndexBtn");
-const mobileGalleryBtn = document.getElementById("mobileGalleryBtn");
 
 const THEME_KEY = "media:theme:v1";
 
@@ -29,6 +24,7 @@ const THEME_KEY = "media:theme:v1";
 // on-my-shelf are capped per medium so no single type dominates the column.
 const GROUP_ORDER = ["books", "short-fiction", "essays", "movies", "music", "podcasts"];
 const MEDIUM_LIMIT = 6;
+const ARTICLE_GROUP = "essays";
 
 const REST = `${SUPABASE_URL}/rest/v1`;
 const WRITE_HEADERS = {
@@ -42,7 +38,6 @@ const state = {
   articles: [],
   query: "",
   selectedMediaId: null,
-  mobileView: "index",
   session: null,
   suggestions: [],
   dismissed: new Set(),
@@ -136,22 +131,39 @@ function currentItems() {
   });
 }
 
+function matchesArticle(article, query) {
+  if (!query) return true;
+  return [article.title, article.source].filter(Boolean).join(" ").toLowerCase().includes(query);
+}
+
 function groupedByMedium(list) {
   const query = state.query.trim().toLowerCase();
   const pool = state.items.concat(state.suggestions || []);
   const groups = new Map();
+  const add = (group, value) => {
+    if (!groups.has(group)) groups.set(group, []);
+    const bucket = groups.get(group);
+    if (bucket.length < MEDIUM_LIMIT) bucket.push(value);
+  };
+
   for (const item of ordered(pool)) {
     if (state.dismissed.has(item.id)) continue;
     const itemList = effectiveList(item);
     if (itemList !== list) continue;
-    // Legacy RSS rows stay on the right shelf unless explicitly promoted.
+    // Legacy feed rows are already folded into the RSS article shelf below.
     if (item.source === "feed" && itemList !== "recommend") continue;
     if (query && !matches(item, query)) continue;
     const group = MEDIA_TYPE_TO_GROUP[item.mediaType];
-    if (!group) continue;
-    if (!groups.has(group)) groups.set(group, []);
-    const bucket = groups.get(group);
-    if (bucket.length < MEDIUM_LIMIT) bucket.push(item);
+    if (group) add(group, { kind: "entry", item });
+  }
+
+  // RSS articles are essays on my shelf, sharing the same six-entry cap.
+  if (list === "shelf") {
+    for (const article of state.articles) {
+      if (state.dismissed.has(article.id)) continue;
+      if (query && !matchesArticle(article, query)) continue;
+      add(ARTICLE_GROUP, { kind: "article", article });
+    }
   }
   return groups;
 }
@@ -209,6 +221,19 @@ function createEntry(item) {
   return entry;
 }
 
+function createArticleItem(article) {
+  const row = el("div", "media-entry article-entry");
+  const line = el("div", "entry-line");
+  const label = article.title || article.url;
+  const title = isHttpUrl(article.url)
+    ? externalLink("media-title", label, article.url)
+    : el("span", "media-title", label);
+  line.append(title);
+  if (article.source) line.append(el("span", "entry-meta", article.source));
+  row.append(line);
+  return row;
+}
+
 function renderIndex(items) {
   indexScroll.replaceChildren();
 
@@ -228,13 +253,16 @@ function renderIndex(items) {
     const favoriteItems = favorites.get(group) || [];
     if (favoriteItems.length) {
       section.append(el("h3", "subsection-heading", "favorites"));
-      for (const item of favoriteItems) section.append(createEntry(item));
+      for (const value of favoriteItems) section.append(createEntry(value.item));
     }
 
     const shelfItems = shelf.get(group) || [];
     if (shelfItems.length) {
       section.append(el("h3", "subsection-heading", "on my shelf"));
-      for (const item of shelfItems) section.append(createEntry(item));
+      for (const value of shelfItems) {
+        if (value.kind === "article") section.append(createArticleItem(value.article));
+        else section.append(createEntry(value.item));
+      }
     }
     indexScroll.append(section);
   }
@@ -412,11 +440,8 @@ function renderAll() {
   if (state.selectedMediaId && !ids.has(state.selectedMediaId)) state.selectedMediaId = null;
 
   renderIndex(items);
-  renderGallery(items);
-  if (!COVER_ART_ENABLED) renderShelf();
+  if (COVER_ART_ENABLED) renderGallery(items);
   applySelectionStyles();
-  // mobile nav state
-  applyMobileView();
 }
 
 // ---------------- selection ----------------
@@ -462,20 +487,13 @@ function completelyVisible(container, el) {
 function selectFromIndex(id) {
   state.selectedMediaId = id;
   applySelectionStyles();
-  // gallery scroll
+  // gallery scroll (retained for cover art; unreachable while disabled)
   if (COVER_ART_ENABLED) {
     const gItem = galleryScroll.querySelector(`.gallery-item[data-id="${CSS.escape(id)}"]`);
-    if (gItem) {
-      if (!completelyVisible(galleryScroll, gItem)) {
-        const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
-        galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
-      }
+    if (gItem && !completelyVisible(galleryScroll, gItem)) {
+      const top = gItem.getBoundingClientRect().top - galleryScroll.getBoundingClientRect().top + galleryScroll.scrollTop;
+      galleryScroll.scrollTo({ top: top - 20, behavior: isReducedMotion() ? "auto" : "smooth" });
     }
-  }
-  // mobile switch
-  if (COVER_ART_ENABLED && window.innerWidth < 600) {
-    state.mobileView = "gallery";
-    applyMobileView();
   }
 }
 
@@ -491,25 +509,6 @@ function selectFromGallery(id) {
       const top = target.getBoundingClientRect().top - indexScroll.getBoundingClientRect().top + indexScroll.scrollTop;
       indexScroll.scrollTo({ top: top - 16, behavior: isReducedMotion() ? "auto" : "smooth" });
     }
-  }
-  if (window.innerWidth < 600) {
-    state.mobileView = "index";
-    applyMobileView();
-  }
-}
-
-// ---------------- mobile view ----------------
-function applyMobileView() {
-  const isMobile = window.innerWidth < 600;
-  if (mobileNav) mobileNav.style.display = isMobile ? "flex" : "none";
-  if (isMobile) {
-    indexPanel.classList.toggle("is-active", state.mobileView === "index");
-    galleryPanel.classList.toggle("is-active", state.mobileView === "gallery");
-    if (mobileIndexBtn) mobileIndexBtn.classList.toggle("is-active", state.mobileView === "index");
-    if (mobileGalleryBtn) mobileGalleryBtn.classList.toggle("is-active", state.mobileView === "gallery");
-  } else {
-    indexPanel.classList.add("is-active");
-    galleryPanel.classList.add("is-active");
   }
 }
 
@@ -747,13 +746,9 @@ if (searchInput) {
 }
 
 window.addEventListener("resize", () => {
-  applyMobileView();
-  // recompute masonry if width changed
+  // recompute masonry if width changed (retained for cover art)
   scheduleMasonry();
 });
-
-mobileIndexBtn.addEventListener("click", () => { state.mobileView = "index"; applyMobileView(); });
-mobileGalleryBtn.addEventListener("click", () => { state.mobileView = "gallery"; applyMobileView(); });
 
 setupTheme();
 setupHelp();
@@ -793,6 +788,3 @@ Promise.all([loadEntries(), loadFeeds(), loadMarks(), loadArticles()])
     indexScroll.replaceChildren();
     indexScroll.append(el("p", "notice", error.message));
   });
-
-// initial mobile view
-applyMobileView();
