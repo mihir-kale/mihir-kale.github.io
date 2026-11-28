@@ -62,6 +62,8 @@ owner-only. The ingestion job uses the service role.
 - Feeds are processed in alphabetical order. A failed fetch/parse for one feed is logged and
   skipped; the remaining feeds still ingest. The job exits non-zero only if every enabled
   feed fails or the retention prune fails.
+- Promotional titles (coupon/promo/discount codes, `deal of the day`, `N% off`, `save N%`)
+  are skipped before dedupe. Legitimate articles that merely discuss discounts are kept.
 - Strict 7-day retention: items older than the run start minus 7 days are skipped on pull,
   and every existing `articles` row older than that cutoff is deleted after ingestion
   (reviews cascade). Undated items are treated as discovered now, so they age out after
@@ -73,5 +75,5 @@ owner-only. The ingestion job uses the service role.
   are never touched. Missing metadata on a later fetch does not erase existing values.
 - Results are logged as JSON lines: `run_start` (with cutoff), `existing_articles`,
   `source_start`, `source_result` (per-feed fetched/inserted/updated/duplicates/skipped/
-  too_old/error), `prune_result`, and `run_summary`. GitHub Actions retains these logs;
+  promotions/too_old/error), `prune_result`, and `run_summary`. GitHub Actions retains these logs;
   no secrets are printed.

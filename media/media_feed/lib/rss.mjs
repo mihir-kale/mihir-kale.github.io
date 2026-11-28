@@ -40,6 +40,14 @@ const DESCRIPTION_LIMIT = 4000;
 const TITLE_LIMIT = 500;
 const AUTHOR_LIMIT = 200;
 
+// Marketing titles are noise on a reading shelf. Keep the match narrow so
+// legitimate articles about discounts still get through.
+const PROMOTIONAL_TITLE = /\b(?:coupons?|promo(?:tion)?\s+codes?|discount(?:s)?\s+codes?|deal of the day|\d{1,2}\s?%\s?off)\b|\bsave\s+\d{1,2}\s?%/i;
+
+export function isPromotionalTitle(title) {
+  return PROMOTIONAL_TITLE.test(String(title ?? ""));
+}
+
 export function decodeEntities(value) {
   return String(value ?? "").replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (match, entity) => {
     if (entity[0] === "#") {

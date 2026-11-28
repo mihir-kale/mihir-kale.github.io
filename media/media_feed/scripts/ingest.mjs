@@ -10,7 +10,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { isWithinDays, parseFeed } from "../lib/rss.mjs";
+import { isPromotionalTitle, isWithinDays, parseFeed } from "../lib/rss.mjs";
 import { buildArticleUpdate, createSupabaseClient } from "../lib/supabase.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -60,6 +60,7 @@ async function ingestSource(source, client, existingByCanonical, discoveredAt) {
     updated: 0,
     duplicates: 0,
     skipped: 0,
+    promotions: 0,
     too_old: 0
   };
 
@@ -69,6 +70,10 @@ async function ingestSource(source, client, existingByCanonical, discoveredAt) {
     const inserts = [];
 
     for (const item of parseFeed(xml)) {
+      if (isPromotionalTitle(item.title)) {
+        result.promotions += 1;
+        continue;
+      }
       if (seen.has(item.url)) {
         result.duplicates += 1;
         continue;
@@ -174,6 +179,7 @@ async function main() {
     updated: results.reduce((sum, result) => sum + result.updated, 0),
     duplicates: results.reduce((sum, result) => sum + result.duplicates, 0),
     skipped: results.reduce((sum, result) => sum + result.skipped, 0),
+    promotions: results.reduce((sum, result) => sum + result.promotions, 0),
     too_old: results.reduce((sum, result) => sum + result.too_old, 0),
     pruned
   };

@@ -1,7 +1,7 @@
-import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128g";
-import { resolveCover } from "./covers.js?v=20261128g";
-import { signIn, signOut, getSession } from "./auth.js?v=20261128g";
-import { loadNowPlaying } from "./lastfm.js?v=20261128g";
+import { loadArticles, loadEntries, loadFeeds, loadMarks, loadSuggestions, saveEntry, deleteEntry, normalizeItem, SUPABASE_URL, SUPABASE_ANON_KEY, LASTFM_USERNAME, MEDIA_TYPES, TYPE_LABELS, GROUP_LABELS, MEDIA_TYPE_TO_GROUP, LISTS, LIST_LABELS, TOGGLE_LISTS, COVER_TYPES } from "./data.js?v=20261128i";
+import { resolveCover } from "./covers.js?v=20261128i";
+import { signIn, signOut, getSession } from "./auth.js?v=20261128i";
+import { loadNowPlaying } from "./lastfm.js?v=20261128i";
 
 // Cover art is disabled for now. The resolver and gallery/masonry code below
 // are retained but never run; the old gallery node now renders the text shelf.
@@ -24,6 +24,11 @@ const mobileIndexBtn = document.getElementById("mobileIndexBtn");
 const mobileGalleryBtn = document.getElementById("mobileGalleryBtn");
 
 const THEME_KEY = "media:theme:v1";
+
+// One global "currently" block sits above the medium sections. Favorites and
+// on-my-shelf are capped per medium so no single type dominates the column.
+const GROUP_ORDER = ["books", "short-fiction", "essays", "movies", "music", "podcasts"];
+const MEDIUM_LIMIT = 6;
 
 const REST = `${SUPABASE_URL}/rest/v1`;
 const WRITE_HEADERS = {
@@ -131,6 +136,26 @@ function currentItems() {
   });
 }
 
+function groupedByMedium(list) {
+  const query = state.query.trim().toLowerCase();
+  const pool = state.items.concat(state.suggestions || []);
+  const groups = new Map();
+  for (const item of ordered(pool)) {
+    if (state.dismissed.has(item.id)) continue;
+    const itemList = effectiveList(item);
+    if (itemList !== list) continue;
+    // Legacy RSS rows stay on the right shelf unless explicitly promoted.
+    if (item.source === "feed" && itemList !== "recommend") continue;
+    if (query && !matches(item, query)) continue;
+    const group = MEDIA_TYPE_TO_GROUP[item.mediaType];
+    if (!group) continue;
+    if (!groups.has(group)) groups.set(group, []);
+    const bucket = groups.get(group);
+    if (bucket.length < MEDIUM_LIMIT) bucket.push(item);
+  }
+  return groups;
+}
+
 // ---------------- index rendering ----------------
 function externalLink(className, text, href) {
   const link = el("a", className, text);
@@ -193,14 +218,27 @@ function renderIndex(items) {
   for (const item of current) indexScroll.append(createCurrentEntry(item));
   if (!LIVE_LISTENING && !current.length) indexScroll.append(el("p", "empty-msg", "nothing here yet"));
 
-  indexScroll.append(el("h2", "section-heading section-heading--recommendations", "recommendations"));
-  if (!items.length) {
-    indexScroll.append(el("p", "empty-msg", "No works found."));
-    return;
+  const favorites = groupedByMedium("recommend");
+  const shelf = groupedByMedium("shelf");
+  const groups = GROUP_ORDER.filter((group) => favorites.has(group) || shelf.has(group));
+  for (const group of groups) {
+    const section = el("section", "media-type-section");
+    section.append(el("h2", "media-type-heading", (GROUP_LABELS[group] || group).toLowerCase()));
+
+    const favoriteItems = favorites.get(group) || [];
+    if (favoriteItems.length) {
+      section.append(el("h3", "subsection-heading", "favorites"));
+      for (const item of favoriteItems) section.append(createEntry(item));
+    }
+
+    const shelfItems = shelf.get(group) || [];
+    if (shelfItems.length) {
+      section.append(el("h3", "subsection-heading", "on my shelf"));
+      for (const item of shelfItems) section.append(createEntry(item));
+    }
+    indexScroll.append(section);
   }
-  for (const item of items) {
-    indexScroll.append(createEntry(item));
-  }
+  if (!groups.length) indexScroll.append(el("p", "empty-msg", "No works found."));
 }
 
 // ---------------- gallery rendering + masonry ----------------
@@ -370,7 +408,7 @@ function renderShelf() {
 function renderAll() {
   const items = filteredItems();
   filteredCache = items;
-  const ids = new Set(items.map((i) => i.id));
+  const ids = new Set(state.items.concat(state.suggestions || []).map((i) => i.id));
   if (state.selectedMediaId && !ids.has(state.selectedMediaId)) state.selectedMediaId = null;
 
   renderIndex(items);

@@ -193,9 +193,12 @@ async function fetchText(url, userAgent) {
   }
 }
 
+// Keep this in sync with data.js::isPromotionalTitle and media_feed/lib/rss.mjs.
+const PROMOTIONAL_TITLE = /\b(?:coupons?|promo(?:tion)?\s+codes?|discount(?:s)?\s+codes?|deal of the day|\d{1,2}\s?%\s?off)\b|\bsave\s+\d{1,2}\s?%/i;
+
 function isExcluded(title, terms) {
   const value = title.toLowerCase();
-  return terms.some((term) => term && value.includes(String(term).toLowerCase()));
+  return PROMOTIONAL_TITLE.test(title) || terms.some((term) => term && value.includes(String(term).toLowerCase()));
 }
 
 function readJson(path, fallback) {

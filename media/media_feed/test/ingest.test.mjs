@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { canonicalizeUrl, isWithinDays, parseFeed } from "../lib/rss.mjs";
+import { canonicalizeUrl, isPromotionalTitle, isWithinDays, parseFeed } from "../lib/rss.mjs";
 import { buildArticleUpdate } from "../lib/supabase.mjs";
 
 test("canonicalizeUrl produces a stable dedupe key", () => {
@@ -53,6 +53,26 @@ test("parseFeed prefers the Atom alternate link over self/canonical feed links",
   assert.equal(item.author, "Ada");
   assert.equal(item.description, "Summary");
   assert.equal(item.publishedAt, "2026-11-25T10:00:00.000Z");
+});
+
+test("isPromotionalTitle filters discount marketing without hiding real articles", () => {
+  for (const title of [
+    "20% off every subscription",
+    "Save 30% this week",
+    "Your discount code inside",
+    "Coupon: 40% off",
+    "Deal of the day",
+    "Promotion code for new members"
+  ]) {
+    assert.equal(isPromotionalTitle(title), true, title);
+  }
+  for (const title of [
+    "Discount rates in the Fed survey",
+    "The economics of discounts",
+    "What a half-price book reveals about publishing"
+  ]) {
+    assert.equal(isPromotionalTitle(title), false, title);
+  }
 });
 
 test("isWithinDays uses the run time as the retention reference", () => {

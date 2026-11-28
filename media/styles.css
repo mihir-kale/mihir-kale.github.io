@@ -736,8 +736,35 @@ select.editor-input{cursor:pointer}
   color: rgb(197, 197, 197);
   text-transform: none;
 }
-.section-heading--recommendations {
+.media-type-section {
   margin-top: 24px;
+}
+
+.media-type-heading {
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #2a2a2a;
+  font-family: "Inter", -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  color: rgb(197, 197, 197);
+  text-transform: none;
+}
+
+.subsection-heading {
+  margin: 16px 0 8px;
+  font-family: "Inter", -apple-system, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0.14em;
+  color: #9a9a9a;
+  text-transform: none;
+}
+.media-type-heading + .subsection-heading {
+  margin-top: 0;
 }
 
 .now-line {

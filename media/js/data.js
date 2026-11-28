@@ -19,6 +19,14 @@ const AUTH_HEADERS = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPAB
 // fill the whole column.
 export const SHELF_LIMIT = 10;
 
+// Marketing titles are noise on a reading shelf. Keep the match narrow so
+// legitimate articles about discounts still get through.
+const PROMOTIONAL_TITLE = /\b(?:coupons?|promo(?:tion)?\s+codes?|discount(?:s)?\s+codes?|deal of the day|\d{1,2}\s?%\s?off)\b|\bsave\s+\d{1,2}\s?%/i;
+
+export function isPromotionalTitle(title) {
+  return PROMOTIONAL_TITLE.test(String(title ?? ""));
+}
+
 export const MEDIA_TYPES = [
   "fiction",
   "non-fiction",
@@ -39,14 +47,24 @@ export const TYPE_LABELS = {
   podcast: "Podcast"
 };
 
-export const KIND_LABELS = {
-  fiction: "Fiction",
-  "non-fiction": "Non-fiction",
+export const GROUP_LABELS = {
+  books: "Books",
   "short-fiction": "Short fiction",
-  "short-non-fiction": "Short non-fiction",
-  film: "Films",
-  album: "Music",
-  podcast: "Podcasts"
+  essays: "Essays",
+  movies: "Movies",
+  music: "Music",
+  podcasts: "Podcasts"
+};
+
+// Several stored media types share one human-facing medium section.
+export const MEDIA_TYPE_TO_GROUP = {
+  fiction: "books",
+  "non-fiction": "books",
+  "short-fiction": "short-fiction",
+  "short-non-fiction": "essays",
+  film: "movies",
+  album: "music",
+  podcast: "podcasts"
 };
 
 export const COVER_TYPES = new Set(["fiction", "non-fiction", "film", "album", "podcast"]);
@@ -200,7 +218,8 @@ export async function loadArticles() {
         publishedAt: row.published_at || null,
         source: typeof row.source === "string" ? row.source.trim() : ""
       }))
-      .filter((article) => article.title || article.url);
+      .filter((article) => article.title || article.url)
+      .filter((article) => !isPromotionalTitle(article.title));
     return mixSources(articles);
   } catch (error) {
     console.warn(`articles unavailable (${error.message})`);
@@ -319,7 +338,8 @@ export async function loadFeeds(url = "data/feeds.json") {
   const items = [];
   payload.forEach((raw, index) => {
     try {
-      items.push(normalizeItem(raw));
+      const item = normalizeItem(raw);
+      if (!isPromotionalTitle(item.title)) items.push(item);
     } catch (error) {
       console.warn(`Skipping feed entry ${index + 1}: ${error.message}`);
     }
